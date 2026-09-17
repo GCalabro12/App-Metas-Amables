@@ -145,11 +145,14 @@
     margin-bottom: 18px;
     box-shadow: 0 1px 3px rgba(20,20,10,.04), 0 4px 14px rgba(20,20,10,.03);
   }
+  .avance-trimestre{
+    display:inline-block; font-size:12.5px; font-weight:700; color:var(--moss-deep);
+    background:var(--moss-tint); border-radius:8px; padding:5px 10px; margin-bottom:10px;
+  }
   .week-label{
     font-size: 13px;
     color: var(--ink-soft);
-    margin-bottom: 6px;
-  }
+    margin-bottom: 6px;  }
   .question{
     font-family:'Lora', serif;
     font-size: 20px;
@@ -731,6 +734,22 @@
   }
   const quarterWeeks = getQuarterWeeks();
 
+  // Posición de la semana actual dentro del trimestre: "Semana 3 de 13"
+  // Solo mide el paso del tiempo, no el cumplimiento, para que oriente sin evaluar.
+  function avanceTrimestre(){
+    const total = quarterWeeks.length;
+    let indice = quarterWeeks.findIndex(w => w.short === currentWeekShort);
+    if(indice === -1) indice = quarterWeeks.findIndex(w => w.iso === currentWeek);
+    if(indice === -1) return null;
+    return { numero: indice + 1, total };
+  }
+
+  function avanceTrimestreTexto(){
+    const a = avanceTrimestre();
+    if(!a) return '';
+    return 'Semana ' + a.numero + ' de ' + a.total + ' del ' + currentQLabel;
+  }
+
   // Calcular las semanas (lunes) que caen dentro de un mes concreto, en filas completas por semana
   function getMonthWeeks(year, monthIndex){
     const mStart = new Date(year, monthIndex, 1);
@@ -964,7 +983,7 @@
 
   const DEFAULT_MEMBERS = ['Empar','Rafael','Rosa','Shayo','Ana María'];
 
-  const APP_VERSION = 'V62';
+  const APP_VERSION = 'V63';
 
   // ==== Conexión con Airtable ====
   // El token NO está en el código — se inyecta via URL (?t=TOKEN) o localStorage
@@ -2432,6 +2451,7 @@
       compCard.innerHTML = `
         <div class="question" style="font-size:19px;margin-bottom:4px">Paso 2️⃣ Tu compromiso para esta semana</div>
         <div class="week-label">${rangoSemanaTexto(today)}</div>
+        ${avanceTrimestreTexto() ? `<div class="avance-trimestre">📊 ${avanceTrimestreTexto()}</div>` : ''}
 
         <label class="note-label strong" for="metaTrim" style="margin-top:14px">🎯 Meta ${currentQLabel} (${currentQMonths.join(', ')})</label>
         <textarea id="metaTrim" placeholder="¿Cuál es tu meta para este trimestre?" style="min-height:44px;margin-bottom:16px">${curMetaTrim}</textarea>
@@ -2536,7 +2556,10 @@
         }
 
         // Mensaje de WhatsApp
-        let msg = '🗓️ Mi Lunes de Compromiso (' + rangoSemanaTexto(today) + ')\n\n';
+        let msg = '🗓️ Mi Lunes de Compromiso (' + rangoSemanaTexto(today) + ')\n';
+        const avanceTxt = avanceTrimestreTexto();
+        if(avanceTxt) msg += '📊 ' + avanceTxt + '\n';
+        msg += '\n';
         if(hayCierrePendiente){
           if(estadoFinal === ESTADO_CUMPLIDO) msg += '✅ Semana pasada: cumplí mi compromiso de ' + compromisoPrev + (compromisoPrev === 1 ? ' vez' : ' veces') + '.\n\n';
           else if(estadoFinal === ESTADO_SIN_OPORTUNIDADES) msg += '🍃 Semana pasada: no se dieron las oportunidades que pensaba.\n\n';
