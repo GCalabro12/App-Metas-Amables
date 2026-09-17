@@ -69,6 +69,10 @@
     letter-spacing: -0.01em;
   }
   .wordmark span{ color: var(--ink-soft); font-weight: 400; font-size: 15px; display:block; margin-top: 2px; font-family:'Karla',sans-serif; }
+  .version-tag{
+    color: var(--ink-soft); font-weight:400; font-size:11px; letter-spacing:.06em;
+    font-family:'Karla',sans-serif; vertical-align:middle; margin-left:4px;
+  }
   .brand-row{ display:flex; align-items:center; gap:10px; }
   .brand-icon{ width:34px; height:34px; border-radius:50%; object-fit:cover; flex-shrink:0; }
   .brand-hero{ width:100%; max-width:340px; height:auto; display:block; margin: 4px auto 22px; }
@@ -573,6 +577,20 @@
     return `<button id="nivelBadgeBtn" class="nivel-badge-mini" title="Tu nivel: ${state.nivel.label}">${state.nivel.icon}</button>`;
   }
 
+  // Días que faltan hasta el próximo lunes de compromiso (0 si hoy es lunes)
+  function diasHastaLunes(){
+    const dow = today.getDay(); // 0 = domingo, 1 = lunes
+    if(dow === 1) return 0;
+    return (8 - dow) % 7;
+  }
+
+  function avisoLunesHTML(){
+    const d = diasHastaLunes();
+    if(d === 0) return '📝 <b>Hoy es el lunes de compromiso.</b>';
+    if(d === 1) return '📝 <b>Falta 1 día para el lunes de compromiso.</b>';
+    return '📝 <b>Faltan ' + d + ' días para el lunes de compromiso.</b>';
+  }
+
   // Escapa texto que va dentro de un atributo HTML (una comilla rompería el marcado)
   function escapeAttr(s){
     return String(s == null ? '' : s)
@@ -942,7 +960,7 @@
 
   const DEFAULT_MEMBERS = ['Empar','Rafael','Rosa','Shayo','Ana María'];
 
-  const APP_VERSION = 'V59';
+  const APP_VERSION = 'V60';
 
   // ==== Conexión con Airtable ====
   // El token NO está en el código — se inyecta via URL (?t=TOKEN) o localStorage
@@ -1614,7 +1632,7 @@
         Si la hiciste <b>en parte</b>, suma esa parte (3 de 5 → 0,6). Si <b>no se dieron las oportunidades</b>, suma 0,25.
       </p>
       ${BADGE_SCALE.map(b => `<div class="badge-scale-row" data-min="${b.min}"><span${b.label!=='Aprendiz' ? ' class="nivel-nombre-destacado"' : ''}>${b.icon} ${b.label}</span><span style="color:var(--ink-soft)">a partir de ${b.min} puntos</span></div>`).join('')}
-      <button class="link-quiet" id="btnComoCuentaPerfil" style="padding:0;margin-top:10px">ℹ️ Ver en detalle cómo cuenta la app</button>
+      <button class="link-quiet" id="btnComoCuentaPerfil" style="padding:0;margin-top:10px">ℹ️ Ver en detalle cómo cuenta los puntos la app</button>
       <div style="margin-top:18px;border-top:1px solid var(--border);padding-top:14px">
         <button class="link-quiet" id="togglePassChange" style="padding:0">🔒 Cambiar contraseña</button>
         <div id="passChangeBox" style="display:none;margin-top:12px"></div>
@@ -1766,8 +1784,8 @@
                 </div>
                 <div class="saved-msg">${state.valoracionMsg}</div>
                 <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--border);text-align:center">
-                  <p style="font-size:13px;color:var(--ink-soft);margin:0 0 10px">📝 Cada lunes registra tu logro y tu compromiso para la semana siguiente.</p>
-                  <button type="button" class="panel-link-btn irARegistroBtn" style="background:var(--honey);border:none;cursor:pointer;width:100%">Ir a Registro →</button>
+                  <p style="font-size:14px;color:var(--ink);margin:0 0 10px">${avisoLunesHTML()}</p>
+                  <button type="button" class="panel-link-btn irARegistroBtn" style="background:var(--honey);border:none;cursor:pointer;width:100%">Ir al registro de los lunes →</button>
                 </div>
               </div>`;
           }
@@ -1867,7 +1885,7 @@
     header.innerHTML = `
       <div class="brand-row">
         <img class="brand-icon" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAMAAADVRocKAAAAYFBMVEX///////79//7//v7+/v/+/v7+/vz+/f39/v79/f79/f39/fv8/v/9+/z5+fv39vjm5ePZ1dHS0NDQz8/Py8zNyL/pt2nRl1DEw8OtmWPqDTHtACXhACdjVVgSCRADAAATpRsSAAAE60lEQVR42u2aa3ObOhCG5WCFmFo3ECBsFP//f3l2JXG1IZFtfTrRdKatG+/Du3cxJafTqUh2TidOEh+WGsD/AP9fwInkWVoF/5IqoMzYTtAsFSDPhLVWkSIV4ItUAAAJNA2AEmnxdEBKAvg8Nh3abwWhSQCHc9O0bdu0inwmA+BJBvgkTesAdTJAnRog26QuGoOQKotGH50PiSqZEgFp2tYfn4kAh39fWAiKHA5pAHBcEgmRSIGQdde603xl7wcceLCOR5Ds/YAzGDamSwbATtEpVXUeQN8OyEnTVZUuEwKUUVoZ5yLz6tzkj8qs1KDAx8DIFyXwRwPTlMFBANDi3Qoo0xAAE9LUVLqgbwVQiMAkoNWlVi85id/3ObCvBgGdrsrXwnCvQKPNbgSUEG/xPgU+wtUgoG1UDYBXJNwBDAoQTQDUZ1Mpbfj7XCSMKU1JVADIA3xgjHp+ieTrFNJgT2bHrsdzbc/gM5D0fCatFHCwpiuWnS9Xf9TBE54OA78LcWUgaWSwf22PDAn44fENCpjW+LBsAlw+Mp9ZzxY0v8tRsJTPADBx/OdPhoGvigxSFAxlfIjBVUL7dgRQVjyRTHwlwOcLI+0AqAEQ/kn4n9o+hdgH0EoHVzPSDIDGvS9BAlS0FDsE+Jn6fjzxeZuDJudHZE5q9P+lbaSY5BmjzU7bKEht7t/ezBQUWGL+62CuqRUUdTXaK6CNa62q7YpgpKv3AEJDEc++fKygLVXQNuioUKoORGwRso/LDgAG8SIVcyaBB5Nn6hLwW2mFkBsAyO1+G+DmzLwvY1fS+NGsSzBizd67s24XEJrE9HD49NiZRkJBpeVQChsOgtr5QcHKu7i7wGdACMJAQLf9jo+Ruu/3gywXZUIV+h+bk+vWWCbC7rxcyD/a6z5gVaVCu1lZVCHS6GO7LQDWwf6yD1g8HPUAiMlX6QglLbiVdHOPzI/tT4B12QcA+MoRNDE/CLhGA3TlH9gTlNU7AmAE9tcIACFgPtSd3/WU6bb7HKbQJcpFMNumfQgJyjWqjZPlAgTEAOiQRHRqpVCHm09DMMJxgGVhh7+rrS6ke4xAJAAU8CmFpYXK1mzbQTg/YgAKu9C8kVmlN5ZUjHAsgBDo1bPmDV1CzvJ2Zd9YDHFcDLiZxpu3Ad3w4YLHiP6OBmAIYDhOw5TaklIMQnlvX37f7KWPBaixzAYBzCXSOgrOvgNExqAap8AwyZi73epyAfD2AyAmBsKvuzQ4qLSwVND7NTvYj1bgy2pMei8gXN/mEhgpnf2bdXXQRwDU7PaKRSboorx9hyqI8fY9ICpN9WyZmI1iJ0GFx6eku90mQFQWuZQPIcBRLCkdsxe2Szhgntnbk4BlCBajmOENzrhrnLHfM0BUFvkQlOFVV8GsGiaZa9sKAi3L7tvaFSCiDmb7HJuPYhykAFe6w+pauigGwGdVUECO0vFbFNYzFZyzUvD7GLhQluHOV1Bjh0sFLSC0RA++XwN+HQPIe4ykWBQZGHdf1VNoVy6KAIACvCoohg6CfReMOw206iabz7uIukZUlbBqFXQsMqbmaflAwfXXQQYAFAEONJzxHPddY9fG14A+nN9PNCbcVWbYigzepvAOOjtKjX+UKpwH74kfNzvyeCV+5+t9sDzapuzBf2hg7pf/Yz6cLALwrvMH+AO8fhjhic9/aLmuDpghEyMAAAAASUVORK5CYII=" alt="">
-        <div class="wordmark">APP Metas Amables</div>
+        <div class="wordmark">APP Metas Amables <small class="version-tag">${APP_VERSION}</small></div>
       </div>
       ${state.me ? `<div class="who"><button id="switchBtn">inicio</button></div>` : ''}
     `;
@@ -1993,8 +2011,11 @@
             cls = 'low'; mark = '🍃';
           } else if(c && c.estadoSemana){
             const comp = Number(c.compromisoVeces);
-            const hechas = (c.estadoSemana === ESTADO_CUMPLIDO) ? comp : (Number(c.vecesRealizadas) || 0);
-            mark = (comp > 0) ? (hechas + '/' + comp) : (c.cumplida ? '✓' : '·');
+            const real = Number(c.vecesRealizadas);
+            const hechas = (c.estadoSemana === ESTADO_CUMPLIDO) ? comp : (real || 0);
+            if(comp > 0) mark = hechas + '/' + comp;
+            else if(real > 0) mark = String(real);   // hay veces hechas pero no se guardó el compromiso
+            else mark = c.cumplida ? '✓' : '·';      // marcada a mano, sin números
             if(pct !== null && pct >= 100) cls = 'yes';
             else if(pct !== null && pct > PCT_SIN_OPORTUNIDADES) cls = 'partial';
             else cls = 'low';
@@ -2425,7 +2446,7 @@
         <input type="number" id="oportunidades" min="0" value="${oportunidadesVal}" placeholder="Ej: 4"
           style="width:100%;border:1px solid var(--border);border-radius:10px;padding:12px;font-family:'Karla';font-size:16px;margin-bottom:16px;background:#FCFCF9;box-sizing:border-box">
 
-        <label class="note-label strong" for="compromisoVeces">¿Cuántas veces te comprometes a hacerlo? (solo el número)</label>
+        <label class="note-label strong" for="compromisoVeces">¿Cuántas veces te comprometes a hacerlo esta semana? (solo el número)</label>
         <input type="number" id="compromisoVeces" min="0" value="${compromisoVal}" placeholder="Ej: 3"
           style="width:100%;border:1px solid var(--border);border-radius:10px;padding:12px;font-family:'Karla';font-size:16px;margin-bottom:4px;background:#FCFCF9;box-sizing:border-box">
         <p style="font-size:13px;color:var(--ink-soft);margin:0 0 14px">Sin forzarte: elige un número que puedas sostener.</p>
