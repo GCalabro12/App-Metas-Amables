@@ -145,6 +145,9 @@
     margin-bottom: 18px;
     box-shadow: 0 1px 3px rgba(20,20,10,.04), 0 4px 14px rgba(20,20,10,.03);
   }
+  .paso-titulo{
+    font-size:19px; line-height:1.3; margin-bottom:8px;
+  }
   .avance-trimestre{
     display:inline-block; font-size:12.5px; font-weight:700; color:var(--moss-deep);
     background:var(--moss-tint); border-radius:8px; padding:5px 10px; margin-bottom:10px;
@@ -564,7 +567,8 @@
     editandoCierre: false,
     oportunidadesDraft: null,
     compromisoDraft: null,
-    compromisoMsg: ''
+    compromisoMsg: '',
+    mensajeWhatsApp: ''
   };
 
   function applyTheme(){
@@ -670,6 +674,17 @@
       return 'del ' + monday.getDate() + ' al ' + sunday.getDate() + ' de ' + mesDomingo;
     }
     return 'del ' + monday.getDate() + ' de ' + mesLunes + ' al ' + sunday.getDate() + ' de ' + mesDomingo;
+  }
+
+  // "del 14 al 20 sept." — versión corta para el mensaje de WhatsApp
+  function rangoSemanaCorto(d){
+    const MESES = ['ene.','feb.','mar.','abr.','may.','jun.','jul.','ago.','sept.','oct.','nov.','dic.'];
+    const day = (d.getDay()+6)%7;
+    const monday = new Date(d); monday.setDate(d.getDate() - day);
+    const sunday = new Date(monday); sunday.setDate(monday.getDate()+6);
+    const mL = MESES[monday.getMonth()], mD = MESES[sunday.getMonth()];
+    if(mL === mD) return 'del ' + monday.getDate() + ' al ' + sunday.getDate() + ' ' + mD;
+    return 'del ' + monday.getDate() + ' ' + mL + ' al ' + sunday.getDate() + ' ' + mD;
   }
 
   const today = new Date();
@@ -983,7 +998,7 @@
 
   const DEFAULT_MEMBERS = ['Empar','Rafael','Rosa','Shayo','Ana María'];
 
-  const APP_VERSION = 'V63';
+  const APP_VERSION = 'V65';
 
   // ==== Conexión con Airtable ====
   // El token NO está en el código — se inyecta via URL (?t=TOKEN) o localStorage
@@ -1192,6 +1207,7 @@
     state.oportunidadesDraft = null;
     state.compromisoDraft = null;
     state.compromisoMsg = '';
+    state.mensajeWhatsApp = '';
     state.view = 'panel'; window.scrollTo(0,0); render();
     cargarNivel(name);
     try { await refreshAll(); } catch(e){}
@@ -1511,6 +1527,60 @@
       state.compromisoMsg = '⚠️ ' + (e && e.message ? e.message : 'Error desconocido al guardar');
     }
     render();
+  }
+
+  // Tarjeta con el mensaje del lunes, para copiarlo o reabrir WhatsApp.
+  // Hace falta porque el enlace wa.me no permite elegir con qué cuenta se envía:
+  // en teléfonos con dos SIM o dos cuentas de WhatsApp, abre la que el móvil
+  // tenga como predeterminada, que no siempre es la del grupo.
+  function tarjetaCompartir(){
+    if(!state.mensajeWhatsApp) return null;
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.innerHTML = `
+      <p style="font-weight:700;margin:0 0 6px;font-size:15px">Tu mensaje del lunes</p>
+      <p style="font-size:13px;color:var(--ink-soft);margin:0 0 10px">
+        Si WhatsApp se te abre con otra cuenta o en otro chat, copia el mensaje y pégalo donde quieras.
+      </p>
+      <textarea id="msgCompartir" readonly
+        style="width:100%;min-height:118px;border:1px solid var(--border);border-radius:10px;padding:12px;font-family:'Karla',sans-serif;font-size:13.5px;line-height:1.5;background:#FCFCF9;box-sizing:border-box;resize:vertical">${state.mensajeWhatsApp}</textarea>
+      <button class="btn btn-yes" id="btnCopiarMsg" style="text-align:center;margin-top:10px">📋 Copiar mensaje</button>
+      <button class="link-quiet" id="btnAbrirWa" style="padding:0;margin-top:8px">📲 Abrir WhatsApp otra vez</button>
+      <div id="copiadoMsg" style="font-size:13px;margin-top:8px"></div>
+    `;
+    const area = card.querySelector('#msgCompartir');
+    const aviso = card.querySelector('#copiadoMsg');
+
+    card.querySelector('#btnCopiarMsg').onclick = async () => {
+      let ok = false;
+      try {
+        if(navigator.clipboard && navigator.clipboard.writeText){
+          await navigator.clipboard.writeText(state.mensajeWhatsApp);
+          ok = true;
+        }
+      } catch(e){ ok = false; }
+      if(!ok){
+        // Respaldo para navegadores que no dan acceso al portapapeles
+        try {
+          area.focus(); area.select();
+          area.setSelectionRange(0, area.value.length);
+          ok = document.execCommand && document.execCommand('copy');
+        } catch(e2){ ok = false; }
+      }
+      if(ok){
+        aviso.style.color = 'var(--moss-deep)';
+        aviso.textContent = 'Copiado ✓ Ya puedes pegarlo en WhatsApp';
+      } else {
+        area.focus(); area.select();
+        aviso.style.color = '#B94A3A';
+        aviso.textContent = 'Te lo he seleccionado: mantén pulsado y elige Copiar';
+      }
+    };
+
+    card.querySelector('#btnAbrirWa').onclick = () => {
+      window.open('https://wa.me/?text=' + encodeURIComponent(state.mensajeWhatsApp), '_blank');
+    };
+    return card;
   }
 
   function speak(text){
@@ -1932,6 +2002,8 @@
       if(state.savedMsg && state.savedMsg.indexOf('⚠️') === 0){
         app.appendChild(el(`<div class="card" style="border-color:#B94A3A;color:#B94A3A;font-size:13px;text-align:center">${state.savedMsg}</div>`));
       }
+      const tarjetaSin = tarjetaCompartir();
+      if(tarjetaSin) app.appendChild(tarjetaSin);
       const btnSeguir = document.createElement('button');
       btnSeguir.className = 'btn btn-yes';
       btnSeguir.style.textAlign = 'center';
@@ -1962,6 +2034,8 @@
       if(state.savedMsg && state.savedMsg.indexOf('⚠️') === 0){
         app.appendChild(el(`<div class="card" style="border-color:#B94A3A;color:#B94A3A;font-size:13px;text-align:center">${state.savedMsg}</div>`));
       }
+      const tarjetaRes = tarjetaCompartir();
+      if(tarjetaRes) app.appendChild(tarjetaRes);
       const btnCal = document.createElement('button');
       btnCal.className = 'btn btn-yes';
       btnCal.style.textAlign = 'center';
@@ -2346,8 +2420,7 @@
 
       if(!compromisoPrev){
         cierreCard.innerHTML = `
-          <div class="question" style="font-size:19px;margin-bottom:4px">Paso 1️⃣ Cierre de la semana pasada</div>
-          <div class="week-label">${rangoSemanaTexto(lastWeekDate)}</div>
+          <div class="question paso-titulo">Paso 1 · Cierre de la semana pasada ${rangoSemanaTexto(lastWeekDate)}</div>
           <p style="font-size:14px;color:var(--ink-soft);margin:10px 0 0">
             No hay un compromiso registrado de la semana pasada, así que esta vez no hay nada que cerrar.
             Empieza definiendo tu compromiso en el Paso 2 y el próximo lunes podrás cerrarlo aquí.
@@ -2362,8 +2435,7 @@
               ? ((prevWeek.estadoSemana === ESTADO_CUMPLIDO ? Number(prevWeek.compromisoVeces) : (Number(prevWeek.vecesRealizadas) || 0)) + ' de ' + Number(prevWeek.compromisoVeces) + (pctPrev !== null ? ' · ' + pctPrev + '%' : ''))
               : (pctPrev !== null ? pctPrev + '%' : '—'));
         cierreCard.innerHTML = `
-          <div class="question" style="font-size:19px;margin-bottom:4px">Paso 1️⃣ Cierre de la semana pasada</div>
-          <div class="week-label">${rangoSemanaTexto(lastWeekDate)}</div>
+          <div class="question paso-titulo">Paso 1 · Cierre de la semana pasada ${rangoSemanaTexto(lastWeekDate)}</div>
           <div class="badge-scale-row current" style="margin-top:10px">
             <span>${prevWeek.estadoSemana}</span><span>${detallePrev}</span>
           </div>
@@ -2375,8 +2447,7 @@
         const realizadasVal = (state.cierreRealizadas !== null && state.cierreRealizadas !== undefined) ? state.cierreRealizadas : '';
         const est = state.cierreEstado;
         cierreCard.innerHTML = `
-          <div class="question" style="font-size:19px;margin-bottom:4px">Paso 1️⃣ Cierre de la semana pasada</div>
-          <div class="week-label">${rangoSemanaTexto(lastWeekDate)}</div>
+          <div class="question paso-titulo">Paso 1 · Cierre de la semana pasada ${rangoSemanaTexto(lastWeekDate)}</div>
           <p style="font-size:15px;font-weight:700;margin:12px 0 2px">Te habías comprometido a hacerlo ${compromisoPrev} ${compromisoPrev === 1 ? 'vez' : 'veces'}.</p>
           <p style="font-size:15px;color:var(--ink-soft);margin:0 0 12px">¿Cómo te fue?</p>
 
@@ -2449,8 +2520,7 @@
       const compCard = document.createElement('div');
       compCard.className = 'card';
       compCard.innerHTML = `
-        <div class="question" style="font-size:19px;margin-bottom:4px">Paso 2️⃣ Tu compromiso para esta semana</div>
-        <div class="week-label">${rangoSemanaTexto(today)}</div>
+        <div class="question paso-titulo">Paso 2 · Tu compromiso para esta semana ${rangoSemanaTexto(today)}</div>
         ${avanceTrimestreTexto() ? `<div class="avance-trimestre">📊 ${avanceTrimestreTexto()}</div>` : ''}
 
         <label class="note-label strong" for="metaTrim" style="margin-top:14px">🎯 Meta ${currentQLabel} (${currentQMonths.join(', ')})</label>
@@ -2487,7 +2557,7 @@
       const oportEl = compCard.querySelector('#oportunidades');
       const compEl = compCard.querySelector('#compromisoVeces');
 
-      function limpiarFalta(e){ e.target.classList.remove('campo-falta'); state.compromisoMsg = ''; }
+      function limpiarFalta(e){ e.target.classList.remove('campo-falta'); state.compromisoMsg = ''; state.mensajeWhatsApp = ''; }
       metaTrimEl.oninput = (e) => { state.metaTrimDraft = e.target.value; limpiarFalta(e); };
       identidadEl.oninput = (e) => { state.identidadDraft = e.target.value; limpiarFalta(e); };
       metaSemEl.oninput = (e) => { state.metaSemDraft = e.target.value; limpiarFalta(e); };
@@ -2495,6 +2565,10 @@
       compEl.oninput = (e) => { state.compromisoDraft = e.target.value; limpiarFalta(e); };
 
       compCard.querySelector('#btnComoCuenta').onclick = () => { state.prevView = 'checkin'; state.view = 'comoCuenta'; window.scrollTo(0,0); render(); };
+
+      // Si acaba de registrar sin pasar por pantalla de resultado, el mensaje sigue a mano
+      const tarjetaCheckin = tarjetaCompartir();
+      if(tarjetaCheckin) app.appendChild(tarjetaCheckin);
 
       // Un único guardado: cierra la semana pasada, guarda el compromiso nuevo y comparte
       compCard.querySelector('#btnRegistrarTodo').onclick = () => {
@@ -2555,18 +2629,26 @@
           realizadas = compromisoPrev;
         }
 
-        // Mensaje de WhatsApp
-        let msg = '🗓️ Mi Lunes de Compromiso (' + rangoSemanaTexto(today) + ')\n';
+        // Mensaje de WhatsApp en tres grupos: título, semana pasada, esta semana.
+        // Los *asteriscos* ponen el texto en negrita dentro de WhatsApp.
+        let msg = '*MI LUNES DE COMPROMISO*\n\n';
+
+        if(hayCierrePendiente){
+          msg += '*Revisión de la semana pasada* (' + rangoSemanaCorto(lastWeekDate) + ')\n';
+          if(estadoFinal === ESTADO_SIN_OPORTUNIDADES){
+            msg += '🍃 No se dieron las oportunidades que pensaba\n\n';
+          } else {
+            const hechas = (estadoFinal === ESTADO_CUMPLIDO) ? compromisoPrev : realizadas;
+            const marca = (estadoFinal === ESTADO_CUMPLIDO) ? '✅' : '🔸';
+            msg += marca + ' Hice ' + hechas + ' de ' + compromisoPrev + '\n\n';
+          }
+        }
+
+        msg += '*Esta semana* (' + rangoSemanaTexto(today) + ')\n';
         const avanceTxt = avanceTrimestreTexto();
         if(avanceTxt) msg += '📊 ' + avanceTxt + '\n';
-        msg += '\n';
-        if(hayCierrePendiente){
-          if(estadoFinal === ESTADO_CUMPLIDO) msg += '✅ Semana pasada: cumplí mi compromiso de ' + compromisoPrev + (compromisoPrev === 1 ? ' vez' : ' veces') + '.\n\n';
-          else if(estadoFinal === ESTADO_SIN_OPORTUNIDADES) msg += '🍃 Semana pasada: no se dieron las oportunidades que pensaba.\n\n';
-          else msg += '🔸 Semana pasada: hice ' + realizadas + ' de las ' + compromisoPrev + '.\n\n';
-        }
-        if(identidadTxt) msg += '🪞 ' + identidadTxt + '\n\n';
-        msg += '🎯 Esta semana me comprometo a hacerlo ' + compromisoNum + (compromisoNum === 1 ? ' vez' : ' veces') + '.';
+        if(identidadTxt) msg += '🪞 ' + identidadTxt + '\n';
+        msg += '🎯 Me comprometo a hacerlo ' + compromisoNum + (compromisoNum === 1 ? ' vez' : ' veces') + '.';
         if(metaSemTxt) msg += '\n📌 ' + metaSemTxt;
 
         // Guardar todo y después compartir
@@ -2577,6 +2659,7 @@
         Promise.all(tareas)
           .then(() => saveCompromisoSemana(oportEl.value, compEl.value, identidadEl.value, metaTrimEl.value, metaSemEl.value))
           .then(() => {
+            state.mensajeWhatsApp = msg;
             window.open('https://wa.me/?text=' + encodeURIComponent(msg), '_blank');
             state.editandoCierre = false;
             if(hayCierrePendiente){
