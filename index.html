@@ -145,6 +145,20 @@
     margin-bottom: 18px;
     box-shadow: 0 1px 3px rgba(20,20,10,.04), 0 4px 14px rgba(20,20,10,.03);
   }
+  .barra-trimestre{ padding:16px 18px; }
+  .barra-titulo{ font-family:'Karla',sans-serif; font-weight:700; font-size:15px; color:var(--ink); margin-bottom:12px; }
+  .barra-fila{ display:flex; gap:3px; }
+  .barra-fila + .barra-fila{ margin-top:5px; }
+  .barra-semana{ flex:1; height:18px; border-radius:3px; }
+  .barra-semana.pasada{ background:#E8002C; }
+  .barra-semana.falta{ background:#6B9362; }
+  .barra-semana.actual{ outline:2px solid var(--ink); outline-offset:1px; }
+  .barra-num{ flex:1; text-align:center; font-size:11px; color:var(--ink-soft); }
+  .barra-num.actual{ color:var(--ink); font-weight:700; }
+  .barra-leyenda{ display:flex; gap:16px; margin-top:12px; font-size:12px; color:var(--ink-soft); }
+  .barra-muestra{ display:inline-block; width:10px; height:10px; border-radius:2px; vertical-align:-1px; margin-right:5px; }
+  .barra-muestra.pasada{ background:#E8002C; }
+  .barra-muestra.falta{ background:#6B9362; }
   .paso-titulo{
     font-size:19px; line-height:1.3; margin-bottom:8px;
   }
@@ -765,6 +779,32 @@
     return 'Semana ' + a.numero + ' de ' + a.total + ' del ' + currentQLabel;
   }
 
+  // Barra horizontal del trimestre: una casilla por semana.
+  // Rojo = semanas que ya han pasado (incluida la actual), verde = las que faltan.
+  // La semana actual lleva un contorno oscuro. Solo mide el tiempo, no el cumplimiento.
+  function barraTrimestre(){
+    const a = avanceTrimestre();
+    if(!a) return null;
+    let casillas = '', numeros = '';
+    for(let i = 1; i <= a.total; i++){
+      const clase = 'barra-semana ' + (i <= a.numero ? 'pasada' : 'falta') + (i === a.numero ? ' actual' : '');
+      casillas += '<div class="' + clase + '"></div>';
+      numeros += '<div class="barra-num' + (i === a.numero ? ' actual' : '') + '">' + i + '</div>';
+    }
+    const card = document.createElement('div');
+    card.className = 'card barra-trimestre';
+    card.innerHTML = `
+      <div class="barra-titulo">Van ${a.numero} de ${a.total} semanas del ${currentQLabel}</div>
+      <div class="barra-fila">${casillas}</div>
+      <div class="barra-fila">${numeros}</div>
+      <div class="barra-leyenda">
+        <span><i class="barra-muestra pasada"></i>Pasadas</span>
+        <span><i class="barra-muestra falta"></i>Faltan</span>
+      </div>
+    `;
+    return card;
+  }
+
   // Calcular las semanas (lunes) que caen dentro de un mes concreto, en filas completas por semana
   function getMonthWeeks(year, monthIndex){
     const mStart = new Date(year, monthIndex, 1);
@@ -998,7 +1038,7 @@
 
   const DEFAULT_MEMBERS = ['Empar','Rafael','Rosa','Shayo','Ana María'];
 
-  const APP_VERSION = 'V65';
+  const APP_VERSION = 'V66';
 
   // ==== Conexión con Airtable ====
   // El token NO está en el código — se inyecta via URL (?t=TOKEN) o localStorage
@@ -2414,6 +2454,10 @@
         ? prevWeek.identidad
         : ((latest && latest.identidad) ? latest.identidad : '');
 
+      // Barra de avance del trimestre, antes del Paso 1
+      const barraAvance = barraTrimestre();
+      if(barraAvance) app.appendChild(barraAvance);
+
       const cierreCard = document.createElement('div');
       cierreCard.className = 'card';
       let vecesRealEl = null;
@@ -2521,7 +2565,6 @@
       compCard.className = 'card';
       compCard.innerHTML = `
         <div class="question paso-titulo">Paso 2 · Tu compromiso para esta semana ${rangoSemanaTexto(today)}</div>
-        ${avanceTrimestreTexto() ? `<div class="avance-trimestre">📊 ${avanceTrimestreTexto()}</div>` : ''}
 
         <label class="note-label strong" for="metaTrim" style="margin-top:14px">🎯 Meta ${currentQLabel} (${currentQMonths.join(', ')})</label>
         <textarea id="metaTrim" placeholder="¿Cuál es tu meta para este trimestre?" style="min-height:44px;margin-bottom:16px">${curMetaTrim}</textarea>
@@ -2629,24 +2672,30 @@
           realizadas = compromisoPrev;
         }
 
-        // Mensaje de WhatsApp en tres grupos: título, semana pasada, esta semana.
+        // Mensaje de WhatsApp: título, 1. semana pasada, 2. esta semana.
         // Los *asteriscos* ponen el texto en negrita dentro de WhatsApp.
-        let msg = '*MI LUNES DE COMPROMISO*\n\n';
-
-        if(hayCierrePendiente){
-          msg += '*Revisión de la semana pasada* (' + rangoSemanaCorto(lastWeekDate) + ')\n';
-          if(estadoFinal === ESTADO_SIN_OPORTUNIDADES){
-            msg += '🍃 No se dieron las oportunidades que pensaba\n\n';
-          } else {
-            const hechas = (estadoFinal === ESTADO_CUMPLIDO) ? compromisoPrev : realizadas;
-            const marca = (estadoFinal === ESTADO_CUMPLIDO) ? '✅' : '🔸';
-            msg += marca + ' Hice ' + hechas + ' de ' + compromisoPrev + '\n\n';
-          }
+        // El grupo 1 sale siempre, para que la numeración no empiece por el 2.
+        function lineaResultado(estado, hechas, total){
+          if(estado === ESTADO_SIN_OPORTUNIDADES) return '🍃 No se dieron las oportunidades que pensaba';
+          const marca = (estado === ESTADO_CUMPLIDO) ? '✅' : '🔸';
+          return marca + ' Hice ' + hechas + ' de ' + total;
         }
 
-        msg += '*Esta semana* (' + rangoSemanaTexto(today) + ')\n';
-        const avanceTxt = avanceTrimestreTexto();
-        if(avanceTxt) msg += '📊 ' + avanceTxt + '\n';
+        let msg = '*MI LUNES DE COMPROMISO*\n\n';
+        msg += '*1. Semana pasada* (' + rangoSemanaCorto(lastWeekDate) + ')\n';
+        if(hayCierrePendiente){
+          const hechas = (estadoFinal === ESTADO_CUMPLIDO) ? compromisoPrev : realizadas;
+          msg += lineaResultado(estadoFinal, hechas, compromisoPrev) + '\n\n';
+        } else if(prevWeek && prevWeek.estadoSemana && Number(prevWeek.compromisoVeces) > 0){
+          // Ya se había cerrado antes: se repite el resultado guardado
+          const total = Number(prevWeek.compromisoVeces);
+          const hechas = (prevWeek.estadoSemana === ESTADO_CUMPLIDO) ? total : (Number(prevWeek.vecesRealizadas) || 0);
+          msg += lineaResultado(prevWeek.estadoSemana, hechas, total) + '\n\n';
+        } else {
+          msg += '— Sin compromiso registrado\n\n';
+        }
+
+        msg += '*2. Esta semana* (' + rangoSemanaTexto(today) + ')\n';
         if(identidadTxt) msg += '🪞 ' + identidadTxt + '\n';
         msg += '🎯 Me comprometo a hacerlo ' + compromisoNum + (compromisoNum === 1 ? ' vez' : ' veces') + '.';
         if(metaSemTxt) msg += '\n📌 ' + metaSemTxt;
