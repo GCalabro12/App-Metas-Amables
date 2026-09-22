@@ -582,7 +582,8 @@
     oportunidadesDraft: null,
     compromisoDraft: null,
     compromisoMsg: '',
-    mensajeWhatsApp: ''
+    mensajeWhatsApp: '',
+    gamificaId: null
   };
 
   function applyTheme(){
@@ -643,6 +644,7 @@
       .then(data => {
         const rec = data.records && data.records[0];
         if(!rec){ state.nivel = null; return; }
+        state.gamificaId = rec.id;
         const cumplidas = rec.fields['Cumplidas semanas'] || 0;
         const actual = insigniaActual(cumplidas);
         const insigniaTexto = rec.fields['Insignia'] || actual.label;
@@ -1038,7 +1040,7 @@
 
   const DEFAULT_MEMBERS = ['Empar','Rafael','Rosa','Shayo','Ana María'];
 
-  const APP_VERSION = 'V66';
+  const APP_VERSION = 'V68';
 
   // ==== Conexión con Airtable ====
   // El token NO está en el código — se inyecta via URL (?t=TOKEN) o localStorage
@@ -1046,7 +1048,7 @@
     base: 'appB3nXTGf3wWu0sI',
     table: 'tblYUORCDMOtD3FFo',
     token: null, // se carga en init()
-    fields: { alumno: 'Practicante', semana: 'Semana', cumplida: 'Cumplida', notas: 'Notas', metaTrim: 'Meta trimestre', metaSem: 'Meta semana', identidad: 'Identidad', pass: 'Contraseña', urlPanel: 'URL PANEL', grupo: 'Grupo MAC', urlGuia: 'URL Guías Mensuales', fechasSesiones: 'Fechas Sesiones', guiaTexto: 'Guía Trimestral Texto', valoracion: 'Valoracion', oportunidades: 'Opo estimadas', compromisoVeces: 'Me comprometo a', vecesRealizadas: 'Veces realizado', estadoSemana: 'Estado Semana' }
+    fields: { alumno: 'Practicante', semana: 'Semana', cumplida: 'Cumplida', notas: 'Notas', metaTrim: 'Meta trimestre', metaSem: 'Meta semana', identidad: 'Identidad', pass: 'Contraseña', urlPanel: 'URL PANEL', grupo: 'Grupo MAC', urlGuia: 'URL Guías Mensuales', fechasSesiones: 'Fechas Sesiones', guiaTexto: 'Guía Trimestral Texto', valoracion: 'Valoracion', oportunidades: 'Opo estimadas', compromisoVeces: 'Me comprometo a', vecesRealizadas: 'Veces realizado', estadoSemana: 'Estado Semana', enlaceGamifica: 'Practicantes' }
   };
   const SESIONES_SOURCE = 'Gustavo'; // fila desde la que se lee el calendario de sesiones, compartido para todos
   const AIR_URL = 'https://api.airtable.com/v0/' + AIR.base + '/' + encodeURIComponent(AIR.table);
@@ -1248,6 +1250,7 @@
     state.compromisoDraft = null;
     state.compromisoMsg = '';
     state.mensajeWhatsApp = '';
+    state.gamificaId = null;
     state.view = 'panel'; window.scrollTo(0,0); render();
     cargarNivel(name);
     try { await refreshAll(); } catch(e){}
@@ -1283,31 +1286,15 @@
       fields[AIR.fields.valoracion] = nota;
       fields[AIR.fields.pass] = state.passwords[state.me] || '';
       if(state.groups[state.me] && state.groups[state.me].length) fields[AIR.fields.grupo] = state.groups[state.me];
-      
+      await ponerEnlaceGamifica(fields);
+
       if(thisWeek && thisWeek.id){
         // PATCH: actualizar registro existente
-        const res = await fetch(AIR_URL + '/' + thisWeek.id, { 
-          method:'PATCH', 
-          headers: airHeaders(), 
-          body: JSON.stringify({ fields }) 
-        });
-        if(!res.ok){
-          const errText = await res.text().catch(()=>'');
-          throw new Error('Airtable PATCH ' + res.status + ': ' + errText.slice(0,150));
-        }
+        await airWrite(AIR_URL + '/' + thisWeek.id, 'PATCH', fields);
         thisWeek.valoracion = nota;
       } else {
         // POST: crear nuevo registro si no existe para esta semana
-        const res = await fetch(AIR_URL, { 
-          method:'POST', 
-          headers: airHeaders(), 
-          body: JSON.stringify({ fields }) 
-        });
-        if(!res.ok){
-          const errText = await res.text().catch(()=>'');
-          throw new Error('Airtable POST ' + res.status + ': ' + errText.slice(0,150));
-        }
-        const data = await res.json();
+        const data = await airWrite(AIR_URL, 'POST', fields);
         list.push({ 
           id: data.id, 
           week: currentWeekShort, 
@@ -1451,27 +1438,59 @@
       const res = await fetch(url, { method, headers: airHeaders(), body: JSON.stringify({ fields }) });
       if(res.ok){
         const data = await res.json();
-        if(omitidos.length) console.warn('Campos omitidos (no existen en Airtable):', omitidos.join(', '));
+        if(omitidos.length) console.warn('Campos omitidos al guardar:', omitidos.join(', '));
         return data;
       }
       const txt = await res.text().catch(() => '');
+      // Airtable devuelve JSON con las comillas escapadas: hay que leer el mensaje ya descodificado
+      let tipo = '', mensaje = txt;
+      try {
+        const j = JSON.parse(txt);
+        if(j && j.error){ tipo = j.error.type || ''; mensaje = j.error.message || ''; }
+      } catch(e){}
+
       if(res.status === 422){
-        const desconocido = txt.match(/Unknown field name:\s*"?([^"\\}]+)"?/i);
-        if(desconocido){
-          const nombre = desconocido[1].trim();
-          const clave = Object.keys(fields).find(k => k === nombre);
-          if(clave){ delete fields[clave]; omitidos.push(clave); continue; }
+        // Campo inexistente o valor no aceptado: el mensaje nombra el campo entre comillas
+        const entreComillas = mensaje.match(/"([^"]+)"/);
+        const nombre = entreComillas ? entreComillas[1] : null;
+        if(nombre && Object.prototype.hasOwnProperty.call(fields, nombre)){
+          delete fields[nombre]; omitidos.push(nombre); continue;
         }
-        // Opción de desplegable inexistente: se omite ese campo y se sigue
-        if(/select option|INVALID_MULTIPLE_CHOICE/i.test(txt) && fields[AIR.fields.estadoSemana] !== undefined){
-          omitidos.push(AIR.fields.estadoSemana);
-          delete fields[AIR.fields.estadoSemana];
-          continue;
+        // Opción de desplegable que no existe
+        if(/select option|INVALID_MULTIPLE_CHOICE/i.test(tipo + ' ' + mensaje) &&
+           Object.prototype.hasOwnProperty.call(fields, AIR.fields.estadoSemana)){
+          delete fields[AIR.fields.estadoSemana]; omitidos.push(AIR.fields.estadoSemana); continue;
+        }
+        // Enlace a un registro de Gamifica que no existe: se guarda igual, sin enlace
+        if(/ROW_DOES_NOT_EXIST|does not exist|linked record/i.test(tipo + ' ' + mensaje) &&
+           Object.prototype.hasOwnProperty.call(fields, AIR.fields.enlaceGamifica)){
+          delete fields[AIR.fields.enlaceGamifica]; omitidos.push(AIR.fields.enlaceGamifica); continue;
         }
       }
-      throw new Error('Airtable ' + res.status + ': ' + txt.slice(0, 200));
+      throw new Error('Airtable ' + res.status + ': ' + (mensaje || txt).slice(0, 200));
     }
     throw new Error('No se pudo guardar: demasiados campos no reconocidos en Airtable');
+  }
+
+  // Registro de Gamifica del practicante. Hace falta para enlazar cada fila nueva
+  // de General con su persona: si no, el Rollup de puntos no la suma.
+  async function obtenerGamificaId(){
+    if(state.gamificaId) return state.gamificaId;
+    try {
+      const nombre = String(state.me).replace(/"/g, '\\"');
+      const formula = encodeURIComponent('{Name} = "' + nombre + '"');
+      const res = await fetch(GAMIFICA_URL + '?maxRecords=1&filterByFormula=' + formula, { headers: airHeaders() });
+      if(!res.ok) return null;
+      const data = await res.json();
+      const rec = data.records && data.records[0];
+      state.gamificaId = rec ? rec.id : null;
+      return state.gamificaId;
+    } catch(e){ return null; }
+  }
+
+  async function ponerEnlaceGamifica(fields){
+    const gid = await obtenerGamificaId();
+    if(gid) fields[AIR.fields.enlaceGamifica] = [gid];
   }
 
   // ===== Paso 1: cierre de la semana PASADA =====
@@ -1494,6 +1513,7 @@
       if(compromiso > 0) fields[AIR.fields.compromisoVeces] = compromiso;
       fields[AIR.fields.pass] = state.passwords[state.me] || '';
       if(state.groups[state.me] && state.groups[state.me].length) fields[AIR.fields.grupo] = state.groups[state.me];
+      await ponerEnlaceGamifica(fields);
 
       if(prev && prev.id){
         await airWrite(AIR_URL + '/' + prev.id, 'PATCH', fields);
@@ -1543,6 +1563,7 @@
       if(state.guiaTexto) fields[AIR.fields.guiaTexto] = state.guiaTexto;
       if(state.groups[state.me] && state.groups[state.me].length) fields[AIR.fields.grupo] = state.groups[state.me];
       if(state.guiaUrl) fields[AIR.fields.urlGuia] = state.guiaUrl;
+      await ponerEnlaceGamifica(fields);
 
       if(thisWeek && thisWeek.id){
         await airWrite(AIR_URL + '/' + thisWeek.id, 'PATCH', fields);
@@ -2681,7 +2702,7 @@
           return marca + ' Hice ' + hechas + ' de ' + total;
         }
 
-        let msg = '*MI LUNES DE COMPROMISO*\n\n';
+        let msg = '*MI LUNES DE COMPROMISO AMABLE*\n\n';
         msg += '*1. Semana pasada* (' + rangoSemanaCorto(lastWeekDate) + ')\n';
         if(hayCierrePendiente){
           const hechas = (estadoFinal === ESTADO_CUMPLIDO) ? compromisoPrev : realizadas;
