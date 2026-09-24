@@ -430,9 +430,16 @@
   .mod-lista{ margin:0; padding-left:20px; font-size:14px; line-height:1.55; color:#101010; }
   .mod-chips{ display:flex; flex-wrap:wrap; gap:8px; }
   .mod-chips span{ background:var(--surface); border:1.5px solid var(--border); border-radius:999px; padding:5px 12px; font-size:13.5px; font-weight:700; color:var(--ink); }
-  .practi-par{ display:inline-block; cursor:pointer; line-height:0; }
+  .practi-par{ display:inline-block; cursor:pointer; line-height:0; position:relative; z-index:2; flex-shrink:0; }
   .practi-hueco{ display:inline-block; line-height:0; }
   .practi-hueco.oculto{ display:none; }
+  /* Reacción al tocar: la animación flota por encima (fondo transparente) sin
+     mover nada. El muñeco quieto conserva su hueco, así el bocadillo no cambia. */
+  .practi-par .practi-hueco.reaccion{ position:absolute; left:50%; bottom:0; transform:translateX(-50%);
+    background:transparent; pointer-events:none; }
+  .practi-par.reaccionando{ z-index:30; }
+  .practi-par.reaccionando .practi-hueco.quieto{ visibility:hidden; }
+  .practi-inicio .practi-bocadillo{ position:relative; z-index:1; }
   .etiqueta-plan-cab{
     display:inline-flex; align-items:center; gap:4px; font-size:12px; font-weight:700;
     background:var(--honey-tint); color:#8a6414; border:1.5px solid var(--honey); border-radius:999px;
@@ -575,6 +582,11 @@
   .duo-hecha{ background:var(--moss-tint); color:var(--moss-deep); cursor:pointer; }
   .duo-actual{ background:linear-gradient(135deg, var(--moss) 0%, #2d5a3d 100%); color:#fff; cursor:pointer; box-shadow:0 4px 12px rgba(232,0,44,.5); font-weight:600; }
   .duo-bloqueada{ background:#F1EFE6; color:#B4B2A4; }
+  .duo-fuera-plan{ width:100%; border:none; font-family:inherit; text-align:left; cursor:pointer; }
+  .duo-plan-tag{ margin-left:auto; font-size:11px; font-weight:700; color:#8A6A10; background:#FCF3D4; border:1px solid #E8C96A; border-radius:999px; padding:2px 8px; white-space:nowrap; }
+  .duo-plan-aviso{ margin-top:8px; padding:12px 14px; border:1px solid #E8C96A; border-radius:12px; background:#FFFBEF; font-size:13.5px; line-height:1.5; color:var(--ink); }
+  .duo-plan-aviso p{ margin:0 0 8px; }
+  .duo-plan-aviso.oculto{ display:none; }
   .duo-icono{ font-size:18px; }
   .duo-actual .duo-icono{ font-size:22px; text-shadow:0 0 6px rgba(232,0,44,.6); animation:starPulse 1.5s ease-in-out infinite; }
   @keyframes starPulse{ 0%, 100% { transform:scale(1); } 50% { transform:scale(1.15); } }
@@ -1242,7 +1254,7 @@
 
   const DEFAULT_MEMBERS = ['Empar','Rafael','Rosa','Shayo','Ana María'];
 
-  const APP_VERSION = 'V2.9';
+  const APP_VERSION = 'V3.1';
 
   // ==== Conexión con Airtable ====
   // El token NO está en el código — se inyecta via URL (?t=TOKEN) o localStorage
@@ -1722,6 +1734,9 @@
   function claveMesPractica(){ return 'practica_mes_' + state.me; }
   function mesActualTexto(){ return today.getFullYear() + '-' + String(today.getMonth()+1).padStart(2,'0'); }
   function practicaAbiertaEsteMes(){
+    // Desde la V3.1 el Plan Libre entra siempre en su guía y ve la primera semana
+    // de cada mes; las demás semanas salen con candado dentro de la guía.
+    return false;
     if(tienePlan('guias')) return false;
     try { return localStorage.getItem(claveMesPractica()) === mesActualTexto(); } catch(e){ return false; }
   }
@@ -1734,7 +1749,7 @@
   const PLANES = {
     libre: { nombre: 'Plan Libre', precio: 'Gratuito', incluye: [
       'Registro del lunes de compromiso amable, con puntos y niveles',
-      'Una práctica nueva cada mes',
+      'Una semana de práctica al mes (la primera de cada mes)',
       'Formación sobre Práctica Integral'
     ]},
     guias: { nombre: 'Plan Guías', precio: '160 € al año', incluye: [
@@ -2246,8 +2261,8 @@
   // hace el gesto del empujón una vez y vuelve a quedarse como estaba.
   function practiReaccionHTML(quieto, reaccion, tam, claseExtra){
     return '<span class="practi-par ' + (claseExtra || '') + '" title="Tócame">'
-      + '<span class="practi-hueco">' + practiHTML(quieto, '', tam) + '</span>'
-      + '<span class="practi-hueco oculto">' + practiHTML(reaccion, '', tam, 'una-vez') + '</span>'
+      + '<span class="practi-hueco quieto">' + practiHTML(quieto, '', tam) + '</span>'
+      + '<span class="practi-hueco reaccion oculto">' + practiHTML(reaccion, '', tam, 'una-vez') + '</span>'
       + '</span>';
   }
   function activarReacciones(raiz){
@@ -2259,10 +2274,10 @@
       const anim = nodoReaccion && nodoReaccion.animacion;
       if(!anim) return;                                  // sin reproductor no hay reacción
       par.classList.add('listo');
-      const volver = () => { huecos[1].classList.add('oculto'); huecos[0].classList.remove('oculto'); };
+      const volver = () => { huecos[1].classList.add('oculto'); par.classList.remove('reaccionando'); };
       anim.addEventListener('complete', volver);
       par.onclick = () => {
-        huecos[0].classList.add('oculto');
+        par.classList.add('reaccionando');           // el quieto se vuelve invisible pero guarda su sitio
         huecos[1].classList.remove('oculto');
         anim.goToAndPlay(0, true);
       };
@@ -2645,7 +2660,14 @@
     let cuerpo = '';
     if(semanas.length > 0){
       cuerpo += `<div class="duo-path">`;
+      const soloLibre = !tienePlan('guias');
       semanas.forEach((b, i) => {
+        if(soloLibre && b.weekNum !== 1){
+          // Plan Libre: solo la primera semana de cada mes
+          cuerpo += `<div class="duo-plan-item"><button type="button" class="duo-nodo duo-bloqueada duo-fuera-plan"><span class="duo-icono">🔒</span><span class="duo-texto">${b.monthName} · Semana ${b.weekNum}</span><span class="duo-plan-tag">⭐ Plan Guías</span></button>
+            <div class="duo-plan-aviso oculto"><p><b>El Plan Libre incluye una semana de práctica al mes</b> (la primera de cada mes).</p><p>Con el Plan Guías tienes tu guía completa, con una práctica nueva cada semana.</p><button type="button" class="panel-link-btn irAPlanesBtn" style="border:none;cursor:pointer;width:100%">Aumentar mi plan →</button></div></div>`;
+          return;
+        }
         const desbloqueada = semanaDesbloqueada(b);
         const esActual = esSemanaActual(b);
         const nodoClase = desbloqueada ? (esActual ? 'duo-nodo duo-actual' : 'duo-nodo duo-hecha') : 'duo-nodo duo-bloqueada';
@@ -2685,6 +2707,7 @@
   }
 
   function renderPracticasView(){
+    if(state.prevView === 'practicas') state.prevView = 'panel';   // al volver de "Tu plan"
     renderBackTopbar('Prácticas de ' + state.me);
     app.appendChild(el('<div class="practi-guia"><img class="practi-fijo" src="' + PRACTI_PENSANDO + '" alt="Prácti pensando">' + bocadilloPracti(FRASES_PRACTI.practicas, 'tono-calma') + '</div>'));
     const card = document.createElement('div');
@@ -2700,6 +2723,17 @@
     });
     card.querySelectorAll('.irARegistroBtn').forEach(btn => {
       btn.onclick = () => { state.view = 'checkin'; state.regPaso = null; window.scrollTo(0,0); render(); };
+    });
+    // Plan Libre: al tocar una semana fuera del plan se abre el aviso debajo
+    card.querySelectorAll('.duo-fuera-plan').forEach(btn => {
+      btn.onclick = () => {
+        const aviso = btn.parentNode.querySelector('.duo-plan-aviso');
+        card.querySelectorAll('.duo-plan-aviso').forEach(a => { if(a !== aviso) a.classList.add('oculto'); });
+        if(aviso) aviso.classList.toggle('oculto');
+      };
+    });
+    card.querySelectorAll('.irAPlanesBtn').forEach(btn => {
+      btn.onclick = () => { state.prevView = 'practicas'; state.view = 'planes'; window.scrollTo(0,0); render(); };
     });
   }
 
@@ -3015,11 +3049,13 @@
 
     if(state.view === 'panel'){
 
-      const nombrePlan = state.plan === 'sesiones' ? 'Guías + Sesiones' : (state.plan === 'guias' ? 'Plan Guías' : (state.plan ? 'Plan Libre' : ''));
+      const nombrePlan = state.plan === 'sesiones' ? 'Plan Guías + Sesiones' : (state.plan === 'guias' ? 'Plan Guías' : (state.plan ? 'Plan Libre' : ''));
       const topbarPanel = el(`<div class="topbar">${nombrePlan ? `<button type="button" class="etiqueta-plan-cab" id="btnPlanCab">⭐ ${nombrePlan} ›</button>` : '<span></span>'}<button class="hamburger-btn-text" id="btnMenuOpen" aria-label="Menú">☰ Menú</button></div>`);
       const btnMenuOpenPanel = topbarPanel.querySelector('#btnMenuOpen');
-      app.appendChild(topbarPanel);
+      // Buscar el botón ANTES de insertarlo: el() devuelve un fragmento que se
+      // vacía al insertarlo, y después ya no se encuentra (por eso no respondía).
       const btnPlanCab = topbarPanel.querySelector('#btnPlanCab');
+      app.appendChild(topbarPanel);
       if(btnPlanCab) btnPlanCab.onclick = () => { state.prevView = 'panel'; state.view = 'planes'; window.scrollTo(0,0); render(); };
       btnMenuOpenPanel.onclick = () => { state.prevView = 'panel'; state.menuOpen = true; render(); };
 
