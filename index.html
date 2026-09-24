@@ -435,8 +435,11 @@
   .practi-hueco.oculto{ display:none; }
   .etiqueta-plan-cab{
     display:inline-flex; align-items:center; gap:4px; font-size:12px; font-weight:700;
-    background:var(--honey-tint); color:#8a6414; border-radius:999px; padding:4px 10px; white-space:nowrap;
+    background:var(--honey-tint); color:#8a6414; border:1.5px solid var(--honey); border-radius:999px;
+    padding:5px 11px; white-space:nowrap; cursor:pointer; font-family:'Karla',sans-serif;
+    position:relative; z-index:20; -webkit-tap-highlight-color:rgba(201,148,45,.3);
   }
+  .etiqueta-plan-cab:active{ filter:brightness(.95); }
   .practi-escribe{
     position:sticky; top:0; z-index:60; display:flex; align-items:center; gap:10px;
     background:var(--bg); padding:6px 2px 8px; margin-bottom:6px;
@@ -1239,7 +1242,7 @@
 
   const DEFAULT_MEMBERS = ['Empar','Rafael','Rosa','Shayo','Ana María'];
 
-  const APP_VERSION = 'V2.4';
+  const APP_VERSION = 'V2.9';
 
   // ==== Conexión con Airtable ====
   // El token NO está en el código — se inyecta via URL (?t=TOKEN) o localStorage
@@ -1755,17 +1758,46 @@
     const t = String(txt || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
     if(t.indexOf('sesion') !== -1) return 'sesiones';
     if(t.indexOf('guia') !== -1) return 'guias';
-    if(t.indexOf('gratis') !== -1 || t.indexOf('free') !== -1) return 'gratis';
+    if(t.indexOf('libre') !== -1 || t.indexOf('gratis') !== -1 || t.indexOf('free') !== -1) return 'gratis';
     return null;
   }
+  // Compara nombres sin tildes ni mayúsculas: si en Facturación pone "Guias" y en
+  // General "Guías", antes no encontraba la fila y asignaba el plan gratuito.
+  function limpiaNombre(t){
+    return String(t || '').trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  }
+  function mismoNombre(a, b){ return limpiaNombre(a) === limpiaNombre(b); }
+
+  // Saca de una fila de Facturación todos los nombres posibles. Sirve tanto si
+  // "Practicante" es texto como si es un enlace a Gamifica con un campo de
+  // búsqueda ("Nombre"): los identificadores internos de Airtable se ignoran.
+  function nombresDeFila(f){
+    const nombres = [];
+    ['Practicante', 'Nombre', 'Nombre practicante', 'Name'].forEach(clave => {
+      const v = f && f[clave];
+      if(!v) return;
+      (Array.isArray(v) ? v : [v]).forEach(x => {
+        if(typeof x !== 'string') return;
+        if(/^rec[A-Za-z0-9]{14}$/.test(x)) return;   // identificador interno, no un nombre
+        nombres.push(x);
+      });
+    });
+    return nombres;
+  }
+  // El campo del plan ha cambiado de nombre en Airtable ("Plan", "Membresía",
+  // "Tipo Plan"): se lee el primero que exista, para no depender del nombre.
+  function campoPlan(f){
+    f = f || {};
+    return f['Tipo Plan'] || f['Plan'] || f['Membresía'] || f['Membresia'] || '';
+  }
   function cargarPlan(name){
-    const formula = encodeURIComponent('{Practicante} = "' + String(name).replace(/"/g, '\\"') + '"');
-    fetch(FACTURACION_URL + '?maxRecords=1&filterByFormula=' + formula, { headers: airHeaders() })
+    fetch(FACTURACION_URL + '?maxRecords=200', { headers: airHeaders() })
       .then(res => { if(!res.ok) throw new Error('Airtable ' + res.status); return res.json(); })
       .then(data => {
-        const f = (data.records && data.records[0] && data.records[0].fields) || {};
+        const fila = (data.records || []).find(r => nombresDeFila(r.fields).some(n => mismoNombre(n, name)));
+        const f = (fila && fila.fields) || {};
         const activo = f['Estado'] === 'Activo';
-        state.plan = normalizaPlan(f['Plan']) || normalizaPlan(f['Membresía']) || (activo ? 'guias' : 'gratis');
+        state.plan = normalizaPlan(campoPlan(f)) || (activo ? 'guias' : 'gratis');
         if(state.view === 'panel') render();
       })
       .catch(err => { console.error('Error cargando plan:', err); state.plan = 'gratis'; if(state.view === 'panel') render(); });
@@ -2376,6 +2408,7 @@
         <button class="hamburger-btn" id="btnMenuClose">✕</button>
       </div>
       <button class="menu-item" id="miPerfilBtn">👤 Mi perfil</button>
+      <button class="menu-item" id="miPlanBtn">⭐ Mi plan</button>
       <button class="menu-item" id="facturacionBtn">💳 Facturación</button>
       <button class="menu-item" id="ajustesBtn">⚙️ Ajustes</button>
       <div class="menu-divider"></div>
@@ -2384,6 +2417,13 @@
     
     overlay.appendChild(panel);
     overlay.onclick = (e) => { if(e.target === overlay){ state.menuOpen = false; render(); } };
+    panel.querySelector('#miPlanBtn').onclick = () => {
+      state.menuOpen = false;
+      state.prevView = (state.view === 'planes') ? 'panel' : state.view;
+      state.view = 'planes';
+      window.scrollTo(0,0);
+      render();
+    };
     
     // Handlers con referencias correctas al panel
     panel.querySelector('#btnMenuClose').onclick = () => { state.menuOpen = false; render(); };
@@ -2670,11 +2710,11 @@
     card.innerHTML = `<p style="font-size:14px;color:var(--ink-soft)">Cargando…</p>`;
     app.appendChild(card);
 
-    const formula = encodeURIComponent(`{Practicante} = "${state.me}"`);
-    fetch(FACTURACION_URL + '?filterByFormula=' + formula, { headers: airHeaders() })
+    // Busca la fila sin distinguir tildes ni mayúsculas (igual que cargarPlan)
+    fetch(FACTURACION_URL + '?maxRecords=200', { headers: airHeaders() })
       .then(res => { if(!res.ok) throw new Error('Airtable ' + res.status); return res.json(); })
       .then(data => {
-        const rec = data.records && data.records[0];
+        const rec = (data.records || []).find(r => nombresDeFila(r.fields).some(n => mismoNombre(n, state.me)));
         if(!rec){
           card.innerHTML = `<p style="font-size:14px;color:var(--ink-soft)"><em>No encontramos datos de facturación para tu usuario. Escríbele a tu facilitador si crees que es un error.</em></p>`;
           return;
@@ -2685,7 +2725,7 @@
           <div class="badge-scale-row current" style="margin-bottom:14px">
             <span>Estado</span><span>${f['Estado'] || '—'}</span>
           </div>
-          <div class="badge-scale-row"><span>Membresía</span><span>${f['Membresía'] || '—'}</span></div>
+          <div class="badge-scale-row"><span>Plan</span><span>${campoPlan(f) || '—'}</span></div>
           <div class="badge-scale-row"><span>Fecha de pago</span><span>${fmtFecha(f['Fecha pago'])}</span></div>
           <div class="badge-scale-row"><span>Vencimiento</span><span>${fmtFecha(f['Vencimiento'])}</span></div>
           <div class="badge-scale-row"><span>Importe anual</span><span>${f['Importe anual'] != null ? f['Importe anual'] + ' €' : '—'}</span></div>
@@ -2976,7 +3016,7 @@
     if(state.view === 'panel'){
 
       const nombrePlan = state.plan === 'sesiones' ? 'Guías + Sesiones' : (state.plan === 'guias' ? 'Plan Guías' : (state.plan ? 'Plan Libre' : ''));
-      const topbarPanel = el(`<div class="topbar">${nombrePlan ? `<button type="button" class="etiqueta-plan-cab" id="btnPlanCab">⭐ ${nombrePlan}</button>` : '<span></span>'}<button class="hamburger-btn-text" id="btnMenuOpen" aria-label="Menú">☰ Menú</button></div>`);
+      const topbarPanel = el(`<div class="topbar">${nombrePlan ? `<button type="button" class="etiqueta-plan-cab" id="btnPlanCab">⭐ ${nombrePlan} ›</button>` : '<span></span>'}<button class="hamburger-btn-text" id="btnMenuOpen" aria-label="Menú">☰ Menú</button></div>`);
       const btnMenuOpenPanel = topbarPanel.querySelector('#btnMenuOpen');
       app.appendChild(topbarPanel);
       const btnPlanCab = topbarPanel.querySelector('#btnPlanCab');
