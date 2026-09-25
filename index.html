@@ -453,6 +453,14 @@
     display:flex; justify-content:center; margin:0 0 4px; cursor:pointer;
     -webkit-tap-highlight-color:transparent; user-select:none;
   }
+  .acceso-tabs{ display:flex; background:var(--honey-tint); border-radius:999px; padding:4px; margin:4px 0 18px; }
+  .acceso-tabs button{ flex:1; border:none; background:none; border-radius:999px; padding:10px 8px; font-family:'Karla',sans-serif; font-size:15px; font-weight:700; color:var(--ink-soft); cursor:pointer; }
+  .acceso-tabs button.activa{ background:var(--surface); color:var(--ink); box-shadow:0 1px 4px rgba(0,0,0,.12); }
+  .alta-check{ display:flex; gap:8px; align-items:flex-start; font-size:14px; line-height:1.35; color:var(--ink); cursor:pointer; }
+  .alta-check input{ margin-top:3px; width:18px; height:18px; flex-shrink:0; }
+  .alta-card{ border:2px solid var(--honey); background:var(--honey-tint); }
+  .alta-card p{ font-size:14.5px; line-height:1.45; margin:0 0 10px; color:var(--ink); }
+  .alta-card .alta-tit{ font-family:'Lora',serif; font-size:19px; font-weight:600; margin-bottom:10px; }
   .titulo-lunes{ font-family:'Lora',serif; font-size:22px; font-weight:600; color:var(--ink); text-align:center; margin:0 0 10px; }
   .practi-escribe-slot{ flex-shrink:0; line-height:0; }
   .practi-escribe-slot.oculto{ display:none; }
@@ -1256,7 +1264,7 @@
 
   const DEFAULT_MEMBERS = ['Empar','Rafael','Rosa','Shayo','Ana María'];
 
-  const APP_VERSION = 'V4.1';
+  const APP_VERSION = 'V4.3';
 
   // ==== Conexión con Airtable ====
   // El token NO está en el código — se inyecta via URL (?t=TOKEN) o localStorage
@@ -1427,6 +1435,61 @@
     state.loginError = '';
     try{ localStorage.setItem('ma_user', found[0]); }catch(e){}
     pickMe(found[0]);
+  }
+
+  // ===== Crear cuenta (alta desde la app) =====
+  // Crea la persona en "Practicantes y Gamifica" (con teléfono y permiso de WhatsApp)
+  // y su fila en la tabla del registro con nombre y contraseña. Entra con Plan Libre
+  // (sin fila en Facturación). Make vigila las filas nuevas y avisa por Telegram.
+  const TEL_FACILITADOR = '+34 658 825 799';
+  async function crearCuenta(nombre, telefono, pass, aceptaWhatsApp){
+    nombre = String(nombre || '').trim().replace(/\s+/g, ' ');
+    telefono = String(telefono || '').trim();
+    pass = String(pass || '').trim();
+    state.altaDraft = { nombre, telefono, pass, whats: !!aceptaWhatsApp };   // para no perder lo escrito si hay un aviso
+    const digitos = telefono.replace(/[^0-9]/g, '');
+    if(nombre.length < 2){ state.loginError = 'Escribe tu nombre y apellido'; render(); return; }
+    if(digitos.length < 9){ state.loginError = 'Escribe un teléfono válido (con prefijo si no es de España)'; render(); return; }
+    if(pass.length < 4){ state.loginError = 'La contraseña debe tener al menos 4 caracteres'; render(); return; }
+    state.loginError = 'Creando tu cuenta…'; render();
+    try { await refreshAll(); } catch(e){}
+    if((state.members || []).some(m => mismoNombre(m, nombre))){
+      state.loginError = 'Ya hay una cuenta con ese nombre. Añade tu apellido, o entra con tu contraseña.'; render(); return;
+    }
+    if(buscarPorPassword(pass)){
+      state.loginError = 'Esa contraseña no está disponible. Elige otra.'; render(); return;
+    }
+    try {
+      const gam = await airWrite(GAMIFICA_URL, 'POST', { 'Name': nombre, 'Teléfono': telefono, 'Acepta WhatsApp': !!aceptaWhatsApp });
+      const campos = {};
+      campos[AIR.fields.alumno] = nombre;
+      campos[AIR.fields.pass] = pass;
+      if(gam && gam.id) campos[AIR.fields.enlaceGamifica] = [gam.id];
+      await airWrite(AIR_URL, 'POST', campos);
+      await refreshAll();
+      state.loginError = '';
+      state.loginView = 'login';
+      state.altaDraft = null;
+      try{ localStorage.setItem('ma_user', nombre); localStorage.setItem('ma_alta_' + nombre, '1'); }catch(e){}
+      pickMe(nombre);
+    } catch(e){
+      console.error('Error creando cuenta:', e);
+      state.loginError = 'No se pudo crear la cuenta. Revisa tu conexión e inténtalo de nuevo.'; render();
+    }
+  }
+  function altaRecienteHTML(){
+    let pendiente = false;
+    try{ pendiente = localStorage.getItem('ma_alta_' + state.me) === '1'; }catch(e){}
+    if(!pendiente) return '';
+    const msg = encodeURIComponent('Hola, soy ' + state.me + ' y me acabo de registrar en la app Metas Amables 🙂');
+    return '<div class="card alta-card" id="altaCard">'
+      + '<p class="alta-tit">🎉 ¡Bienvenido/a a Metas Amables!</p>'
+      + '<p><b>1.</b> Guarda este número en tus contactos como <b>Metas Amables</b>: <b>' + TEL_FACILITADOR + '</b>. Por ahí te llegarán mensajes de ánimo y novedades.</p>'
+      + '<a class="panel-link-btn" target="_blank" rel="noopener" href="https://wa.me/34658825799?text=' + msg + '">💬 Salúdanos por WhatsApp</a>'
+      + '<p style="margin-top:14px"><b>2.</b> Rellena el formulario de tu <b>meta trimestral</b>: con él preparamos tu guía de prácticas.</p>'
+      + '<a class="panel-link-btn" target="_blank" rel="noopener" href="https://forms.gle/JHDTM5MarnagbqMQ6" style="background:#6B9362">🎯 Ir al formulario</a>'
+      + '<button type="button" class="link-quiet" id="btnCerrarAlta" style="display:block;margin:12px auto 0">Hecho, cerrar</button>'
+      + '</div>';
   }
 
   async function changePassword(currentPass, newPass){
@@ -3067,6 +3130,34 @@
         backLink.onclick = () => { state.loginView='login'; state.loginError=''; render(); };
         app.appendChild(backLink);
       } else {
+        // Pestañas: Iniciar sesión / Crear cuenta
+        const pestanas = el(`<div class="acceso-tabs"><button type="button" id="tabEntrar" class="${state.loginView === 'signup' ? '' : 'activa'}">Iniciar sesión</button><button type="button" id="tabAlta" class="${state.loginView === 'signup' ? 'activa' : ''}">Crear cuenta</button></div>`);
+        const tabEntrar = pestanas.querySelector('#tabEntrar'), tabAlta = pestanas.querySelector('#tabAlta');
+        app.appendChild(pestanas);
+        tabEntrar.onclick = () => { state.loginView = 'login'; state.loginError = ''; render(); };
+        tabAlta.onclick = () => { state.loginView = 'signup'; state.loginError = ''; render(); };
+      if(state.loginView === 'signup'){
+        app.appendChild(el(`<h1>Crea tu cuenta</h1><p class="lead">Es gratis. Empiezas con el Plan Libre y puedes ampliarlo cuando quieras.</p>`));
+        const altaCard = document.createElement('div');
+        altaCard.className = 'card';
+        const d = state.altaDraft || {};
+        const estiloCampo = "width:100%;border:1px solid var(--border);border-radius:10px;padding:13px;font-family:'Karla';font-size:16px;margin-bottom:12px;background:#FCFCF9;box-sizing:border-box";
+        altaCard.innerHTML = `
+          <label class="note-label">Nombre y apellido</label>
+          <input type="text" id="altaNombre" autocomplete="name" placeholder="Ej.: Laura Martín" value="${escapeAttr(d.nombre || '')}" style="${estiloCampo}">
+          <label class="note-label">Teléfono (WhatsApp)</label>
+          <input type="tel" id="altaTel" autocomplete="tel" placeholder="Ej.: 612 345 678" value="${escapeAttr(d.telefono || '')}" style="${estiloCampo}">
+          <label class="note-label">Elige una contraseña</label>
+          <input type="password" id="altaPass" autocomplete="new-password" placeholder="Mínimo 4 caracteres" value="${escapeAttr(d.pass || '')}" style="${estiloCampo};margin-bottom:6px">
+          <label class="alta-check"><input type="checkbox" id="altaWhats" ${d.whats ? 'checked' : ''}> Quiero recibir mensajes de ánimo y novedades por WhatsApp</label>
+          <button class="btn btn-yes" id="btnAlta" style="text-align:center;margin-top:14px">Crear mi cuenta</button>
+          ${state.loginError ? '<div style="color:' + (state.loginError.endsWith('…') ? 'var(--ink-soft)' : '#B94A3A') + ';font-size:13px;margin-top:8px">'+state.loginError+'</div>' : ''}
+        `;
+        app.appendChild(altaCard);
+        altaCard.querySelector('#btnAlta').onclick = () => crearCuenta(
+          altaCard.querySelector('#altaNombre').value, altaCard.querySelector('#altaTel').value,
+          altaCard.querySelector('#altaPass').value, altaCard.querySelector('#altaWhats').checked);
+      } else {
         // Pantalla de login
         app.appendChild(el(`<h1>Entra con tu contraseña</h1><p class="lead">Escribe tu contraseña para acceder.</p>`));
         const formCard = document.createElement('div');
@@ -3093,6 +3184,7 @@
         changeLink.textContent = 'Cambiar contraseña';
         changeLink.onclick = () => { state.loginView='changepass'; state.loginError=''; state.savedMsg=''; render(); };
         app.appendChild(changeLink);
+      }
       }
 
       app.appendChild(el(`<div style="text-align:center;font-size:11px;color:var(--ink-soft);margin-top:16px;letter-spacing:.04em">${APP_VERSION}</div>`));
@@ -3122,7 +3214,18 @@
         : el(`<div style="position:relative;text-align:center;margin-bottom:14px">${nivelBadgeHTML()}${practiReaccionHTML('saludo', 'empujonSaludo', 112, 'practi-saludo')}<div style="font-family:'Lora',serif;font-size:24px;font-weight:600;color:var(--ink)">Hola, ${state.me}</div><div style="font-family:'Karla',sans-serif;font-size:15px;font-weight:700;color:var(--ink);margin-top:2px">${bienvenidaTexto(state.me)} a tu Panel de Control</div></div>`);
       const nivelBtnPanel = greetPanel.querySelector('#nivelBadgeBtn');
       app.appendChild(greetPanel);
-      if(!state.panelSub && !bienvenidaVista()) app.appendChild(el(bienvenidaHTML()));
+      let altaVisible = false;
+      if(!state.panelSub){
+        const alta = altaRecienteHTML();
+        altaVisible = !!alta;
+        if(alta){
+          const altaNodo = el(alta);
+          const btnCerrarAlta = altaNodo.querySelector('#btnCerrarAlta');
+          app.appendChild(altaNodo);
+          btnCerrarAlta.onclick = () => { try{ localStorage.removeItem('ma_alta_' + state.me); }catch(e){} render(); };
+        }
+      }
+      if(!state.panelSub && !altaVisible && !bienvenidaVista()) app.appendChild(el(bienvenidaHTML()));
       if(nivelBtnPanel) nivelBtnPanel.onclick = () => { state.prevView = 'panel'; state.view = 'perfil'; window.scrollTo(0,0); render(); };
 
       const nav = document.createElement('nav');
@@ -3166,7 +3269,7 @@
           };
         });
       } else {
-        const volver = el(`<button type="button" class="link-quiet" id="btnVolverInicio" style="padding:0;margin-bottom:10px">← Volver a inicio</button>`);
+        const volver = el(`<button type="button" class="link-quiet" id="btnVolverInicio" style="padding:0;margin-bottom:10px">← Volver al panel</button>`);
         app.appendChild(volver);
         app.querySelector('#btnVolverInicio').onclick = () => { state.panelSub = null; window.scrollTo(0,0); render(); };
       }
