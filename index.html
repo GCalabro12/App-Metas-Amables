@@ -843,7 +843,10 @@
     { min: 70,  label: 'Testigo',                icon:'👁️' },
     { min: 100, label: 'Consciencia no dual',    icon:'✨' }
   ];
+  // Las insignias son del Plan Guías + Sesiones: en los demás planes el botón sale con candado
+  function insigniasBloqueadas(){ return !!state.plan && !tienePlan('sesiones'); }
   function nivelBadgeHTML(){
+    if(insigniasBloqueadas()) return `<button id="nivelBadgeBtn" class="nivel-badge-mini" title="Las insignias son del Plan Guías + Sesiones">🔒</button>`;
     if(!state.nivel) return '';
     return `<button id="nivelBadgeBtn" class="nivel-badge-mini" title="Tu nivel: ${state.nivel.label}">${state.nivel.icon}</button>`;
   }
@@ -1313,7 +1316,7 @@
 
   const DEFAULT_MEMBERS = ['Empar','Rafael','Rosa','Shayo','Ana María'];
 
-  const APP_VERSION = 'V6.0';
+  const APP_VERSION = 'V6.1';
 
   // ==== Conexión con Airtable ====
   // El token NO está en el código — se inyecta via URL (?t=TOKEN) o localStorage
@@ -1901,7 +1904,7 @@
   // Los tres planes y lo que incluye cada uno
   const PLANES = {
     libre: { nombre: 'Plan Libre', precio: 'Gratuito', incluye: [
-      'Registro del lunes de compromiso amable, con puntos y niveles',
+      'Registro del lunes de compromiso amable, con puntos',
       'Una guía semanal al mes (la primera de cada mes)',
       'Formación sobre Práctica Integral'
     ]},
@@ -2894,7 +2897,7 @@
       <p style="margin:0 0 2px;font-size:13px;color:var(--ink-soft)">Grupo: ${(state.groups && state.groups[state.me]) || '—'}</p>
       <p style="margin:0 0 14px;font-size:13px;color:var(--ink-soft)" id="perfilEmailRow">Email: <em>cargando…</em></p>
       <div id="insigniaActualBox" style="margin-bottom:16px"><p style="font-size:13px;color:var(--ink-soft)">Cargando tu nivel…</p></div>
-      <p style="font-weight:700;margin:0 0 4px">Escala de niveles</p>
+      <p style="font-weight:700;margin:0 0 4px">Escala de niveles${insigniasBloqueadas() ? ' <span style="font-weight:400;font-size:13px;color:var(--ink-soft)">(🔒 Plan Guías + Sesiones)</span>' : ''}</p>
       <p style="font-size:13px;color:var(--ink-soft);margin:0 0 10px">
         Tu nivel sube sumando puntos: una semana <b>cumplida del todo</b> suma 1 punto.
         Si la hiciste <b>en parte</b>, suma esa parte (3 de 5 → 0,6). Si <b>no se dieron las oportunidades</b>, suma 0,25.
@@ -2961,6 +2964,22 @@
         const cumplidas = rec.fields['Cumplidas semanas'] || 0;
         const insigniaTexto = rec.fields['Insignia'] || insigniaActual(cumplidas).label;
         const actual = insigniaActual(cumplidas);
+        // Fuera del Plan Guías + Sesiones: los puntos se ven, la insignia sale con candado
+        if(insigniasBloqueadas()){
+          box.innerHTML = `
+            <div class="badge-medal-current">
+              <div class="medal-icon">🔒</div>
+              <div class="medal-text">
+                <div class="medal-label">Tus puntos</div>
+                <div class="medal-name">${fmtPuntos(cumplidas)} puntos</div>
+                <div class="medal-count">Las insignias son del Plan Guías + Sesiones</div>
+              </div>
+            </div>
+            <button class="link-quiet" id="btnInsigniaPlanes" style="padding:0;margin-top:8px">⭐ Ver el Plan Guías + Sesiones</button>
+          `;
+          box.querySelector('#btnInsigniaPlanes').onclick = () => { state.prevView = 'perfil'; state.view = 'planes'; window.scrollTo(0,0); render(); };
+          return;
+        }
         box.innerHTML = `
           <div class="badge-medal-current">
             <div class="medal-icon">${actual.icon}</div>
@@ -3622,7 +3641,7 @@
         : el(`<div style="position:relative;text-align:center;margin-bottom:14px"><div class="practi-inicio" style="margin-bottom:10px">${practiReaccionHTML('saludo', 'empujonSaludo', 104, 'practi-saludo')}${bocadilloPracti(fraseInicio(), 'tono-calma')}</div><div style="font-family:'Lora',serif;font-size:24px;font-weight:600;color:var(--ink)">Hola, ${state.me}</div><div style="font-family:'Karla',sans-serif;font-size:15px;font-weight:700;color:var(--ink);margin-top:2px">${bienvenidaTexto(state.me)} a tu ciclo de aprendizaje</div><div class="fecha-hoy" id="fechaHoy">${textoFechaHoy()}</div></div>`);
       app.appendChild(greetPanel);
       if(!state.panelSub && !bienvenidaVista()) app.appendChild(el(bienvenidaHTML()));
-      if(nivelBtnPanel) nivelBtnPanel.onclick = () => { state.prevView = 'panel'; state.view = 'perfil'; window.scrollTo(0,0); render(); };
+      if(nivelBtnPanel) nivelBtnPanel.onclick = () => { state.prevView = 'panel'; state.view = insigniasBloqueadas() ? 'planes' : 'perfil'; window.scrollTo(0,0); render(); };
 
       const nav = document.createElement('nav');
       nav.className = 'tabs';
