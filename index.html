@@ -779,6 +779,8 @@
 .juego-overlay{position:fixed;inset:0;z-index:9999;background:#faf9f5;display:flex;flex-direction:column}
 .juego-overlay iframe{flex:1;width:100%;border:0;display:block}
 .juego-cerrar{position:absolute;top:calc(10px + env(safe-area-inset-top));right:10px;z-index:2;border:none;border-radius:999px;padding:8px 14px;background:rgba(0,0,0,.65);color:#fff;font:600 .9rem system-ui,sans-serif;cursor:pointer}
+.plan-precio-paren{font-weight:600;font-size:.88em;opacity:.85;white-space:nowrap}
+.plan-nota{font-size:12.5px;color:var(--ink-soft);margin:-2px 0 8px;line-height:1.4}
 </style>
 </head>
 <body>
@@ -1311,7 +1313,7 @@
 
   const DEFAULT_MEMBERS = ['Empar','Rafael','Rosa','Shayo','Ana María'];
 
-  const APP_VERSION = 'V5.8';
+  const APP_VERSION = 'V6.0';
 
   // ==== Conexión con Airtable ====
   // El token NO está en el código — se inyecta via URL (?t=TOKEN) o localStorage
@@ -1900,7 +1902,7 @@
   const PLANES = {
     libre: { nombre: 'Plan Libre', precio: 'Gratuito', incluye: [
       'Registro del lunes de compromiso amable, con puntos y niveles',
-      'Una semana de práctica al mes (la primera de cada mes)',
+      'Una guía semanal al mes (la primera de cada mes)',
       'Formación sobre Práctica Integral'
     ]},
     guias: { nombre: 'Plan Guías', precio: '160 € al año', pagos: [{ txt: 'Contratar Plan Guías →', url: 'https://buy.stripe.com/cNieVceGR00T1rj4uGbZe0g' }], incluye: [
@@ -1908,7 +1910,7 @@
       'Tu calendario completo de registros del trimestre',
       'Comparte tu compromiso de cada lunes por WhatsApp con tu socio de compromiso'
     ]},
-    sesiones: { nombre: 'Plan Guías + Sesiones', precio: '360 € el primer año · 260 € a partir del segundo', precio2: 'o 105 € al trimestre', pagos: [{ txt: 'Pagar anual →', url: 'https://buy.stripe.com/8x24gy1U53d59XP5yKbZe0d' }, { txt: 'Pagar trimestral →', url: 'https://buy.stripe.com/6oU8wOcyJ00Tee5aT4bZe0e' }], incluye: [
+    sesiones: { nombre: 'Plan Guías + Sesiones', precio: '360 € el primer año <span class="plan-precio-paren">(260 € a partir del segundo)</span>', precio2: 'o 105 € al trimestre', nota: 'El primer año pagas en un solo cobro 100 € de alta + 260 € de cuota anual. Desde el segundo año se renueva sola a 260 €.', pagos: [{ txt: 'Pagar anual →', url: 'https://buy.stripe.com/7sY8wO0Q14h99XP0eqbZe0h' }, { txt: 'Pagar trimestral →', url: 'https://buy.stripe.com/6oU8wOcyJ00Tee5aT4bZe0e' }], incluye: [
       'Todo lo del Plan Guías',
       'Insignias que reconocen tu constancia y tu avance',
       'Sesiones online cada 15 días, en grupo reducido, para desatascar situaciones y automotivarte'
@@ -3660,7 +3662,7 @@
                 tx.practica ? ('<span class="ciclo-dato">' + escapeAttr(corto(tx.practica, 110)) + '</span>') : 'La defines en tu registro del lunes', '', false)
           + flechaCiclo
           + boton('s3', 'ciclo-a' + (practicaBloqueada ? ' bloqueada' : ''), 'a', 'Recibe tu guía semanal',
-                practicaBloqueada ? 'Ya la viste este mes' : (sinGuias ? 'Una semana de práctica al mes' : 'Una práctica nueva cada semana'),
+                practicaBloqueada ? 'Ya la viste este mes' : (sinGuias ? 'Una guía semanal al mes' : 'Una práctica nueva cada semana'),
                 sinGuias ? '<span class="etiqueta-plan">⭐ Semanal con el Plan Guías</span>' : '', practicaBloqueada)
           + flechaCiclo
           + '<button type="button" class="opcion-inicio ciclo-meta" data-ir="s4"><span class="opcion-tx"><b>Define tu meta trimestral</b>'
@@ -4284,6 +4286,7 @@
           (esElSuyo ? '<span class="plan-cinta">Tu plan</span>' : '') +
           '<p class="plan-nombre">⭐ ' + p.nombre + '</p>' +
           '<p class="plan-precio">' + p.precio + '</p>' +
+          (p.nota ? '<p class="plan-nota">' + p.nota + '</p>' : '') +
           (p.precio2 ? '<p class="plan-precio" style="margin-top:-4px;font-size:15px">' + p.precio2 + '</p>' : '') +
           '<ul class="plan-lista">' + p.incluye.map(i => '<li>' + i + '</li>').join('') + '</ul>' +
           (esElSuyo
