@@ -458,6 +458,19 @@
   .acceso-tabs button.activa{ background:var(--surface); color:var(--ink); box-shadow:0 1px 4px rgba(0,0,0,.12); }
   .alta-check{ display:flex; gap:8px; align-items:flex-start; font-size:14px; line-height:1.35; color:var(--ink); cursor:pointer; }
   .alta-check input{ margin-top:3px; width:18px; height:18px; flex-shrink:0; }
+  .guia-lector{ display:flex; flex-wrap:wrap; gap:8px; margin:0 0 10px; }
+  .lector-btn{ border:1px solid var(--border); background:var(--surface); border-radius:999px; padding:7px 13px; font-family:'Karla',sans-serif; font-size:13.5px; font-weight:700; color:var(--ink); cursor:pointer; -webkit-tap-highlight-color:transparent; }
+  .lector-btn.activo{ background:#FFF3B0; border-color:#E0B800; }
+  .lector-ayuda{ font-size:12.5px; color:var(--ink-soft); margin:-4px 0 10px; }
+  .frase.resaltada{ background:#FFE866; border-radius:3px; box-shadow:0 0 0 2px #FFE866; }
+  .frase.leyendo{ background:var(--moss-tint); border-radius:3px; }
+  .frase.leyendo.resaltada{ background:#FFD84D; }
+  .modo-subrayar .frase{ cursor:pointer; }
+  .modo-subrayar .guia-texto{ outline:2px dashed #E0B800; outline-offset:6px; border-radius:6px; }
+  .alta-puntos{ display:flex; justify-content:center; gap:8px; margin:0 0 12px; }
+  .alta-puntos span{ width:9px; height:9px; border-radius:50%; background:var(--border); }
+  .alta-puntos span.on{ background:var(--moss); }
+  .alta-onb h1{ text-align:center; }
   .alta-card{ border:2px solid var(--honey); background:var(--honey-tint); }
   .alta-card p{ font-size:14.5px; line-height:1.45; margin:0 0 10px; color:var(--ink); }
   .alta-card .alta-tit{ font-family:'Lora',serif; font-size:19px; font-weight:600; margin-bottom:10px; }
@@ -1264,7 +1277,7 @@
 
   const DEFAULT_MEMBERS = ['Empar','Rafael','Rosa','Shayo','Ana María'];
 
-  const APP_VERSION = 'V4.3';
+  const APP_VERSION = 'V4.6';
 
   // ==== Conexión con Airtable ====
   // El token NO está en el código — se inyecta via URL (?t=TOKEN) o localStorage
@@ -1470,26 +1483,62 @@
       state.loginError = '';
       state.loginView = 'login';
       state.altaDraft = null;
-      try{ localStorage.setItem('ma_user', nombre); localStorage.setItem('ma_alta_' + nombre, '1'); }catch(e){}
+      try{ localStorage.setItem('ma_user', nombre); localStorage.setItem('ma_alta_' + nombre, aceptaWhatsApp ? 'w' : '1'); }catch(e){}
+      state.altaPaso = 1;
       pickMe(nombre);
     } catch(e){
       console.error('Error creando cuenta:', e);
       state.loginError = 'No se pudo crear la cuenta. Revisa tu conexión e inténtalo de nuevo.'; render();
     }
   }
-  function altaRecienteHTML(){
-    let pendiente = false;
-    try{ pendiente = localStorage.getItem('ma_alta_' + state.me) === '1'; }catch(e){}
-    if(!pendiente) return '';
-    const msg = encodeURIComponent('Hola, soy ' + state.me + ' y me acabo de registrar en la app Metas Amables 🙂');
-    return '<div class="card alta-card" id="altaCard">'
-      + '<p class="alta-tit">🎉 ¡Bienvenido/a a Metas Amables!</p>'
-      + '<p><b>1.</b> Guarda este número en tus contactos como <b>Metas Amables</b>: <b>' + TEL_FACILITADOR + '</b>. Por ahí te llegarán mensajes de ánimo y novedades.</p>'
-      + '<a class="panel-link-btn" target="_blank" rel="noopener" href="https://wa.me/34658825799?text=' + msg + '">💬 Salúdanos por WhatsApp</a>'
-      + '<p style="margin-top:14px"><b>2.</b> Rellena el formulario de tu <b>meta trimestral</b>: con él preparamos tu guía de prácticas.</p>'
-      + '<a class="panel-link-btn" target="_blank" rel="noopener" href="https://forms.gle/JHDTM5MarnagbqMQ6" style="background:#6B9362">🎯 Ir al formulario</a>'
-      + '<button type="button" class="link-quiet" id="btnCerrarAlta" style="display:block;margin:12px auto 0">Hecho, cerrar</button>'
-      + '</div>';
+  // Bienvenida tras crear la cuenta, en dos pantallas; con "Siguiente" se llega al panel
+  function renderBienvenidaAlta(){
+    let marca = '1';
+    try{ marca = localStorage.getItem('ma_alta_' + state.me) || '1'; }catch(e){}
+    const nombre = String(state.me || '').split(' ')[0];
+    const paso = [1, 2, 3].includes(state.altaPaso) ? state.altaPaso : 1;
+    // Cada pantalla con su muñeco: saludo, escribiendo (registro de los lunes) y pizarra (formulario)
+    const figura = { 1: ['saludo', 130], 2: ['escribiendo2', 150], 3: ['pizarra', 190] }[paso];
+    let html = '<div class="alta-onb"><div style="text-align:center;margin-bottom:6px">'
+      + practiHTML(figura[0], '', figura[1]) + '</div>'
+      + '<div class="alta-puntos">' + [1, 2, 3].map(n => '<span class="' + (n === paso ? 'on' : '') + '"></span>').join('') + '</div>';
+    if(paso === 1){
+      const msg = encodeURIComponent('Hola, soy ' + state.me + ' y me acabo de registrar en la app Metas Amables 🙂');
+      html += '<h1>¡Bienvenido/a a Metas Amables, ' + escapeAttr(nombre) + '!</h1>'
+        + (marca === 'w'
+          ? '<div class="card alta-card"><p>Guarda este número en tus contactos como <b>Metas Amables</b>: <b>' + TEL_FACILITADOR + '</b>. Por ahí te llegarán los mensajes de ánimo.</p>'
+            + '<p>Después, mándanos un saludo: así sabemos que el número es correcto y podemos escribirte.</p>'
+            + '<a class="panel-link-btn" target="_blank" rel="noopener" href="https://wa.me/34658825799?text=' + msg + '">💬 Salúdanos por WhatsApp</a></div>'
+          : '<div class="card alta-card"><p>Tu cuenta está creada. Si tienes dudas en algún momento, puedes escribir a tu facilitador por WhatsApp al <b>' + TEL_FACILITADOR + '</b>.</p></div>')
+        + '<button type="button" class="btn btn-yes" id="btnAltaSig" style="text-align:center;margin-top:6px">Siguiente →</button>';
+    } else if(paso === 2){
+      html += '<h1>¿Cómo funciona?</h1>'
+        + '<div class="card alta-card">'
+        + '<p>Esta app está diseñada para que adquieras <b>una nueva habilidad, hábito o meta cada trimestre natural</b> (cada tres meses).</p>'
+        + '<p>📅 <b>Cada lunes</b> registras los progresos de la semana que termina y tus objetivos para la semana siguiente. Es un momento corto, y ahí está la clave: poco a poco, cada semana.</p>'
+        + '</div>'
+        + '<button type="button" class="btn btn-yes" id="btnAltaSig" style="text-align:center;margin-top:6px">Siguiente →</button>'
+        + '<button type="button" class="link-quiet" id="btnAltaAtras" style="display:block;margin:10px auto 0">← Atrás</button>';
+    } else {
+      html += '<h1>Tu meta del trimestre</h1>'
+        + '<div class="card alta-card">'
+        + '<p>🎯 Para empezar, necesitamos que rellenes un formulario con <b>una meta importante para ti</b> <span style="color:var(--ink-soft)">(lleva 5 minutos)</span>.</p>'
+        + '<p>Con tus respuestas preparamos tu guía de prácticas.</p>'
+        + '<a class="panel-link-btn" target="_blank" rel="noopener" href="https://forms.gle/JHDTM5MarnagbqMQ6" style="background:#6B9362">🎯 Rellenar el formulario</a>'
+        + '</div>'
+        + '<button type="button" class="btn btn-yes" id="btnAltaSig" style="text-align:center;margin-top:6px">Siguiente →</button>'
+        + '<button type="button" class="link-quiet" id="btnAltaAtras" style="display:block;margin:10px auto 0">← Atrás</button>';
+    }
+    html += '</div>';
+    const nodo = el(html);
+    const sig = nodo.querySelector('#btnAltaSig'), atras = nodo.querySelector('#btnAltaAtras');
+    app.appendChild(nodo);
+    sig.onclick = () => {
+      if(paso < 3){ state.altaPaso = paso + 1; }
+      else { try{ localStorage.removeItem('ma_alta_' + state.me); }catch(e){} state.altaPaso = null; state.view = 'panel'; state.panelSub = null; }
+      window.scrollTo(0,0); render();
+    };
+    if(atras) atras.onclick = () => { state.altaPaso = Math.max(1, paso - 1); window.scrollTo(0,0); render(); };
   }
 
   async function changePassword(currentPass, newPass){
@@ -1548,7 +1597,10 @@
     state.panelSub = null;
     state.regPaso = null;
     state.modoPrueba = false;
-    state.view = 'panel'; window.scrollTo(0,0); render();
+    let altaPendiente = null;
+    try{ altaPendiente = localStorage.getItem('ma_alta_' + name); }catch(e){}
+    state.view = altaPendiente ? 'bienvenidaAlta' : 'panel'; if(altaPendiente && !state.altaPaso) state.altaPaso = 1;
+    window.scrollTo(0,0); render();
     cargarNivel(name);
     cargarPlan(name);
     try { await refreshAll(); } catch(e){}
@@ -2060,6 +2112,125 @@
       window.open('https://wa.me/?text=' + encodeURIComponent(state.mensajeWhatsApp), '_blank');
     };
     return card;
+  }
+
+  // ===== Lector de guías: leer en voz alta con pausas y subrayar en amarillo =====
+  const lector = { unidades: [], i: 0, activo: false, pausado: false, caja: null, reloj: null };
+  function vozEspanol(){
+    try {
+      const voces = window.speechSynthesis.getVoices() || [];
+      return voces.find(v => /^es(-|_)ES/i.test(v.lang)) || voces.find(v => /^es/i.test(v.lang)) || null;
+    } catch(e){ return null; }
+  }
+  function lectorParar(){
+    try{ if('speechSynthesis' in window) window.speechSynthesis.cancel(); }catch(e){}
+    if(lector.reloj) clearTimeout(lector.reloj);
+    document.querySelectorAll('.frase.leyendo').forEach(x => x.classList.remove('leyendo'));
+    if(lector.caja){
+      const play = lector.caja.querySelector('[data-acc="play"]'), stop = lector.caja.querySelector('[data-acc="stop"]');
+      if(play) play.textContent = '🔊 Escuchar';
+      if(stop) stop.hidden = true;
+    }
+    lector.activo = false; lector.pausado = false;
+  }
+  function lectorDecir(){
+    if(!lector.activo || lector.pausado) return;
+    document.querySelectorAll('.frase.leyendo').forEach(x => x.classList.remove('leyendo'));
+    const u = lector.unidades[lector.i];
+    if(!u){ lector.i = 0; lectorParar(); return; }
+    u.spans.forEach(x => x.classList.add('leyendo'));
+    if(u.spans[0] && u.spans[0].scrollIntoView) u.spans[0].scrollIntoView({ block: 'center', behavior: 'smooth' });
+    const texto = u.spans.map(x => x.textContent).join('').trim();
+    const siguiente = () => {
+      const sig = lector.unidades[lector.i + 1];
+      const pausa = (sig && sig.bloque !== u.bloque) ? 700 : 250;   // pausa más larga al cambiar de párrafo
+      lector.i++;
+      lector.reloj = setTimeout(lectorDecir, pausa);
+    };
+    if(!texto){ siguiente(); return; }
+    const utter = new SpeechSynthesisUtterance(texto);
+    utter.lang = 'es-ES'; utter.rate = 0.92;
+    const v = vozEspanol(); if(v) utter.voice = v;
+    utter.onend = () => { if(lector.activo && !lector.pausado) siguiente(); };
+    utter.onerror = () => {};
+    window.speechSynthesis.speak(utter);
+  }
+  function claveResaltes(caja){
+    const t = caja.querySelector('.guia-texto');
+    return 'guia_resalte_' + state.me + '_' + (t ? t.getAttribute('data-sem') : '');
+  }
+  // Parte el texto de la guía en frases tocables (sin romper negritas ni enlaces)
+  function prepararFrases(texto){
+    if(texto.dataset.listo) return;
+    texto.dataset.listo = '1';
+    const nodos = [];
+    const w = document.createTreeWalker(texto, NodeFilter.SHOW_TEXT);
+    let n; while((n = w.nextNode())) if(n.textContent.trim()) nodos.push(n);
+    let unidad = 0, bloqueAnterior = null, cerrada = true;
+    nodos.forEach(nodo => {
+      const bloque = nodo.parentElement.closest('p, li') || texto;
+      const trasSalto = nodo.previousSibling && nodo.previousSibling.nodeName === 'BR';
+      if((bloque !== bloqueAnterior || trasSalto) && !cerrada) unidad++;
+      bloqueAnterior = bloque;
+      const trozos = nodo.textContent.match(/[^.!?…]+[.!?…]+[»"”')]*\s*|[^.!?…]+$/g) || [nodo.textContent];
+      const frag = document.createDocumentFragment();
+      trozos.forEach(tr => {
+        const sp = document.createElement('span');
+        sp.className = 'frase'; sp.dataset.u = unidad; sp.dataset.b = Array.prototype.indexOf.call(texto.querySelectorAll('p, li'), bloque);
+        sp.textContent = tr; frag.appendChild(sp);
+        cerrada = /[.!?…][»"”')]*\s*$/.test(tr);
+        if(cerrada) unidad++;
+      });
+      nodo.parentNode.replaceChild(frag, nodo);
+    });
+  }
+  function activarLectorGuias(raiz){
+    if(!raiz) return;
+    raiz.querySelectorAll('.duo-contenido').forEach(caja => {
+      const texto = caja.querySelector('.guia-texto');
+      if(!texto || caja.dataset.lector) return;
+      caja.dataset.lector = '1';
+      prepararFrases(texto);
+      // Subrayados guardados en este móvil
+      let marcadas = [];
+      try{ marcadas = JSON.parse(localStorage.getItem(claveResaltes(caja)) || '[]'); }catch(e){}
+      texto.querySelectorAll('.frase').forEach(sp => { if(marcadas.includes(Number(sp.dataset.u))) sp.classList.add('resaltada'); });
+      const play = caja.querySelector('[data-acc="play"]'), stop = caja.querySelector('[data-acc="stop"]'), sub = caja.querySelector('[data-acc="sub"]');
+      const ayuda = caja.querySelector('.lector-ayuda');
+      if(!('speechSynthesis' in window)){ play.hidden = true; }
+      play.onclick = () => {
+        if(lector.activo && lector.caja === caja){
+          if(lector.pausado){ lector.pausado = false; play.textContent = '⏸ Pausa'; lectorDecir(); }
+          else { lector.pausado = true; try{ window.speechSynthesis.cancel(); }catch(e){} if(lector.reloj) clearTimeout(lector.reloj); play.textContent = '▶️ Seguir'; }
+          return;
+        }
+        lectorParar();
+        const grupos = {};
+        texto.querySelectorAll('.frase').forEach(sp => { (grupos[sp.dataset.u] = grupos[sp.dataset.u] || { spans: [], bloque: sp.dataset.b }).spans.push(sp); });
+        lector.unidades = Object.keys(grupos).sort((a, b) => a - b).map(k => grupos[k]);
+        lector.i = 0; lector.activo = true; lector.pausado = false; lector.caja = caja;
+        play.textContent = '⏸ Pausa'; stop.hidden = false;
+        lectorDecir();
+      };
+      stop.onclick = () => { lector.i = 0; lectorParar(); };
+      sub.onclick = () => {
+        const on = !caja.classList.contains('modo-subrayar');
+        caja.classList.toggle('modo-subrayar', on);
+        sub.classList.toggle('activo', on);
+        sub.textContent = on ? '✔️ Listo' : '🖍 Subrayar';
+        ayuda.hidden = !on;
+      };
+      texto.addEventListener('click', e => {
+        const sp = e.target.closest('.frase');
+        if(!sp || !caja.classList.contains('modo-subrayar')) return;
+        e.preventDefault();
+        const u = sp.dataset.u;
+        const poner = !sp.classList.contains('resaltada');
+        texto.querySelectorAll('.frase[data-u="' + u + '"]').forEach(x => x.classList.toggle('resaltada', poner));
+        const lista = Array.from(new Set(Array.from(texto.querySelectorAll('.frase.resaltada')).map(x => Number(x.dataset.u))));
+        try{ localStorage.setItem(claveResaltes(caja), JSON.stringify(lista)); }catch(e){}
+      });
+    });
   }
 
   function speak(text){
@@ -2776,7 +2947,14 @@
           }
           cuerpo += `<details class="duo-item" ${esActual ? 'open' : ''}>
             <summary class="${nodoClase}"><span class="duo-icono">${icono}</span><span class="duo-texto">${b.monthName} · Semana ${b.weekNum}</span></summary>
-            <div class="duo-contenido">${miniMarkdown(b.text)}${extra}</div>
+            <div class="duo-contenido">
+              <div class="guia-lector">
+                <button type="button" class="lector-btn" data-acc="play">🔊 Escuchar</button>
+                <button type="button" class="lector-btn lector-stop" data-acc="stop" hidden>⏹ Parar</button>
+                <button type="button" class="lector-btn lector-sub" data-acc="sub">🖍 Subrayar</button>
+              </div>
+              <p class="lector-ayuda" hidden>Toca una frase para marcarla en amarillo. Tócala otra vez para quitarla.</p>
+              <div class="guia-texto" data-sem="${b.year}-${b.monthIdx + 1}-s${b.weekNum}">${miniMarkdown(b.text)}</div>${extra}</div>
           </details>`;
         } else {
           cuerpo += `<div class="${nodoClase}"><span class="duo-icono">${icono}</span><span class="duo-texto">${b.monthName} · Semana ${b.weekNum}</span></div>`;
@@ -2872,7 +3050,7 @@
       const t = e.changedTouches && e.changedTouches[0]; if(!t) return;
       const dx = t.clientX - x0, dy = t.clientY - y0; x0 = null;
       if(Math.abs(dx) < 70 || Math.abs(dx) < Math.abs(dy) * 1.8 || Date.now() - t0 > 800) return;
-      if(!state.me || state.menuOpen || ['loading','notoken','pick'].includes(state.view)) return;
+      if(!state.me || state.menuOpen || ['loading','notoken','pick','bienvenidaAlta'].includes(state.view)) return;
       const orden = [null, 's1', 's2', 's3', 's4', 's5'];
       if(state.view === 'panel'){
         const i = Math.max(0, orden.indexOf(state.panelSub || null));
@@ -2888,6 +3066,7 @@
   })();
 
   function render(){
+    lectorParar(); lector.caja = null;
     destruirPracti();
     renderVista();
     activarPracti(app);
@@ -2897,6 +3076,7 @@
     activarEscritura(app);
     activarReacciones(app);
     activarEstrellaModulos(app);
+    activarLectorGuias(app);
   }
 
   function renderVista(){
@@ -3148,12 +3328,19 @@
           <label class="note-label">Teléfono (WhatsApp)</label>
           <input type="tel" id="altaTel" autocomplete="tel" placeholder="Ej.: 612 345 678" value="${escapeAttr(d.telefono || '')}" style="${estiloCampo}">
           <label class="note-label">Elige una contraseña</label>
-          <input type="password" id="altaPass" autocomplete="new-password" placeholder="Mínimo 4 caracteres" value="${escapeAttr(d.pass || '')}" style="${estiloCampo};margin-bottom:6px">
-          <label class="alta-check"><input type="checkbox" id="altaWhats" ${d.whats ? 'checked' : ''}> Quiero recibir mensajes de ánimo y novedades por WhatsApp</label>
+          <input type="password" id="altaPass" autocomplete="new-password" placeholder="Mínimo 4 caracteres" value="${escapeAttr(d.pass || '')}" style="${estiloCampo};margin-bottom:4px">
+          <div style="text-align:right;margin-bottom:10px"><button id="toggleAltaPass" type="button" style="background:none;border:none;font-family:'Karla';font-size:13px;color:var(--moss-deep);cursor:pointer;padding:4px 0;text-decoration:underline">👁 Ver contraseña</button></div>
+          <label class="alta-check"><input type="checkbox" id="altaWhats" ${d.whats ? 'checked' : ''}> Quiero recibir mensajes de ánimo por WhatsApp</label>
           <button class="btn btn-yes" id="btnAlta" style="text-align:center;margin-top:14px">Crear mi cuenta</button>
           ${state.loginError ? '<div style="color:' + (state.loginError.endsWith('…') ? 'var(--ink-soft)' : '#B94A3A') + ';font-size:13px;margin-top:8px">'+state.loginError+'</div>' : ''}
         `;
         app.appendChild(altaCard);
+        const altaPassEl = altaCard.querySelector('#altaPass'), toggleAlta = altaCard.querySelector('#toggleAltaPass');
+        toggleAlta.onclick = () => {
+          const viendo = altaPassEl.type === 'text';
+          altaPassEl.type = viendo ? 'password' : 'text';
+          toggleAlta.textContent = viendo ? '👁 Ver contraseña' : '🙈 Ocultar contraseña';
+        };
         altaCard.querySelector('#btnAlta').onclick = () => crearCuenta(
           altaCard.querySelector('#altaNombre').value, altaCard.querySelector('#altaTel').value,
           altaCard.querySelector('#altaPass').value, altaCard.querySelector('#altaWhats').checked);
@@ -3214,18 +3401,7 @@
         : el(`<div style="position:relative;text-align:center;margin-bottom:14px">${nivelBadgeHTML()}${practiReaccionHTML('saludo', 'empujonSaludo', 112, 'practi-saludo')}<div style="font-family:'Lora',serif;font-size:24px;font-weight:600;color:var(--ink)">Hola, ${state.me}</div><div style="font-family:'Karla',sans-serif;font-size:15px;font-weight:700;color:var(--ink);margin-top:2px">${bienvenidaTexto(state.me)} a tu Panel de Control</div></div>`);
       const nivelBtnPanel = greetPanel.querySelector('#nivelBadgeBtn');
       app.appendChild(greetPanel);
-      let altaVisible = false;
-      if(!state.panelSub){
-        const alta = altaRecienteHTML();
-        altaVisible = !!alta;
-        if(alta){
-          const altaNodo = el(alta);
-          const btnCerrarAlta = altaNodo.querySelector('#btnCerrarAlta');
-          app.appendChild(altaNodo);
-          btnCerrarAlta.onclick = () => { try{ localStorage.removeItem('ma_alta_' + state.me); }catch(e){} render(); };
-        }
-      }
-      if(!state.panelSub && !altaVisible && !bienvenidaVista()) app.appendChild(el(bienvenidaHTML()));
+      if(!state.panelSub && !bienvenidaVista()) app.appendChild(el(bienvenidaHTML()));
       if(nivelBtnPanel) nivelBtnPanel.onclick = () => { state.prevView = 'panel'; state.view = 'perfil'; window.scrollTo(0,0); render(); };
 
       const nav = document.createElement('nav');
@@ -3370,9 +3546,9 @@
       s2.className = 'card panel-section s2'; s2.id = 's4';
       s2.innerHTML = `
         <div class="panel-badge"><img class="panel-icono" src="${ICONO_4}" alt="4. Define tu meta trimestral significativa"><span>4. Define tu meta trimestral significativa</span></div>
-        <p>Rellena el cuestionario para definir tu meta trimestral más importante para ti, tus dificultades y a qué ritmo quieres ir. Te crearemos una Guía de Prácticas cada mes.</p>
+        <p>Rellena el formulario para definir tu meta trimestral más importante para ti, tus dificultades y a qué ritmo quieres ir. Te crearemos una Guía de Prácticas cada mes.</p>
         <p style="background:var(--honey-tint);border-radius:10px;padding:10px 12px;font-size:14px">✅ Se rellena <b>una vez por trimestre</b>. Si vuelves a abrirlo te saldrá vacío: es normal, <b>tus respuestas ya están guardadas</b>. Solo vuelve a rellenarlo si quieres cambiar tu meta, y te enviaremos una guía nueva.</p>
-        <a class="panel-link-btn honey" href="https://forms.gle/JHDTM5MarnagbqMQ6" target="_blank">Rellenar cuestionario de meta →</a>
+        <a class="panel-link-btn honey" href="https://forms.gle/JHDTM5MarnagbqMQ6" target="_blank">Rellenar formulario de meta →</a>
       `;
 
       // Bloque 3: Guía mensual — ahora un único botón de acceso; el contenido vive en la vista 'practicas'
@@ -3802,6 +3978,8 @@
 
       return;
     }
+
+    if(state.view === 'bienvenidaAlta'){ renderBienvenidaAlta(); return; }
 
     if(state.view === 'planes'){
       renderBackTopbar('Tu plan');
