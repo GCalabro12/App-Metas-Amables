@@ -884,22 +884,14 @@
     return res;
   }
 
-  // Carga el nivel/insignia actual del practicante logueado (para el badge del panel y Mi perfil)
-  function cargarNivel(name){
-    const formula = encodeURIComponent(`{Name} = "${name}"`);
-    fetch(GAMIFICA_URL + '?filterByFormula=' + formula, { headers: airHeaders() })
-      .then(res => { if(!res.ok) throw new Error('Airtable ' + res.status); return res.json(); })
-      .then(data => {
-        const rec = data.records && data.records[0];
-        if(!rec){ state.nivel = null; return; }
-        state.gamificaId = rec.id;
-        const cumplidas = rec.fields['Cumplidas semanas'] || 0;
-        const actual = insigniaActual(cumplidas);
-        const insigniaTexto = rec.fields['Insignia'] || actual.label;
-        state.nivel = { icon: actual.icon, label: insigniaTexto, min: actual.min, cumplidas };
-        if(state.view === 'panel' || state.view === 'perfil') render();
-      })
-      .catch(err => { console.error('Error cargando nivel:', err); });
+  // Nivel/insignia actual del practicante (para el badge del panel y Mi perfil),
+  // a partir de los puntos de Gamifica que trae refreshAll()
+  function cargarNivel(){
+    const g = state.gamifica;
+    if(!g){ state.nivel = null; return; }
+    const cumplidas = g.cumplidas || 0;
+    const actual = insigniaActual(cumplidas);
+    state.nivel = { icon: actual.icon, label: g.insignia || actual.label, min: actual.min, cumplidas };
   }
 
   function isoWeek(d){
@@ -1316,39 +1308,53 @@
 
   const DEFAULT_MEMBERS = ['Empar','Rafael','Rosa','Shayo','Ana María'];
 
-  const APP_VERSION = 'V6.1';
+  const APP_VERSION = 'V6.2';
 
-  // ==== Conexión con Airtable ====
-  // El token NO está en el código — se inyecta via URL (?t=TOKEN) o localStorage
+  // ==== Conexión con el Worker (portero de Airtable) ====
+  // La app ya no ve el token de Airtable: todo pasa por el Worker, que comprueba
+  // la sesión de cada persona y solo le deja leer y escribir lo suyo.
+  const API_URL = 'https://metas-amables-api.proud-hill-016b.workers.dev';
   const AIR = {
-    base: 'appB3nXTGf3wWu0sI',
-    table: 'tblYUORCDMOtD3FFo',
-    token: null, // se carga en init()
     fields: { alumno: 'Practicante', semana: 'Semana', cumplida: 'Cumplida', notas: 'Notas', metaTrim: 'Meta trimestre', metaSem: 'Meta semana', identidad: 'Identidad', pass: 'Contraseña', urlPanel: 'URL PANEL', grupo: 'Grupo MAC', urlGuia: 'URL Guías Mensuales', fechasSesiones: 'Fechas Sesiones', guiaTexto: 'Guía Trimestral Texto', valoracion: 'Valoracion', oportunidades: 'Opo estimadas', compromisoVeces: 'Me comprometo a', vecesRealizadas: 'Veces realizado', estadoSemana: 'Estado Semana', enlaceGamifica: 'Practicantes' }
   };
-  const SESIONES_SOURCE = 'Gustavo'; // fila desde la que se lee el calendario de sesiones, compartido para todos
-  const AIR_URL = 'https://api.airtable.com/v0/' + AIR.base + '/' + encodeURIComponent(AIR.table);
-  const FACTURACION_TABLE_ID = 'tblRPGAvQNuXBsvqm';
-  const FACTURACION_URL = 'https://api.airtable.com/v0/' + AIR.base + '/' + FACTURACION_TABLE_ID;
-  function airHeaders(){
-    return { 'Authorization': 'Bearer ' + AIR.token, 'Content-Type': 'application/json' };
+  // Sesión firmada por el Worker al entrar con la contraseña (dura 30 días)
+  function leerSesion(){ try{ return localStorage.getItem('ma_sesion'); }catch(e){ return null; } }
+  function guardarSesion(token){
+    try{ if(token) localStorage.setItem('ma_sesion', token); else localStorage.removeItem('ma_sesion'); }catch(e){}
   }
-
-  // Trae TODAS las filas de la tabla y las agrupa por practicante
-  async function fetchAllRecords(){
-    let all = [];
-    let offset = null;
-    do {
-      let url = AIR_URL + '?pageSize=100';
-      if(offset) url += '&offset=' + encodeURIComponent(offset);
-      const res = await fetch(url, { headers: airHeaders() });
-      if(!res.ok){ throw new Error('Airtable ' + res.status); }
-      const data = await res.json();
-      all = all.concat(data.records || []);
-      offset = data.offset;
-    } while(offset);
-    return all;
+  // Sesión caducada o cuenta borrada: se vuelve a la pantalla de entrada
+  function sesionCaducada(mensaje){
+    guardarSesion(null);
+    try{ localStorage.removeItem('ma_user'); }catch(e){}
+    state.me = null;
+    state.view = 'pick'; state.loginView = 'login';
+    state.loginError = mensaje || 'Vuelve a entrar con tu contraseña.';
+    window.scrollTo(0,0); render();
   }
+  // Llama al Worker. Con cuerpo es POST; sin cuerpo, GET. Si falla, lanza un
+  // error con el mensaje del Worker y su código (err.status).
+  async function api(ruta, cuerpo){
+    const sesion = leerSesion();
+    const opciones = { headers: {} };
+    if(sesion) opciones.headers['Authorization'] = 'Bearer ' + sesion;
+    if(cuerpo !== undefined){
+      opciones.method = 'POST';
+      opciones.headers['Content-Type'] = 'application/json';
+      opciones.body = JSON.stringify(cuerpo);
+    }
+    const res = await fetch(API_URL + ruta, opciones);
+    let data = {};
+    try { data = await res.json(); } catch(e){}
+    if(!res.ok){
+      if(res.status === 401 && sesion && (ruta === '/datos' || ruta === '/guardar')) sesionCaducada(data.error);
+      const err = new Error(data.error || ('Error ' + res.status));
+      err.status = res.status;
+      throw err;
+    }
+    return data;
+  }
+  // Mensaje para la persona: el del Worker si es un aviso suyo, o uno de conexión
+  function mensajeError(e, porDefecto){ return (e && e.status && e.status < 500) ? e.message : porDefecto; }
 
   function cleanUrl(raw){
     if(!raw) return '';
@@ -1414,79 +1420,61 @@
     return gA.some(x => gB.includes(x));
   }
 
+  // Trae del Worker lo de la persona que ha entrado: sus filas, su plan, sus
+  // puntos, las fechas de sesiones y (en Guías + Sesiones) el resumen de su grupo.
   async function refreshAll(){
-    const records = await fetchAllRecords();
-    const result = recordsToCheckins(records);
-    state.checkins = result.byName;
-    state.passwords = result.passwords;
-    state.panelUrls = result.panelUrls;
-    state.groups = result.groups;
-    state.members = Object.keys(result.passwords);
-    state.members.forEach(m => { if(!state.checkins[m]) state.checkins[m] = []; });
-    // Fechas de sesiones: compartidas para todos, se leen de la fila de SESIONES_SOURCE
-    const sourceList = state.checkins[SESIONES_SOURCE] || [];
-    const withFechas = sourceList.filter(c => c.fechasSesiones && c.fechasSesiones.trim());
-    state.sesionesTexto = withFechas.length > 0 ? withFechas[withFechas.length - 1].fechasSesiones : '';
+    const d = await api('/datos');
+    state.me = d.nombre;
+    state.checkins = {};
+    state.checkins[d.nombre] = recordsToCheckins(d.filas || []).byName[d.nombre] || [];
+    state.groups = {};
+    state.groups[d.nombre] = d.grupo || [];
+    (d.companeros || []).forEach(p => {
+      state.groups[p.nombre] = p.grupo || [];
+      state.checkins[p.nombre] = (p.semanas || []).map(s => ({ week: s.semana, label: s.semana, cumplida: s.estado === ESTADO_CUMPLIDO, estadoSemana: s.estado }));
+    });
+    state.members = [d.nombre].concat((d.companeros || []).map(p => p.nombre));
+    state.sesionesTexto = d.sesionesTexto || '';
+    state.plan = d.plan || 'gratis';
+    state.facturacion = d.facturacion || {};
+    state.miCorreo = state.facturacion['Correo electrónico'] || '';
+    state.gamifica = d.gamifica || null;
+    state.gamificaId = state.gamifica ? state.gamifica.id : null;
+    cargarNivel();
     state.loadError = null;
   }
 
   async function init(){
-    // Cargar token: primero desde URL (?t=...), luego desde localStorage
-    const urlParams = new URLSearchParams(window.location.search);
-    const urlToken = urlParams.get('t');
-    if(urlToken){
-      AIR.token = urlToken;
-      try{ localStorage.setItem('air_token', urlToken); }catch(e){}
-      // Limpiar token de la URL sin recargar
-      const cleanUrl = window.location.pathname;
-      window.history.replaceState({}, '', cleanUrl);
-    } else {
-      try{ AIR.token = localStorage.getItem('air_token'); }catch(e){}
-    }
+    // Los enlaces antiguos traían el token de Airtable (?t=…): se quita de la
+    // dirección y del dispositivo, ya no hace falta
+    if(new URLSearchParams(window.location.search).has('t')) window.history.replaceState({}, '', window.location.pathname);
+    try{ localStorage.removeItem('air_token'); }catch(e){}
 
-    if(!AIR.token){
-      state.view = 'notoken'; window.scrollTo(0,0); render();
-      return;
-    }
-
-    state.view = 'pick'; window.scrollTo(0,0); render();
-    try {
-      await refreshAll();
-    } catch(e){
-      state.loadError = e.message;
-    }
     // Si ya se había iniciado sesión antes en este dispositivo, entrar directo
     let savedUser = null;
     try{ savedUser = localStorage.getItem('ma_user'); }catch(e){}
-    if(savedUser && state.passwords[savedUser]){
+    if(leerSesion() && savedUser){
       pickMe(savedUser);
       return;
     }
-    render();
-  }
-
-  // Compara sin distinguir mayúsculas y sin espacios sobrantes, porque la celda de
-  // Airtable suele traerlos y eso hacía fallar contraseñas que sí existían.
-  function buscarPorPassword(pass){
-    const objetivo = String(pass).trim().toLowerCase();
-    return Object.entries(state.passwords).find(([name, p]) => String(p).trim().toLowerCase() === objetivo);
+    state.view = 'pick'; window.scrollTo(0,0); render();
   }
 
   async function loginWithPassword(pass){
     pass = (pass || '').trim();
     if(!pass){ state.loginError = 'Escribe tu contraseña'; render(); return; }
-    let found = buscarPorPassword(pass);
-    if(!found){
-      // Puede ser un usuario recién creado en Airtable: se recargan los datos y se reintenta
-      state.loginError = 'Comprobando…';
+    state.loginError = 'Comprobando…';
+    render();
+    try {
+      const r = await api('/login', { password: pass });
+      guardarSesion(r.token);
+      state.loginError = '';
+      try{ localStorage.setItem('ma_user', r.nombre); }catch(e){}
+      pickMe(r.nombre);
+    } catch(e){
+      state.loginError = mensajeError(e, 'No se pudo conectar. Revisa tu conexión e inténtalo de nuevo.');
       render();
-      try { await refreshAll(); } catch(e){}
-      found = buscarPorPassword(pass);
     }
-    if(!found){ state.loginError = 'Contraseña incorrecta'; render(); return; }
-    state.loginError = '';
-    try{ localStorage.setItem('ma_user', found[0]); }catch(e){}
-    pickMe(found[0]);
   }
 
   // ===== Crear cuenta (alta desde la app) =====
@@ -1504,30 +1492,19 @@
     if(digitos.length < 9){ state.loginError = 'Escribe un teléfono válido (con prefijo si no es de España)'; render(); return; }
     if(pass.length < 4){ state.loginError = 'La contraseña debe tener al menos 4 caracteres'; render(); return; }
     state.loginError = 'Creando tu cuenta…'; render();
-    try { await refreshAll(); } catch(e){}
-    if((state.members || []).some(m => mismoNombre(m, nombre))){
-      state.loginError = 'Ya hay una cuenta con ese nombre. Añade tu apellido, o entra con tu contraseña.'; render(); return;
-    }
-    if(buscarPorPassword(pass)){
-      state.loginError = 'Esa contraseña no está disponible. Elige otra.'; render(); return;
-    }
+    // El Worker comprueba que el nombre y la contraseña no estén ya en uso
     try {
-      const gam = await airWrite(GAMIFICA_URL, 'POST', { 'Name': nombre, 'Teléfono': telefono, 'Acepta WhatsApp': !!aceptaWhatsApp });
-      const campos = {};
-      campos[AIR.fields.alumno] = nombre;
-      campos[AIR.fields.pass] = pass;
-      if(gam && gam.id) campos[AIR.fields.enlaceGamifica] = [gam.id];
-      await airWrite(AIR_URL, 'POST', campos);
-      await refreshAll();
+      const r = await api('/alta', { nombre, telefono, password: pass, aceptaWhatsApp: !!aceptaWhatsApp });
+      guardarSesion(r.token);
       state.loginError = '';
       state.loginView = 'login';
       state.altaDraft = null;
-      try{ localStorage.setItem('ma_user', nombre); localStorage.setItem('ma_alta_' + nombre, aceptaWhatsApp ? 'w' : '1'); }catch(e){}
+      try{ localStorage.setItem('ma_user', r.nombre); localStorage.setItem('ma_alta_' + r.nombre, aceptaWhatsApp ? 'w' : '1'); }catch(e){}
       state.altaPaso = 1;
-      pickMe(nombre);
+      pickMe(r.nombre);
     } catch(e){
       console.error('Error creando cuenta:', e);
-      state.loginError = 'No se pudo crear la cuenta. Revisa tu conexión e inténtalo de nuevo.'; render();
+      state.loginError = mensajeError(e, 'No se pudo crear la cuenta. Revisa tu conexión e inténtalo de nuevo.'); render();
     }
   }
   // Bienvenida tras crear la cuenta, en dos pantallas; con "Siguiente" se llega al panel
@@ -1585,24 +1562,14 @@
     newPass = (newPass||'').trim();
     if(!currentPass || !newPass){ state.loginError = 'Rellena ambos campos'; render(); return; }
     if(newPass.length < 3){ state.loginError = 'La nueva contraseña debe tener al menos 3 caracteres'; render(); return; }
-    const found = Object.entries(state.passwords).find(([name, p]) => p === currentPass);
-    if(!found){ state.loginError = 'Contraseña actual incorrecta'; render(); return; }
-    const userName = found[0];
-    const records = state.checkins[userName] || [];
     try {
-      for(const rec of records){
-        if(rec.id){
-          const fields = {}; fields[AIR.fields.pass] = newPass;
-          await fetch(AIR_URL + '/' + rec.id, { method:'PATCH', headers:airHeaders(), body:JSON.stringify({fields}) });
-        }
-      }
-      state.passwords[userName] = newPass;
+      await api('/cambiar-password', { actual: currentPass, nueva: newPass });
       state.loginError = '';
       state.loginView = 'login';
       state.savedMsg = 'Contraseña cambiada ✓';
       render();
     } catch(e){
-      state.loginError = 'No se pudo cambiar (revisa tu conexión)';
+      state.loginError = mensajeError(e, 'No se pudo cambiar (revisa tu conexión)');
       render();
     }
   }
@@ -1640,10 +1607,9 @@
     try{ altaPendiente = localStorage.getItem('ma_alta_' + name); }catch(e){}
     state.view = altaPendiente ? 'bienvenidaAlta' : 'panel'; if(altaPendiente && !state.altaPaso) state.altaPaso = 1;
     window.scrollTo(0,0); render();
-    cargarNivel(name);
-    cargarPlan(name);
-    try { await refreshAll(); } catch(e){}
-    const list = state.checkins[name] || [];
+    try { await refreshAll(); } catch(e){ console.error('Error cargando datos:', e); if(!e.status) state.plan = 'gratis'; }
+    if(!state.me) return;   // la sesión había caducado: ya se muestra la pantalla de entrada
+    const list = state.checkins[state.me] || [];
     // Identidad, meta trimestral y URL de guía: del registro más reciente (cualquier semana)
     if(list.length > 0){
       const latest = list[list.length - 1];
@@ -1673,17 +1639,11 @@
       fields[AIR.fields.alumno] = state.me;
       fields[AIR.fields.semana] = currentWeekShort;
       fields[AIR.fields.valoracion] = nota;
-      fields[AIR.fields.pass] = state.passwords[state.me] || '';
-      if(state.groups[state.me] && state.groups[state.me].length) fields[AIR.fields.grupo] = state.groups[state.me];
-      await ponerEnlaceGamifica(fields);
 
+      const data = await guardarSemana(fields);
       if(thisWeek && thisWeek.id){
-        // PATCH: actualizar registro existente
-        await airWrite(AIR_URL + '/' + thisWeek.id, 'PATCH', fields);
         thisWeek.valoracion = nota;
       } else {
-        // POST: crear nuevo registro si no existe para esta semana
-        const data = await airWrite(AIR_URL, 'POST', fields);
         list.push({ 
           id: data.id, 
           week: currentWeekShort, 
@@ -1705,160 +1665,10 @@
     render();
   }
 
-  async function saveMetas(identidad, metaTrim, metaSem){
-    state.identidadDraft = identidad || '';
-    state.metaTrimDraft = metaTrim || '';
-    state.metaSemDraft = metaSem || '';
-    state.metaSavedMsg = 'Guardando…';
-    render();
-
-    try {
-      const list = await ensureCheckins(state.me);
-      const thisWeek = list.find(c => c.week === currentWeekShort);
-      const fields = {};
-      fields[AIR.fields.alumno] = state.me;
-      fields[AIR.fields.semana] = currentWeekShort;
-      fields[AIR.fields.identidad] = (identidad || '').trim();
-      if(state.guiaTexto) fields[AIR.fields.guiaTexto] = state.guiaTexto;
-      fields[AIR.fields.metaTrim] = (metaTrim || '').trim();
-      fields[AIR.fields.metaSem] = (metaSem || '').trim();
-      fields[AIR.fields.pass] = state.passwords[state.me] || '';
-      if(state.groups[state.me] && state.groups[state.me].length) fields[AIR.fields.grupo] = state.groups[state.me];
-      if(state.guiaUrl) fields[AIR.fields.urlGuia] = state.guiaUrl;
-
-      if(thisWeek && thisWeek.id){
-        const res = await fetch(AIR_URL + '/' + thisWeek.id, {
-          method: 'PATCH', headers: airHeaders(), body: JSON.stringify({ fields })
-        });
-        if(!res.ok){
-          const errBody = await res.text().catch(()=>'');
-          throw new Error('Airtable ' + res.status + ': ' + errBody.slice(0,200));
-        }
-        thisWeek.identidad = fields[AIR.fields.identidad];
-        thisWeek.metaTrim = fields[AIR.fields.metaTrim];
-        thisWeek.metaSem = fields[AIR.fields.metaSem];
-      } else {
-        const res = await fetch(AIR_URL, {
-          method: 'POST', headers: airHeaders(), body: JSON.stringify({ fields })
-        });
-        if(!res.ok){
-          const errBody = await res.text().catch(()=>'');
-          throw new Error('Airtable ' + res.status + ': ' + errBody.slice(0,200));
-        }
-        const data = await res.json();
-        list.push({ id: data.id, week: currentWeekShort, label: currentWeekLabel, cumplida: false, nota:'', identidad: fields[AIR.fields.identidad], metaTrim: fields[AIR.fields.metaTrim], metaSem: fields[AIR.fields.metaSem] });
-      }
-      state.metaSavedMsg = 'Guardado ✓';
-    } catch(e){
-      console.error('Error guardando metas:', e);
-      state.metaSavedMsg = '⚠️ ' + (e && e.message ? e.message : 'Error desconocido al guardar');
-    }
-    render();
-  }
-
-  async function saveCheckin(val, nota, metaTrim, metaSem, identidad){
-    state.selection = val;
-    state.noteDraft = nota;
-    state.metaTrimDraft = metaTrim || '';
-    state.metaSemDraft = metaSem || '';
-    state.identidadDraft = identidad || '';
-    state.saving = true;
-    state.savedMsg = 'Guardando…';
-    render();
-
-    try {
-      const list = await ensureCheckins(state.me);
-      const thisWeek = list.find(c => c.week === currentWeekShort);
-      const fields = {};
-      fields[AIR.fields.alumno] = state.me;
-      fields[AIR.fields.semana] = currentWeekShort;
-      fields[AIR.fields.estadoSemana] = (val === 'yes') ? ESTADO_CUMPLIDO : ESTADO_PARCIAL;
-      fields[AIR.fields.notas] = (nota || '').trim();
-      fields[AIR.fields.metaTrim] = (metaTrim || '').trim();
-      fields[AIR.fields.metaSem] = (metaSem || '').trim();
-      fields[AIR.fields.identidad] = (identidad || '').trim();
-      if(state.guiaTexto) fields[AIR.fields.guiaTexto] = state.guiaTexto;
-      fields[AIR.fields.pass] = state.passwords[state.me] || '';
-      if(state.groups[state.me] && state.groups[state.me].length) fields[AIR.fields.grupo] = state.groups[state.me];
-      if(state.guiaUrl) fields[AIR.fields.urlGuia] = state.guiaUrl;
-
-      if(thisWeek && thisWeek.id){
-        const res = await fetch(AIR_URL + '/' + thisWeek.id, {
-          method: 'PATCH', headers: airHeaders(), body: JSON.stringify({ fields })
-        });
-        if(!res.ok){
-          const errBody = await res.text().catch(()=>'');
-          throw new Error('Airtable ' + res.status + ': ' + errBody.slice(0,200));
-        }
-        thisWeek.cumplida = (val==='yes');
-        thisWeek.nota = fields[AIR.fields.notas];
-        thisWeek.identidad = fields[AIR.fields.identidad];
-        thisWeek.metaTrim = fields[AIR.fields.metaTrim];
-        thisWeek.metaSem = fields[AIR.fields.metaSem];
-      } else {
-        const res = await fetch(AIR_URL, {
-          method: 'POST', headers: airHeaders(), body: JSON.stringify({ fields })
-        });
-        if(!res.ok){
-          const errBody = await res.text().catch(()=>'');
-          throw new Error('Airtable ' + res.status + ': ' + errBody.slice(0,200));
-        }
-        const data = await res.json();
-        list.push({ id: data.id, week: currentWeekShort, label: currentWeekLabel, cumplida: (val==='yes'), nota: fields[AIR.fields.notas], identidad: fields[AIR.fields.identidad], metaTrim: fields[AIR.fields.metaTrim], metaSem: fields[AIR.fields.metaSem] });
-      }
-      state.saving = false;
-      state.savedMsg = 'Guardado ✓';
-      state.lastResult = val;
-    } catch(e){
-      console.error('Error guardando checkin:', e);
-      state.saving = false;
-      state.savedMsg = '⚠️ ' + (e && e.message ? e.message : 'Error desconocido al guardar');
-    }
-    render();
-  }
-
-  // Escritura tolerante: si Airtable rechaza un campo que no existe (o una opción
-  // de desplegable que no está creada), lo omite y reintenta en vez de fallar todo.
-  // Así un nombre de campo cambiado en Airtable nunca deja al practicante sin guardar.
-  async function airWrite(url, method, fieldsOriginales){
-    const fields = Object.assign({}, fieldsOriginales);
-    const omitidos = [];
-    for(let intento = 0; intento < 6; intento++){
-      const res = await fetch(url, { method, headers: airHeaders(), body: JSON.stringify({ fields }) });
-      if(res.ok){
-        const data = await res.json();
-        if(omitidos.length) console.warn('Campos omitidos al guardar:', omitidos.join(', '));
-        return data;
-      }
-      const txt = await res.text().catch(() => '');
-      // Airtable devuelve JSON con las comillas escapadas: hay que leer el mensaje ya descodificado
-      let tipo = '', mensaje = txt;
-      try {
-        const j = JSON.parse(txt);
-        if(j && j.error){ tipo = j.error.type || ''; mensaje = j.error.message || ''; }
-      } catch(e){}
-
-      if(res.status === 422){
-        // Campo inexistente o valor no aceptado: el mensaje nombra el campo entre comillas
-        const entreComillas = mensaje.match(/"([^"]+)"/);
-        const nombre = entreComillas ? entreComillas[1] : null;
-        if(nombre && Object.prototype.hasOwnProperty.call(fields, nombre)){
-          delete fields[nombre]; omitidos.push(nombre); continue;
-        }
-        // Opción de desplegable que no existe
-        if(/select option|INVALID_MULTIPLE_CHOICE/i.test(tipo + ' ' + mensaje) &&
-           Object.prototype.hasOwnProperty.call(fields, AIR.fields.estadoSemana)){
-          delete fields[AIR.fields.estadoSemana]; omitidos.push(AIR.fields.estadoSemana); continue;
-        }
-        // Enlace a un registro de Gamifica que no existe: se guarda igual, sin enlace
-        if(/ROW_DOES_NOT_EXIST|does not exist|linked record/i.test(tipo + ' ' + mensaje) &&
-           Object.prototype.hasOwnProperty.call(fields, AIR.fields.enlaceGamifica)){
-          delete fields[AIR.fields.enlaceGamifica]; omitidos.push(AIR.fields.enlaceGamifica); continue;
-        }
-      }
-      throw new Error('Airtable ' + res.status + ': ' + (mensaje || txt).slice(0, 200));
-    }
-    throw new Error('No se pudo guardar: demasiados campos no reconocidos en Airtable');
+  // Guarda el registro de una semana en la fila propia. El Worker la crea si no existe,
+  // solo acepta los campos del registro y omite los que Airtable no reconozca.
+  async function guardarSemana(fields){
+    return api('/guardar', { semana: fields[AIR.fields.semana], campos: fields });
   }
 
   // Plan del practicante: 'pago' si tiene Estado=Activo en Facturación, si no 'gratis'.
@@ -1971,40 +1781,8 @@
   function enlacePago(url){
     return state.miCorreo ? url + '?prefilled_email=' + encodeURIComponent(state.miCorreo) : url;
   }
-  function cargarPlan(name){
-    fetch(FACTURACION_URL + '?maxRecords=200', { headers: airHeaders() })
-      .then(res => { if(!res.ok) throw new Error('Airtable ' + res.status); return res.json(); })
-      .then(data => {
-        const fila = (data.records || []).find(r => nombresDeFila(r.fields).some(n => mismoNombre(n, name)));
-        const f = (fila && fila.fields) || {};
-        const activo = f['Estado'] === 'Activo';
-        state.plan = normalizaPlan(campoPlan(f)) || (activo ? 'guias' : 'gratis');
-        state.miCorreo = f['Correo electrónico'] || '';
-        if(state.view === 'panel') render();
-      })
-      .catch(err => { console.error('Error cargando plan:', err); state.plan = 'gratis'; if(state.view === 'panel') render(); });
-  }
-
-  // Registro de Gamifica del practicante. Hace falta para enlazar cada fila nueva
-  // de General con su persona: si no, el Rollup de puntos no la suma.
-  async function obtenerGamificaId(){
-    if(state.gamificaId) return state.gamificaId;
-    try {
-      const nombre = String(state.me).replace(/"/g, '\\"');
-      const formula = encodeURIComponent('{Name} = "' + nombre + '"');
-      const res = await fetch(GAMIFICA_URL + '?maxRecords=1&filterByFormula=' + formula, { headers: airHeaders() });
-      if(!res.ok) return null;
-      const data = await res.json();
-      const rec = data.records && data.records[0];
-      state.gamificaId = rec ? rec.id : null;
-      return state.gamificaId;
-    } catch(e){ return null; }
-  }
-
-  async function ponerEnlaceGamifica(fields){
-    const gid = await obtenerGamificaId();
-    if(gid) fields[AIR.fields.enlaceGamifica] = [gid];
-  }
+  // El plan (de Facturación) lo calcula el Worker y llega con refreshAll().
+  // El Worker también enlaza cada fila nueva con Gamifica, para que sume los puntos.
 
   // ===== Paso 1: cierre de la semana PASADA =====
   // Escribe en la fila de la semana que se evalúa (lastWeekShort), no en la actual.
@@ -2024,19 +1802,15 @@
       else if(estado === ESTADO_PARCIAL) fields[AIR.fields.vecesRealizadas] = realizadas;
       else fields[AIR.fields.vecesRealizadas] = 0;
       if(compromiso > 0) fields[AIR.fields.compromisoVeces] = compromiso;
-      fields[AIR.fields.pass] = state.passwords[state.me] || '';
-      if(state.groups[state.me] && state.groups[state.me].length) fields[AIR.fields.grupo] = state.groups[state.me];
-      await ponerEnlaceGamifica(fields);
 
+      const data = await guardarSemana(fields);
       if(prev && prev.id){
-        await airWrite(AIR_URL + '/' + prev.id, 'PATCH', fields);
         prev.estadoSemana = estado;
         prev.cumplida = (estado === ESTADO_CUMPLIDO);
         prev.nota = fields[AIR.fields.notas];
         prev.vecesRealizadas = fields[AIR.fields.vecesRealizadas];
         if(compromiso > 0) prev.compromisoVeces = compromiso;
       } else {
-        const data = await airWrite(AIR_URL, 'POST', fields);
         list.push({
           id: data.id, week: lastWeekShort, label: lastWeekLabel,
           cumplida: (estado === ESTADO_CUMPLIDO), nota: fields[AIR.fields.notas],
@@ -2048,7 +1822,8 @@
       }
       state.savedMsg = 'Guardado ✓';
       state.cierreHecho = true;
-      cargarNivel(state.me);
+      // Los puntos los recalcula Airtable: se vuelven a leer para actualizar el nivel
+      refreshAll().then(render).catch(() => {});
     } catch(e){
       console.error('Error guardando cierre de semana:', e);
       state.savedMsg = '⚠️ ' + (e && e.message ? e.message : 'Error desconocido al guardar');
@@ -2072,21 +1847,16 @@
       fields[AIR.fields.identidad] = (identidad || '').trim();
       fields[AIR.fields.metaTrim] = (metaTrim || '').trim();
       fields[AIR.fields.metaSem] = (metaSem || '').trim();
-      fields[AIR.fields.pass] = state.passwords[state.me] || '';
-      if(state.guiaTexto) fields[AIR.fields.guiaTexto] = state.guiaTexto;
-      if(state.groups[state.me] && state.groups[state.me].length) fields[AIR.fields.grupo] = state.groups[state.me];
-      if(state.guiaUrl) fields[AIR.fields.urlGuia] = state.guiaUrl;
-      await ponerEnlaceGamifica(fields);
+      // La guía, el grupo y el enlace a Gamifica los copia el Worker a la fila nueva
 
+      const data = await guardarSemana(fields);
       if(thisWeek && thisWeek.id){
-        await airWrite(AIR_URL + '/' + thisWeek.id, 'PATCH', fields);
         thisWeek.oportunidades = fields[AIR.fields.oportunidades] !== undefined ? fields[AIR.fields.oportunidades] : thisWeek.oportunidades;
         thisWeek.compromisoVeces = fields[AIR.fields.compromisoVeces] !== undefined ? fields[AIR.fields.compromisoVeces] : thisWeek.compromisoVeces;
         thisWeek.identidad = fields[AIR.fields.identidad];
         thisWeek.metaTrim = fields[AIR.fields.metaTrim];
         thisWeek.metaSem = fields[AIR.fields.metaSem];
       } else {
-        const data = await airWrite(AIR_URL, 'POST', fields);
         list.push({
           id: data.id, week: currentWeekShort, label: currentWeekLabel, cumplida: false, nota: '',
           oportunidades: fields[AIR.fields.oportunidades] !== undefined ? fields[AIR.fields.oportunidades] : null,
@@ -2442,6 +2212,7 @@
 
   function switchUser(){
     state.me = null;
+    guardarSesion(null);
     try{ localStorage.removeItem('ma_user'); }catch(e){}
     state.view = 'pick'; window.scrollTo(0,0); render();
   }
@@ -2885,9 +2656,6 @@
     btnMenu.onclick = () => { state.menuOpen = true; render(); };
   }
 
-  const GAMIFICA_TABLE_ID = 'tblVoBuoPtIEYjyAI';
-  const GAMIFICA_URL = 'https://api.airtable.com/v0/' + AIR.base + '/' + GAMIFICA_TABLE_ID;
-
   function renderPerfilView(){
     renderBackTopbar('Perfil');
     const card = document.createElement('div');
@@ -2915,19 +2683,8 @@
       state.prevView = 'perfil'; state.view = 'comoCuenta'; window.scrollTo(0,0); render();
     };
 
-    // Email: vive en la tabla Facturación, campo "Correo electrónico"
-    fetch(FACTURACION_URL + '?maxRecords=200', { headers: airHeaders() })
-      .then(res => { if(!res.ok) throw new Error('Airtable ' + res.status); return res.json(); })
-      .then(data => {
-        const rec = (data.records || []).find(r => nombresDeFila(r.fields).some(n => mismoNombre(n, state.me)));
-        const row = card.querySelector('#perfilEmailRow');
-        const correo = rec && rec.fields['Correo electrónico'];
-        row.innerHTML = 'Email: ' + (correo ? correo : '<em>sin email registrado</em>');
-      })
-      .catch(() => {
-        const row = card.querySelector('#perfilEmailRow');
-        if(row) row.innerHTML = 'Email: <em>sin email registrado</em>';
-      });
+    // Email: vive en la tabla Facturación, campo "Correo electrónico" (llega con refreshAll)
+    card.querySelector('#perfilEmailRow').innerHTML = 'Email: ' + (state.miCorreo ? escapeAttr(state.miCorreo) : '<em>sin email registrado</em>');
 
     // --- Cambiar contraseña desde Mi perfil ---
     const togglePassBtn = card.querySelector('#togglePassChange');
@@ -2951,11 +2708,10 @@
       );
     };
 
-    const formula = encodeURIComponent(`{Name} = "${state.me}"`);
-    fetch(GAMIFICA_URL + '?filterByFormula=' + formula, { headers: airHeaders() })
-      .then(res => { if(!res.ok) throw new Error('Airtable ' + res.status); return res.json(); })
-      .then(data => {
-        const rec = data.records && data.records[0];
+    // Puntos e insignia de Gamifica (llegan con refreshAll)
+    (function(){
+        const g = state.gamifica;
+        const rec = g ? { fields: { 'Cumplidas semanas': g.cumplidas, 'Insignia': g.insignia } } : null;
         const box = card.querySelector('#insigniaActualBox');
         if(!rec){
           box.innerHTML = `<p style="font-size:13px;color:var(--ink-soft)"><em>Aún no tenemos tu conteo de puntos.</em></p>`;
@@ -2993,11 +2749,7 @@
         card.querySelectorAll('.badge-scale-row[data-min]').forEach(row => {
           if(parseInt(row.getAttribute('data-min'),10) === actual.min) row.classList.add('current');
         });
-      })
-      .catch(err => {
-        console.error('Error cargando insignia:', err);
-        card.querySelector('#insigniaActualBox').innerHTML = `<p style="font-size:13px;color:var(--ink-soft)"><em>⚠️ No se pudo cargar tu insignia actual.</em></p>`;
-      });
+    })();
   }
 
   // Cambio de contraseña desde dentro de la app (usuario ya logueado)
@@ -3006,20 +2758,14 @@
     newPass = (newPass||'').trim();
     if(!currentPass || !newPass){ msgEl.style.color='#B94A3A'; msgEl.textContent='Rellena ambos campos'; return; }
     if(newPass.length < 3){ msgEl.style.color='#B94A3A'; msgEl.textContent='La nueva contraseña debe tener al menos 3 caracteres'; return; }
-    if(state.passwords[state.me] !== currentPass){ msgEl.style.color='#B94A3A'; msgEl.textContent='Contraseña actual incorrecta'; return; }
-    const records = state.checkins[state.me] || [];
+    msgEl.style.color = 'var(--ink-soft)'; msgEl.textContent = 'Guardando…';
     try {
-      for(const rec of records){
-        if(rec.id){
-          const fields = {}; fields[AIR.fields.pass] = newPass;
-          await fetch(AIR_URL + '/' + rec.id, { method:'PATCH', headers:airHeaders(), body:JSON.stringify({fields}) });
-        }
-      }
-      state.passwords[state.me] = newPass;
+      // El Worker comprueba la contraseña actual de la persona que ha entrado
+      await api('/cambiar-password', { actual: currentPass, nueva: newPass });
       msgEl.style.color = 'var(--moss-deep)';
       msgEl.textContent = 'Contraseña cambiada ✓';
     } catch(e){
-      msgEl.style.color='#B94A3A'; msgEl.textContent='No se pudo cambiar (revisa tu conexión)';
+      msgEl.style.color='#B94A3A'; msgEl.textContent = mensajeError(e, 'No se pudo cambiar (revisa tu conexión)');
     }
   }
 
@@ -3197,11 +2943,10 @@
     card.innerHTML = `<p style="font-size:14px;color:var(--ink-soft)">Cargando…</p>`;
     app.appendChild(card);
 
-    // Busca la fila sin distinguir tildes ni mayúsculas (igual que cargarPlan)
-    fetch(FACTURACION_URL + '?maxRecords=200', { headers: airHeaders() })
-      .then(res => { if(!res.ok) throw new Error('Airtable ' + res.status); return res.json(); })
-      .then(data => {
-        const rec = (data.records || []).find(r => nombresDeFila(r.fields).some(n => mismoNombre(n, state.me)));
+    // Se vuelven a pedir los datos al Worker, por si acaba de pagar
+    refreshAll()
+      .then(() => {
+        const rec = (state.facturacion && Object.keys(state.facturacion).length) ? { fields: state.facturacion } : null;
         if(!rec){
           card.innerHTML = `<p style="font-size:14px;color:var(--ink-soft)"><em>No encontramos datos de facturación para tu usuario. Escríbele a tu facilitador si crees que es un error.</em></p>`;
           return;
