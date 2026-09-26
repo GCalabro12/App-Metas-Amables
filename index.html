@@ -1311,7 +1311,7 @@
 
   const DEFAULT_MEMBERS = ['Empar','Rafael','Rosa','Shayo','Ana María'];
 
-  const APP_VERSION = 'V5.6';
+  const APP_VERSION = 'V5.8';
 
   // ==== Conexión con Airtable ====
   // El token NO está en el código — se inyecta via URL (?t=TOKEN) o localStorage
@@ -1905,17 +1905,22 @@
     ]},
     guias: { nombre: 'Plan Guías', precio: '160 € al año', pagos: [{ txt: 'Contratar Plan Guías →', url: 'https://buy.stripe.com/cNieVceGR00T1rj4uGbZe0g' }], incluye: [
       'Tu guía de prácticas personalizada, nueva cada semana',
-      'Registro del lunes de compromiso amable, con puntos y niveles',
-      'Tu calendario completo del trimestre'
+      'Tu calendario completo de registros del trimestre',
+      'Comparte tu compromiso de cada lunes por WhatsApp con tu socio de compromiso'
     ]},
     sesiones: { nombre: 'Plan Guías + Sesiones', precio: '360 € el primer año · 260 € a partir del segundo', precio2: 'o 105 € al trimestre', pagos: [{ txt: 'Pagar anual →', url: 'https://buy.stripe.com/8x24gy1U53d59XP5yKbZe0d' }, { txt: 'Pagar trimestral →', url: 'https://buy.stripe.com/6oU8wOcyJ00Tee5aT4bZe0e' }], incluye: [
       'Todo lo del Plan Guías',
-      'Sesiones online cada 15 días, en grupo reducido',
-      'Acompañamiento en directo para desatascar lo que se atasque'
+      'Insignias que reconocen tu constancia y tu avance',
+      'Sesiones online cada 15 días, en grupo reducido, para desatascar situaciones y automotivarte'
     ]}
   };
   const ORDEN_PLAN = { gratis: 0, libre: 0, guias: 1, sesiones: 2 };
   function tienePlan(minimo){ return (ORDEN_PLAN[state.plan] || 0) >= ORDEN_PLAN[minimo]; }
+  // El calendario de registros es del Plan Guías: en el Plan Libre sale con candado y lleva a «Tu plan»
+  function calBloqueado(){ return !tienePlan('guias'); }
+  function irAPlanes(){ state.prevView = state.view; state.view = 'planes'; window.scrollTo(0,0); render(); }
+  function irCalendario(){ if(calBloqueado()){ irAPlanes(); return; } state.view = 'calendar'; window.scrollTo(0,0); render(); }
+  function txtCal(t){ return (calBloqueado() ? '🔒 ' : '📅 ') + t; }
 
   // Lee el plan de Facturación. Acepta el nombre escrito en "Plan" o en "Membresía":
   // si contiene "sesion" → Plan Sesiones; si contiene "guia" → Plan Guías.
@@ -3222,12 +3227,14 @@
         if(nuevo === actual) return;
         state.altaPaso = nuevo; window.scrollTo(0, 0); render(); return;
       }
-      const orden = [null, 's4', 's3', 's1', 's2', 's5'];   // en el orden del ciclo
-      if(state.view === 'panel'){
-        const i = Math.max(0, orden.indexOf(state.panelSub || null));
+      const orden = [null, 's4', 's3', 'sB', 's1', 's2', 's5'];   // en el orden del ciclo (sB = b · Práctica semanal, vista propia)
+      if(state.view === 'panel' || state.view === 'practicaSemanal'){
+        const actualSub = state.view === 'practicaSemanal' ? 'sB' : (state.panelSub || null);
+        const i = Math.max(0, orden.indexOf(actualSub));
         const j = dx < 0 ? Math.min(orden.length - 1, i + 1) : Math.max(0, i - 1);
         if(j === i) return;
-        state.panelSub = orden[j];
+        if(orden[j] === 'sB'){ state.prevView = 'panel'; state.view = 'practicaSemanal'; }
+        else { state.view = 'panel'; state.panelSub = orden[j]; }
       } else {
         if(state.modoPrueba) state.modoPrueba = false;
         state.view = 'panel'; state.panelSub = null;
@@ -3349,8 +3356,8 @@
       app.appendChild(btnSeguir);
       const btnCalSin = document.createElement('button');
       btnCalSin.className = 'link-quiet';
-      btnCalSin.textContent = '📅 Ver mi calendario';
-      btnCalSin.onclick = () => { state.view = 'calendar'; window.scrollTo(0,0); render(); };
+      btnCalSin.textContent = txtCal('Ver mi calendario');
+      btnCalSin.onclick = irCalendario;
       app.appendChild(btnCalSin);
       return;
     }
@@ -3383,8 +3390,8 @@
       const btnCal = document.createElement('button');
       btnCal.className = 'btn btn-yes';
       btnCal.style.textAlign = 'center';
-      btnCal.textContent = '📅 Ver mi calendario';
-      btnCal.onclick = () => { state.view = 'calendar'; window.scrollTo(0,0); render(); };
+      btnCal.textContent = txtCal('Ver mi calendario');
+      btnCal.onclick = irCalendario;
       app.appendChild(btnCal);
       const btnBack = document.createElement('button');
       btnBack.className = 'link-quiet';
@@ -3419,6 +3426,7 @@
       return;
     }
 
+    if(state.view === 'calendar' && calBloqueado()){ state.view = 'planes'; state.prevView = 'panel'; }
     if(state.view === 'calendar'){
       const nav = document.createElement('nav');
       nav.className = 'tabs';
@@ -3616,12 +3624,12 @@
 
       const nav = document.createElement('nav');
       nav.className = 'tabs';
-      nav.innerHTML = `<button class="active">🔄 Ciclo</button><button id="toCheckin">Registro</button>${tienePlan('sesiones') ? '<button id="toGroup">Mi grupo</button>' : ''}<button id="toCal">📅 <span class="tab-full">Calendario de registro</span><span class="tab-abbr">Cal. reg.</span></button>`;
+      nav.innerHTML = `<button class="active">🔄 Ciclo</button><button id="toCheckin">Registro</button>${tienePlan('sesiones') ? '<button id="toGroup">Mi grupo</button>' : ''}<button id="toCal">${calBloqueado() ? '🔒' : '📅'} <span class="tab-full">Calendario de registro</span><span class="tab-abbr">Cal. reg.</span></button>`;
       // pestañas quitadas del Panel: las opciones ya están en la lista de abajo
       
       nav.querySelector('#toCheckin').onclick = () => { state.view='checkin'; state.regPaso = null; window.scrollTo(0,0); render(); };
       if(nav.querySelector('#toGroup')) nav.querySelector('#toGroup').onclick = openGroupPanel;
-      nav.querySelector('#toCal').onclick = () => { state.view='calendar'; window.scrollTo(0,0); render(); };
+      nav.querySelector('#toCal').onclick = irCalendario;
 
       const sinSesiones = !tienePlan('sesiones');
       const sinGuias = !tienePlan('guias');
@@ -3866,12 +3874,12 @@
 
       const nav = document.createElement('nav');
       nav.className = 'tabs';
-      nav.innerHTML = `<button id="toPanel">🔄 Ciclo</button><button class="active">Registro</button>${tienePlan('sesiones') ? '<button id="toGroup">Mi grupo</button>' : ''}<button id="toCal">📅 <span class="tab-full">Calendario de registro</span><span class="tab-abbr">Cal. reg.</span></button>`;
+      nav.innerHTML = `<button id="toPanel">🔄 Ciclo</button><button class="active">Registro</button>${tienePlan('sesiones') ? '<button id="toGroup">Mi grupo</button>' : ''}<button id="toCal">${calBloqueado() ? '🔒' : '📅'} <span class="tab-full">Calendario de registro</span><span class="tab-abbr">Cal. reg.</span></button>`;
       // pestañas quitadas del Registro: abajo están los enlaces a grupo y calendario
       
       nav.querySelector('#toPanel').onclick = () => { state.view='panel'; window.scrollTo(0,0); render(); };
       if(nav.querySelector('#toGroup')) nav.querySelector('#toGroup').onclick = openGroupPanel;
-      nav.querySelector('#toCal').onclick = () => { state.view='calendar'; window.scrollTo(0,0); render(); };
+      nav.querySelector('#toCal').onclick = irCalendario;
 
       const list = state.checkins[state.me] || [];
       const thisWeek = list.find(c => c.week === currentWeekShort);
@@ -4063,10 +4071,10 @@
         pie.style.cssText = 'display:flex;flex-direction:column;gap:6px;margin-top:14px';
         pie.innerHTML =
           (tienePlan('sesiones') ? '<button type="button" class="link-quiet" id="pieGrupo" style="padding:0">🤝 Ver mi grupo</button>' : '') +
-          '<button type="button" class="link-quiet" id="pieCal" style="padding:0">📅 Ver mi calendario de registro</button>';
+          '<button type="button" class="link-quiet" id="pieCal" style="padding:0">' + txtCal('Ver mi calendario de registro') + (calBloqueado() ? ' <small>(Plan Guías)</small>' : '') + '</button>';
         app.appendChild(pie);
         if(pie.querySelector('#pieGrupo')) pie.querySelector('#pieGrupo').onclick = openGroupPanel;
-        pie.querySelector('#pieCal').onclick = () => { state.view = 'calendar'; window.scrollTo(0,0); render(); };
+        pie.querySelector('#pieCal').onclick = irCalendario;
       }
 
       if(state.regPaso !== 2){ enlacesRegistro(); return; }
@@ -4100,8 +4108,8 @@
           style="width:100%;border:1px solid var(--border);border-radius:10px;padding:12px;font-family:'Karla';font-size:16px;margin-bottom:4px;background:#FCFCF9;box-sizing:border-box">
         <p style="font-size:13px;color:var(--ink-soft);margin:0 0 14px">Sin forzarte: elige un número que puedas sostener.</p>
 
-        <button class="btn btn-yes" id="btnRegistrarTodo" style="text-align:center">${tienePlan('sesiones') ? '📲 Registrar y compartir en WhatsApp' : '📲 Registrar y compartir con tu socio de compromiso'}</button>
-        ${tienePlan('sesiones') ? '' : '<p style="font-size:13px;color:var(--ink-soft);margin:6px 0 0">Tu <b>socio de compromiso</b> es alguien de confianza a quien le cuentas tu compromiso cada semana. Decirlo en voz alta hace que se cumpla mucho más.</p>'}
+        <button class="btn btn-yes" id="btnRegistrarTodo" style="text-align:center">${!tienePlan('guias') ? '✅ Registrar mi compromiso' : (tienePlan('sesiones') ? '📲 Registrar y compartir en WhatsApp' : '📲 Registrar y compartir con tu socio de compromiso')}</button>
+        ${!tienePlan('guias') ? '<button type="button" class="link-quiet" id="btnCompartirBloq" style="padding:0;margin-top:8px;text-align:left">🔒 Compartir tu compromiso por WhatsApp con tu socio de compromiso <small>(Plan Guías)</small></button>' : (tienePlan('sesiones') ? '' : '<p style="font-size:13px;color:var(--ink-soft);margin:6px 0 0">Tu <b>socio de compromiso</b> es alguien de confianza a quien le cuentas tu compromiso cada semana. Decirlo en voz alta hace que se cumpla mucho más.</p>')}
         <div class="saved-msg">${state.savedMsg || state.compromisoMsg || ''}</div>
         <button class="link-quiet" id="btnComoCuenta" style="padding:0;margin-top:10px">ℹ️ ¿Cómo cuenta la app mi cumplimiento?</button>
         <button class="link-quiet" id="btnVolverCierre" style="padding:0;margin-top:6px">← Ver el cierre de la semana pasada</button>
@@ -4145,6 +4153,7 @@
       if(tarjetaCheckin) app.appendChild(tarjetaCheckin);
 
       // Un único guardado: cierra la semana pasada, guarda el compromiso nuevo y comparte
+      if(compCard.querySelector('#btnCompartirBloq')) compCard.querySelector('#btnCompartirBloq').onclick = irAPlanes;
       compCard.querySelector('#btnRegistrarTodo').onclick = () => {
         // Todos los campos del Paso 2 son obligatorios
         const obligatorios = [
@@ -4205,8 +4214,10 @@
         // Guardar el compromiso y compartir
         saveCompromisoSemana(oportEl.value, compEl.value, identidadEl.value, metaTrimEl.value, metaSemEl.value)
           .then(() => {
-            state.mensajeWhatsApp = msg;
-            window.open('https://wa.me/?text=' + encodeURIComponent(msg), '_blank');
+            if(tienePlan('guias')){
+              state.mensajeWhatsApp = msg;
+              window.open('https://wa.me/?text=' + encodeURIComponent(msg), '_blank');
+            }
             window.scrollTo(0,0);
             render();
           })
