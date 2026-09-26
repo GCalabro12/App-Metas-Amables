@@ -1303,7 +1303,7 @@
 
   const DEFAULT_MEMBERS = ['Empar','Rafael','Rosa','Shayo','Ana María'];
 
-  const APP_VERSION = 'V5.2';
+  const APP_VERSION = 'V5.3';
 
   // ==== Conexión con Airtable ====
   // El token NO está en el código — se inyecta via URL (?t=TOKEN) o localStorage
@@ -3540,7 +3540,7 @@
                           s4: ['pizarra', 190, false], s5: ['formacion', 170, false] }[state.panelSub] || ['saludo', 112, true];
       const greetPanel = state.panelSub
         ? el(`<div style="position:relative;text-align:center;margin-bottom:10px">${practiHTML(figuraSub[0], '', figuraSub[1], figuraSub[2] ? 'una-vez' : '')}</div>`)
-        : el(`<div style="position:relative;text-align:center;margin-bottom:14px">${nivelBadgeHTML()}${practiReaccionHTML('saludo', 'empujonSaludo', 112, 'practi-saludo')}<div style="font-family:'Lora',serif;font-size:24px;font-weight:600;color:var(--ink)">Hola, ${state.me}</div><div style="font-family:'Karla',sans-serif;font-size:15px;font-weight:700;color:var(--ink);margin-top:2px">${bienvenidaTexto(state.me)} a tu ciclo de aprendizaje</div><div class="fecha-hoy" id="fechaHoy">${textoFechaHoy()}</div></div>`);
+        : el(`<div style="position:relative;text-align:center;margin-bottom:14px">${nivelBadgeHTML()}<div class="practi-inicio" style="margin-bottom:10px">${practiReaccionHTML('saludo', 'empujonSaludo', 104, 'practi-saludo')}${bocadilloPracti(fraseInicio(), 'tono-calma')}</div><div style="font-family:'Lora',serif;font-size:24px;font-weight:600;color:var(--ink)">Hola, ${state.me}</div><div style="font-family:'Karla',sans-serif;font-size:15px;font-weight:700;color:var(--ink);margin-top:2px">${bienvenidaTexto(state.me)} a tu ciclo de aprendizaje</div><div class="fecha-hoy" id="fechaHoy">${textoFechaHoy()}</div></div>`);
       const nivelBtnPanel = greetPanel.querySelector('#nivelBadgeBtn');
       app.appendChild(greetPanel);
       if(!state.panelSub && !bienvenidaVista()) app.appendChild(el(bienvenidaHTML()));
@@ -3562,8 +3562,7 @@
       const practicaBloqueada = practicaAbiertaEsteMes();
 
       if(!state.panelSub){
-        const inicio = el(`<div class="practi-inicio">${practiReaccionHTML('pensativo','empujonPensando',96)}${bocadilloPracti(fraseInicio(), 'tono-calma')}</div>`);
-        app.appendChild(inicio);
+
 
         const opciones = document.createElement('div');
         opciones.className = 'ciclo';
