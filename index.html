@@ -1311,7 +1311,18 @@
   }
 
 
-  const APP_VERSION = 'V6.6';
+  const APP_VERSION = 'V6.7';
+
+  // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
+  // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
+  // Google Play: se paga fuera de la app (web o email).
+  const MODO_PLAY = (function(){
+    try {
+      if(new URLSearchParams(location.search).get('origen') === 'play' || String(document.referrer).startsWith('android-app://'))
+        localStorage.setItem('ma_origen', 'play');
+      return localStorage.getItem('ma_origen') === 'play';
+    } catch(e){ return false; }
+  })();
 
   // ==== Conexión con el Worker (portero de Airtable) ====
   // La app ya no ve el token de Airtable: todo pasa por el Worker, que comprueba
@@ -1475,21 +1486,23 @@
   // ===== Crear cuenta (alta desde la app) =====
   // Crea la persona en "Practicantes y Gamifica" (con teléfono y permiso de WhatsApp)
   // y su fila en la tabla del registro con nombre y contraseña. Entra con Plan Libre
-  // (sin fila en Facturación). Make vigila las filas nuevas y avisa por Telegram.
+  // (sin fila en Facturación). El Worker avisa por Telegram de cada cuenta nueva.
   const TEL_FACILITADOR = '+34 658 825 799';
-  async function crearCuenta(nombre, telefono, pass, aceptaWhatsApp){
+  async function crearCuenta(nombre, telefono, email, pass, aceptaWhatsApp, aceptaEmails){
     nombre = String(nombre || '').trim().replace(/\s+/g, ' ');
     telefono = String(telefono || '').trim();
+    email = String(email || '').trim();
     pass = String(pass || '').trim();
-    state.altaDraft = { nombre, telefono, pass, whats: !!aceptaWhatsApp };   // para no perder lo escrito si hay un aviso
+    state.altaDraft = { nombre, telefono, email, pass, whats: !!aceptaWhatsApp, emails: !!aceptaEmails };   // para no perder lo escrito si hay un aviso
     const digitos = telefono.replace(/[^0-9]/g, '');
     if(nombre.length < 2){ state.loginError = 'Escribe tu nombre y apellido'; render(); return; }
     if(digitos.length < 9){ state.loginError = 'Escribe un teléfono válido (con prefijo si no es de España)'; render(); return; }
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ state.loginError = 'Escribe un email válido'; render(); return; }
     if(pass.length < 4){ state.loginError = 'La contraseña debe tener al menos 4 caracteres'; render(); return; }
     state.loginError = 'Creando tu cuenta…'; render();
-    // El Worker comprueba que el nombre y la contraseña no estén ya en uso
+    // El Worker comprueba que el nombre no esté ya en uso
     try {
-      const r = await api('/alta', { nombre, telefono, password: pass, aceptaWhatsApp: !!aceptaWhatsApp });
+      const r = await api('/alta', { nombre, telefono, email, password: pass, aceptaWhatsApp: !!aceptaWhatsApp, aceptaEmails: !!aceptaEmails });
       guardarSesion(r.token);
       state.loginError = '';
       state.loginView = 'login';
@@ -2608,7 +2621,7 @@
       <button class="menu-item" id="miPanelBtn">🔄 Tu ciclo de aprendizaje</button>
       <button class="menu-item" id="miPerfilBtn">👤 Perfil</button>
       <button class="menu-item" id="miPlanBtn">⭐ Tu plan: ${state.plan === 'sesiones' ? 'Guías + Sesiones' : (state.plan === 'guias' ? 'Guías' : 'Libre')}</button>
-      <button class="menu-item" id="facturacionBtn">💳 Facturación</button>
+      ${MODO_PLAY ? '' : '<button class="menu-item" id="facturacionBtn">💳 Facturación</button>'}
       <button class="menu-item" id="ajustesBtn">⚙️ Ajustes</button>
       <div class="menu-divider"></div>
       <button class="menu-item" id="cerrarSesionBtn">🚪 Cerrar sesión</button>
@@ -2628,7 +2641,7 @@
     panel.querySelector('#miPanelBtn').onclick = () => { state.menuOpen = false; state.view = 'panel'; state.panelSub = null; state.prevView = 'panel'; window.scrollTo(0,0); render(); };
     panel.querySelector('#btnMenuClose').onclick = () => { state.menuOpen = false; render(); };
     panel.querySelector('#miPerfilBtn').onclick = () => { state.menuOpen = false; state.view = 'perfil'; state.prevView = 'panel'; window.scrollTo(0,0); render(); };
-    panel.querySelector('#facturacionBtn').onclick = () => { state.menuOpen = false; state.view = 'facturacion'; state.prevView = 'panel'; window.scrollTo(0,0); render(); };
+    if(!MODO_PLAY) panel.querySelector('#facturacionBtn').onclick = () => { state.menuOpen = false; state.view = 'facturacion'; state.prevView = 'panel'; window.scrollTo(0,0); render(); };
     panel.querySelector('#ajustesBtn').onclick = () => { state.menuOpen = false; state.view = 'ajustes'; state.prevView = 'panel'; window.scrollTo(0,0); render(); };
     panel.querySelector('#cerrarSesionBtn').onclick = () => { state.menuOpen = false; switchUser(); };
     
@@ -2673,6 +2686,15 @@
         <button class="link-quiet" id="togglePassChange" style="padding:0">🔒 Cambiar contraseña</button>
         <div id="passChangeBox" style="display:none;margin-top:12px"></div>
       </div>
+      <div style="margin-top:14px;border-top:1px solid var(--border);padding-top:14px">
+        <button class="link-quiet" id="toggleEliminar" style="padding:0;color:#B94A3A">🗑️ Eliminar mi cuenta</button>
+        <div id="eliminarBox" style="display:none;margin-top:12px">
+          <p style="font-size:13px;color:var(--ink-soft);margin:0 0 10px">Se borrarán tus registros, tus puntos y tus datos de contacto. No se puede deshacer. Los datos de pagos se conservan el tiempo que exige la ley.</p>
+          <input type="password" id="eliminarPass" placeholder="Escribe tu contraseña para confirmar" style="width:100%;border:1px solid var(--border);border-radius:10px;padding:12px;font-family:'Karla';font-size:15px;margin-bottom:10px;background:#FCFCF9;box-sizing:border-box">
+          <button class="btn btn-no" id="eliminarConfirmar" style="text-align:center">Eliminar mi cuenta definitivamente</button>
+          <div id="eliminarMsg" style="font-size:13px;margin-top:8px"></div>
+        </div>
+      </div>
     `;
     app.appendChild(card);
 
@@ -2703,6 +2725,29 @@
 
     // Email: vive en la tabla Facturación, campo "Correo electrónico" (llega con refreshAll)
     card.querySelector('#perfilEmailRow').innerHTML = 'Email: ' + (state.miCorreo ? escapeAttr(state.miCorreo) : '<em>sin email registrado</em>');
+
+    // --- Eliminar la cuenta (Google Play lo exige) ---
+    const eliminarBox = card.querySelector('#eliminarBox');
+    card.querySelector('#toggleEliminar').onclick = () => {
+      eliminarBox.style.display = eliminarBox.style.display === 'none' ? 'block' : 'none';
+    };
+    card.querySelector('#eliminarConfirmar').onclick = async () => {
+      const msg = card.querySelector('#eliminarMsg');
+      const pass = card.querySelector('#eliminarPass').value;
+      if(!pass.trim()){ msg.style.color = '#B94A3A'; msg.textContent = 'Escribe tu contraseña para confirmar'; return; }
+      if(!confirm('¿Seguro que quieres eliminar tu cuenta? No se puede deshacer.')) return;
+      msg.style.color = 'var(--ink-soft)'; msg.textContent = 'Eliminando…';
+      try {
+        await api('/eliminar-cuenta', { password: pass });
+        guardarSesion(null);
+        try{ localStorage.removeItem('ma_user'); localStorage.removeItem('ma_nombre_login'); }catch(e){}
+        state.me = null; state.view = 'pick'; state.loginView = 'login';
+        state.loginError = ''; state.savedMsg = 'Tu cuenta se ha eliminado. Gracias por haber practicado con nosotros 🌿';
+        window.scrollTo(0,0); render();
+      } catch(e){
+        msg.style.color = '#B94A3A'; msg.textContent = mensajeError(e, 'No se pudo eliminar (revisa tu conexión)');
+      }
+    };
 
     // --- Cambiar contraseña desde Mi perfil ---
     const togglePassBtn = card.querySelector('#togglePassChange');
@@ -3367,10 +3412,14 @@
           <input type="text" id="altaNombre" autocomplete="name" placeholder="Ej.: Laura Martín" value="${escapeAttr(d.nombre || '')}" style="${estiloCampo}">
           <label class="note-label">Teléfono (WhatsApp)</label>
           <input type="tel" id="altaTel" autocomplete="tel" placeholder="Ej.: 612 345 678" value="${escapeAttr(d.telefono || '')}" style="${estiloCampo}">
+          <label class="note-label">Email</label>
+          <input type="email" id="altaEmail" autocomplete="email" placeholder="Ej.: laura@gmail.com" value="${escapeAttr(d.email || '')}" style="${estiloCampo}">
           <label class="note-label">Elige una contraseña</label>
           <input type="password" id="altaPass" autocomplete="new-password" placeholder="Mínimo 4 caracteres" value="${escapeAttr(d.pass || '')}" style="${estiloCampo};margin-bottom:4px">
           <div style="text-align:right;margin-bottom:10px"><button id="toggleAltaPass" type="button" style="background:none;border:none;font-family:'Karla';font-size:13px;color:var(--moss-deep);cursor:pointer;padding:4px 0;text-decoration:underline">👁 Ver contraseña</button></div>
           <label class="alta-check"><input type="checkbox" id="altaWhats" ${d.whats ? 'checked' : ''}> Quiero recibir mensajes de ánimo por WhatsApp</label>
+          <label class="alta-check"><input type="checkbox" id="altaEmails" ${d.emails ? 'checked' : ''}> Quiero recibir por email novedades y propuestas de Metas Amables</label>
+          <p style="font-size:12px;color:var(--ink-soft);margin:8px 0 0">Al crear tu cuenta aceptas la <a href="privacidad.html" target="_blank" rel="noopener" style="color:var(--ink-soft)">política de privacidad</a>.</p>
           <button class="btn btn-yes" id="btnAlta" style="text-align:center;margin-top:14px">Crear mi cuenta</button>
           ${state.loginError ? '<div style="color:' + (state.loginError.endsWith('…') ? 'var(--ink-soft)' : '#B94A3A') + ';font-size:13px;margin-top:8px">'+state.loginError+'</div>' : ''}
         `;
@@ -3383,7 +3432,8 @@
         };
         altaCard.querySelector('#btnAlta').onclick = () => crearCuenta(
           altaCard.querySelector('#altaNombre').value, altaCard.querySelector('#altaTel').value,
-          altaCard.querySelector('#altaPass').value, altaCard.querySelector('#altaWhats').checked);
+          altaCard.querySelector('#altaEmail').value, altaCard.querySelector('#altaPass').value,
+          altaCard.querySelector('#altaWhats').checked, altaCard.querySelector('#altaEmails').checked);
       } else {
         // Pantalla de login
         app.appendChild(el(`<h1>Entra en tu cuenta</h1><p class="lead">Escribe tu nombre y tu contraseña.</p>`));
@@ -4111,20 +4161,22 @@
           '<div class="card plan-card' + (esElSuyo ? ' destacado' : '') + '">' +
           (esElSuyo ? '<span class="plan-cinta">Tu plan</span>' : '') +
           '<p class="plan-nombre">⭐ ' + p.nombre + '</p>' +
-          '<p class="plan-precio">' + p.precio + '</p>' +
-          (p.nota ? '<p class="plan-nota">' + p.nota + '</p>' : '') +
-          (p.precio2 ? '<p class="plan-precio" style="margin-top:-4px;font-size:15px">' + p.precio2 + '</p>' : '') +
+          // En la app de Google Play no se muestran precios ni formas de pago
+          (MODO_PLAY ? '' :
+            '<p class="plan-precio">' + p.precio + '</p>' +
+            (p.nota ? '<p class="plan-nota">' + p.nota + '</p>' : '') +
+            (p.precio2 ? '<p class="plan-precio" style="margin-top:-4px;font-size:15px">' + p.precio2 + '</p>' : '')) +
           '<ul class="plan-lista">' + p.incluye.map(i => '<li>' + i + '</li>').join('') + '</ul>' +
           (esElSuyo
             ? '<p class="plan-tienes">✔️ Es el que tienes ahora</p>'
             : (tienePlan(clave)
                 ? '<p class="plan-tienes">✔️ Incluido en tu plan</p>'
-                : ((p.pagos || []).map(pg => '<a class="panel-link-btn" style="margin-top:8px" target="_blank" rel="noopener" href="' + enlacePago(pg.url) + '">' + pg.txt + '</a>').join('') +
+                : MODO_PLAY ? '' : ((p.pagos || []).map(pg => '<a class="panel-link-btn" style="margin-top:8px" target="_blank" rel="noopener" href="' + enlacePago(pg.url) + '">' + pg.txt + '</a>').join('') +
                    '<p style="font-size:13px;text-align:center;margin:10px 0 0"><a style="color:var(--ink-soft)" target="_blank" href="https://wa.me/34658825799?text=' + encodeURIComponent(msg) + '">¿Dudas? Escríbele a tu facilitador</a></p>'))) +
           '</div>';
       });
       app.appendChild(tarjetas);
-      app.appendChild(el('<p style="font-size:13px;color:var(--ink-soft);text-align:center;margin:4px 0 0">El pago se hace de forma segura con Stripe. Si prefieres pagar por transferencia, escríbele a tu facilitador.</p>'));
+      if(!MODO_PLAY) app.appendChild(el('<p style="font-size:13px;color:var(--ink-soft);text-align:center;margin:4px 0 0">El pago se hace de forma segura con Stripe. Si prefieres pagar por transferencia, escríbele a tu facilitador.</p>'));
       return;
     }
 
