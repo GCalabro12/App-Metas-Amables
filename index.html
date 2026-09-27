@@ -676,15 +676,15 @@
     background:var(--surface); display:flex; align-items:center; justify-content:center;
     cursor:pointer; font-size:18px; color:var(--ink); flex-shrink:0;
   }
+  /* Botón «← Volver»: igual en todas las pantallas, rojo y grande; siempre lleva al panel */
   .back-btn{
-    padding:8px 12px; border-radius:8px; border:2px solid var(--moss); 
-    background:var(--moss-light); color:var(--moss-deep); cursor:pointer;
-    font-family:'Karla',sans-serif; font-size:14px; font-weight:600; flex-shrink:0;
+    padding:10px 18px; border-radius:10px; border:none;
+    background:var(--moss); color:#fff; cursor:pointer;
+    font-family:'Karla',sans-serif; font-size:16px; font-weight:700; flex-shrink:0;
     transition:all 0.2s ease;
   }
-  .back-btn:hover{
-    background:var(--moss); color:white; transform:scale(1.05);
-  }
+  .back-btn:hover{ background:var(--moss-deep); transform:scale(1.03); }
+  .back-btn.suelto{ display:block; margin:14px 0 10px; }
   .hamburger-btn-text{
     padding:8px 12px; border-radius:8px; border:2px solid var(--border);
     background:var(--surface); color:var(--ink); cursor:pointer;
@@ -1315,7 +1315,7 @@
   }
 
 
-  const APP_VERSION = 'V6.8';
+  const APP_VERSION = 'V6.9';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -2401,14 +2401,20 @@
   function bienvenidaVista(){ try { return localStorage.getItem(claveBienvenida()) === '1'; } catch(e){ return true; } }
   function bienvenidaHTML(){
     const nombre = String(state.me || '').split(' ')[0];
-    const frase = '¡Hola, ' + nombre + '! Soy Prácti y te acompaño en tus prácticas. Cada lunes, en Registro: '
-      + '1. Cierras la semana que acaba. 2. Dices a cuántas veces te comprometes. 3. Lo compartes con tu grupo.';
+    // Los pasos para empezar; en el Plan Libre la guía trae práctica la primera semana de cada mes
+    const libre = !tienePlan('guias');
+    const pasos = [
+      formularioEnviado() ? 'Ya enviaste el formulario de tu meta. ¡Bien!' : 'Si aún no lo has hecho, rellena el formulario de tu meta: botón «Define tu meta trimestral», abajo del todo.',
+      state.guiaTexto ? 'Tu guía de prácticas ya está en «a · Recibe tu guía semanal».' : 'En una media hora tendrás tu guía de prácticas en «a · Recibe tu guía semanal».',
+      libre ? 'La primera semana de cada mes, la guía te explica tu práctica.' : 'Cada semana, la guía te explica tu práctica.',
+      'Cada lunes, registra tu compromiso y tus logros en «c · Registra».'
+    ];
+    const frase = '¡Hola, ' + nombre + '! Soy Prácti y te acompaño en tus prácticas. Así empiezas: '
+      + pasos.map((p, i) => (i + 1) + '. ' + p).join(' ');
     return '<div class="practi-bocadillo bienvenida" id="bienvenidaPracti" data-voz="' + escapeAttr(frase) + '">'
       + '<b>¡Hola, ' + escapeAttr(nombre) + '! Soy Prácti</b> y te acompaño en tus prácticas.'
-      + '<span class="bienvenida-pasos">Cada lunes, en <b>Registro</b>:'
-      + '<span>1. Cierras la semana que acaba.</span>'
-      + '<span>2. Dices a cuántas veces te comprometes.</span>'
-      + '<span>3. Lo compartes con tu grupo.</span></span>'
+      + '<span class="bienvenida-pasos">Así empiezas:'
+      + pasos.map((p, i) => '<span>' + (i + 1) + '. ' + escapeAttr(p) + '</span>').join('') + '</span>'
       + '<span class="bienvenida-acciones">'
       + '<button type="button" class="link-quiet" id="btnOirBienvenida">🔊 Escúchalo</button>'
       + '<button type="button" class="btn btn-yes" id="btnCerrarBienvenida">Entendido ✓</button>'
@@ -2652,12 +2658,38 @@
     document.body.appendChild(overlay);
   }
 
+  // «Volver» siempre lleva al panel del ciclo (antes volvía a la pantalla anterior y
+  // a veces se quedaba en bucle, p. ej. Práctica semanal → Guía → Volver)
+  function soyModerador(){
+    const g = (state.groups && state.groups[state.me]) || [];
+    return (Array.isArray(g) ? g : [g]).some(x => String(x).toLowerCase().includes('moderador'));
+  }
+
+  // Formulario trimestral enviado hace menos de 100 días (lo apunta el script de la hoja)
+  function formularioEnviado(){
+    const f = state.gamifica && state.gamifica.formulario;
+    if(!f) return null;
+    const fecha = new Date(f + 'T12:00:00');
+    return (Date.now() - fecha.getTime()) < 100 * 86400000 ? fecha : null;
+  }
+
+  function irAlPanel(){
+    state.view = 'panel'; state.panelSub = null; state.prevView = 'panel'; state.regPaso = null;
+    window.scrollTo(0,0); render();
+  }
+  function botonVolver(){
+    const b = document.createElement('button');
+    b.type = 'button'; b.className = 'back-btn suelto'; b.textContent = '← Volver';
+    b.onclick = irAlPanel;
+    return b;
+  }
+
   function renderBackTopbar(title){
     const bar = el(`<div class="topbar"><button class="back-btn" id="btnVolver" aria-label="Volver">← Volver</button><span style="font-family:'Lora',serif;font-size:18px;font-weight:600">${title}</span><button class="hamburger-btn-text" id="btnMenuOpen2" aria-label="Menú">☰ Menú</button></div>`);
     const btnVolver = bar.querySelector('#btnVolver');
     const btnMenu = bar.querySelector('#btnMenuOpen2');
     app.appendChild(bar);
-    btnVolver.onclick = () => { state.view = state.prevView || 'panel'; window.scrollTo(0,0); render(); };
+    btnVolver.onclick = irAlPanel;
     btnMenu.onclick = () => { state.menuOpen = true; render(); };
   }
 
@@ -3200,12 +3232,11 @@
         <img class="brand-icon" src="data:image/png;base64,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" alt="">
         <div class="wordmark">APP Metas Amables <small class="version-tag">${APP_VERSION}</small></div>
       </div>
-      ${state.me ? `<div class="who"><button id="switchBtn">inicio</button></div>` : ''}
+      ${state.me && soyModerador() ? `<div class="who"><button id="switchBtn">inicio</button></div>` : ''}
     `;
     app.appendChild(header);
-    if(state.me){
-      header.querySelector('#switchBtn').onclick = switchUser;
-    }
+    // «inicio» (cerrar sesión rápido, para pruebas) solo lo ve el moderador
+    if(header.querySelector('#switchBtn')) header.querySelector('#switchBtn').onclick = switchUser;
 
     if(state.view === 'sinoportunidades'){
       app.appendChild(el(`
@@ -3272,11 +3303,7 @@
       btnCal.textContent = txtCal('Ver mi calendario');
       btnCal.onclick = irCalendario;
       app.appendChild(btnCal);
-      const btnBack = document.createElement('button');
-      btnBack.className = 'link-quiet';
-      btnBack.textContent = '← Volver a mi semana';
-      btnBack.onclick = () => { state.view = 'checkin'; state.regPaso = null; window.scrollTo(0,0); render(); };
-      app.appendChild(btnBack);
+      app.appendChild(botonVolver());
       return;
     }
 
@@ -3297,11 +3324,7 @@
       app.appendChild(calCard);
       app.appendChild(el('<a class="panel-link-btn honey" href="https://meet.google.com/qvf-aefv-trc" target="_blank" style="margin-bottom:12px">Enlace a la llamada →</a>'));
 
-      const btnBack = document.createElement('button');
-      btnBack.className = 'link-quiet';
-      btnBack.textContent = '← Volver al ciclo';
-      btnBack.onclick = () => { state.view = 'panel'; window.scrollTo(0,0); render(); };
-      app.appendChild(btnBack);
+      app.appendChild(botonVolver());
       return;
     }
 
@@ -3546,7 +3569,9 @@
                 sinGuias ? '<span class="etiqueta-plan">⭐ Semanal con el Plan Guías</span>' : '', practicaBloqueada)
           + flechaCiclo
           + '<button type="button" class="opcion-inicio ciclo-meta" data-ir="s4"><span class="opcion-tx"><b>Define tu meta trimestral</b>'
-          + (tx.meta ? '<small class="ciclo-dato">🎯 ' + escapeAttr(corto(tx.meta, 140)) + '</small>' : '<small>' + (intentosMeta > 0 ? 'Empieza por aquí: ¿qué quieres conseguir este trimestre?' : 'Ya usaste tus ajustes de este trimestre') + '</small>')
+          + (tx.meta ? '<small class="ciclo-dato">🎯 ' + escapeAttr(corto(tx.meta, 140)) + '</small>'
+             : formularioEnviado() ? '<small>✅ Formulario ya enviado' + (state.guiaTexto ? '' : ' · en breve tendrás tu guía') + '</small>'
+             : '<small>' + (intentosMeta > 0 ? 'Empieza por aquí: ¿qué quieres conseguir este trimestre?' : 'Ya usaste tus ajustes de este trimestre') + '</small>')
           + '</span><span class="opcion-flecha">›</span></button>'
           + '<button type="button" class="opcion-inicio ciclo-formacion" data-ir="s5"><span class="ciclo-icono">' + iconoCiclo('gorro') + '</span><span class="opcion-tx"><b>Formación</b><small>Libro, cuadrantes y módulos</small></span><span class="opcion-flecha">›</span></button>';
         app.appendChild(opciones);
@@ -3569,9 +3594,7 @@
           };
         });
       } else {
-        const volver = el(`<button type="button" class="link-quiet" id="btnVolverInicio" style="padding:0;margin-bottom:10px">← Volver al ciclo</button>`);
-        app.appendChild(volver);
-        app.querySelector('#btnVolverInicio').onclick = () => { state.panelSub = null; window.scrollTo(0,0); render(); };
+        app.appendChild(botonVolver());
       }
 
       // Bloque 1: Formación
@@ -3668,7 +3691,15 @@
       // Bloque 2: Meta trimestral
       const s2 = document.createElement('div');
       s2.className = 'card panel-section s2'; s2.id = 's4';
-      s2.innerHTML = `
+      const enviado = formularioEnviado();
+      if(enviado){
+        // Ya lo rellenó este trimestre: no se vuelve a abrir
+        s2.innerHTML = `
+          ${badgeSeccion('', 'Define tu meta trimestral')}
+          <p style="background:var(--honey-tint);border-radius:10px;padding:12px 14px">✅ <b>Formulario ya enviado</b> el ${enviado.getDate()}/${enviado.getMonth() + 1}.<br>
+          ${state.guiaTexto ? 'Tu guía ya está lista en <b>«a · Recibe tu guía semanal»</b>.' : 'En breve tendrás tu guía de prácticas en <b>«a · Recibe tu guía semanal»</b>.'}</p>
+          <p style="font-size:13px;color:var(--ink-soft)">Se rellena una vez por trimestre. Si necesitas cambiar algo, escribe a tu facilitador por WhatsApp.</p>`;
+      } else s2.innerHTML = `
         ${badgeSeccion('', 'Define tu meta trimestral')}
         <p>Rellena el formulario para definir tu meta trimestral más importante para ti, tus dificultades y a qué ritmo quieres ir. Te crearemos una Guía de Prácticas cada mes.</p>
         <p style="background:var(--honey-tint);border-radius:10px;padding:10px 12px;font-size:14px">✅ Se rellena <b>una vez por trimestre</b>. Si vuelves a abrirlo te saldrá vacío: es normal, <b>tus respuestas ya están guardadas</b>. Solo vuelve a rellenarlo si quieres cambiar tu meta, y te enviaremos una guía nueva.</p>
