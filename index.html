@@ -1183,6 +1183,10 @@
     const esc = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
     let out = esc(text);
     out = out.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, '<a href="$2" target="_blank" style="color:var(--moss-deep)">$1</a>');
+    // Títulos de Markdown ("## Objetivo", "### 🎯 …"): se ven como títulos en negrita, sin las almohadillas
+    out = out.replace(/^[ \t]*#{1,6}[ \t]+(.+?)[ \t]*#*[ \t]*$/gm, (m, t) => '\n**' + t.replace(/\*\*/g, '') + '**\n');
+    // Líneas separadoras (---): solo separan párrafos
+    out = out.replace(/^[ \t]*([-*_])(?:[ \t]*\1){2,}[ \t]*$/gm, '\n');
     out = out.replace(/\*\*(.+?)\*\*/g, '<b>$1</b>');
     out = out.replace(/\*(.+?)\*/g, '<em>$1</em>');
     out = out.split(/\n\s*\n/).map(p => p.trim()).filter(Boolean).map(p => `<p style="margin:0 0 10px">${p.replace(/\n/g,'<br>')}</p>`).join('');
@@ -1311,7 +1315,7 @@
   }
 
 
-  const APP_VERSION = 'V6.7';
+  const APP_VERSION = 'V6.8';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -2962,10 +2966,10 @@
       cuerpo += `<div class="duo-path">`;
       const soloLibre = !tienePlan('guias');
       semanas.forEach((b, i) => {
-        if(soloLibre && b.weekNum !== 1){
-          // Plan Libre: solo la primera semana de cada mes
+        if(soloLibre && b.weekNum !== 1 && i !== 0){
+          // Plan Libre: la primera semana de la guía y la primera de cada mes
           cuerpo += `<div class="duo-plan-item"><button type="button" class="duo-nodo duo-bloqueada duo-fuera-plan"><span class="duo-icono">🔒</span><span class="duo-texto">${b.monthName} · Semana ${b.weekNum}</span><span class="duo-plan-tag">⭐ Plan Guías</span></button>
-            <div class="duo-plan-aviso oculto"><p><b>El Plan Libre incluye una semana de práctica al mes</b> (la primera de cada mes).</p><p>Con el Plan Guías tienes tu guía completa, con una práctica nueva cada semana.</p><button type="button" class="panel-link-btn irAPlanesBtn" style="border:none;cursor:pointer;width:100%">Aumentar mi plan →</button></div></div>`;
+            <div class="duo-plan-aviso oculto"><p><b>El Plan Libre incluye una semana de práctica al mes</b> (la primera de cada mes, además de tu semana de inicio).</p><p>Con el Plan Guías tienes tu guía completa, con una práctica nueva cada semana.</p><button type="button" class="panel-link-btn irAPlanesBtn" style="border:none;cursor:pointer;width:100%">Aumentar mi plan →</button></div></div>`;
           return;
         }
         const desbloqueada = semanaDesbloqueada(b);
