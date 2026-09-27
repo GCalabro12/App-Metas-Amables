@@ -1315,7 +1315,7 @@
   }
 
 
-  const APP_VERSION = 'V7.0';
+  const APP_VERSION = 'V7.1';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -3437,13 +3437,13 @@
         const estiloCampo = "width:100%;border:1px solid var(--border);border-radius:10px;padding:13px;font-family:'Karla';font-size:16px;margin-bottom:12px;background:#FCFCF9;box-sizing:border-box";
         altaCard.innerHTML = `
           <label class="note-label">Nombre y apellido</label>
-          <input type="text" id="altaNombre" autocomplete="name" placeholder="Ej.: Laura Martín" value="${escapeAttr(d.nombre || '')}" style="${estiloCampo}">
+          <input type="text" id="altaNombre" name="username" autocomplete="username" autocapitalize="words" placeholder="Ej.: Laura Martín" value="${escapeAttr(d.nombre || '')}" style="${estiloCampo}">
           <label class="note-label">Teléfono (WhatsApp)</label>
           <input type="tel" id="altaTel" autocomplete="tel" placeholder="Ej.: 612 345 678" value="${escapeAttr(d.telefono || '')}" style="${estiloCampo}">
           <label class="note-label">Email</label>
           <input type="email" id="altaEmail" autocomplete="email" placeholder="Ej.: laura@gmail.com" value="${escapeAttr(d.email || '')}" style="${estiloCampo}">
           <label class="note-label">Elige una contraseña</label>
-          <input type="password" id="altaPass" autocomplete="new-password" placeholder="Mínimo 4 caracteres" value="${escapeAttr(d.pass || '')}" style="${estiloCampo};margin-bottom:4px">
+          <input type="password" id="altaPass" name="new-password" autocomplete="new-password" placeholder="Mínimo 4 caracteres" value="${escapeAttr(d.pass || '')}" style="${estiloCampo};margin-bottom:4px">
           <div style="text-align:right;margin-bottom:10px"><button id="toggleAltaPass" type="button" style="background:none;border:none;font-family:'Karla';font-size:13px;color:var(--moss-deep);cursor:pointer;padding:4px 0;text-decoration:underline">👁 Ver contraseña</button></div>
           <label class="alta-check"><input type="checkbox" id="altaWhats" ${d.whats ? 'checked' : ''}> Quiero recibir mensajes de ánimo por WhatsApp</label>
           <label class="alta-check"><input type="checkbox" id="altaEmails" ${d.emails ? 'checked' : ''}> Quiero recibir por email novedades y propuestas de Metas Amables</label>
@@ -3465,13 +3465,17 @@
       } else {
         // Pantalla de login
         app.appendChild(el(`<h1>Entra en tu cuenta</h1><p class="lead">Escribe tu nombre y tu contraseña.</p>`));
-        const formCard = document.createElement('div');
+        // Un <form> de verdad, con name/autocomplete: así el navegador (Chrome, Safari/iPhone)
+        // ofrece guardar el nombre y la contraseña y los rellena la próxima vez
+        const formCard = document.createElement('form');
         formCard.className = 'card';
+        formCard.method = 'post';
+        formCard.setAttribute('action', '#');
         formCard.innerHTML = `
-          <input type="text" id="nombreInput" autocomplete="username" placeholder="Tu nombre" value="${escapeAttr(nombreLogin())}" style="width:100%;border:1px solid var(--border);border-radius:10px;padding:14px;font-family:'Karla';font-size:16px;margin-bottom:10px;background:#FCFCF9;box-sizing:border-box">
-          <input type="password" id="passInput" autocomplete="current-password" placeholder="Tu contraseña" style="width:100%;border:1px solid var(--border);border-radius:10px;padding:14px;font-family:'Karla';font-size:16px;margin-bottom:4px;background:#FCFCF9;box-sizing:border-box">
+          <input type="text" id="nombreInput" name="username" autocomplete="username" autocapitalize="words" placeholder="Tu nombre" value="${escapeAttr(nombreLogin())}" style="width:100%;border:1px solid var(--border);border-radius:10px;padding:14px;font-family:'Karla';font-size:16px;margin-bottom:10px;background:#FCFCF9;box-sizing:border-box">
+          <input type="password" id="passInput" name="password" autocomplete="current-password" placeholder="Tu contraseña" style="width:100%;border:1px solid var(--border);border-radius:10px;padding:14px;font-family:'Karla';font-size:16px;margin-bottom:4px;background:#FCFCF9;box-sizing:border-box">
           <div style="text-align:right;margin-bottom:12px"><button id="togglePass" type="button" style="background:none;border:none;font-family:'Karla';font-size:13px;color:var(--moss-deep);cursor:pointer;padding:4px 0;text-decoration:underline">👁 Ver contraseña</button></div>
-          <button class="btn btn-yes" id="btnLogin" style="text-align:center">Entrar</button>
+          <button type="submit" class="btn btn-yes" id="btnLogin" style="text-align:center">Entrar</button>
           ${state.loginError ? '<div style="color:#B94A3A;font-size:13px;margin-top:8px">'+state.loginError+'</div>' : ''}
           ${state.savedMsg ? '<div class="saved-msg">'+state.savedMsg+'</div>' : ''}
         `;
@@ -3484,10 +3488,8 @@
           togglePass.textContent = showing ? 'Ver contraseña' : 'Ocultar contraseña';
         };
         const nombreInput = formCard.querySelector('#nombreInput');
-        const entrar = () => loginWithPassword(nombreInput.value, passInput.value);
-        formCard.querySelector('#btnLogin').onclick = entrar;
-        passInput.addEventListener('keydown', (e) => { if(e.key==='Enter') entrar(); });
-        nombreInput.addEventListener('keydown', (e) => { if(e.key==='Enter') passInput.focus(); });
+        formCard.onsubmit = (e) => { e.preventDefault(); loginWithPassword(nombreInput.value, passInput.value); };
+        nombreInput.addEventListener('keydown', (e) => { if(e.key==='Enter'){ e.preventDefault(); passInput.focus(); } });
         const changeLink = document.createElement('button');
         changeLink.className = 'link-quiet';
         changeLink.textContent = 'Cambiar contraseña';
