@@ -1315,7 +1315,7 @@
   }
 
 
-  const APP_VERSION = 'V6.9';
+  const APP_VERSION = 'V7.0';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -2288,7 +2288,7 @@
       const d = futuras[0];
       const dif = Math.round((d - hoy) / 86400000);
       const fecha = DIAS_ES[d.getDay()] + ', ' + d.getDate() + ' de ' + monthNamesEs[d.getMonth()];
-      return 'Próxima sesión: ' + (dif === 0 ? 'hoy, ' : dif === 1 ? 'mañana, ' : '') + fecha;
+      return 'Próxima sesión: ' + (dif === 0 ? 'hoy, ' : dif === 1 ? 'mañana, ' : '') + fecha + (dif > 1 ? ' (faltan ' + dif + ' días)' : '');
     } catch(e){ return ''; }
   }
   // "el lunes 29 de septiembre" (o "hoy, lunes 29 de septiembre")
@@ -2296,7 +2296,8 @@
     const d = new Date(); d.setHours(0, 0, 0, 0);
     const falta = (8 - d.getDay()) % 7;   // 0 si hoy es lunes
     d.setDate(d.getDate() + falta);
-    return (falta === 0 ? 'hoy, lunes ' : 'el lunes ') + d.getDate() + ' de ' + monthNamesEs[d.getMonth()];
+    return (falta === 0 ? 'hoy, lunes ' : 'el lunes ') + d.getDate() + ' de ' + monthNamesEs[d.getMonth()]
+      + (falta === 1 ? ' (mañana)' : falta > 1 ? ' (faltan ' + falta + ' días)' : '');
   }
 
   // ===== Ciclo de aprendizaje: iconos (libro a, pie b, lápiz c, pantalla d, birrete) =====
@@ -3556,8 +3557,9 @@
           + '<span class="opcion-flecha">' + (candado ? '🔒' : '›') + '</span></button>';
         opciones.innerHTML =
           boton('s2', 'ciclo-d' + (sinSesiones ? ' bloqueada' : ''), 'd', 'Sesión grupal quincenal',
-                (!sinSesiones && textoProximaSesion()) ? '<span class="ciclo-dato" style="font-style:normal;font-weight:700">📅 ' + textoProximaSesion() + '</span>' : 'Cada 15 días, en grupo reducido',
-                sinSesiones ? '<span class="etiqueta-plan">⭐ Guías + Sesiones</span>' : '', sinSesiones)
+                (!sinSesiones && textoProximaSesion()) ? '<span class="ciclo-dato" style="font-style:normal;font-weight:700">📅 ' + textoProximaSesion() + '</span>'
+                  : sinSesiones ? 'Cada 15 días, en grupo reducido. Aumenta tu plan: habla con tu facilitador' : 'Cada 15 días, en grupo reducido',
+                '', sinSesiones)
           + flechaCiclo
           + boton('s1', 'ciclo-c', 'c', 'Registra <span class="ciclo-normal">' + textoProximoLunes() + '</span>', 'El lunes de compromiso amable')
           + flechaCiclo
