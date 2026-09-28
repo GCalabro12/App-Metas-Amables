@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V9.0 · App Metas Amables · 2026-09-28 17:09 ==== -->
+<!-- ==== index V9.2 · App Metas Amables · 2026-09-28 17:26 ==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -808,7 +808,8 @@
   .practi-balanceo .practi-hueco.quieto, #practiQuieto:not(.oculto){display:inline-block;animation:balanceo 2.6s ease-in-out infinite;transform-origin:50% 100%}
   @keyframes balanceo{0%,100%{transform:rotate(-2deg) translateY(0)}50%{transform:rotate(2deg) translateY(-3px)}}
   @media (prefers-reduced-motion: reduce){.practi-balanceo .practi-hueco.quieto, #practiQuieto{animation:none}}
-  .practi-sesion{cursor:pointer}
+  .practi-tocable{cursor:pointer;position:relative;display:inline-block;line-height:0;-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;outline:none}
+  .practi-tocable *{-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none}
   .dias-card{padding-left:12px;padding-right:12px}
   .dias-fila{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px}
   .dia-btn{min-width:0;height:54px;box-sizing:border-box;border:2px solid #d8d3c6;border-radius:12px;background:#FCFCF9;font-family:'Karla',sans-serif;font-size:15px;font-weight:700;color:var(--ink);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;padding:0;transition:transform .12s,background .2s}
@@ -1349,7 +1350,7 @@
   }
 
 
-  const APP_VERSION = 'V9.0';
+  const APP_VERSION = 'V9.2';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -3634,12 +3635,14 @@
             : state.panelSub === 's1'
               ? practiReaccionHTML('escribiendo1', 'escribiendo2', 112, 'practi-balanceo')   // se mueve; al tocarlo escribe
               : state.panelSub === 's2'
-                ? '<span class="practi-sesion" title="Tócame">' + practiHTML('sesion', '', 190) + '</span>'   // al tocarlo, se rompe la pantalla
-                : practiHTML(figuraSub[0], '', figuraSub[1], figuraSub[2] ? 'una-vez' : '')}</div>`)
+                ? '<span class="practi-tocable" data-reaccion="practi-rotura.json" title="Tócame">' + practiHTML('sesion', '', 190) + '</span>'   // al tocarlo, se rompe la pantalla
+                : state.panelSub === 's4'
+                  ? '<span class="practi-tocable" data-reaccion="practi-pizarra-empujon.json" title="Tócame">' + practiHTML('pizarra', '', 190) + '</span>'   // al tocarlo, empujón en la pizarra
+                  : practiHTML(figuraSub[0], '', figuraSub[1], figuraSub[2] ? 'una-vez' : '')}</div>`)
         : el(`<div style="position:relative;text-align:center;margin-bottom:14px"><div style="font-family:'Lora',serif;font-size:24px;font-weight:600;color:var(--ink)">Hola, ${escapeAttr(state.me)}${avatarDe(state.me) ? ' ' + avatarDe(state.me) : ''}</div><div style="font-family:'Karla',sans-serif;font-size:15px;font-weight:700;color:var(--ink);margin-top:2px">${bienvenidaTexto(state.me)} a tu ciclo de aprendizaje</div><div class="fecha-hoy" id="fechaHoy" style="margin-bottom:10px">${textoFechaHoy()}</div><div class="practi-inicio" style="margin-bottom:10px">${practiReaccionHTML('saludo', 'empujonSaludo', 104, 'practi-saludo')}${bocadilloPracti(fraseInicio(), 'tono-calma')}</div></div>`);
+      // (el() devuelve un fragmento: hay que buscar dentro antes de añadirlo a la página)
+      greetPanel.querySelectorAll('.practi-tocable').forEach(c => { c.onclick = () => reaccionExterna(c, c.dataset.reaccion); });
       app.appendChild(greetPanel);
-      const practiSesion = greetPanel.querySelector('.practi-sesion');
-      if(practiSesion) practiSesion.onclick = () => romperPantallaSesion(practiSesion);
       if(!state.panelSub && !bienvenidaVista()) app.appendChild(el(bienvenidaHTML()));
       if(nivelBtnPanel) nivelBtnPanel.onclick = () => { state.prevView = 'panel'; state.view = insigniasBloqueadas() ? 'planes' : 'perfil'; window.scrollTo(0,0); render(); };
 
@@ -3700,7 +3703,7 @@
           + flechaAbajo
           + boton('s1', 'ciclo-c' + act('c'), 'c', 'Registra <span class="ciclo-normal">' + textoProximoLunes() + '</span>', 'El lunes de compromiso amable')
           + flechaAbajo
-          + boton('s2', 'ciclo-d' + (sinSesiones ? ' bloqueada' : '') + act('d'), 'd', 'Sesión grupal quincenal',
+          + boton('s2', 'ciclo-d' + (sinSesiones ? ' bloqueada' : '') + act('d'), 'd', 'Sesiones online',
                 (!sinSesiones && textoProximaSesion()) ? '<span class="ciclo-dato" style="font-style:normal;font-weight:700">📅 ' + textoProximaSesion() + '</span>'
                   : sinSesiones ? 'Cada 15 días, en grupo reducido. Aumenta tu plan: habla con tu facilitador' : 'Cada 15 días, en grupo reducido',
                 '', sinSesiones)
@@ -3857,7 +3860,7 @@
       const s4 = document.createElement('div');
       s4.className = 'card panel-section s4'; s4.id = 's2';
       s4.innerHTML = `
-        ${badgeSeccion('d', 'Sesión grupal quincenal')}
+        ${badgeSeccion('d', 'Sesiones online')}
         <p>Cada 15 días nos encontramos en un espacio online seguro y cálido para que nunca camines sola en este proceso. Estas reuniones de 60 minutos son el corazón de nuestra comunidad.</p>
         <button id="btnAbrirCalSesiones" style="width:100%;text-align:center;padding:12px 16px;border-radius:10px;background:#fff;border:2px solid var(--honey);color:var(--honey);font-weight:700;font-size:14px;cursor:pointer;margin:8px 0">📅 Calendario sesiones</button>
         <a class="panel-link-btn honey" href="https://meet.google.com/qvf-aefv-trc" target="_blank">Enlace a la llamada →</a>
@@ -4306,7 +4309,7 @@
     if(state.view === 'bienvenidaAlta'){ renderBienvenidaAlta(); return; }
 
     if(state.view === 'practicaSemanal'){
-      renderBackTopbar('Práctica semanal');
+      app.querySelectorAll('.volver-arriba').forEach(b => b.remove());   // aquí el «Volver» va debajo del muñeco
       const lista = state.checkins[state.me] || [];
       const estaSemana = lista.find(c => c.week === currentWeekShort);
       const ultima = lista.slice().reverse().find(c => c.metaSem && c.metaSem.trim());
@@ -4317,14 +4320,16 @@
       let cuerpo;
       if(practica){
         // Una sola línea: cuántas veces se ha comprometido esta semana
-        cuerpo = (deEstaSemana && veces)
-          ? '<p class="ps-veces" style="margin:0">🎯 Esta semana lo haré <b>' + veces + (veces === 1 ? ' vez' : ' veces') + '</b>.</p>'
-          : '<p class="ps-nota" style="margin:0">Aún no has hecho el registro de esta semana.</p>';
+        cuerpo = '<p class="ps-label" style="margin:0 0 4px">Recuerda tu compromiso semanal</p>'
+          + ((deEstaSemana && veces)
+            ? '<p class="ps-veces" style="margin:0">🎯 Esta semana lo haré <b>' + veces + (veces === 1 ? ' vez' : ' veces') + '</b>.</p>'
+            : '<p class="ps-nota" style="margin:0">Aún no has hecho el registro de esta semana.</p>');
       } else {
         cuerpo = '<p class="ps-practica" style="font-style:normal">Aún no has definido tu práctica.</p><p class="ps-nota">La defines en tu registro del lunes, con la frase «Cuando…, haré…».</p>';
       }
-      app.appendChild(el('<div style="text-align:center;margin:0 0 4px">' + practiReaccionHTML('correr', 'valla', 170) + '</div>'
-        + '<h1 style="text-align:center">Recuerda tu práctica semanal</h1>'
+      app.appendChild(el('<div style="text-align:center;margin:0 0 4px">' + practiReaccionHTML('correr', 'valla', 170) + '</div>'));
+      app.appendChild(botonVolver());
+      app.appendChild(el('<h1 style="text-align:center">Realiza tu práctica</h1>'
         + '<div class="card ps-card">' + cuerpo + '</div>'));
       if(practica) app.appendChild(tarjetaDias(estaSemana));
       const acciones = el('<div><button type="button" class="panel-link-btn" id="psGuia" style="width:100%;border:none;cursor:pointer;background:#6B9362">📖 Ver tu guía de esta semana</button>'
@@ -4560,25 +4565,29 @@
 
   // Prácti de la sesión grupal: al tocarlo se rompe la pantalla (animación en
   // practi-rotura.json, aparte porque pesa 1 MB; se descarga la primera vez)
-  let roturaDatos = null;
-  async function romperPantallaSesion(caja){
+  // Reacciones que van en archivo aparte (pesan mucho): se descargan la primera vez que se toca.
+  // La reacción se pinta encima y el muñeco de siempre solo se oculta cuando ya está dibujada,
+  // para que no haya ningún parpadeo.
+  const reaccionesCargadas = {};
+  async function reaccionExterna(caja, archivo){
     const L = window.lottie || window.bodymovin;
     if(!L || caja.classList.contains('reaccionando')) return;
+    caja.classList.add('reaccionando');
     try {
-      if(!roturaDatos) roturaDatos = await fetch('practi-rotura.json').then(r => { if(!r.ok) throw new Error(r.status); return r.json(); });
-    } catch(e){ console.warn('No se pudo cargar la rotura:', e); return; }
+      if(!reaccionesCargadas[archivo]) reaccionesCargadas[archivo] = await fetch(archivo).then(r => { if(!r.ok) throw new Error(r.status); return r.json(); });
+    } catch(e){ console.warn('No se pudo cargar ' + archivo, e); caja.classList.remove('reaccionando'); return; }
     const base = caja.querySelector('.practi');
     const capa = document.createElement('span');
     capa.className = 'practi activo';
     capa.style.cssText = 'position:absolute;left:0;top:0;width:' + base.style.width + ';height:' + base.style.height;
-    caja.style.position = 'relative'; caja.style.display = 'inline-block';
     caja.appendChild(capa);
-    caja.classList.add('reaccionando');
-    base.style.visibility = 'hidden';
-    const anim = L.loadAnimation({ container: capa, renderer: 'svg', loop: false, autoplay: true, animationData: JSON.parse(JSON.stringify(roturaDatos)) });
+    const anim = L.loadAnimation({ container: capa, renderer: 'svg', loop: false, autoplay: false, animationData: JSON.parse(JSON.stringify(reaccionesCargadas[archivo])) });
+    const empezar = () => { base.style.visibility = 'hidden'; anim.play(); };
+    if(anim.isLoaded) empezar(); else anim.addEventListener('DOMLoaded', empezar);
     anim.addEventListener('complete', () => {
+      base.style.visibility = '';
       anim.destroy(); capa.remove();
-      base.style.visibility = ''; caja.classList.remove('reaccionando');
+      caja.classList.remove('reaccionando');
     });
   }
 
@@ -4725,4 +4734,4 @@
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V9.0 · App Metas Amables · 2026-09-28 17:09 ==== -->
+<!-- ==== Fin del index V9.2 · App Metas Amables · 2026-09-28 17:26 ==== -->
