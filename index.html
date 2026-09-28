@@ -1331,7 +1331,7 @@
   }
 
 
-  const APP_VERSION = 'V8.4';
+  const APP_VERSION = 'V8.5';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -1569,7 +1569,7 @@
         + '<div class="card alta-card">'
         + '<p>🎯 Para empezar, necesitamos que rellenes un formulario con <b>una meta importante para ti</b> <span style="color:var(--ink-soft)">(lleva 5 minutos)</span>.</p>'
         + '<p>Con tus respuestas preparamos tu guía de prácticas.</p>'
-        + '<a class="panel-link-btn" target="_blank" rel="noopener" href="https://forms.gle/JHDTM5MarnagbqMQ6" style="background:#6B9362">🎯 Rellenar el formulario</a>'
+        + '<a class="panel-link-btn" target="_blank" rel="noopener" href="' + urlFormulario() + '" style="background:#6B9362">🎯 Rellenar el formulario</a>'
         + '</div>'
         + '<button type="button" class="btn btn-yes" id="btnAltaSig" style="text-align:center;margin-top:6px">Siguiente →</button>'
         + '<button type="button" class="link-quiet" id="btnAltaAtras" style="display:block;margin:10px auto 0">← Atrás</button>';
@@ -3782,12 +3782,12 @@
           <p style="background:var(--honey-tint);border-radius:10px;padding:12px 14px">✅ <b>Ya tienes el formulario rellenado</b>${enviado ? ' (el ' + enviado.getDate() + '/' + (enviado.getMonth() + 1) + ')' : ''}: tu meta está definida para el <b>${trimestreMeta()}</b>.<br>
           ${state.guiaTexto ? 'Tu guía ya está lista en <b>«a · Lee tu guía semanal»</b>.' : 'En breve tendrás tu guía de prácticas en <b>«a · Lee tu guía semanal»</b>.'}</p>
           <p style="font-size:13px;color:var(--ink-soft)">${reglaMeta}</p>
-          ${cambios > 1 ? '<a class="panel-link-btn honey" href="https://forms.gle/JHDTM5MarnagbqMQ6" target="_blank">Cambiar mi meta →</a>' : ''}`;
+          ${cambios > 1 ? '<a class="panel-link-btn honey" href="' + urlFormulario() + '" target="_blank">Cambiar mi meta →</a>' : ''}`;
       } else s2.innerHTML = `
         ${badgeSeccion('', 'Formulario de meta trimestral')}
         <p>Rellena el formulario para definir tu meta trimestral más importante para ti, tus dificultades y a qué ritmo quieres ir. Te crearemos tu guía de prácticas.</p>
         <p style="background:var(--honey-tint);border-radius:10px;padding:10px 12px;font-size:14px">${reglaMeta}</p>
-        <a class="panel-link-btn honey" href="https://forms.gle/JHDTM5MarnagbqMQ6" target="_blank">Rellenar formulario de meta →</a>
+        <a class="panel-link-btn honey" href="${urlFormulario()}" target="_blank">Rellenar formulario de meta →</a>
       `;
 
       // Bloque 3: Guía mensual — ahora un único botón de acceso; el contenido vive en la vista 'practicas'
@@ -4403,6 +4403,20 @@
     avisoInstalar = null;
     document.querySelectorAll('.instalar-card').forEach(c => c.remove());
   });
+  // Formulario de meta trimestral, ya rellenado con los datos personales que la
+  // persona dio la última vez (correo, nombre, ciudad, género y edad)
+  function urlFormulario(){
+    const g = state.gamifica || {}, d = g.datosFormulario || {};
+    const p = new URLSearchParams({ usp: 'pp_url' });
+    const email = g.email || state.miCorreo || '';
+    if(email) p.set('emailAddress', email);
+    p.set('entry.1139323880', d.nombre || state.me || '');
+    if(d.ciudad) p.set('entry.82527459', d.ciudad);
+    if(d.genero) p.set('entry.1313109576', d.genero);
+    if(d.edad) p.set('entry.838787571', d.edad);
+    return 'https://docs.google.com/forms/d/e/1FAIpQLSfXywvX9mkaWJ-fxNlPhxVd2caMJfzAtl95HXXXYVJC5ar3KA/viewform?' + p.toString();
+  }
+
   // Interruptores al final del registro semanal: mensajes de ánimo por WhatsApp y
   // emails de novedades. Se guardan al momento en Gamifica (Worker POST /avisos).
   function tarjetaAvisos(){
