@@ -480,16 +480,15 @@
   .ciclo-d{ background:#F1ECFC !important; border-color:#A58BD8 !important; }
   .ciclo-c{ background:#EEF6E9 !important; border-color:#93BF80 !important; }
   .ciclo-b{ background:#FDF0F0 !important; border-color:#E39A9A !important; border-style:dashed !important; }
-  .ciclo-a{ background:#FFFDF6 !important; border-color:#E2C45A !important; }
+  .ciclo-a{ background:#EEF4FB !important; border-color:#8FB3DA !important; }
   .ciclo-meta{ background:#C9942D !important; border:2px solid #101010 !important; }
   /* Ya hecha: marrón más pálido */
   .ciclo-meta.hecha{ background:#E6D3AC !important; border-color:#B9A27A !important; }
   /* La actividad que toca ahora: reborde amarillo que late */
   .ciclo .opcion-inicio.actual{ box-shadow:0 0 0 4px #FFD400; animation:toca 1.6s ease-in-out infinite; }
   @keyframes toca{ 0%,100%{ box-shadow:0 0 0 3px #FFD400; } 50%{ box-shadow:0 0 0 7px rgba(255,212,0,.55); } }
-  .ciclo-cero{ width:40px; height:40px; border-radius:50%; border:2.5px solid #101010; background:#fff; display:flex; align-items:center; justify-content:center; font-family:'Lora',serif; font-weight:700; font-size:20px; color:#101010; }
-  .ciclo-meta .opcion-tx b{ font-family:'Lora',serif; font-size:17px; color:#101010; }
-  .ciclo-meta .opcion-tx small{ color:#2a2008; font-weight:600; }
+  .ciclo-cero{ width:30px; height:30px; border-radius:50%; border:2px solid #101010; background:#fff; display:flex; align-items:center; justify-content:center; font-family:'Karla',sans-serif; font-weight:700; font-size:15px; color:#101010; }
+  .ciclo-meta .opcion-tx b{ color:#101010; }
   .ciclo-meta .opcion-flecha{ color:#101010; }
   .ciclo-formacion{ margin-top:18px !important; }
   .ciclo-normal{ font-weight:400; }
@@ -1324,7 +1323,7 @@
   }
 
 
-  const APP_VERSION = 'V7.3';
+  const APP_VERSION = 'V7.4';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -2713,6 +2712,15 @@
     return (Date.now() - fecha.getTime()) < 100 * 86400000 ? fecha : null;
   }
 
+  // Trimestre de la meta: el de la fecha del formulario; si se rellenó en el último mes
+  // de un trimestre, es para el siguiente (igual que el calendario de las guías)
+  function trimestreMeta(){
+    const f = formularioEnviado() || today;
+    let q = Math.floor(f.getMonth() / 3) + 1;
+    if(f.getMonth() % 3 === 2) q = q % 4 + 1;
+    return ['primer', 'segundo', 'tercer', 'cuarto'][q - 1] + ' trimestre';
+  }
+
   function metaHechaYa(){
     const lista = (state.checkins && state.checkins[state.me]) || [];
     return !!(formularioEnviado() || state.guiaTexto || lista.some(c => c.metaTrim && c.metaTrim.trim()));
@@ -3618,7 +3626,7 @@
           + '<span class="ciclo-icono"><span class="ciclo-cero">0</span></span>'
           + '<span class="opcion-tx"><b>Formulario de meta trimestral</b>'
           + (metaHecha
-              ? (tx.meta ? '<small class="ciclo-dato">🎯 ' + escapeAttr(corto(tx.meta, 120)) + '</small>' : '<small>Tu meta del trimestre ya está definida</small>')
+              ? '<small>Ya está definida para el ' + trimestreMeta() + (limiteMetaIntentos() > 1 ? ' · puedes cambiarla hasta ' + limiteMetaIntentos() + ' veces' : '') + '</small>'
                 + '<span class="etiqueta-recibida">Hecha</span>'
               : '<small style="color:#B94A3A;font-weight:700">⚠️ Pendiente: empieza por aquí</small>')
           + '</span><span class="opcion-flecha">›</span></button>'
@@ -3755,17 +3763,22 @@
       const s2 = document.createElement('div');
       s2.className = 'card panel-section s2'; s2.id = 's4';
       const enviado = formularioEnviado();
-      if(enviado){
-        // Ya lo rellenó este trimestre: no se vuelve a abrir
+      const cambios = limiteMetaIntentos();   // Plan Libre: 1 vez por trimestre; planes de pago: hasta 2
+      const reglaMeta = cambios > 1
+        ? 'Puedes cambiar tu meta <b>hasta ' + cambios + ' veces por trimestre</b>: vuelve a rellenarlo y te enviaremos una guía nueva. Te saldrá vacío: es normal.'
+        : 'En el Plan Libre, el formulario <b>solo se puede rellenar una vez por trimestre</b>.';
+      if(metaHechaYa()){
+        // Ya está hecha: en el Plan Libre no se vuelve a abrir el formulario
         s2.innerHTML = `
-          ${badgeSeccion('', 'Define tu meta trimestral')}
-          <p style="background:var(--honey-tint);border-radius:10px;padding:12px 14px">✅ <b>Formulario ya enviado</b> el ${enviado.getDate()}/${enviado.getMonth() + 1}.<br>
+          ${badgeSeccion('', 'Formulario de meta trimestral')}
+          <p style="background:var(--honey-tint);border-radius:10px;padding:12px 14px">✅ <b>Ya tienes el formulario rellenado</b>${enviado ? ' (el ' + enviado.getDate() + '/' + (enviado.getMonth() + 1) + ')' : ''}: tu meta está definida para el <b>${trimestreMeta()}</b>.<br>
           ${state.guiaTexto ? 'Tu guía ya está lista en <b>«a · Recibe tu guía semanal»</b>.' : 'En breve tendrás tu guía de prácticas en <b>«a · Recibe tu guía semanal»</b>.'}</p>
-          <p style="font-size:13px;color:var(--ink-soft)">Se rellena una vez por trimestre. Si necesitas cambiar algo, escribe a tu facilitador por WhatsApp.</p>`;
+          <p style="font-size:13px;color:var(--ink-soft)">${reglaMeta}</p>
+          ${cambios > 1 ? '<a class="panel-link-btn honey" href="https://forms.gle/JHDTM5MarnagbqMQ6" target="_blank">Cambiar mi meta →</a>' : ''}`;
       } else s2.innerHTML = `
-        ${badgeSeccion('', 'Define tu meta trimestral')}
-        <p>Rellena el formulario para definir tu meta trimestral más importante para ti, tus dificultades y a qué ritmo quieres ir. Te crearemos una Guía de Prácticas cada mes.</p>
-        <p style="background:var(--honey-tint);border-radius:10px;padding:10px 12px;font-size:14px">✅ Se rellena <b>una vez por trimestre</b>. Si vuelves a abrirlo te saldrá vacío: es normal, <b>tus respuestas ya están guardadas</b>. Solo vuelve a rellenarlo si quieres cambiar tu meta, y te enviaremos una guía nueva.</p>
+        ${badgeSeccion('', 'Formulario de meta trimestral')}
+        <p>Rellena el formulario para definir tu meta trimestral más importante para ti, tus dificultades y a qué ritmo quieres ir. Te crearemos tu guía de prácticas.</p>
+        <p style="background:var(--honey-tint);border-radius:10px;padding:10px 12px;font-size:14px">${reglaMeta}</p>
         <a class="panel-link-btn honey" href="https://forms.gle/JHDTM5MarnagbqMQ6" target="_blank">Rellenar formulario de meta →</a>
       `;
 
