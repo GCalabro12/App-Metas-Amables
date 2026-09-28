@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!-- ==== index V9.0 · App Metas Amables · 2026-09-28 17:09 ==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -803,14 +804,20 @@
   .interruptor input:checked + span{background:#4C8C4A}
   .interruptor input:checked + span::before{transform:translateX(20px)}
   .interruptor input:focus-visible + span{outline:2px solid #4C8C4A;outline-offset:2px}
-  .dias-fila{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
-  .dia-btn{aspect-ratio:1;min-height:40px;border:2px solid #d8d3c6;border-radius:12px;background:#FCFCF9;font-family:'Karla',sans-serif;font-size:15px;font-weight:700;color:var(--ink);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;padding:0;transition:transform .12s,background .2s}
+  /* Prácti escribiendo: balanceo suave mientras espera (en el registro y en «c · Registra») */
+  .practi-balanceo .practi-hueco.quieto, #practiQuieto:not(.oculto){display:inline-block;animation:balanceo 2.6s ease-in-out infinite;transform-origin:50% 100%}
+  @keyframes balanceo{0%,100%{transform:rotate(-2deg) translateY(0)}50%{transform:rotate(2deg) translateY(-3px)}}
+  @media (prefers-reduced-motion: reduce){.practi-balanceo .practi-hueco.quieto, #practiQuieto{animation:none}}
+  .practi-sesion{cursor:pointer}
+  .dias-card{padding-left:12px;padding-right:12px}
+  .dias-fila{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px}
+  .dia-btn{min-width:0;height:54px;box-sizing:border-box;border:2px solid #d8d3c6;border-radius:12px;background:#FCFCF9;font-family:'Karla',sans-serif;font-size:15px;font-weight:700;color:var(--ink);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;padding:0;transition:transform .12s,background .2s}
   .dia-btn:active{transform:scale(.92)}
   .dia-btn.hoy{border-color:#E8B400}
   .dia-btn.hecho{background:#4C8C4A;border-color:#4C8C4A;color:#fff}
   .dia-btn:disabled{opacity:.35;cursor:default}
   .dia-tick{font-size:16px;line-height:1;min-height:16px}
-  .chispa{position:fixed;width:7px;height:7px;border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);animation:chispa .75s ease-out forwards}
+  .chispa{position:fixed;width:10px;height:10px;border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);animation:chispa 1.3s cubic-bezier(.15,.7,.3,1) forwards}
   @keyframes chispa{to{transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) scale(.3);opacity:0}}
 </style>
 </head>
@@ -1342,7 +1349,7 @@
   }
 
 
-  const APP_VERSION = 'V8.8';
+  const APP_VERSION = 'V9.0';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -2760,6 +2767,7 @@
   }
 
   function renderBackTopbar(title){
+    app.querySelectorAll('.volver-arriba').forEach(b => b.remove());   // esta barra ya trae su «← Volver»
     const bar = el(`<div class="topbar"><button class="back-btn" id="btnVolver" aria-label="Volver">← Volver</button><span style="font-family:'Lora',serif;font-size:18px;font-weight:600">${title}</span><button class="hamburger-btn-text" id="btnMenuOpen2" aria-label="Menú">☰ Menú</button></div>`);
     const btnVolver = bar.querySelector('#btnVolver');
     const btnMenu = bar.querySelector('#btnMenuOpen2');
@@ -3623,9 +3631,15 @@
       const greetPanel = state.panelSub
         ? el(`<div style="position:relative;text-align:center;margin-bottom:10px">${state.panelSub === 's3'
             ? practiReaccionHTML('leyendo', 'leyendoCae', 160)
-            : practiHTML(figuraSub[0], '', figuraSub[1], figuraSub[2] ? 'una-vez' : '')}</div>`)
+            : state.panelSub === 's1'
+              ? practiReaccionHTML('escribiendo1', 'escribiendo2', 112, 'practi-balanceo')   // se mueve; al tocarlo escribe
+              : state.panelSub === 's2'
+                ? '<span class="practi-sesion" title="Tócame">' + practiHTML('sesion', '', 190) + '</span>'   // al tocarlo, se rompe la pantalla
+                : practiHTML(figuraSub[0], '', figuraSub[1], figuraSub[2] ? 'una-vez' : '')}</div>`)
         : el(`<div style="position:relative;text-align:center;margin-bottom:14px"><div style="font-family:'Lora',serif;font-size:24px;font-weight:600;color:var(--ink)">Hola, ${escapeAttr(state.me)}${avatarDe(state.me) ? ' ' + avatarDe(state.me) : ''}</div><div style="font-family:'Karla',sans-serif;font-size:15px;font-weight:700;color:var(--ink);margin-top:2px">${bienvenidaTexto(state.me)} a tu ciclo de aprendizaje</div><div class="fecha-hoy" id="fechaHoy" style="margin-bottom:10px">${textoFechaHoy()}</div><div class="practi-inicio" style="margin-bottom:10px">${practiReaccionHTML('saludo', 'empujonSaludo', 104, 'practi-saludo')}${bocadilloPracti(fraseInicio(), 'tono-calma')}</div></div>`);
       app.appendChild(greetPanel);
+      const practiSesion = greetPanel.querySelector('.practi-sesion');
+      if(practiSesion) practiSesion.onclick = () => romperPantallaSesion(practiSesion);
       if(!state.panelSub && !bienvenidaVista()) app.appendChild(el(bienvenidaHTML()));
       if(nivelBtnPanel) nivelBtnPanel.onclick = () => { state.prevView = 'panel'; state.view = insigniasBloqueadas() ? 'planes' : 'perfil'; window.scrollTo(0,0); render(); };
 
@@ -3901,6 +3915,10 @@
       app.appendChild(help);
       const inst = tarjetaInstalar();
       if(inst) app.appendChild(inst);
+      // Juego extra, al final de la pantalla de inicio
+      const juego = el('<button type="button" class="juego-btn" style="margin-top:18px"><span class="juego-btn-ico">🎮</span><span><b>Salta la valla con Prácti</b><small>Un minuto de juego: cada valla es un obstáculo que superas</small></span></button>');
+      juego.onclick = abrirJuegoVallas;
+      app.appendChild(juego);
       return;
     }
 
@@ -4298,9 +4316,10 @@
       const deEstaSemana = !!(ref && estaSemana && ref === estaSemana);
       let cuerpo;
       if(practica){
-        cuerpo = '<p class="ps-label">Tu práctica</p><p class="ps-practica">' + escapeAttr(practica) + '</p>'
-          + (veces ? '<p class="ps-veces">' + (deEstaSemana ? 'Esta semana te comprometiste a hacerla ' : 'La última vez te comprometiste a hacerla ') + '<b>' + veces + (veces === 1 ? ' vez' : ' veces') + '</b>.</p>' : '')
-          + (deEstaSemana ? '' : '<p class="ps-nota">Aún no has hecho el registro de esta semana: ahí confirmas tu práctica y cuántas veces la harás.</p>');
+        // Una sola línea: cuántas veces se ha comprometido esta semana
+        cuerpo = (deEstaSemana && veces)
+          ? '<p class="ps-veces" style="margin:0">🎯 Esta semana lo haré <b>' + veces + (veces === 1 ? ' vez' : ' veces') + '</b>.</p>'
+          : '<p class="ps-nota" style="margin:0">Aún no has hecho el registro de esta semana.</p>';
       } else {
         cuerpo = '<p class="ps-practica" style="font-style:normal">Aún no has definido tu práctica.</p><p class="ps-nota">La defines en tu registro del lunes, con la frase «Cuando…, haré…».</p>';
       }
@@ -4309,10 +4328,8 @@
         + '<div class="card ps-card">' + cuerpo + '</div>'));
       if(practica) app.appendChild(tarjetaDias(estaSemana));
       const acciones = el('<div><button type="button" class="panel-link-btn" id="psGuia" style="width:100%;border:none;cursor:pointer;background:#6B9362">📖 Ver tu guía de esta semana</button>'
-        + '<button type="button" class="panel-link-btn" id="psRegistro" style="width:100%;border:none;cursor:pointer;margin-top:10px">✍️ Ir al registro</button>'
-        + '<button type="button" class="juego-btn" id="psJuego"><span class="juego-btn-ico">🎮</span><span><b>Salta la valla con Prácti</b><small>Un minuto de juego: cada valla es un obstáculo que superas</small></span></button></div>');
+        + '<button type="button" class="panel-link-btn" id="psRegistro" style="width:100%;border:none;cursor:pointer;margin-top:10px">✍️ Ir al registro</button></div>');
       const psGuia = acciones.querySelector('#psGuia'), psReg = acciones.querySelector('#psRegistro');
-      acciones.querySelector('#psJuego').onclick = abrirJuegoVallas;
       app.appendChild(acciones);
       psGuia.onclick = () => { state.prevView = 'practicaSemanal'; state.view = 'practicas'; window.scrollTo(0,0); render(); };
       psReg.onclick = () => { state.view = 'checkin'; state.regPaso = null; window.scrollTo(0,0); render(); };
@@ -4541,19 +4558,45 @@
     return caja;
   }
 
+  // Prácti de la sesión grupal: al tocarlo se rompe la pantalla (animación en
+  // practi-rotura.json, aparte porque pesa 1 MB; se descarga la primera vez)
+  let roturaDatos = null;
+  async function romperPantallaSesion(caja){
+    const L = window.lottie || window.bodymovin;
+    if(!L || caja.classList.contains('reaccionando')) return;
+    try {
+      if(!roturaDatos) roturaDatos = await fetch('practi-rotura.json').then(r => { if(!r.ok) throw new Error(r.status); return r.json(); });
+    } catch(e){ console.warn('No se pudo cargar la rotura:', e); return; }
+    const base = caja.querySelector('.practi');
+    const capa = document.createElement('span');
+    capa.className = 'practi activo';
+    capa.style.cssText = 'position:absolute;left:0;top:0;width:' + base.style.width + ';height:' + base.style.height;
+    caja.style.position = 'relative'; caja.style.display = 'inline-block';
+    caja.appendChild(capa);
+    caja.classList.add('reaccionando');
+    base.style.visibility = 'hidden';
+    const anim = L.loadAnimation({ container: capa, renderer: 'svg', loop: false, autoplay: true, animationData: JSON.parse(JSON.stringify(roturaDatos)) });
+    anim.addEventListener('complete', () => {
+      anim.destroy(); capa.remove();
+      base.style.visibility = ''; caja.classList.remove('reaccionando');
+    });
+  }
+
   // Pequeño fuego artificial de chispas de colores en (x, y) de la pantalla
   function fuegoArtificial(x, y){
     const colores = ['#E8B400', '#4C8C4A', '#E0452B', '#3B82C4', '#C45BAA', '#F28C28'];
-    for(let i = 0; i < 18; i++){
+    for(let i = 0; i < 30; i++){
       const p = document.createElement('span');
       p.className = 'chispa';
-      const ang = (Math.PI * 2 * i) / 18 + Math.random() * 0.3, dist = 40 + Math.random() * 45;
+      const ang = (Math.PI * 2 * i) / 30 + Math.random() * 0.3, dist = 70 + Math.random() * 80;
+      const tam = 7 + Math.random() * 7;
+      p.style.width = p.style.height = tam + 'px';
       p.style.left = x + 'px'; p.style.top = y + 'px';
       p.style.background = colores[i % colores.length];
       p.style.setProperty('--dx', Math.cos(ang) * dist + 'px');
       p.style.setProperty('--dy', Math.sin(ang) * dist + 'px');
       document.body.appendChild(p);
-      setTimeout(() => p.remove(), 800);
+      setTimeout(() => p.remove(), 1400);
     }
   }
   // Sonidito agradable (dos notas cortas), sin archivos de audio
@@ -4682,3 +4725,4 @@
 </script>
 </body>
 </html>
+<!-- ==== Fin del index V9.0 · App Metas Amables · 2026-09-28 17:09 ==== -->
