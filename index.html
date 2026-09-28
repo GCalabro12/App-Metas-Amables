@@ -1324,7 +1324,7 @@
   }
 
 
-  const APP_VERSION = 'V7.6';
+  const APP_VERSION = 'V7.7';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -2444,18 +2444,18 @@
     const libre = !tienePlan('guias');
     // Pasos con las mismas letras que los botones del ciclo: 0 = meta, a, b, c (y d con sesiones)
     const pasos = [
-      ['0', (metaHechaYa() ? '✅ ' : '') + 'Define tu meta trimestral: rellena el formulario (el primer botón).'],
-      ['a', 'Lee tu guía semanal: recibirás tu guía de prácticas ' + (libre ? 'la primera semana de cada mes.' : 'cada semana.')],
-      ['b', 'Realiza tu práctica cada día.'],
-      ['c', 'Cada lunes, registra tu compromiso y tus logros.']
+      ['0', 'Formulario de meta trimestral.', metaHechaYa() ? 'Ya tienes rellenado tu formulario.' : 'Tienes pendiente rellenarlo (el primer botón).'],
+      ['a', 'Lee tu guía semanal.', 'Recibirás tu guía de prácticas ' + (libre ? 'la primera semana de cada mes.' : 'cada semana.')],
+      ['b', 'Realiza tu práctica.', 'Cada día.'],
+      ['c', 'Registra tu práctica los lunes.', 'Tu compromiso y tus logros.']
     ];
-    if(tienePlan('sesiones')) pasos.push(['d', 'Cada 15 días, ven a la sesión grupal.']);
+    if(tienePlan('sesiones')) pasos.push(['d', 'Sesión grupal.', 'Cada 15 días.']);
     const frase = '¡Hola, ' + nombre + '! Soy Prácti y te acompaño en tus prácticas. Pasos a seguir: '
-      + pasos.map(p => 'Paso ' + p[0] + ': ' + p[1]).join(' ');
+      + pasos.map(p => 'Paso ' + p[0] + ': ' + p[1] + ' ' + p[2]).join(' ');
     return '<div class="practi-bocadillo bienvenida" id="bienvenidaPracti" data-voz="' + escapeAttr(frase) + '">'
       + '<b>¡Hola, ' + escapeAttr(nombre) + '! Soy Prácti</b> y te acompaño en tus prácticas.'
       + '<span class="bienvenida-pasos"><b>Pasos a seguir:</b>'
-      + pasos.map(p => '<span><b>Paso ' + p[0] + '.</b> ' + escapeAttr(p[1]) + '</span>').join('') + '</span>'
+      + pasos.map(p => '<span><b>Paso ' + p[0] + '. ' + escapeAttr(p[1]) + '</b> ' + escapeAttr(p[2]) + '</span>').join('') + '</span>'
       + '<span class="bienvenida-acciones">'
       + '<button type="button" class="link-quiet" id="btnOirBienvenida">🔊 Escúchalo</button>'
       + '<button type="button" class="btn btn-yes" id="btnCerrarBienvenida">Entendido ✓</button>'
@@ -3843,7 +3843,7 @@
       help.style.marginTop = '18px';
       help.innerHTML = `
         <p style="margin:0 0 8px;font-size:17px"><b>💬 Dudas y sugerencias</b></p>
-        <p style="font-size:13px;color:var(--ink-soft);margin:0 0 10px">¿Algo que preguntar o que quieras contarnos? Escríbele a tu facilitador.</p>
+        <p style="font-size:13px;color:var(--ink-soft);margin:0 0 10px">¿Algo que preguntar o que quieras contarnos? Escríbele a tu facilitador, <b>Gustavo Calabró</b>.</p>
         <a class="panel-link-btn" href="https://wa.me/34658825799?text=${encodeURIComponent('Escribo de la App Metas Amables. Tengo esta duda o sugerencia:')}" target="_blank" style="background:#8A8A82">Envíale un WhatsApp →</a>
       `;
       app.appendChild(help);
