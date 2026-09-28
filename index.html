@@ -352,7 +352,8 @@
   }
   div.practi-bocadillo{ cursor:default; }
   .practi-bocadillo.bienvenida{ max-width:360px; text-align:left; margin-top:0; }
-  .practi-bocadillo.bienvenida::before{ left:50%; }
+  .practi-bocadillo.bienvenida{ margin-left:0; }
+  .practi-bocadillo.bienvenida::before{ left:48px; }   /* la flecha señala a Prácti, que está arriba a la izquierda */
   .bienvenida-pasos{ display:block; margin-top:8px; font-weight:400; }
   .bienvenida-pasos span{ display:block; margin-top:3px; padding-left:4px; }
   .bienvenida-acciones{ display:flex; gap:12px; align-items:center; justify-content:flex-end; margin-top:12px; }
@@ -1323,7 +1324,7 @@
   }
 
 
-  const APP_VERSION = 'V7.4';
+  const APP_VERSION = 'V7.5';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -1743,7 +1744,7 @@
       'Tu calendario completo de registros del trimestre',
       'Comparte tu compromiso de cada lunes por WhatsApp con tu socio de compromiso'
     ]},
-    sesiones: { nombre: 'Plan Guías + Sesiones', precio: '360 € el primer año <span class="plan-precio-paren">(260 € a partir del segundo)</span>', precio2: 'o 105 € al trimestre', nota: 'El primer año pagas en un solo cobro 100 € de alta + 260 € de cuota anual. Desde el segundo año se renueva sola a 260 €.', pagos: [{ txt: 'Pagar anual →', url: 'https://buy.stripe.com/7sY8wO0Q14h99XP0eqbZe0h' }, { txt: 'Pagar trimestral →', url: 'https://buy.stripe.com/6oU8wOcyJ00Tee5aT4bZe0e' }], incluye: [
+    sesiones: { nombre: 'Plan Guías + Sesiones', precio: '360 € el primer año <span class="plan-precio-paren">(260 € a partir del segundo)</span>', precio2: 'o 105 € al trimestre', pagos: [{ txt: 'Pagar anual →', url: 'https://buy.stripe.com/7sY8wO0Q14h99XP0eqbZe0h' }, { txt: 'Pagar trimestral →', url: 'https://buy.stripe.com/6oU8wOcyJ00Tee5aT4bZe0e' }], incluye: [
       'Todo lo del Plan Guías',
       'Insignias que reconocen tu constancia y tu avance',
       'Sesiones online cada 15 días, en grupo reducido, para desatascar situaciones y automotivarte'
@@ -2406,7 +2407,7 @@
     const nombre = String(state.me || '').split(' ')[0];
     const toca = tareaDelDia();
     if(toca === 'meta') return '📝 ' + nombre + ', lo primero es rellenar el formulario de tu meta trimestral. ¡Hazlo hoy!';
-    if(toca === 'a') return '📖 ' + nombre + ', tu guía de esta semana te está esperando. ¡Ábrela en «Recibe tu guía semanal»!';
+    if(toca === 'a') return '📖 ' + nombre + ', tu guía de esta semana te está esperando. ¡Ábrela en «Lee tu guía semanal»!';
     if(haySesionEnDias(0) && tienePlan('sesiones')) return '🤝 Hoy tenemos reunión, ' + nombre + '. Nos vemos en un rato.';
     if(haySesionEnDias(1) && tienePlan('sesiones')) return '🤝 Mañana tenemos reunión, ' + nombre + '. Deja el rato apartado.';
     if(toca === 'c') return '🗓️ Es lunes, ' + nombre + ': toca cerrar la semana y comprometerte con la nueva.';
@@ -2443,7 +2444,7 @@
     // Pasos con las mismas letras que los botones del ciclo: 0 = meta, a, b, c (y d con sesiones)
     const pasos = [
       ['0', (metaHechaYa() ? '✅ ' : '') + 'Define tu meta trimestral: rellena el formulario (el primer botón).'],
-      ['a', 'Media hora después de rellenar el formulario, recibirás tu guía en «Recibe tu guía semanal»' + (libre ? ' (la primera semana de cada mes).' : '.')],
+      ['a', 'Lee tu guía semanal: recibirás tu guía de prácticas ' + (libre ? 'la primera semana de cada mes.' : 'cada semana.')],
       ['b', 'Realiza tu práctica cada día.'],
       ['c', 'Cada lunes, registra tu compromiso y tus logros.']
     ];
@@ -3578,7 +3579,7 @@
         ? el(`<div style="position:relative;text-align:center;margin-bottom:10px">${state.panelSub === 's3'
             ? '<img src="' + PRACTI_LEYENDO_PNG + '" alt="Prácti leyendo" style="height:160px;width:auto;display:inline-block">'
             : practiHTML(figuraSub[0], '', figuraSub[1], figuraSub[2] ? 'una-vez' : '')}</div>`)
-        : el(`<div style="position:relative;text-align:center;margin-bottom:14px"><div class="practi-inicio" style="margin-bottom:10px">${practiReaccionHTML('saludo', 'empujonSaludo', 104, 'practi-saludo')}${bocadilloPracti(fraseInicio(), 'tono-calma')}</div><div style="font-family:'Lora',serif;font-size:24px;font-weight:600;color:var(--ink)">Hola, ${escapeAttr(state.me)}${avatarDe(state.me) ? ' ' + avatarDe(state.me) : ''}</div><div style="font-family:'Karla',sans-serif;font-size:15px;font-weight:700;color:var(--ink);margin-top:2px">${bienvenidaTexto(state.me)} a tu ciclo de aprendizaje</div><div class="fecha-hoy" id="fechaHoy">${textoFechaHoy()}</div></div>`);
+        : el(`<div style="position:relative;text-align:center;margin-bottom:14px"><div style="font-family:'Lora',serif;font-size:24px;font-weight:600;color:var(--ink)">Hola, ${escapeAttr(state.me)}${avatarDe(state.me) ? ' ' + avatarDe(state.me) : ''}</div><div style="font-family:'Karla',sans-serif;font-size:15px;font-weight:700;color:var(--ink);margin-top:2px">${bienvenidaTexto(state.me)} a tu ciclo de aprendizaje</div><div class="fecha-hoy" id="fechaHoy" style="margin-bottom:10px">${textoFechaHoy()}</div><div class="practi-inicio" style="margin-bottom:10px">${practiReaccionHTML('saludo', 'empujonSaludo', 104, 'practi-saludo')}${bocadilloPracti(fraseInicio(), 'tono-calma')}</div></div>`);
       app.appendChild(greetPanel);
       if(!state.panelSub && !bienvenidaVista()) app.appendChild(el(bienvenidaHTML()));
       if(nivelBtnPanel) nivelBtnPanel.onclick = () => { state.prevView = 'panel'; state.view = insigniasBloqueadas() ? 'planes' : 'perfil'; window.scrollTo(0,0); render(); };
@@ -3631,7 +3632,7 @@
               : '<small style="color:#B94A3A;font-weight:700">⚠️ Pendiente: empieza por aquí</small>')
           + '</span><span class="opcion-flecha">›</span></button>'
           + flechaAbajo
-          + boton('s3', 'ciclo-a' + (practicaBloqueada ? ' bloqueada' : '') + act('a'), 'a', 'Recibe tu guía semanal', subGuia,
+          + boton('s3', 'ciclo-a' + (practicaBloqueada ? ' bloqueada' : '') + act('a'), 'a', 'Lee tu guía semanal', subGuia,
                 state.guiaTexto ? '<span class="etiqueta-recibida">Recibida</span>' : '', practicaBloqueada)
           + flechaAbajo
           + boton('sB', 'ciclo-b' + act('b'), 'b', 'Realiza tu práctica',
@@ -3772,7 +3773,7 @@
         s2.innerHTML = `
           ${badgeSeccion('', 'Formulario de meta trimestral')}
           <p style="background:var(--honey-tint);border-radius:10px;padding:12px 14px">✅ <b>Ya tienes el formulario rellenado</b>${enviado ? ' (el ' + enviado.getDate() + '/' + (enviado.getMonth() + 1) + ')' : ''}: tu meta está definida para el <b>${trimestreMeta()}</b>.<br>
-          ${state.guiaTexto ? 'Tu guía ya está lista en <b>«a · Recibe tu guía semanal»</b>.' : 'En breve tendrás tu guía de prácticas en <b>«a · Recibe tu guía semanal»</b>.'}</p>
+          ${state.guiaTexto ? 'Tu guía ya está lista en <b>«a · Lee tu guía semanal»</b>.' : 'En breve tendrás tu guía de prácticas en <b>«a · Lee tu guía semanal»</b>.'}</p>
           <p style="font-size:13px;color:var(--ink-soft)">${reglaMeta}</p>
           ${cambios > 1 ? '<a class="panel-link-btn honey" href="https://forms.gle/JHDTM5MarnagbqMQ6" target="_blank">Cambiar mi meta →</a>' : ''}`;
       } else s2.innerHTML = `
@@ -3786,7 +3787,7 @@
       const s3 = document.createElement('div');
       s3.className = 'card panel-section s3'; s3.id = 's3';
       s3.innerHTML = `
-        ${badgeSeccion('a', 'Recibe tu guía semanal')}
+        ${badgeSeccion('a', 'Lee tu guía semanal')}
         <p>Aquí accedes a tu guía de prácticas personalizada de este mes.</p>
         <button type="button" id="btnAccesoPracticas" class="panel-link-btn" style="background:#6B9362;width:100%;border:none;cursor:pointer">📖 Acceso a tus prácticas →</button>
         ${casillaNoMostrar('s3')}
