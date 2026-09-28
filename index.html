@@ -796,6 +796,13 @@
 .juego-cerrar{position:absolute;top:calc(10px + env(safe-area-inset-top));right:10px;z-index:2;border:none;border-radius:999px;padding:8px 14px;background:rgba(0,0,0,.65);color:#fff;font:600 .9rem system-ui,sans-serif;cursor:pointer}
 .plan-precio-paren{font-weight:600;font-size:.88em;opacity:.85;white-space:nowrap}
 .plan-nota{font-size:12.5px;color:var(--ink-soft);margin:-2px 0 8px;line-height:1.4}
+  .interruptor{position:relative;display:inline-block;width:46px;height:26px;flex-shrink:0}
+  .interruptor input{opacity:0;width:0;height:0;position:absolute}
+  .interruptor span{position:absolute;inset:0;background:#cfcbc0;border-radius:26px;transition:background .2s}
+  .interruptor span::before{content:"";position:absolute;width:20px;height:20px;left:3px;top:3px;background:#fff;border-radius:50%;transition:transform .2s;box-shadow:0 1px 2px rgba(0,0,0,.25)}
+  .interruptor input:checked + span{background:#4C8C4A}
+  .interruptor input:checked + span::before{transform:translateX(20px)}
+  .interruptor input:focus-visible + span{outline:2px solid #4C8C4A;outline-offset:2px}
 </style>
 </head>
 <body>
@@ -1324,7 +1331,7 @@
   }
 
 
-  const APP_VERSION = 'V8.2';
+  const APP_VERSION = 'V8.3';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -3501,8 +3508,6 @@
           <label class="note-label">Elige una contraseña</label>
           <input type="password" id="altaPass" name="new-password" autocomplete="new-password" placeholder="Mínimo 4 caracteres" value="${escapeAttr(d.pass || '')}" style="${estiloCampo};margin-bottom:4px">
           <div style="text-align:right;margin-bottom:10px"><button id="toggleAltaPass" type="button" style="background:none;border:none;font-family:'Karla';font-size:13px;color:var(--moss-deep);cursor:pointer;padding:4px 0;text-decoration:underline">👁 Ver contraseña</button></div>
-          <label class="alta-check"><input type="checkbox" id="altaWhats" ${d.whats ? 'checked' : ''}> Quiero recibir mensajes de ánimo por WhatsApp</label>
-          <label class="alta-check"><input type="checkbox" id="altaEmails" ${d.emails ? 'checked' : ''}> Quiero recibir por email novedades y propuestas de Metas Amables</label>
           <p style="font-size:12px;color:var(--ink-soft);margin:8px 0 0">Al crear tu cuenta aceptas la <a href="privacidad.html" target="_blank" rel="noopener" style="color:var(--ink-soft)">política de privacidad</a>.</p>
           <button class="btn btn-yes" id="btnAlta" style="text-align:center;margin-top:14px">Crear mi cuenta</button>
           ${state.loginError ? '<div style="color:' + (state.loginError.endsWith('…') ? 'var(--ink-soft)' : '#B94A3A') + ';font-size:13px;margin-top:8px">'+state.loginError+'</div>' : ''}
@@ -3517,7 +3522,7 @@
         altaCard.querySelector('#btnAlta').onclick = () => (ofrecerInstalar(), crearCuenta(
           altaCard.querySelector('#altaNombre').value, altaCard.querySelector('#altaTel').value,
           altaCard.querySelector('#altaEmail').value, altaCard.querySelector('#altaPass').value,
-          altaCard.querySelector('#altaWhats').checked, altaCard.querySelector('#altaEmails').checked));
+          false, false));
       } else {
         // Pantalla de login
         app.appendChild(el(`<h1>Entra en tu cuenta</h1><p class="lead">Escribe tu nombre y tu contraseña.</p>`));
@@ -3839,8 +3844,6 @@
 
       // Dudas y sugerencias (solo en la pantalla de inicio)
       if(state.panelSub){ return; }
-      const inst = tarjetaInstalar();
-      if(inst) app.appendChild(inst);
       const help = document.createElement('div');
       help.className = 'card';
       help.style.marginTop = '18px';
@@ -3858,6 +3861,8 @@
         <a class="panel-link-btn" href="https://wa.me/${facTel}?text=${encodeURIComponent('Escribo de la App Metas Amables. Tengo esta duda o sugerencia:')}" target="_blank" style="background:#8A8A82">Envíale un WhatsApp →</a>
       `;
       app.appendChild(help);
+      const inst = tarjetaInstalar();
+      if(inst) app.appendChild(inst);
       return;
     }
 
@@ -4153,6 +4158,7 @@
       // Si acaba de registrar sin pasar por pantalla de resultado, el mensaje sigue a mano
       const tarjetaCheckin = tarjetaCompartir();
       if(tarjetaCheckin) app.appendChild(tarjetaCheckin);
+      if(state.gamifica) app.appendChild(tarjetaAvisos());
 
       // Un único guardado: cierra la semana pasada, guarda el compromiso nuevo y comparte
       if(compCard.querySelector('#btnCompartirBloq')) compCard.querySelector('#btnCompartirBloq').onclick = irAPlanes;
@@ -4397,6 +4403,44 @@
     avisoInstalar = null;
     document.querySelectorAll('.instalar-card').forEach(c => c.remove());
   });
+  // Interruptores al final del registro semanal: mensajes de ánimo por WhatsApp y
+  // emails de novedades. Se guardan al momento en Gamifica (Worker POST /avisos).
+  function tarjetaAvisos(){
+    const g = state.gamifica;
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.style.marginTop = '18px';
+    const fila = (clave, activo, texto) => `
+      <label style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin:10px 0;cursor:pointer">
+        <span style="font-size:14px">${texto}</span>
+        <span class="interruptor"><input type="checkbox" data-aviso="${clave}" ${activo ? 'checked' : ''}><span></span></span>
+      </label>`;
+    card.innerHTML = `
+      <p style="margin:0 0 4px;font-size:17px"><b>🔔 ¿Quieres que te acompañemos?</b></p>
+      ${fila('whatsapp', g.aceptaWhatsApp, '💬 Mensajes de ánimo por WhatsApp')}
+      ${fila('emails', g.aceptaEmails, '📧 Novedades y propuestas por email')}
+      <p class="avisos-msg" style="font-size:12px;color:var(--ink-soft);margin:4px 0 0">Puedes activarlo o desactivarlo cuando quieras.</p>`;
+    const msg = card.querySelector('.avisos-msg');
+    card.querySelectorAll('input[data-aviso]').forEach(inp => {
+      inp.onchange = async () => {
+        const clave = inp.dataset.aviso, valor = inp.checked;
+        try {
+          await api('/avisos', { [clave]: valor });
+          g[clave === 'whatsapp' ? 'aceptaWhatsApp' : 'aceptaEmails'] = valor;
+          msg.textContent = '✓ Guardado';
+          if(clave === 'whatsapp' && valor && !g.avisoTelDado){
+            g.avisoTelDado = true;
+            msg.innerHTML = '✓ Guardado. Guarda en tus contactos el número <b>' + TEL_FACILITADOR + '</b> como «Metas Amables».';
+          }
+        } catch(e){
+          inp.checked = !valor;
+          msg.textContent = 'No se pudo guardar. Revisa tu conexión e inténtalo de nuevo.';
+        }
+      };
+    });
+    return card;
+  }
+
   // Al tocar «Entrar» o «Crear cuenta» se abre sola la ventana de instalación
   // (Android/Chrome), una sola vez por móvil. Tiene que ir en ese mismo toque:
   // el navegador no deja abrirla sin que la persona toque algo.
@@ -4419,11 +4463,12 @@
     card.className = 'card instalar-card';
     card.style.marginTop = '18px';
     card.innerHTML = `
-      <p style="margin:0 0 6px;font-size:17px"><b>📲 Pon la app en tu móvil</b></p>
-      <p style="font-size:13px;color:var(--ink-soft);margin:0 0 10px">Así la tendrás en la pantalla de inicio, como cualquier otra app, y no tendrás que buscar el enlace.</p>
-      <button type="button" class="panel-link-btn instalar-btn" style="border:0;width:100%;cursor:pointer">Instalar la app</button>
-      <div class="instalar-pasos" style="display:none;font-size:14px;margin:10px 0 0;line-height:1.5"></div>
-      <p style="margin:8px 0 0;text-align:right"><a href="#" class="instalar-no" style="font-size:12px;color:var(--ink-soft)">Ya la tengo / ahora no</a></p>`;
+      <p style="margin:0 0 10px;font-size:17px"><b>📲 Instala la app en tu móvil</b></p>
+      <div style="display:flex;gap:10px">
+        <button type="button" class="panel-link-btn instalar-btn" style="border:0;flex:1;cursor:pointer;margin:0">Instalar</button>
+        <button type="button" class="panel-link-btn instalar-no" style="border:0;flex:1;cursor:pointer;margin:0;background:#8A8A82">No, gracias</button>
+      </div>
+      <div class="instalar-pasos" style="display:none;font-size:14px;margin:10px 0 0;line-height:1.5"></div>`;
     const pasos = card.querySelector('.instalar-pasos');
     card.querySelector('.instalar-btn').addEventListener('click', async () => {
       if(avisoInstalar){
