@@ -1,0 +1,8 @@
+[{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target": {
+    "namespace": "android_app",
+    "package_name": "club.practicaintegral.metasamables",
+    "sha256_cert_fingerprints": ["8D:A8:81:75:99:67:D7:79:F3:B8:18:18:54:70:49:4F:81:63:47:BC:B8:4A:9C:28:57:8F:29:15:94:1C:0F:0D"]
+  }
+}]
