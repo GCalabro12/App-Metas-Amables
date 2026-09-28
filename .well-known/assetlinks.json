@@ -3,6 +3,10 @@
   "target": {
     "namespace": "android_app",
     "package_name": "club.practicaintegral.metasamables",
-    "sha256_cert_fingerprints": ["8D:A8:81:75:99:67:D7:79:F3:B8:18:18:54:70:49:4F:81:63:47:BC:B8:4A:9C:28:57:8F:29:15:94:1C:0F:0D"]
+    "sha256_cert_fingerprints": [
+      "F0:A3:D1:CE:04:FB:8D:31:54:BB:9D:44:1A:A9:D6:1E:5E:AB:56:DE:41:A6:1C:60:21:13:12:2C:29:E6:A3:2C",
+      "8D:A8:81:75:99:67:D7:79:F3:B8:18:18:54:70:49:4F:81:63:47:BC:B8:4A:9C:28:57:8F:29:15:94:1C:0F:0D",
+      "69:32:79:AA:A4:4F:21:52:7A:8E:C1:58:62:F9:C6:79:33:0F:4B:6B:01:38:C3:9B:BC:32:61:C0:03:9C:C5:7D"
+    ]
   }
 }]
