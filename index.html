@@ -1324,7 +1324,7 @@
   }
 
 
-  const APP_VERSION = 'V7.9';
+  const APP_VERSION = 'V8.0';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -3850,7 +3850,7 @@
       help.innerHTML = `
         <p style="margin:0 0 10px;font-size:17px"><b>💬 Tu facilitador</b></p>
         <div style="display:flex;align-items:center;gap:12px;margin:0 0 10px">
-          <p style="font-size:13px;color:var(--ink-soft);margin:0;flex:1"><b style="font-size:15px;color:var(--ink)">${facNombre}</b><br>Te acompaña en tu práctica, escribe tus guías y te responde las dudas. ¿Algo que preguntar o que quieras contarle?</p>
+          <p style="font-size:13px;color:var(--ink-soft);margin:0;flex:1"><b style="font-size:15px;color:var(--ink)">${facNombre}</b><br>Te acompaña en tu práctica y te responde las dudas. ¿Algo que preguntar o que quieras contarle?</p>
           ${facFoto ? `<img src="${facFoto}" alt="${facNombre}" style="width:48px;height:48px;border-radius:50%;object-fit:cover;flex-shrink:0;border:2px solid var(--line, #e5e2da)" onerror="this.remove()">` : ''}
         </div>
         <a class="panel-link-btn" href="https://wa.me/${facTel}?text=${encodeURIComponent('Escribo de la App Metas Amables. Tengo esta duda o sugerencia:')}" target="_blank" style="background:#8A8A82">Envíale un WhatsApp →</a>
