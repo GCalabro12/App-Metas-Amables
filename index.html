@@ -1324,7 +1324,7 @@
   }
 
 
-  const APP_VERSION = 'V7.7';
+  const APP_VERSION = 'V7.9';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -1446,6 +1446,7 @@
     state.facturacion = d.facturacion || {};
     state.miCorreo = state.facturacion['Correo electrónico'] || '';
     state.gamifica = d.gamifica || null;
+    state.facilitador = d.facilitador || null;
     state.gamificaId = state.gamifica ? state.gamifica.id : null;
     state.avatares = {};
     state.avatares[d.nombre] = state.gamifica ? state.gamifica.avatar || '' : '';
@@ -3841,10 +3842,18 @@
       const help = document.createElement('div');
       help.className = 'card';
       help.style.marginTop = '18px';
+      // Tu facilitador: nombre, foto y WhatsApp vienen de la tabla Facilitadores (vía el Worker)
+      const fac = state.facilitador || {};
+      const facNombre = String(fac.nombre || 'Gustavo Calabró').replace(/[<>&"]/g, '');
+      const facTel = String(fac.whatsapp || '34658825799').replace(/\D/g, '') || '34658825799';
+      const facFoto = /^https:\/\//.test(fac.foto || '') ? fac.foto.replace(/"/g, '%22') : '';
       help.innerHTML = `
-        <p style="margin:0 0 8px;font-size:17px"><b>💬 Dudas y sugerencias</b></p>
-        <p style="font-size:13px;color:var(--ink-soft);margin:0 0 10px">¿Algo que preguntar o que quieras contarnos? Escríbele a tu facilitador, <b>Gustavo Calabró</b>.</p>
-        <a class="panel-link-btn" href="https://wa.me/34658825799?text=${encodeURIComponent('Escribo de la App Metas Amables. Tengo esta duda o sugerencia:')}" target="_blank" style="background:#8A8A82">Envíale un WhatsApp →</a>
+        <p style="margin:0 0 10px;font-size:17px"><b>💬 Tu facilitador</b></p>
+        <div style="display:flex;align-items:center;gap:12px;margin:0 0 10px">
+          <p style="font-size:13px;color:var(--ink-soft);margin:0;flex:1"><b style="font-size:15px;color:var(--ink)">${facNombre}</b><br>Te acompaña en tu práctica, escribe tus guías y te responde las dudas. ¿Algo que preguntar o que quieras contarle?</p>
+          ${facFoto ? `<img src="${facFoto}" alt="${facNombre}" style="width:48px;height:48px;border-radius:50%;object-fit:cover;flex-shrink:0;border:2px solid var(--line, #e5e2da)" onerror="this.remove()">` : ''}
+        </div>
+        <a class="panel-link-btn" href="https://wa.me/${facTel}?text=${encodeURIComponent('Escribo de la App Metas Amables. Tengo esta duda o sugerencia:')}" target="_blank" style="background:#8A8A82">Envíale un WhatsApp →</a>
       `;
       app.appendChild(help);
       return;
