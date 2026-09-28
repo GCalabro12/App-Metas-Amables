@@ -1324,7 +1324,7 @@
   }
 
 
-  const APP_VERSION = 'V7.5';
+  const APP_VERSION = 'V7.6';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -2340,7 +2340,8 @@
   function iconoCiclo(tipo){
     const t = (x, y, letra) => '<text x="' + x + '" y="' + y + '" text-anchor="middle" font-family="Karla,Arial,sans-serif" font-size="17" font-weight="800" fill="#101010">' + letra + '</text>';
     const svg = inner => '<svg class="ciclo-svg" viewBox="0 0 48 48" aria-hidden="true">' + inner + '</svg>';
-    if(tipo === 'a') return svg('<path d="M4 12 Q14 8 24 12 Q34 8 44 12 L44 38 Q34 34 24 38 Q14 34 4 38 Z" fill="#FCE9A0" stroke="#101010" stroke-width="2.4" stroke-linejoin="round"/>' + t(24, 30, 'a'));
+    if(tipo === 'a') return svg('<path d="M4 12 Q14 8 24 12 Q34 8 44 12 L44 38 Q34 34 24 38 Q14 34 4 38 Z" fill="#C6DBF2" stroke="#101010" stroke-width="2.4" stroke-linejoin="round"/>' + t(24, 30, 'a'));
+    if(tipo === 'cero') return svg('<circle cx="24" cy="24" r="15" fill="#E2C79A" stroke="#101010" stroke-width="2.4"/>' + t(24, 30, '0'));
     if(tipo === 'b') return svg('<ellipse cx="24" cy="30" rx="10.5" ry="13" fill="#F7C6C6" stroke="#101010" stroke-width="2.2"/>'
       + [[14,11,3.4],[20.5,8,3.6],[27.5,8,3.6],[34,11,3.2]].map(c => '<circle cx="' + c[0] + '" cy="' + c[1] + '" r="' + c[2] + '" fill="#F7C6C6" stroke="#101010" stroke-width="2"/>').join('') + t(24, 36, 'b'));
     if(tipo === 'c') return svg('<path d="M13 20 L24 5 L35 20 L35 43 L13 43 Z" fill="#CFE3C0" stroke="#101010" stroke-width="2.4" stroke-linejoin="round"/><path d="M20 10.5 L24 5 L28 10.5 Z" fill="#101010"/><path d="M13 20 H35" stroke="#101010" stroke-width="1.6"/>' + t(24, 37, 'c'));
@@ -3624,7 +3625,7 @@
         const act = k => (k === toca ? ' actual' : '');
         opciones.innerHTML =
           '<button type="button" class="opcion-inicio ciclo-btn ciclo-meta' + (metaHecha ? ' hecha' : ' pendiente') + act('meta') + '" data-ir="s4">'
-          + '<span class="ciclo-icono"><span class="ciclo-cero">0</span></span>'
+          + '<span class="ciclo-icono">' + iconoCiclo('cero') + '</span>'
           + '<span class="opcion-tx"><b>Formulario de meta trimestral</b>'
           + (metaHecha
               ? '<small>Ya está definida para el ' + trimestreMeta() + (limiteMetaIntentos() > 1 ? ' · puedes cambiarla hasta ' + limiteMetaIntentos() + ' veces' : '') + '</small>'
