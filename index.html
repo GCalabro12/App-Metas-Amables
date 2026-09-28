@@ -1331,7 +1331,7 @@
   }
 
 
-  const APP_VERSION = 'V8.3';
+  const APP_VERSION = 'V8.4';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -4084,7 +4084,7 @@
         pie.querySelector('#pieCal').onclick = irCalendario;
       }
 
-      if(state.regPaso !== 2){ enlacesRegistro(); return; }
+      if(state.regPaso !== 2){ app.appendChild(tarjetaAvisos()); enlacesRegistro(); return; }
 
       const compCard = document.createElement('div');
       compCard.className = 'card';
@@ -4119,7 +4119,7 @@
         ${!tienePlan('guias') ? '<button type="button" class="link-quiet" id="btnCompartirBloq" style="padding:0;margin-top:8px;text-align:left">🔒 Compartir tu compromiso por WhatsApp con tu socio de compromiso <small>(Plan Guías)</small></button>' : (tienePlan('sesiones') ? '' : '<p style="font-size:13px;color:var(--ink-soft);margin:6px 0 0">Tu <b>socio de compromiso</b> es alguien de confianza a quien le cuentas tu compromiso cada semana. Decirlo en voz alta hace que se cumpla mucho más.</p>')}
         <div class="saved-msg">${state.savedMsg || state.compromisoMsg || ''}</div>
         <button class="link-quiet" id="btnComoCuenta" style="padding:0;margin-top:10px">ℹ️ ¿Cómo cuenta la app mi cumplimiento?</button>
-        <button class="link-quiet" id="btnVolverCierre" style="padding:0;margin-top:6px">← Ver el cierre de la semana pasada</button>
+        ${soyModerador() ? '<button class="link-quiet" id="btnVolverCierre" style="padding:0;margin-top:6px">← Ver el cierre de la semana pasada</button>' : ''}
       `;
       app.appendChild(compCard);
 
@@ -4158,7 +4158,7 @@
       // Si acaba de registrar sin pasar por pantalla de resultado, el mensaje sigue a mano
       const tarjetaCheckin = tarjetaCompartir();
       if(tarjetaCheckin) app.appendChild(tarjetaCheckin);
-      if(state.gamifica) app.appendChild(tarjetaAvisos());
+      app.appendChild(tarjetaAvisos());
 
       // Un único guardado: cierra la semana pasada, guarda el compromiso nuevo y comparte
       if(compCard.querySelector('#btnCompartirBloq')) compCard.querySelector('#btnCompartirBloq').onclick = irAPlanes;
@@ -4406,7 +4406,7 @@
   // Interruptores al final del registro semanal: mensajes de ánimo por WhatsApp y
   // emails de novedades. Se guardan al momento en Gamifica (Worker POST /avisos).
   function tarjetaAvisos(){
-    const g = state.gamifica;
+    const g = state.gamifica || (state.gamifica = {});
     const card = document.createElement('div');
     card.className = 'card';
     card.style.marginTop = '18px';
