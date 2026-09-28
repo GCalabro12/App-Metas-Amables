@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V9.2 · App Metas Amables · 2026-09-28 17:26 ==== -->
+<!-- ==== index V9.3 · App Metas Amables · 2026-09-28 17:50 ==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -872,6 +872,39 @@
     document.body.classList.toggle('theme-dark', state.theme === 'dark');
   }
 
+  // Modo oscuro: muchas tarjetas tienen fondo claro fijo (pastel), y el texto, que en
+  // oscuro es claro, no se leía. A cada elemento con fondo claro se le devuelven los
+  // colores de texto del modo claro (--ink, --ink-soft), que heredan sus hijos.
+  // Se repasa también lo que se añade después (tarjetas que cargan más tarde).
+  function luminosidad(color){
+    const m = String(color).match(/rgba?\(([\d.]+),\s*([\d.]+),\s*([\d.]+)(?:,\s*([\d.]+))?/);
+    if(!m || (m[4] !== undefined && Number(m[4]) < 0.5)) return null;   // transparente: no cuenta
+    return (0.299 * m[1] + 0.587 * m[2] + 0.114 * m[3]) / 255;
+  }
+  function arreglarContrasteOscuro(raiz){
+    if(!document.body.classList.contains('theme-dark') || !raiz) return;
+    [raiz].concat(Array.from(raiz.querySelectorAll('*:not(svg):not(svg *)'))).forEach(n => {
+      if(n.nodeType !== 1 || n.dataset.contraste) return;
+      const l = luminosidad(getComputedStyle(n).backgroundColor);
+      if(l !== null && l > 0.72){
+        n.dataset.contraste = '1';
+        n.style.setProperty('--ink', '#101010');
+        n.style.setProperty('--ink-soft', '#55544C');
+        n.style.color = '#101010';
+      }
+    });
+  }
+  let observadorContraste = null, contrastePendiente = false;
+  function vigilarContrasteOscuro(){
+    if(observadorContraste || !window.MutationObserver) return;
+    observadorContraste = new MutationObserver(() => {
+      if(contrastePendiente) return;
+      contrastePendiente = true;
+      requestAnimationFrame(() => { contrastePendiente = false; arreglarContrasteOscuro(app); });
+    });
+    observadorContraste.observe(app, { childList: true, subtree: true });
+  }
+
   const BADGE_SCALE = [
     { min: 0,   label: 'Aprendiz',              icon:'🌱' },
     { min: 10,  label: 'Caminante',              icon:'🚶' },
@@ -1350,7 +1383,7 @@
   }
 
 
-  const APP_VERSION = 'V9.2';
+  const APP_VERSION = 'V9.3';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -3269,6 +3302,8 @@
     activarReacciones(app);
     activarEstrellaModulos(app);
     activarLectorGuias(app);
+    arreglarContrasteOscuro(app);
+    vigilarContrasteOscuro();
     if(document.getElementById('fechaHoy')){
       relojFecha = setInterval(() => { const f = document.getElementById('fechaHoy'); if(f) f.textContent = textoFechaHoy(); }, 20000);
     }
@@ -4734,4 +4769,4 @@
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V9.2 · App Metas Amables · 2026-09-28 17:26 ==== -->
+<!-- ==== Fin del index V9.3 · App Metas Amables · 2026-09-28 17:50 ==== -->
