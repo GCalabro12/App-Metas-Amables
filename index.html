@@ -480,8 +480,14 @@
   .ciclo-d{ background:#F1ECFC !important; border-color:#A58BD8 !important; }
   .ciclo-c{ background:#EEF6E9 !important; border-color:#93BF80 !important; }
   .ciclo-b{ background:#FDF0F0 !important; border-color:#E39A9A !important; border-style:dashed !important; }
-  .ciclo-a{ background:#FFF8DC !important; border-color:#E2C45A !important; }
-  .ciclo-meta{ background:#C9942D !important; border:2px solid #101010 !important; justify-content:center; }
+  .ciclo-a{ background:#FFFDF6 !important; border-color:#E2C45A !important; }
+  .ciclo-meta{ background:#C9942D !important; border:2px solid #101010 !important; }
+  /* Ya hecha: marrón más pálido */
+  .ciclo-meta.hecha{ background:#E6D3AC !important; border-color:#B9A27A !important; }
+  /* La actividad que toca ahora: reborde amarillo que late */
+  .ciclo .opcion-inicio.actual{ box-shadow:0 0 0 4px #FFD400; animation:toca 1.6s ease-in-out infinite; }
+  @keyframes toca{ 0%,100%{ box-shadow:0 0 0 3px #FFD400; } 50%{ box-shadow:0 0 0 7px rgba(255,212,0,.55); } }
+  .ciclo-cero{ width:40px; height:40px; border-radius:50%; border:2.5px solid #101010; background:#fff; display:flex; align-items:center; justify-content:center; font-family:'Lora',serif; font-weight:700; font-size:20px; color:#101010; }
   .ciclo-meta .opcion-tx b{ font-family:'Lora',serif; font-size:17px; color:#101010; }
   .ciclo-meta .opcion-tx small{ color:#2a2008; font-weight:600; }
   .ciclo-meta .opcion-flecha{ color:#101010; }
@@ -687,7 +693,7 @@
   .back-btn.suelto{ display:block; margin:14px 0 10px; }
   /* Etiqueta roja «Recibida» arriba a la derecha del botón de la guía */
   .ciclo-btn{ position:relative; }
-  .etiqueta-recibida{ position:absolute; top:6px; right:10px; background:var(--moss); color:#fff; font-size:11px; font-weight:700; border-radius:999px; padding:2px 9px; }
+  .etiqueta-recibida{ position:absolute; top:6px; right:10px; background:#2E7D32; color:#fff; font-family:'Karla',sans-serif; font-size:11px; font-weight:700; border-radius:999px; padding:2px 9px; }
   .hamburger-btn-text{
     padding:8px 12px; border-radius:8px; border:2px solid var(--border);
     background:var(--surface); color:var(--ink); cursor:pointer;
@@ -1318,7 +1324,7 @@
   }
 
 
-  const APP_VERSION = 'V7.2';
+  const APP_VERSION = 'V7.3';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -2374,11 +2380,37 @@
     return '<div class="panel-badge">' + (icono ? '<span class="panel-icono">' + iconoCiclo(icono) + '</span>' : '') + '<span>' + titulo + '</span></div>';
   }
 
+  // La guía se da por «abierta» esta semana cuando entra en sus prácticas
+  function claveGuiaVista(){ return 'guia_vista_' + (state.me || ''); }
+  function marcarGuiaVista(){ try { localStorage.setItem(claveGuiaVista(), currentWeekShort); } catch(e){} }
+  function guiaPendienteDeAbrir(){
+    if(!state.guiaTexto) return false;
+    let vista = '';
+    try { vista = localStorage.getItem(claveGuiaVista()) || ''; } catch(e){}
+    if(vista === currentWeekShort) return false;
+    // Plan Libre: solo hay guía nueva la primera semana de cada mes
+    if(!tienePlan('guias')) return today.getDate() <= 7 || !vista;
+    return true;
+  }
+  // Lo que toca hoy (se remarca en el ciclo y Prácti lo recuerda):
+  // meta sin hacer → guía sin abrir → sesión hoy o mañana → registro del lunes → practicar
+  function tareaDelDia(){
+    if(!metaHechaYa()) return 'meta';
+    if(guiaPendienteDeAbrir()) return 'a';
+    if(tienePlan('sesiones') && (haySesionEnDias(0) || haySesionEnDias(1))) return 'd';
+    const lista = (state.checkins && state.checkins[state.me]) || [];
+    if(today.getDay() === 1 && !lista.some(c => c.week === currentWeekShort && c.compromisoVeces)) return 'c';
+    return 'b';
+  }
+
   function fraseInicio(){
     const nombre = String(state.me || '').split(' ')[0];
-    if(haySesionEnDias(0)) return '🤝 Hoy tenemos reunión, ' + nombre + '. Nos vemos en un rato.';
-    if(haySesionEnDias(1)) return '🤝 Mañana tenemos reunión, ' + nombre + '. Deja el rato apartado.';
-    if(today.getDay() === 1) return '🗓️ Es lunes, ' + nombre + ': toca cerrar la semana y comprometerte con la nueva.';
+    const toca = tareaDelDia();
+    if(toca === 'meta') return '📝 ' + nombre + ', lo primero es rellenar el formulario de tu meta trimestral. ¡Hazlo hoy!';
+    if(toca === 'a') return '📖 ' + nombre + ', tu guía de esta semana te está esperando. ¡Ábrela en «Recibe tu guía semanal»!';
+    if(haySesionEnDias(0) && tienePlan('sesiones')) return '🤝 Hoy tenemos reunión, ' + nombre + '. Nos vemos en un rato.';
+    if(haySesionEnDias(1) && tienePlan('sesiones')) return '🤝 Mañana tenemos reunión, ' + nombre + '. Deja el rato apartado.';
+    if(toca === 'c') return '🗓️ Es lunes, ' + nombre + ': toca cerrar la semana y comprometerte con la nueva.';
     const inicioAno = new Date(today.getFullYear(), 0, 1);
     const diaDelAno = Math.floor((today - inicioAno) / 86400000);
     return FRASES_INICIO[diaDelAno % FRASES_INICIO.length].replace('{n}', nombre);
@@ -3065,6 +3097,7 @@
 
   function renderPracticasView(){
     if(state.prevView === 'practicas') state.prevView = 'panel';   // al volver de "Tu plan"
+    marcarGuiaVista();
     renderBackTopbar('Prácticas de ' + state.me);
     app.appendChild(el('<div class="practi-guia"><div style="text-align:center;margin:0 0 6px">' + practiReaccionHTML('leyendo', 'leyendoCae', 170) + '</div>' + bocadilloPracti(tienePlan('guias') ? FRASES_PRACTI.practicas : FRASES_PRACTI.practicasLibre, 'tono-calma') + '</div>'));
     const card = document.createElement('div');
@@ -3578,24 +3611,28 @@
         const subGuia = !state.guiaTexto
           ? (formularioEnviado() ? '⏳ En breve tendrás tu guía' : 'Llegará cuando definas tu meta')
           : '📖 Ya tienes tu guía para leer' + (sinGuias ? ' · próxima: 1 de ' + monthNamesEs[proxMes.getMonth()] : '');
+        const toca = tareaDelDia();
+        const act = k => (k === toca ? ' actual' : '');
         opciones.innerHTML =
-          '<button type="button" class="opcion-inicio ciclo-meta' + (metaHecha ? ' hecha' : ' pendiente') + '" data-ir="s4"><span class="opcion-tx"><b>Define tu meta trimestral</b>'
+          '<button type="button" class="opcion-inicio ciclo-btn ciclo-meta' + (metaHecha ? ' hecha' : ' pendiente') + act('meta') + '" data-ir="s4">'
+          + '<span class="ciclo-icono"><span class="ciclo-cero">0</span></span>'
+          + '<span class="opcion-tx"><b>Formulario de meta trimestral</b>'
           + (metaHecha
-              ? '<small class="ciclo-dato" style="color:#2E7D32;font-weight:700">✅ Hecha' + (tx.meta ? ': ' + escapeAttr(corto(tx.meta, 120)) : '') + '</small>'
+              ? (tx.meta ? '<small class="ciclo-dato">🎯 ' + escapeAttr(corto(tx.meta, 120)) + '</small>' : '<small>Tu meta del trimestre ya está definida</small>')
+                + '<span class="etiqueta-recibida">Hecha</span>'
               : '<small style="color:#B94A3A;font-weight:700">⚠️ Pendiente: empieza por aquí</small>')
           + '</span><span class="opcion-flecha">›</span></button>'
           + flechaAbajo
-          + boton('s3', 'ciclo-a' + (practicaBloqueada ? ' bloqueada' : ''), 'a', 'Recibe tu guía semanal', subGuia,
-                (sinGuias ? '<span class="etiqueta-plan">⭐ Semanal con el Plan Guías</span>' : '')
-                + (state.guiaTexto ? '<span class="etiqueta-recibida">Recibida</span>' : ''), practicaBloqueada)
+          + boton('s3', 'ciclo-a' + (practicaBloqueada ? ' bloqueada' : '') + act('a'), 'a', 'Recibe tu guía semanal', subGuia,
+                state.guiaTexto ? '<span class="etiqueta-recibida">Recibida</span>' : '', practicaBloqueada)
           + flechaAbajo
-          + boton('sB', 'ciclo-b', 'b', 'Realiza tu práctica',
+          + boton('sB', 'ciclo-b' + act('b'), 'b', 'Realiza tu práctica',
                 (tx.practica ? '<span class="ciclo-dato">' + escapeAttr(corto(tx.practica, 110)) + '</span>' : 'La defines en tu registro del lunes')
                 + (vecesTx ? '<br><span style="font-weight:700">' + vecesTx + '</span>' : ''), '', false)
           + flechaAbajo
-          + boton('s1', 'ciclo-c', 'c', 'Registra <span class="ciclo-normal">' + textoProximoLunes() + '</span>', 'El lunes de compromiso amable')
+          + boton('s1', 'ciclo-c' + act('c'), 'c', 'Registra <span class="ciclo-normal">' + textoProximoLunes() + '</span>', 'El lunes de compromiso amable')
           + flechaAbajo
-          + boton('s2', 'ciclo-d' + (sinSesiones ? ' bloqueada' : ''), 'd', 'Sesión grupal quincenal',
+          + boton('s2', 'ciclo-d' + (sinSesiones ? ' bloqueada' : '') + act('d'), 'd', 'Sesión grupal quincenal',
                 (!sinSesiones && textoProximaSesion()) ? '<span class="ciclo-dato" style="font-style:normal;font-weight:700">📅 ' + textoProximaSesion() + '</span>'
                   : sinSesiones ? 'Cada 15 días, en grupo reducido. Aumenta tu plan: habla con tu facilitador' : 'Cada 15 días, en grupo reducido',
                 '', sinSesiones)
