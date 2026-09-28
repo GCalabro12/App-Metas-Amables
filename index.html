@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V9.6 · App Metas Amables · 2026-09-28 21:42 ==== -->
+<!-- ==== index V9.7 · App Metas Amables · 2026-09-28 22:07 ==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -808,6 +808,8 @@
   .practi-balanceo .practi-hueco.quieto, #practiQuieto:not(.oculto){display:inline-block;animation:balanceo 2.6s ease-in-out infinite;transform-origin:50% 100%}
   @keyframes balanceo{0%,100%{transform:rotate(-2deg) translateY(0)}50%{transform:rotate(2deg) translateY(-3px)}}
   @media (prefers-reduced-motion: reduce){.practi-balanceo .practi-hueco.quieto, #practiQuieto{animation:none}}
+  .guia-nueva{display:inline-block;background:#E8B400;color:#101010;font-weight:700;border-radius:8px;padding:2px 8px;animation:guiaLatido 1.6s ease-in-out infinite}
+  @keyframes guiaLatido{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}
   .pie-derechos{margin:36px 0 0;text-align:center;font-size:11px;color:var(--ink-soft);line-height:1.5}
   .pie-derechos a{color:var(--ink-soft)}
   .practi-tocable{cursor:pointer;position:relative;display:inline-block;line-height:0;-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;outline:none}
@@ -1385,7 +1387,7 @@
   }
 
 
-  const APP_VERSION = 'V9.6';
+  const APP_VERSION = 'V9.7';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -2448,6 +2450,13 @@
   // La guía se da por «abierta» esta semana cuando entra en sus prácticas
   function claveGuiaVista(){ return 'guia_vista_' + (state.me || ''); }
   function marcarGuiaVista(){ try { localStorage.setItem(claveGuiaVista(), currentWeekShort); } catch(e){} }
+  // Solo cuenta como leída si se queda un rato en sus prácticas (1 minuto); si sale antes,
+  // el aviso «Ya tienes tu nueva guía» sigue en el ciclo
+  let relojLecturaGuia = null;
+  function contarLecturaGuia(){
+    if(relojLecturaGuia) clearTimeout(relojLecturaGuia);
+    relojLecturaGuia = setTimeout(() => { if(state.view === 'practicas') marcarGuiaVista(); }, 60000);
+  }
   function guiaPendienteDeAbrir(){
     if(!state.guiaTexto) return false;
     let vista = '';
@@ -3172,7 +3181,7 @@
 
   function renderPracticasView(){
     if(state.prevView === 'practicas') state.prevView = 'panel';   // al volver de "Tu plan"
-    marcarGuiaVista();
+    contarLecturaGuia();
     renderBackTopbar('Prácticas de ' + state.me);
     // Prácti leyendo (y la hoja que se le cae al tocarlo) está en la pantalla anterior, «a · Lee tu guía semanal»:
     // aquí se va directo a la guía
@@ -3720,7 +3729,9 @@
         const proxMes = new Date(today.getFullYear(), today.getMonth() + 1, 1);
         const subGuia = !state.guiaTexto
           ? (formularioEnviado() ? '⏳ En breve tendrás tu guía' : 'Llegará cuando definas tu meta')
-          : '📖 Ya tienes tu guía para leer' + (sinGuias ? ' · próxima: 1 de ' + monthNamesEs[proxMes.getMonth()] : '');
+          : guiaPendienteDeAbrir()
+            ? '<span class="guia-nueva">✨ Ya tienes tu nueva guía de esta semana para leer</span>'
+            : '📖 Ya tienes tu guía para leer' + (sinGuias ? ' · próxima: 1 de ' + monthNamesEs[proxMes.getMonth()] : '');
         const toca = tareaDelDia();
         const act = k => (k === toca ? ' actual' : '');
         opciones.innerHTML =
@@ -4776,4 +4787,4 @@
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V9.6 · App Metas Amables · 2026-09-28 21:42 ==== -->
+<!-- ==== Fin del index V9.7 · App Metas Amables · 2026-09-28 22:07 ==== -->
