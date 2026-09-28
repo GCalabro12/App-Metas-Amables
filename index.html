@@ -1331,7 +1331,7 @@
   }
 
 
-  const APP_VERSION = 'V8.5';
+  const APP_VERSION = 'V8.6';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -3170,8 +3170,24 @@
           <div class="badge-scale-row"><span>Fecha de pago</span><span>${fmtFecha(f['Fecha pago'])}</span></div>
           <div class="badge-scale-row"><span>Vencimiento</span><span>${fmtFecha(f['Vencimiento'])}</span></div>
           <div class="badge-scale-row"><span>Importe anual</span><span>${f['Importe anual'] != null ? f['Importe anual'] + ' €' : '—'}</span></div>
-          <div class="badge-scale-row"><span>Forma de pago</span><span>${f['Forma de pago'] || '—'}</span></div>
+          <div class="badge-scale-row"><span>Forma de pago</span><span>${f['Forma de pago'] || '—'}${f['Periodicidad'] ? ' · ' + f['Periodicidad'].toLowerCase() : ''}</span></div>
         `;
+        // Quien paga trimestral (105 € × 4 = 420 € al año) ahorra pasándose al anual (260 €).
+        // Lo gestiona el facilitador: cancela la suscripción trimestral y manda el enlace anual.
+        if(f['Periodicidad'] === 'Trimestral' && !MODO_PLAY){
+          const fac = state.facilitador || {};
+          const tel = String(fac.whatsapp || '34658825799').replace(/\D/g, '') || '34658825799';
+          const texto = 'Hola, soy ' + state.me + '. Pago el Plan Guías + Sesiones cada trimestre y me gustaría pasarme al pago anual.';
+          const aviso = document.createElement('div');
+          aviso.className = 'card';
+          aviso.style.marginTop = '14px';
+          aviso.innerHTML = `
+            <p style="margin:0 0 6px;font-size:17px"><b>💡 Ahorra pasándote al pago anual</b></p>
+            <p style="font-size:14px;margin:0 0 10px">Pagando cada trimestre son <b>420 € al año</b> (105 € × 4). Con el pago anual pagarías <b>260 € al año</b>, sin cuota de alta, porque ya eres del programa: <b>160 € menos cada año</b>.</p>
+            <a class="panel-link-btn" target="_blank" rel="noopener" href="https://wa.me/${tel}?text=${encodeURIComponent(texto)}">Quiero pasarme al anual →</a>
+            <p style="font-size:12px;color:var(--ink-soft);margin:8px 0 0">Tu facilitador te ayuda con el cambio. Empezarás el anual cuando acabe el trimestre que ya pagaste.</p>`;
+          app.appendChild(aviso);
+        }
       })
       .catch(err => {
         console.error('Error cargando facturación:', err);
