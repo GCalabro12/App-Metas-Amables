@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V9.3 · App Metas Amables · 2026-09-28 17:50 ==== -->
+<!-- ==== index V9.4 · App Metas Amables · 2026-09-28 19:08 ==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -808,6 +808,8 @@
   .practi-balanceo .practi-hueco.quieto, #practiQuieto:not(.oculto){display:inline-block;animation:balanceo 2.6s ease-in-out infinite;transform-origin:50% 100%}
   @keyframes balanceo{0%,100%{transform:rotate(-2deg) translateY(0)}50%{transform:rotate(2deg) translateY(-3px)}}
   @media (prefers-reduced-motion: reduce){.practi-balanceo .practi-hueco.quieto, #practiQuieto{animation:none}}
+  .pie-derechos{margin:36px 0 0;text-align:center;font-size:11px;color:var(--ink-soft);line-height:1.5}
+  .pie-derechos a{color:var(--ink-soft)}
   .practi-tocable{cursor:pointer;position:relative;display:inline-block;line-height:0;-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;outline:none}
   .practi-tocable *{-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none}
   .dias-card{padding-left:12px;padding-right:12px}
@@ -1383,7 +1385,7 @@
   }
 
 
-  const APP_VERSION = 'V9.3';
+  const APP_VERSION = 'V9.4';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -3294,6 +3296,7 @@
     if(relojFecha){ clearInterval(relojFecha); relojFecha = null; }
     destruirPracti();
     renderVista();
+    if(state.view !== 'loading') app.appendChild(el('<p class="pie-derechos">© ' + new Date().getFullYear() + ' Gustavo Calabró · Práctica Integral Club. Todos los derechos reservados. · <a href="privacidad.html" target="_blank" rel="noopener">Privacidad</a></p>'));
     activarPracti(app);
     activarBocadillos(app);
     activarBienvenida(app);
@@ -4769,4 +4772,4 @@
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V9.3 · App Metas Amables · 2026-09-28 17:50 ==== -->
+<!-- ==== Fin del index V9.4 · App Metas Amables · 2026-09-28 19:08 ==== -->
