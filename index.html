@@ -1324,7 +1324,7 @@
   }
 
 
-  const APP_VERSION = 'V8.0';
+  const APP_VERSION = 'V8.2';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -3514,10 +3514,10 @@
           altaPassEl.type = viendo ? 'password' : 'text';
           toggleAlta.textContent = viendo ? '👁 Ver contraseña' : '🙈 Ocultar contraseña';
         };
-        altaCard.querySelector('#btnAlta').onclick = () => crearCuenta(
+        altaCard.querySelector('#btnAlta').onclick = () => (ofrecerInstalar(), crearCuenta(
           altaCard.querySelector('#altaNombre').value, altaCard.querySelector('#altaTel').value,
           altaCard.querySelector('#altaEmail').value, altaCard.querySelector('#altaPass').value,
-          altaCard.querySelector('#altaWhats').checked, altaCard.querySelector('#altaEmails').checked);
+          altaCard.querySelector('#altaWhats').checked, altaCard.querySelector('#altaEmails').checked));
       } else {
         // Pantalla de login
         app.appendChild(el(`<h1>Entra en tu cuenta</h1><p class="lead">Escribe tu nombre y tu contraseña.</p>`));
@@ -3544,7 +3544,7 @@
           togglePass.textContent = showing ? 'Ver contraseña' : 'Ocultar contraseña';
         };
         const nombreInput = formCard.querySelector('#nombreInput');
-        formCard.onsubmit = (e) => { e.preventDefault(); loginWithPassword(nombreInput.value, passInput.value); };
+        formCard.onsubmit = (e) => { e.preventDefault(); ofrecerInstalar(); loginWithPassword(nombreInput.value, passInput.value); };
         nombreInput.addEventListener('keydown', (e) => { if(e.key==='Enter'){ e.preventDefault(); passInput.focus(); } });
         const changeLink = document.createElement('button');
         changeLink.className = 'link-quiet';
@@ -3839,6 +3839,8 @@
 
       // Dudas y sugerencias (solo en la pantalla de inicio)
       if(state.panelSub){ return; }
+      const inst = tarjetaInstalar();
+      if(inst) app.appendChild(inst);
       const help = document.createElement('div');
       help.className = 'card';
       help.style.marginTop = '18px';
@@ -4384,6 +4386,63 @@
     init();
   } catch(err){
     app.innerHTML = '<div style="padding:24px;font-family:sans-serif">No se pudo iniciar la app: ' + (err && err.message ? err.message : err) + '</div>';
+  }
+
+  // Instalar en la pantalla de inicio. En Android (Chrome) el navegador nos deja
+  // lanzar su ventana de instalación con un botón; en iPhone no, así que se
+  // explican los pasos. No se muestra si ya está instalada o en modo Play.
+  let avisoInstalar = null;
+  window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); avisoInstalar = e; });
+  window.addEventListener('appinstalled', () => {
+    avisoInstalar = null;
+    document.querySelectorAll('.instalar-card').forEach(c => c.remove());
+  });
+  // Al tocar «Entrar» o «Crear cuenta» se abre sola la ventana de instalación
+  // (Android/Chrome), una sola vez por móvil. Tiene que ir en ese mismo toque:
+  // el navegador no deja abrirla sin que la persona toque algo.
+  function ofrecerInstalar(){
+    let pedido = false;
+    try { pedido = localStorage.getItem('instalarPedido') === '1'; } catch(e){}
+    if(!avisoInstalar || pedido || MODO_PLAY) return;
+    try { localStorage.setItem('instalarPedido', '1'); } catch(e){}
+    try { avisoInstalar.prompt(); } catch(e){}
+    avisoInstalar.userChoice.then(() => { avisoInstalar = null; }, () => {});
+  }
+
+  function tarjetaInstalar(){
+    const instalada = window.matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+    let oculta = false;
+    try { oculta = localStorage.getItem('instalarOculto') === '1'; } catch(e){}
+    if(instalada || MODO_PLAY || oculta) return null;
+    const ios = /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    const card = document.createElement('div');
+    card.className = 'card instalar-card';
+    card.style.marginTop = '18px';
+    card.innerHTML = `
+      <p style="margin:0 0 6px;font-size:17px"><b>📲 Pon la app en tu móvil</b></p>
+      <p style="font-size:13px;color:var(--ink-soft);margin:0 0 10px">Así la tendrás en la pantalla de inicio, como cualquier otra app, y no tendrás que buscar el enlace.</p>
+      <button type="button" class="panel-link-btn instalar-btn" style="border:0;width:100%;cursor:pointer">Instalar la app</button>
+      <div class="instalar-pasos" style="display:none;font-size:14px;margin:10px 0 0;line-height:1.5"></div>
+      <p style="margin:8px 0 0;text-align:right"><a href="#" class="instalar-no" style="font-size:12px;color:var(--ink-soft)">Ya la tengo / ahora no</a></p>`;
+    const pasos = card.querySelector('.instalar-pasos');
+    card.querySelector('.instalar-btn').addEventListener('click', async () => {
+      if(avisoInstalar){
+        avisoInstalar.prompt();
+        try { await avisoInstalar.userChoice; } catch(e){}
+        avisoInstalar = null;
+        return;
+      }
+      pasos.style.display = 'block';
+      pasos.innerHTML = ios
+        ? '<b>En iPhone (con Safari):</b><br>1. Toca el botón <b>Compartir</b> (el cuadrado con una flecha hacia arriba, abajo en la pantalla).<br>2. Baja y toca <b>«Añadir a pantalla de inicio»</b>.<br>3. Toca <b>«Añadir»</b>, arriba a la derecha.<br><span style="color:var(--ink-soft)">Si usas otro navegador, abre este enlace en Safari.</span>'
+        : '<b>En Android (con Chrome):</b><br>1. Toca los <b>tres puntos ⋮</b>, arriba a la derecha.<br>2. Toca <b>«Instalar aplicación»</b> o <b>«Añadir a pantalla de inicio»</b>.<br>3. Confirma con <b>«Instalar»</b>.';
+    });
+    card.querySelector('.instalar-no').addEventListener('click', e => {
+      e.preventDefault();
+      try { localStorage.setItem('instalarOculto', '1'); } catch(err){}
+      card.remove();
+    });
+    return card;
   }
 
   // Service worker (sw.js): permite instalar la app en el móvil como una app normal
