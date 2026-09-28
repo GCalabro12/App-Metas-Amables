@@ -803,6 +803,15 @@
   .interruptor input:checked + span{background:#4C8C4A}
   .interruptor input:checked + span::before{transform:translateX(20px)}
   .interruptor input:focus-visible + span{outline:2px solid #4C8C4A;outline-offset:2px}
+  .dias-fila{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+  .dia-btn{aspect-ratio:1;min-height:40px;border:2px solid #d8d3c6;border-radius:12px;background:#FCFCF9;font-family:'Karla',sans-serif;font-size:15px;font-weight:700;color:var(--ink);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;padding:0;transition:transform .12s,background .2s}
+  .dia-btn:active{transform:scale(.92)}
+  .dia-btn.hoy{border-color:#E8B400}
+  .dia-btn.hecho{background:#4C8C4A;border-color:#4C8C4A;color:#fff}
+  .dia-btn:disabled{opacity:.35;cursor:default}
+  .dia-tick{font-size:16px;line-height:1;min-height:16px}
+  .chispa{position:fixed;width:7px;height:7px;border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);animation:chispa .75s ease-out forwards}
+  @keyframes chispa{to{transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) scale(.3);opacity:0}}
 </style>
 </head>
 <body>
@@ -1273,8 +1282,10 @@
     }
     sortedKeys.forEach(key => {
       const g = groups[key];
+      // Solo desde el mes anterior (las fechas viejas de la lista no se enseñan)
+      if(g.year * 12 + g.monthIdx < todayY * 12 + todayM - 1) return;
       const weeks = buildMonthGrid(g.year, g.monthIdx);
-      html += `<div style="margin-bottom:20px">`;
+      html += `<div style="margin-bottom:20px"${g.year === todayY && g.monthIdx === todayM ? ' id="sescalMesActual"' : ''}>`;
       html += `<div class="sescal-mes">${monthNamesEs[g.monthIdx]} ${g.year}</div>`;
       html += `<div class="sescal-dias-header">
         <div>L</div><div>M</div><div>X</div><div>J</div><div>V</div><div>S</div><div>D</div></div>`;
@@ -1331,7 +1342,7 @@
   }
 
 
-  const APP_VERSION = 'V8.6';
+  const APP_VERSION = 'V8.8';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -1349,7 +1360,7 @@
   // la sesión de cada persona y solo le deja leer y escribir lo suyo.
   const API_URL = 'https://metas-amables-api.proud-hill-016b.workers.dev';
   const AIR = {
-    fields: { alumno: 'Practicante', semana: 'Semana', cumplida: 'Cumplida', notas: 'Notas', metaTrim: 'Meta trimestre', metaSem: 'Meta semana', identidad: 'Identidad', grupo: 'Grupo MAC', urlGuia: 'URL Guías Mensuales', fechasSesiones: 'Fechas Sesiones', guiaTexto: 'Guía Trimestral Texto', valoracion: 'Valoracion', oportunidades: 'Opo estimadas', compromisoVeces: 'Me comprometo a', vecesRealizadas: 'Veces realizado', estadoSemana: 'Estado Semana', enlaceGamifica: 'Practicantes' }
+    fields: { alumno: 'Practicante', semana: 'Semana', cumplida: 'Cumplida', notas: 'Notas', metaTrim: 'Meta trimestre', metaSem: 'Meta semana', identidad: 'Identidad', grupo: 'Grupo MAC', urlGuia: 'URL Guías Mensuales', fechasSesiones: 'Fechas Sesiones', guiaTexto: 'Guía Trimestral Texto', valoracion: 'Valoracion', oportunidades: 'Opo estimadas', compromisoVeces: 'Me comprometo a', vecesRealizadas: 'Veces realizado', estadoSemana: 'Estado Semana', enlaceGamifica: 'Practicantes', diasHechos: 'Días hechos' }
   };
   // Sesión firmada por el Worker al entrar con nombre y contraseña (dura un año)
   function leerSesion(){ try{ return localStorage.getItem('ma_sesion'); }catch(e){ return null; } }
@@ -1417,6 +1428,7 @@
         compromisoVeces: (f[AIR.fields.compromisoVeces] !== undefined && f[AIR.fields.compromisoVeces] !== null) ? f[AIR.fields.compromisoVeces] : null,
         vecesRealizadas: (f[AIR.fields.vecesRealizadas] !== undefined && f[AIR.fields.vecesRealizadas] !== null) ? f[AIR.fields.vecesRealizadas] : null,
         estadoSemana: f[AIR.fields.estadoSemana] || '',
+        diasHechos: f[AIR.fields.diasHechos] || '',
         grupo: g || []
       });
     });
@@ -3117,7 +3129,8 @@
     if(state.prevView === 'practicas') state.prevView = 'panel';   // al volver de "Tu plan"
     marcarGuiaVista();
     renderBackTopbar('Prácticas de ' + state.me);
-    app.appendChild(el('<div class="practi-guia"><div style="text-align:center;margin:0 0 6px">' + practiReaccionHTML('leyendo', 'leyendoCae', 170) + '</div>' + bocadilloPracti(tienePlan('guias') ? FRASES_PRACTI.practicas : FRASES_PRACTI.practicasLibre, 'tono-calma') + '</div>'));
+    // Prácti leyendo (y la hoja que se le cae al tocarlo) está en la pantalla anterior, «a · Lee tu guía semanal»:
+    // aquí se va directo a la guía
     const card = document.createElement('div');
     card.className = 'card panel-section s3';
     card.innerHTML = `<p style="margin:0 0 12px;color:var(--ink-soft);font-size:14px">Tu guía de prácticas personalizada de este mes.</p>${cuerpoPracticasHTML()}`;
@@ -3317,6 +3330,12 @@
     app.appendChild(header);
     // «inicio» (cerrar sesión rápido, para pruebas) solo lo ve el moderador
     if(header.querySelector('#switchBtn')) header.querySelector('#switchBtn').onclick = switchUser;
+    // «← Volver» rojo arriba, debajo de la cabecera, en todas las pantallas que no son el panel
+    if(state.me && !['panel', 'pick', 'bienvenidaAlta'].includes(state.view)){
+      const volverArriba = botonVolver();
+      volverArriba.classList.add('volver-arriba');
+      app.appendChild(volverArriba);
+    }
 
     if(state.view === 'sinoportunidades'){
       app.appendChild(el(`
@@ -3403,6 +3422,9 @@
       calCard.innerHTML = renderSesionesCalendario(state.sesionesTexto);
       app.appendChild(calCard);
       app.appendChild(el('<a class="panel-link-btn honey" href="https://meet.google.com/qvf-aefv-trc" target="_blank" style="margin-bottom:12px">Enlace a la llamada →</a>'));
+      // Se abre mostrando el mes actual (no el anterior)
+      const mesActual = calCard.querySelector('#sescalMesActual');
+      if(mesActual) setTimeout(() => mesActual.scrollIntoView({ block: 'start' }), 0);
 
       app.appendChild(botonVolver());
       return;
@@ -3600,7 +3622,7 @@
                           s4: ['pizarra', 190, false], s5: ['formacion', 170, false] }[state.panelSub] || ['saludo', 112, true];
       const greetPanel = state.panelSub
         ? el(`<div style="position:relative;text-align:center;margin-bottom:10px">${state.panelSub === 's3'
-            ? '<img src="' + PRACTI_LEYENDO_PNG + '" alt="Prácti leyendo" style="height:160px;width:auto;display:inline-block">'
+            ? practiReaccionHTML('leyendo', 'leyendoCae', 160)
             : practiHTML(figuraSub[0], '', figuraSub[1], figuraSub[2] ? 'una-vez' : '')}</div>`)
         : el(`<div style="position:relative;text-align:center;margin-bottom:14px"><div style="font-family:'Lora',serif;font-size:24px;font-weight:600;color:var(--ink)">Hola, ${escapeAttr(state.me)}${avatarDe(state.me) ? ' ' + avatarDe(state.me) : ''}</div><div style="font-family:'Karla',sans-serif;font-size:15px;font-weight:700;color:var(--ink);margin-top:2px">${bienvenidaTexto(state.me)} a tu ciclo de aprendizaje</div><div class="fecha-hoy" id="fechaHoy" style="margin-bottom:10px">${textoFechaHoy()}</div><div class="practi-inicio" style="margin-bottom:10px">${practiReaccionHTML('saludo', 'empujonSaludo', 104, 'practi-saludo')}${bocadilloPracti(fraseInicio(), 'tono-calma')}</div></div>`);
       app.appendChild(greetPanel);
@@ -3976,12 +3998,20 @@
         cierreCard.querySelector('#btnIrPaso2').onclick = () => { state.editandoCierre = false; state.regPaso = 2; window.scrollTo(0,0); render(); };
         cierreCard.querySelector('#btnEditarCierre').onclick = () => { state.editandoCierre = true; render(); };
       } else {
+        // Si marcó días durante la semana, el cierre sale ya rellenado (una sola vez; luego manda lo que elija)
+        const diasPrev = String(prevWeek.diasHechos || '').split(',').filter(Boolean);
+        if(diasPrev.length && state.cierrePrerrellenado !== prevWeek.id && !state.cierreEstado){
+          state.cierrePrerrellenado = prevWeek.id;
+          if(diasPrev.length >= compromisoPrev){ state.cierreEstado = ESTADO_CUMPLIDO; }
+          else { state.cierreEstado = ESTADO_PARCIAL; state.cierreRealizadas = diasPrev.length; }
+        }
         const realizadasVal = (state.cierreRealizadas !== null && state.cierreRealizadas !== undefined) ? state.cierreRealizadas : '';
         const est = state.cierreEstado;
         cierreCard.innerHTML = `
           <div class="question paso-titulo">Cierre de la semana pasada ${rangoSemanaTexto(lastWeekDate)}</div>
           <p style="font-size:15px;font-weight:700;margin:12px 0 2px">Te habías comprometido a hacerlo ${compromisoPrev} ${compromisoPrev === 1 ? 'vez' : 'veces'}.</p>
           <p style="font-size:15px;color:var(--ink-soft);margin:0 0 12px">¿Cómo te fue?</p>
+          ${diasPrev.length ? '<p style="font-size:14px;background:var(--honey-tint);border-radius:10px;padding:8px 12px;margin:0 0 12px">📅 Durante la semana marcaste <b>' + diasPrev.join(', ') + '</b> (' + diasPrev.length + (diasPrev.length === 1 ? ' día' : ' días') + '). Lo hemos dejado seleccionado; cámbialo si no es así.</p>' : ''}
 
           <button class="btn btn-yes ${est === ESTADO_CUMPLIDO ? 'selected' : ''}" id="btnCierreTotal">
             Sí, hice ${compromisoPrev === 1 ? 'la vez' : 'las ' + compromisoPrev + ' veces'}
@@ -4277,6 +4307,7 @@
       app.appendChild(el('<div style="text-align:center;margin:0 0 4px">' + practiReaccionHTML('correr', 'valla', 170) + '</div>'
         + '<h1 style="text-align:center">Recuerda tu práctica semanal</h1>'
         + '<div class="card ps-card">' + cuerpo + '</div>'));
+      if(practica) app.appendChild(tarjetaDias(estaSemana));
       const acciones = el('<div><button type="button" class="panel-link-btn" id="psGuia" style="width:100%;border:none;cursor:pointer;background:#6B9362">📖 Ver tu guía de esta semana</button>'
         + '<button type="button" class="panel-link-btn" id="psRegistro" style="width:100%;border:none;cursor:pointer;margin-top:10px">✍️ Ir al registro</button>'
         + '<button type="button" class="juego-btn" id="psJuego"><span class="juego-btn-ico">🎮</span><span><b>Salta la valla con Prácti</b><small>Un minuto de juego: cada valla es un obstáculo que superas</small></span></button></div>');
@@ -4419,6 +4450,129 @@
     avisoInstalar = null;
     document.querySelectorAll('.instalar-card').forEach(c => c.remove());
   });
+  // Registro diario opcional: L M X J V S D de la semana en curso. Se guarda en la
+  // fila de esa semana, en una sola columna («Días hechos», p. ej. «L,X,J»). No da
+  // puntos: solo sirve para que el cierre del lunes salga ya rellenado.
+  const DIAS_SEMANA = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
+  function tarjetaDias(estaSemana){
+    const hoy = (new Date().getDay() + 6) % 7;   // 0 = lunes
+    let marcados = String((estaSemana && estaSemana.diasHechos) || '').split(',').filter(d => DIAS_SEMANA.includes(d));
+    const card = document.createElement('div');
+    card.className = 'card dias-card';
+    const cont = document.createElement('div');
+    card.appendChild(cont);
+    const pintar = () => {
+      cont.innerHTML = `
+        <p style="margin:0 0 4px;font-size:16px"><b>📅 ¿Qué días la hiciste?</b></p>
+        <p style="font-size:13px;color:var(--ink-soft);margin:0 0 10px">Opcional. Márcalo cuando la hagas y el lunes tu cierre saldrá ya rellenado.</p>
+        <div class="dias-fila">${DIAS_SEMANA.map((d, i) => `<button type="button" class="dia-btn${marcados.includes(d) ? ' hecho' : ''}${i === hoy ? ' hoy' : ''}" data-dia="${d}" ${i > hoy ? 'disabled' : ''} aria-pressed="${marcados.includes(d)}"><span class="dia-letra">${d}</span><span class="dia-tick">${marcados.includes(d) ? '✓' : ''}</span></button>`).join('')}</div>
+        <p class="dias-msg" style="font-size:12px;color:var(--ink-soft);margin:8px 0 0">${marcados.length ? 'Esta semana: ' + marcados.length + (marcados.length === 1 ? ' día' : ' días') : 'Toca el día en que hiciste tu práctica.'}</p>`;
+      card.querySelectorAll('.dia-btn').forEach(b => b.onclick = (e) => {
+        // Al marcar: sonidito y fuego artificial desde donde se ha tocado. Al desmarcar, solo se quita.
+        if(!marcados.includes(b.dataset.dia)){
+          const r = b.getBoundingClientRect();
+          fuegoArtificial(e.clientX || r.left + r.width / 2, e.clientY || r.top + r.height / 2);
+          sonidoLogro();
+        }
+        cambiar(b.dataset.dia);
+      });
+    };
+    const cambiar = async (d) => {
+      const antes = marcados.slice();
+      marcados = marcados.includes(d) ? marcados.filter(x => x !== d) : marcados.concat(d);
+      marcados.sort((a, b) => DIAS_SEMANA.indexOf(a) - DIAS_SEMANA.indexOf(b));
+      pintar();
+      try {
+        const campos = {}; campos[AIR.fields.semana] = currentWeekShort; campos[AIR.fields.diasHechos] = marcados.join(',');
+        const data = await guardarSemana(campos);
+        const lista = state.checkins[state.me] || (state.checkins[state.me] = []);
+        let fila = lista.find(c => c.week === currentWeekShort);
+        if(!fila){ fila = { id: data.id, week: currentWeekShort, label: currentWeekLabel, cumplida: false, nota: '', estadoSemana: '', compromisoVeces: null, vecesRealizadas: null }; lista.push(fila); }
+        fila.diasHechos = marcados.join(',');
+        card.querySelector('.dias-msg').textContent = '✓ Guardado · esta semana: ' + marcados.length + (marcados.length === 1 ? ' día' : ' días');
+      } catch(e){
+        marcados = antes; pintar();
+        card.querySelector('.dias-msg').textContent = 'No se pudo guardar. Revisa tu conexión e inténtalo de nuevo.';
+      }
+    };
+    pintar();
+    card.appendChild(recordatorioDiarioHTML());
+    return card;
+  }
+
+  // Recordatorio diario en el calendario del móvil (una web no puede poner alarmas):
+  // en iPhone, archivo .ics con aviso; en Android y ordenador, Google Calendar.
+  function recordatorioDiarioHTML(){
+    const caja = document.createElement('div');
+    caja.style.cssText = 'border-top:1px solid var(--border);margin-top:14px;padding-top:12px';
+    caja.innerHTML = `
+      <p style="margin:0 0 6px;font-size:15px"><b>⏰ ¿Te lo recuerdo cada día?</b></p>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+        <label style="font-size:14px">A las <input type="time" class="rec-hora" value="08:00" style="font-size:16px;padding:6px 8px;border:1px solid var(--border);border-radius:8px"></label>
+        <button type="button" class="panel-link-btn rec-btn" style="border:0;cursor:pointer;margin:0;flex:1;min-width:160px">Poner recordatorio →</button>
+      </div>
+      <p style="font-size:12px;color:var(--ink-soft);margin:6px 0 0">Se crea un aviso diario en el calendario de tu móvil. Puedes quitarlo cuando quieras desde el propio calendario.</p>`;
+    caja.querySelector('.rec-btn').onclick = () => {
+      const [hh, mm] = (caja.querySelector('.rec-hora').value || '08:00').split(':').map(Number);
+      const lista = state.checkins[state.me] || [];
+      const ultima = lista.slice().reverse().find(c => c.metaSem && c.metaSem.trim());
+      const titulo = '🌿 Mi práctica de Metas Amables';
+      const detalle = (ultima ? 'Tu práctica: ' + ultima.metaSem + '\n\n' : '') + 'Cuando la hagas, márcala en la app: https://app.practicaintegral.club';
+      const ini = new Date(); ini.setHours(hh, mm, 0, 0);
+      if(ini < new Date()) ini.setDate(ini.getDate() + 1);
+      const fin = new Date(ini.getTime() + 10 * 60000);
+      const loc = d => d.getFullYear() + String(d.getMonth() + 1).padStart(2, '0') + String(d.getDate()).padStart(2, '0') + 'T' + String(d.getHours()).padStart(2, '0') + String(d.getMinutes()).padStart(2, '0') + '00';
+      const ios = /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+      if(ios){
+        const esc = t => t.replace(/\\/g, '\\\\').replace(/\n/g, '\\n').replace(/[,;]/g, m => '\\' + m);
+        const ics = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Metas Amables//ES', 'BEGIN:VEVENT',
+          'UID:practica-' + Date.now() + '@practicaintegral.club', 'DTSTAMP:' + new Date().toISOString().replace(/[-:]/g, '').slice(0, 15) + 'Z',
+          'DTSTART:' + loc(ini), 'DTEND:' + loc(fin), 'RRULE:FREQ=DAILY', 'SUMMARY:' + esc(titulo), 'DESCRIPTION:' + esc(detalle),
+          'BEGIN:VALARM', 'TRIGGER:PT0M', 'ACTION:DISPLAY', 'DESCRIPTION:' + esc(titulo), 'END:VALARM', 'END:VEVENT', 'END:VCALENDAR'].join('\r\n');
+        const a = document.createElement('a');
+        a.href = 'data:text/calendar;charset=utf-8,' + encodeURIComponent(ics);
+        a.download = 'recordatorio-metas-amables.ics';
+        document.body.appendChild(a); a.click(); a.remove();
+      } else {
+        const p = new URLSearchParams({ action: 'TEMPLATE', text: titulo, details: detalle, dates: loc(ini) + '/' + loc(fin), recur: 'RRULE:FREQ=DAILY' });
+        window.open('https://calendar.google.com/calendar/render?' + p.toString(), '_blank', 'noopener');
+      }
+    };
+    return caja;
+  }
+
+  // Pequeño fuego artificial de chispas de colores en (x, y) de la pantalla
+  function fuegoArtificial(x, y){
+    const colores = ['#E8B400', '#4C8C4A', '#E0452B', '#3B82C4', '#C45BAA', '#F28C28'];
+    for(let i = 0; i < 18; i++){
+      const p = document.createElement('span');
+      p.className = 'chispa';
+      const ang = (Math.PI * 2 * i) / 18 + Math.random() * 0.3, dist = 40 + Math.random() * 45;
+      p.style.left = x + 'px'; p.style.top = y + 'px';
+      p.style.background = colores[i % colores.length];
+      p.style.setProperty('--dx', Math.cos(ang) * dist + 'px');
+      p.style.setProperty('--dy', Math.sin(ang) * dist + 'px');
+      document.body.appendChild(p);
+      setTimeout(() => p.remove(), 800);
+    }
+  }
+  // Sonidito agradable (dos notas cortas), sin archivos de audio
+  let ctxAudio = null;
+  function sonidoLogro(){
+    try {
+      ctxAudio = ctxAudio || new (window.AudioContext || window.webkitAudioContext)();
+      [[784, 0], [1175, 0.09]].forEach(([f, t]) => {
+        const o = ctxAudio.createOscillator(), g = ctxAudio.createGain(), t0 = ctxAudio.currentTime + t;
+        o.type = 'sine'; o.frequency.value = f;
+        g.gain.setValueAtTime(0.0001, t0);
+        g.gain.exponentialRampToValueAtTime(0.18, t0 + 0.02);
+        g.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.35);
+        o.connect(g); g.connect(ctxAudio.destination);
+        o.start(t0); o.stop(t0 + 0.4);
+      });
+    } catch(e){}
+  }
+
   // Formulario de meta trimestral, ya rellenado con los datos personales que la
   // persona dio la última vez (correo, nombre, ciudad, género y edad)
   function urlFormulario(){
