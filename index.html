@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V9.4 · App Metas Amables · 2026-09-28 19:08 ==== -->
+<!-- ==== index V9.6 · App Metas Amables · 2026-09-28 21:42 ==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1385,7 +1385,7 @@
   }
 
 
-  const APP_VERSION = 'V9.4';
+  const APP_VERSION = 'V9.6';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -1672,6 +1672,7 @@
     state.noteDraft = '';
     state.metaTrimDraft = '';
     state.metaSemDraft = '';
+    state.metaSemTocado = false;
     state.identidadDraft = '';
     state.savedMsg = '';
     state.metaSavedMsg = '';
@@ -3957,7 +3958,7 @@
       const inst = tarjetaInstalar();
       if(inst) app.appendChild(inst);
       // Juego extra, al final de la pantalla de inicio
-      const juego = el('<button type="button" class="juego-btn" style="margin-top:18px"><span class="juego-btn-ico">🎮</span><span><b>Salta la valla con Prácti</b><small>Un minuto de juego: cada valla es un obstáculo que superas</small></span></button>');
+      const juego = el('<button type="button" class="juego-btn" style="margin-top:18px"><span class="juego-btn-ico">🎮</span><span><b>Salta la valla con Prácti</b><small>Un minuto de juego: cada valla es un obstáculo que superas</small></span></button>').firstElementChild;   // el() da un fragmento: se coge el botón
       juego.onclick = abrirJuegoVallas;
       app.appendChild(juego);
       return;
@@ -3994,7 +3995,7 @@
       const identidadEstaSemana = (thisWeek && thisWeek.identidad) ? thisWeek.identidad : '';
       const curIdentidad = state.identidadDraft || identidadEstaSemana;
       const curMetaTrim = state.metaTrimDraft || (latest ? latest.metaTrim : '') || '';
-      const curMetaSem = state.metaSemDraft || (thisWeek ? thisWeek.metaSem : '') || '';
+      let curMetaSem = state.metaSemDraft || (thisWeek ? thisWeek.metaSem : '') || '';
 
       // ===== PASO 1: Cierre de la semana pasada =====
       const prevWeek = list.find(c => c.week === lastWeekShort) || null;
@@ -4006,6 +4007,9 @@
       const metaSemPrevia = (prevWeek && prevWeek.metaSem)
         ? prevWeek.metaSem
         : ((list.slice().reverse().find(c => c.week !== currentWeekShort && c.metaSem) || {}).metaSem || '');
+      // El «Cuando…, haré…» suele repetirse: sale ya escrito con el de la semana pasada (se puede cambiar).
+      // Solo si la persona no ha tocado el campo (si lo borra a propósito, se respeta).
+      if(!curMetaSem && !state.metaSemTocado) curMetaSem = metaSemPrevia;
 
       // Identidad que escribió la semana pasada: se muestra en gris como recordatorio
       const identidadPrevia = (prevWeek && prevWeek.identidad)
@@ -4239,7 +4243,7 @@
       identidadEl.oninput = (e) => { state.identidadDraft = e.target.value; limpiarFalta(e); };
       const btnMetaSemPrevia = compCard.querySelector('#btnUsarMetaSemPrevia');
       metaSemEl.oninput = (e) => {
-        state.metaSemDraft = e.target.value; limpiarFalta(e);
+        state.metaSemDraft = e.target.value; state.metaSemTocado = true; limpiarFalta(e);
         if(btnMetaSemPrevia) btnMetaSemPrevia.style.display = e.target.value.trim() ? 'none' : 'block';
       };
       if(btnMetaSemPrevia){
@@ -4772,4 +4776,4 @@
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V9.4 · App Metas Amables · 2026-09-28 19:08 ==== -->
+<!-- ==== Fin del index V9.6 · App Metas Amables · 2026-09-28 21:42 ==== -->
