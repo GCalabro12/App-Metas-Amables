@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V9.8 · App Metas Amables · 2026-09-29 12:49 ==== -->
+<!-- ==== index V9.9 · App Metas Amables · 2026-09-29 15:10 ==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1392,7 +1392,7 @@
   }
 
 
-  const APP_VERSION = 'V9.8';
+  const APP_VERSION = 'V9.9';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -1403,6 +1403,12 @@
         localStorage.setItem('ma_origen', 'play');
       return localStorage.getItem('ma_origen') === 'play';
     } catch(e){ return false; }
+  })();
+  // ¿Esta vez se ha abierto desde la app de Google Play? (no el recuerdo guardado):
+  // se apunta en Airtable («Usa app Play») para saber qué testers la tienen instalada
+  const PLAY_AHORA = (function(){
+    try { return new URLSearchParams(location.search).get('origen') === 'play' || String(document.referrer).startsWith('android-app://'); }
+    catch(e){ return false; }
   })();
 
   // ==== Conexión con el Worker (portero de Airtable) ====
@@ -1441,7 +1447,7 @@
     let data = {};
     try { data = await res.json(); } catch(e){}
     if(!res.ok){
-      if(res.status === 401 && sesion && (ruta === '/datos' || ruta === '/guardar')) sesionCaducada(data.error);
+      if(res.status === 401 && sesion && (ruta.startsWith('/datos') || ruta === '/guardar')) sesionCaducada(data.error);
       const err = new Error(data.error || ('Error ' + res.status));
       err.status = res.status;
       throw err;
@@ -1499,7 +1505,7 @@
   // Trae del Worker lo de la persona que ha entrado: sus filas, su plan, sus
   // puntos, las fechas de sesiones y (en Guías + Sesiones) el resumen de su grupo.
   async function refreshAll(){
-    const d = await api('/datos');
+    const d = await api('/datos' + (PLAY_AHORA ? '?play=1' : ''));
     state.me = d.nombre;
     state.checkins = {};
     state.checkins[d.nombre] = recordsToCheckins(d.filas || []).byName[d.nombre] || [];
@@ -4796,4 +4802,4 @@
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V9.8 · App Metas Amables · 2026-09-29 12:49 ==== -->
+<!-- ==== Fin del index V9.9 · App Metas Amables · 2026-09-29 15:10 ==== -->
