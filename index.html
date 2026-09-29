@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V9.7 · App Metas Amables · 2026-09-28 22:07 ==== -->
+<!-- ==== index V9.8 · App Metas Amables · 2026-09-29 12:49 ==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1046,8 +1046,24 @@
     return null;
   }
 
-  // Trimestre actual
-  const currentQ = Math.floor(today.getMonth() / 3) + 1;
+  // Las semanas van siempre de lunes a domingo y pertenecen al mes (y al trimestre)
+  // en que cae su lunes. Ej.: 28 sept - 4 oct 2026 es «Semana 4 de septiembre» y del
+  // 3er trimestre; el 4º trimestre empieza el lunes 5 de octubre.
+  function lunesDe(d){
+    const l = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+    l.setDate(l.getDate() - (l.getDay() + 6) % 7);
+    return l;
+  }
+  function primerLunesDelMes(year, monthIdx){
+    const d = new Date(year, monthIdx, 1);
+    d.setDate(1 + (7 - (d.getDay() + 6) % 7) % 7);
+    return d;
+  }
+  const lunesHoy = lunesDe(today);
+
+  // Trimestre actual (el del lunes de esta semana)
+  const currentQ = Math.floor(lunesHoy.getMonth() / 3) + 1;
+  const currentQYear = lunesHoy.getFullYear();
   const qNames = {1:'1er',2:'2º',3:'3er',4:'4º'};
   const qMonths = {
     1:['enero','febrero','marzo'],
@@ -1060,14 +1076,10 @@
 
   // Calcular todas las semanas (lunes) del trimestre actual
   function getQuarterWeeks(){
-    const qStart = new Date(today.getFullYear(), (currentQ-1)*3, 1);
-    const qEnd = new Date(today.getFullYear(), currentQ*3, 0); // último día del trimestre
     const weeks = [];
-    // Buscar el primer lunes del trimestre (o el lunes anterior si el 1 no es lunes)
-    const d = new Date(qStart);
-    const dayOfWeek = (d.getDay()+6)%7; // 0=lunes
-    d.setDate(d.getDate() - dayOfWeek); // retroceder al lunes
-    while(d <= qEnd){
+    // Del primer lunes del trimestre al último lunes que cae dentro de él
+    const d = primerLunesDelMes(currentQYear, (currentQ-1)*3);
+    while(d.getFullYear() === currentQYear && Math.floor(d.getMonth() / 3) + 1 === currentQ){
       weeks.push({
         iso: isoWeek(d),
         short: weekShort(d),
@@ -1103,13 +1115,7 @@
   // caen la mayoría de sus días). Las semanas que asoman fuera del trimestre se
   // asignan al primer o último mes del trimestre.
   const NOMBRES_MES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
-  function mesDeSemana(w){
-    const primero = (currentQ - 1) * 3, ultimo = primero + 2;
-    const jueves = new Date(w.lunes); jueves.setDate(jueves.getDate() + 3);
-    if(jueves.getFullYear() < today.getFullYear()) return primero;
-    if(jueves.getFullYear() > today.getFullYear()) return ultimo;
-    return Math.min(Math.max(jueves.getMonth(), primero), ultimo);
-  }
+  function mesDeSemana(w){ return w.lunes.getMonth(); }   // el mes de su lunes
 
   // Barra horizontal del trimestre: una casilla por semana y, debajo, una línea por mes.
   // Rojo = semanas que ya han pasado (incluida la actual), verde = las que faltan.
@@ -1226,13 +1232,12 @@
   }
 
   // ¿Está desbloqueada esta semana, según la fecha de hoy?
-  // Las semanas se cuentan como bloques de 7 días desde el día 1 del mes:
-  // Semana 1 = días 1-7, Semana 2 = días 8-14, Semana 3 = días 15-21, Semana 4 = días 22-28, etc.
+  // Semanas de lunes a domingo: la Semana 1 de un mes empieza en su primer lunes,
+  // la 2 el lunes siguiente, etc. (un mes puede tener 4 o 5 semanas)
   function rangoSemana(block){
-    const inicioDia = (block.weekNum - 1) * 7 + 1;
-    const finDia = block.weekNum * 7;
-    const inicio = new Date(block.year, block.monthIdx, inicioDia);
-    const finExclusivo = new Date(block.year, block.monthIdx, finDia + 1);
+    const inicio = primerLunesDelMes(block.year, block.monthIdx);
+    inicio.setDate(inicio.getDate() + (block.weekNum - 1) * 7);
+    const finExclusivo = new Date(inicio); finExclusivo.setDate(finExclusivo.getDate() + 7);
     return { inicio, finExclusivo };
   }
 
@@ -1387,7 +1392,7 @@
   }
 
 
-  const APP_VERSION = 'V9.7';
+  const APP_VERSION = 'V9.8';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -2463,7 +2468,7 @@
     try { vista = localStorage.getItem(claveGuiaVista()) || ''; } catch(e){}
     if(vista === currentWeekShort) return false;
     // Plan Libre: solo hay guía nueva la primera semana de cada mes
-    if(!tienePlan('guias')) return today.getDate() <= 7 || !vista;
+    if(!tienePlan('guias')) return lunesHoy.getDate() <= 7 || !vista;   // primera semana del mes (su lunes cae del 1 al 7)
     return true;
   }
   // Lo que toca hoy (se remarca en el ciclo y Prácti lo recuerda):
@@ -2790,7 +2795,7 @@
   // Trimestre de la meta: el de la fecha del formulario; si se rellenó en el último mes
   // de un trimestre, es para el siguiente (igual que el calendario de las guías)
   function trimestreMeta(){
-    const f = formularioEnviado() || today;
+    const f = lunesDe(formularioEnviado() || today);   // cuenta el mes del lunes de esa semana
     let q = Math.floor(f.getMonth() / 3) + 1;
     if(f.getMonth() % 3 === 2) q = q % 4 + 1;
     return ['primer', 'segundo', 'tercer', 'cuarto'][q - 1] + ' trimestre';
@@ -3126,6 +3131,10 @@
     if(semanas.length > 0){
       cuerpo += `<div class="duo-path">`;
       const soloLibre = !tienePlan('guias');
+      // Semana actual; si la guía no tiene esta semana (p. ej. guías antiguas sin «Semana 5»),
+      // se marca como actual la última ya abierta
+      let idxActual = semanas.findIndex(esSemanaActual);
+      if(idxActual === -1) semanas.forEach((b, i) => { if(semanaDesbloqueada(b)) idxActual = i; });
       semanas.forEach((b, i) => {
         if(soloLibre && b.weekNum !== 1 && i !== 0){
           // Plan Libre: la primera semana de la guía y la primera de cada mes
@@ -3134,7 +3143,7 @@
           return;
         }
         const desbloqueada = semanaDesbloqueada(b);
-        const esActual = esSemanaActual(b);
+        const esActual = i === idxActual;
         const nodoClase = desbloqueada ? (esActual ? 'duo-nodo duo-actual' : 'duo-nodo duo-hecha') : 'duo-nodo duo-bloqueada';
         const icono = desbloqueada ? (esActual ? '⭐' : '✓') : '🔒';
         if(desbloqueada){
@@ -4787,4 +4796,4 @@
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V9.7 · App Metas Amables · 2026-09-28 22:07 ==== -->
+<!-- ==== Fin del index V9.8 · App Metas Amables · 2026-09-29 12:49 ==== -->
