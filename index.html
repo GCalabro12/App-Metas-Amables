@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V9.9 · App Metas Amables · 2026-09-29 15:10 ==== -->
+<!-- ==== index V10.1 · App Metas Amables · 2026-09-29 17:34 ==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -810,6 +810,13 @@
   @media (prefers-reduced-motion: reduce){.practi-balanceo .practi-hueco.quieto, #practiQuieto{animation:none}}
   .guia-nueva{display:inline-block;background:#E8B400;color:#101010;font-weight:700;border-radius:8px;padding:2px 8px;animation:guiaLatido 1.6s ease-in-out infinite}
   @keyframes guiaLatido{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}
+  .boton-instalar-arriba{display:block;width:100%;margin:0 0 14px;padding:12px;border:0;border-radius:12px;background:#4C8C4A;color:#fff;font-family:'Karla',sans-serif;font-size:16px;font-weight:700;cursor:pointer}
+  .inst-capa{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:9000;display:flex;align-items:flex-end;justify-content:center;padding:16px}
+  .inst-ventana{background:var(--surface);color:var(--ink);border-radius:18px;padding:20px;max-width:440px;width:100%;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+  .inst-pasos{margin:0 0 8px;padding-left:22px;line-height:1.6;font-size:15px}
+  .inst-pasos li{margin-bottom:8px}
+  .inst-ico{display:inline-block;padding:0 4px}
+  .inst-nota{font-size:13px;color:var(--ink-soft);margin:6px 0 0}
   .pie-derechos{margin:36px 0 0;text-align:center;font-size:11px;color:var(--ink-soft);line-height:1.5}
   .pie-derechos a{color:var(--ink-soft)}
   .practi-tocable{cursor:pointer;position:relative;display:inline-block;line-height:0;-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;outline:none}
@@ -1392,7 +1399,7 @@
   }
 
 
-  const APP_VERSION = 'V9.9';
+  const APP_VERSION = 'V10.1';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -3051,6 +3058,18 @@
     card.querySelector('#themeDark').onclick = () => { state.theme='dark'; localStorage.setItem('mac_theme','dark'); render(); };
     card.querySelector('#langSelect').onchange = (e) => { state.lang = e.target.value; localStorage.setItem('mac_lang', state.lang); };
 
+    // Instalar la app (siempre disponible aquí, también para volver a instalarla si falla)
+    if(!MODO_PLAY){
+      const instCard = document.createElement('div');
+      instCard.className = 'card';
+      instCard.innerHTML = `
+        <p style="font-weight:700;margin:0 0 4px">📲 Instalar la app en el móvil</p>
+        <p style="font-size:13px;color:var(--ink-soft);margin:0 0 10px">${appInstalada() ? 'Ya la tienes instalada. Si el icono ha desaparecido o no funciona bien, puedes volver a instalarla.' : 'Ponla en la pantalla de inicio de tu móvil, como cualquier otra app.'}</p>
+        <button type="button" class="btn btn-yes" id="btnInstalarAjustes" style="text-align:center">${appInstalada() ? 'Volver a instalar' : 'Instalar la app'}</button>`;
+      app.appendChild(instCard);
+      instCard.querySelector('#btnInstalarAjustes').onclick = abrirInstalar;
+    }
+
     // Voz de Prácti: voz, tono y velocidad. Se guardan en este dispositivo,
     // porque cada móvil trae sus propias voces.
     const vozCard = document.createElement('div');
@@ -3402,6 +3421,16 @@
     app.appendChild(header);
     // «inicio» (cerrar sesión rápido, para pruebas) solo lo ve el moderador
     if(header.querySelector('#switchBtn')) header.querySelector('#switchBtn').onclick = switchUser;
+    // Mientras no esté instalada: botón «Instalar la app» arriba en todas las pantallas
+    if(state.me && !MODO_PLAY && !appInstalada() && !['pick', 'bienvenidaAlta'].includes(state.view)){
+      const b = document.createElement('button');
+      b.type = 'button'; b.className = 'boton-instalar-arriba'; b.textContent = '📲 Instalar la app';
+      b.onclick = abrirInstalar;
+      app.appendChild(b);
+    }
+    // Android con la app web instalada (no la de Google Play): aviso para pasarse a la de Play
+    const avisoPlay = (state.me && state.view === 'panel' && !state.panelSub) ? tarjetaPasarseAPlay() : null;
+    if(avisoPlay) app.appendChild(avisoPlay);
     // «← Volver» rojo arriba, debajo de la cabecera, en todas las pantallas que no son el panel
     if(state.me && !['panel', 'pick', 'bienvenidaAlta'].includes(state.view)){
       const volverArriba = botonVolver();
@@ -4745,6 +4774,69 @@
     return card;
   }
 
+  // ¿Se está usando ya como app instalada (desde el icono)?
+  function appInstalada(){
+    return window.matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+  }
+  function esIOS(){
+    return /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  }
+  // Instalar: en Android/Chrome abre la ventana del navegador; en iPhone (Apple no
+  // deja instalar con un botón) muestra los pasos en una ventana, con dibujos.
+  async function abrirInstalar(){
+    if(avisoInstalar && !esIOS()){
+      avisoInstalar.prompt();
+      try { await avisoInstalar.userChoice; } catch(e){}
+      avisoInstalar = null;
+      return;
+    }
+    const safari = esIOS() && !/crios|fxios|edgios|opios/i.test(navigator.userAgent);
+    const pasos = esIOS()
+      ? (safari
+        ? '<ol class="inst-pasos"><li>Toca el botón <b>Compartir</b> <span class="inst-ico">⬆️</span> (el cuadrado con una flecha hacia arriba, abajo en la pantalla).</li><li>Baja y toca <b>«Añadir a pantalla de inicio»</b> <span class="inst-ico">➕</span>.</li><li>Toca <b>«Añadir»</b>, arriba a la derecha.</li></ol><p class="inst-nota">Después abre la app desde el icono nuevo de tu pantalla de inicio.</p>'
+        : '<p>En iPhone la app solo se puede instalar desde <b>Safari</b>.</p><ol class="inst-pasos"><li>Toca el botón de abajo para copiar la dirección.</li><li>Abre <b>Safari</b> y pégala en la barra de arriba.</li><li>Allí vuelve a tocar «📲 Instalar la app».</li></ol><button type="button" class="btn btn-yes inst-copiar" style="text-align:center">Copiar la dirección</button>')
+      : '<ol class="inst-pasos"><li>Toca los <b>tres puntos ⋮</b>, arriba a la derecha del navegador.</li><li>Toca <b>«Instalar aplicación»</b> o <b>«Añadir a pantalla de inicio»</b>.</li><li>Confirma con <b>«Instalar»</b>.</li></ol><p class="inst-nota">Si ya la tenías y el icono falla, bórralo primero y vuelve a hacer estos pasos.</p>';
+    const capa = document.createElement('div');
+    capa.className = 'inst-capa';
+    capa.innerHTML = `<div class="inst-ventana" role="dialog" aria-label="Instalar la app">
+      <p style="font-size:18px;margin:0 0 10px"><b>📲 Instalar Metas Amables</b></p>${pasos}
+      <button type="button" class="btn inst-cerrar" style="text-align:center;margin-top:12px">Cerrar</button></div>`;
+    capa.onclick = e => { if(e.target === capa || e.target.classList.contains('inst-cerrar')) capa.remove(); };
+    const copiar = capa.querySelector('.inst-copiar');
+    if(copiar) copiar.onclick = async () => {
+      try { await navigator.clipboard.writeText('https://app.practicaintegral.club'); copiar.textContent = '✓ Copiada'; } catch(e){ copiar.textContent = 'app.practicaintegral.club'; }
+    };
+    document.body.appendChild(capa);
+  }
+
+  // Quien usa en Android la app web instalada (icono antiguo) ve un aviso para instalar la
+  // de Google Play. No sale en la de Play, ni en iPhone, ni en el navegador normal.
+  // «Ahora no» lo esconde 7 días. La web sigue funcionando igual.
+  function tarjetaPasarseAPlay(){
+    const android = /android/i.test(navigator.userAgent);
+    const instalada = window.matchMedia('(display-mode: standalone)').matches;
+    // Apagado hasta que la app sea pública en Google Play (en prueba cerrada, quien no
+    // es tester vería «no disponible»). Para activarlo: AVISO_PLAY_ACTIVO = true.
+    const AVISO_PLAY_ACTIVO = false;
+    if(!AVISO_PLAY_ACTIVO || !android || !instalada || PLAY_AHORA || MODO_PLAY) return null;
+    try { if(Number(localStorage.getItem('avisoPlayHasta') || 0) > Date.now()) return null; } catch(e){}
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.style.cssText = 'border:2px solid #4C8C4A;margin:0 0 16px';
+    card.innerHTML = `
+      <p style="margin:0 0 6px;font-size:16px"><b>📲 Ya está Metas Amables en Google Play</b></p>
+      <p style="font-size:14px;margin:0 0 10px">Instala esa versión y después borra este icono. Entras con el mismo nombre y contraseña, no pierdes nada.</p>
+      <div style="display:flex;gap:10px">
+        <a class="panel-link-btn" style="flex:1;margin:0;text-align:center" target="_blank" rel="noopener" href="https://play.google.com/store/apps/details?id=club.practicaintegral.metasamables">Instalar desde Google Play</a>
+        <button type="button" class="panel-link-btn aviso-play-no" style="border:0;cursor:pointer;margin:0;background:#8A8A82">Ahora no</button>
+      </div>`;
+    card.querySelector('.aviso-play-no').onclick = () => {
+      try { localStorage.setItem('avisoPlayHasta', String(Date.now() + 7 * 86400000)); } catch(e){}
+      card.remove();
+    };
+    return card;
+  }
+
   // Al tocar «Entrar» o «Crear cuenta» se abre sola la ventana de instalación
   // (Android/Chrome), una sola vez por móvil. Tiene que ir en ese mismo toque:
   // el navegador no deja abrirla sin que la persona toque algo.
@@ -4802,4 +4894,4 @@
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V9.9 · App Metas Amables · 2026-09-29 15:10 ==== -->
+<!-- ==== Fin del index V10.1 · App Metas Amables · 2026-09-29 17:34 ==== -->
