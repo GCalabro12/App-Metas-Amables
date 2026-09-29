@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V10.1 · App Metas Amables · 2026-09-29 17:34 ==== -->
+<!-- ==== index V10.2 · App Metas Amables · 2026-09-29 19:47 ==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1399,7 +1399,7 @@
   }
 
 
-  const APP_VERSION = 'V10.1';
+  const APP_VERSION = 'V10.2';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -2385,6 +2385,12 @@
     } catch(e){ return ''; }
   }
   // "el lunes 29 de septiembre" (o "hoy, lunes 29 de septiembre")
+  // Si aún no ha registrado el compromiso de esta semana, el ciclo dice «Registra ahora»
+  // (antes decía «el lunes 5 de octubre» y parecía que no se podía hasta el lunes siguiente)
+  function registroPendienteEstaSemana(){
+    const lista = (state.checkins && state.checkins[state.me]) || [];
+    return !lista.some(c => c.week === currentWeekShort && c.compromisoVeces);
+  }
   function textoProximoLunes(){
     const d = new Date(); d.setHours(0, 0, 0, 0);
     const falta = (8 - d.getDay()) % 7;   // 0 si hoy es lunes
@@ -2491,7 +2497,7 @@
     if(guiaPendienteDeAbrir()) return 'a';
     if(tienePlan('sesiones') && (haySesionEnDias(0) || haySesionEnDias(1))) return 'd';
     const lista = (state.checkins && state.checkins[state.me]) || [];
-    if(today.getDay() === 1 && !lista.some(c => c.week === currentWeekShort && c.compromisoVeces)) return 'c';
+    if(!lista.some(c => c.week === currentWeekShort && c.compromisoVeces)) return 'c';   // pendiente cualquier día de la semana
     return 'b';
   }
 
@@ -3795,7 +3801,7 @@
                 (tx.practica ? '<span class="ciclo-dato">' + escapeAttr(corto(tx.practica, 110)) + '</span>' : 'La defines en tu registro del lunes')
                 + (vecesTx ? '<br><span style="font-weight:700">' + vecesTx + '</span>' : ''), '', false)
           + flechaAbajo
-          + boton('s1', 'ciclo-c' + act('c'), 'c', 'Registra <span class="ciclo-normal">' + textoProximoLunes() + '</span>', 'El lunes de compromiso amable')
+          + boton('s1', 'ciclo-c' + act('c'), 'c', 'Registra <span class="ciclo-normal">' + (registroPendienteEstaSemana() ? 'ahora · aún no has registrado esta semana' : textoProximoLunes()) + '</span>', 'El lunes de compromiso amable')
           + flechaAbajo
           + boton('s2', 'ciclo-d' + (sinSesiones ? ' bloqueada' : '') + act('d'), 'd', 'Sesiones online',
                 (!sinSesiones && textoProximaSesion()) ? '<span class="ciclo-dato" style="font-style:normal;font-weight:700">📅 ' + textoProximaSesion() + '</span>'
@@ -4894,4 +4900,6 @@
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V10.1 · App Metas Amables · 2026-09-29 17:34 ==== -->
+<!-- ==== Fin del index V10.2 · App Metas Amables · 2026-09-29 19:47 ==== -->
+
+  
