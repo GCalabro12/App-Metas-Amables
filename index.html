@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V10.10 · App Metas Amables · 2026-09-30 18:13 ==== -->
+<!-- ==== index V10.12 · App Metas Amables · 2026-09-30 18:58 ==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1404,7 +1404,7 @@
   }
 
 
-  const APP_VERSION = 'V10.10';
+  const APP_VERSION = 'V10.12';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -1824,28 +1824,27 @@
   // Los tres planes y lo que incluye cada uno
   const PLANES = {
     libre: { nombre: 'Plan Libre', precio: 'Gratuito', incluye: [
-      'Registro del lunes de compromiso amable, con puntos',
-      'Una guía semanal al mes (la primera de cada mes)',
+      'Tu meta del trimestre y una guía de prácticas al mes (la primera semana)',
+      'Marca cada día tu práctica y consulta tu calendario',
       'Formación sobre Práctica Integral'
     ]},
     guias: { nombre: 'Plan Guías', precio: '160 € al año', pagos: [{ txt: 'Contratar Plan Guías →', url: 'https://buy.stripe.com/cNieVceGR00T1rj4uGbZe0g' }], incluye: [
       'Todo lo del Plan Libre',
-      'Tu guía de prácticas personalizada, nueva cada semana',
-      'Tu calendario completo de registros del trimestre',
-      'Comparte tu compromiso de cada lunes por WhatsApp con tu socio de compromiso'
+      'Tu guía de prácticas personalizada, <b>nueva cada semana</b>',
+      'Puedes cambiar tu meta hasta 2 veces por trimestre (y recibes una guía nueva)'
     ]},
     sesiones: { nombre: 'Plan Guías + Sesiones', precio: '360 € el primer año <span class="plan-precio-paren">(260 € a partir del segundo)</span>', precio2: 'o 105 € al trimestre', pagos: [{ txt: 'Pagar anual →', url: 'https://buy.stripe.com/7sY8wO0Q14h99XP0eqbZe0h' }, { txt: 'Pagar trimestral →', url: 'https://buy.stripe.com/6oU8wOcyJ00Tee5aT4bZe0e' }], incluye: [
       'Todo lo del Plan Guías',
-      'Sesiones online cada 15 días, en grupo reducido, para desatascar situaciones y automotivarte',
-      'Grupo de WhatsApp para compartir tus metas, logros y compromisos semanales',
-      '«Mi grupo» en la app: ves cómo avanzan tus compañeros',
-      'Insignias que reconocen tu constancia y tu avance'
+      'Sesiones online cada 15 días, en grupo reducido',
+      'Registro semanal de compromiso y logros, con tu calendario de semanas',
+      'Grupo de WhatsApp y «Mi grupo» en la app',
+      'Insignias que reconocen tu constancia'
     ]}
   };
   const ORDEN_PLAN = { gratis: 0, libre: 0, guias: 1, sesiones: 2 };
   function tienePlan(minimo){ return (ORDEN_PLAN[state.plan] || 0) >= ORDEN_PLAN[minimo]; }
-  // El calendario de registros es del Plan Guías: en el Plan Libre sale con candado y lleva a «Tu plan»
-  function calBloqueado(){ return !tienePlan('guias'); }
+  // El calendario de semanas (registros del lunes) es del Plan Guías + Sesiones: si no, candado y a «Tu plan»
+  function calBloqueado(){ return !tienePlan('sesiones'); }
   function irAPlanes(){ state.prevView = state.view; state.view = 'planes'; window.scrollTo(0,0); render(); }
   function irCalendario(){ if(calBloqueado()){ irAPlanes(); return; } state.view = 'calendar'; window.scrollTo(0,0); render(); }
   function txtCal(t){ return (calBloqueado() ? '🔒 ' : '📅 ') + t; }
@@ -3414,6 +3413,26 @@
     app.innerHTML = '';
     applyTheme();
 
+    // Solo para estas personas (acordado con Gustavo): en un Android, la app web se bloquea
+    // y se les pide entrar por la app de Google Play (prueba cerrada). Nadie más se ve afectado.
+    const SOLO_PLAY = ['Ana María', 'Empar Luna', 'Shayo Rodriguez'];
+    if(state.me && SOLO_PLAY.includes(state.me) && !MODO_PLAY && /android/i.test(navigator.userAgent)){
+      app.appendChild(el(`<div class="card" style="text-align:center;margin-top:20px">
+        <p style="font-size:40px;margin:0">📲</p>
+        <h2 style="margin:6px 0 10px">Entra desde la app de Google Play</h2>
+        <p style="margin:0 0 14px">Hola, ${escapeAttr(String(state.me).split(' ')[0])}. Para ayudarnos con la prueba de Google, a partir de ahora usa la app de <b>Google Play</b>. Es la misma app y entras con tu nombre y contraseña de siempre: no pierdes nada.</p>
+        <ol style="text-align:left;margin:0 0 16px;padding-left:22px;line-height:1.5">
+          <li>Toca el botón de abajo.</li>
+          <li>Pulsa el botón azul <b>«Become a tester»</b>.</li>
+          <li>Pulsa las letras azules <b>«download it on Google Play»</b> y dale a <b>«Instalar»</b>.</li>
+          <li>Ábrela y entra con tu cuenta de siempre. Después borra este icono para no confundirte.</li>
+        </ol>
+        <a class="panel-link-btn" style="background:#6B9362" href="https://play.google.com/apps/testing/club.practicaintegral.metasamables" target="_blank" rel="noopener">Ir a Google Play →</a>
+        <p style="font-size:13px;color:var(--ink-soft);margin:14px 0 0">¿Te sale «App not available»? Escríbele a Gustavo por WhatsApp y dile qué correo tienes en la Play Store: <a style="color:var(--moss-deep);font-weight:700" href="https://wa.me/34658825799" target="_blank" rel="noopener">💬 WhatsApp</a></p>
+      </div>`));
+      return;
+    }
+
     if(state.view === 'perfil'){ renderPerfilView(); if(state.menuOpen) renderMenuOverlay(); return; }
     if(state.view === 'ajustes'){ renderAjustesView(); if(state.menuOpen) renderMenuOverlay(); return; }
     if(state.view === 'facturacion'){ renderFacturacionView(); if(state.menuOpen) renderMenuOverlay(); return; }
@@ -4292,7 +4311,7 @@
         const estiloPie = 'width:100%;text-align:center;padding:14px 16px;border-radius:12px;background:#fff;border:2px solid #6B9362;color:#4E7446;font-weight:700;font-size:16px;cursor:pointer';
         pie.innerHTML =
           (tienePlan('sesiones') ? '<button type="button" id="pieGrupo" style="' + estiloPie + '">🤝 Ver mi grupo</button>' : '') +
-          '<button type="button" id="pieCal" style="' + estiloPie + '">' + txtCal('Ver mi calendario de semanas') + (calBloqueado() ? ' <small>(Plan Guías)</small>' : '') + '</button>';
+          '<button type="button" id="pieCal" style="' + estiloPie + '">' + txtCal('Ver mi calendario de semanas') + (calBloqueado() ? ' <small>(Plan Guías + Sesiones)</small>' : '') + '</button>';
         app.appendChild(pie);
         if(pie.querySelector('#pieGrupo')) pie.querySelector('#pieGrupo').onclick = openGroupPanel;
         pie.querySelector('#pieCal').onclick = irCalendario;
@@ -4537,6 +4556,13 @@
           '</div>';
       });
       app.appendChild(tarjetas);
+      // App de Google Play: sin precios ni pagos; solo una frase neutra para hablar con su facilitador
+      if(MODO_PLAY){
+        const fac = state.facilitador || {};
+        const facTel = String(fac.whatsapp || '34658825799').replace(/\D/g, '') || '34658825799';
+        const facNom = String(fac.nombre || 'Gustavo Calabró').replace(/[<>&"]/g, '').split(' ')[0];
+        app.appendChild(el('<p style="font-size:14px;text-align:center;margin:6px 0 0">Pregunta a tu facilitador por los demás planes: <a style="color:var(--moss-deep);font-weight:700" target="_blank" rel="noopener" href="https://wa.me/' + facTel + '">💬 WhatsApp de ' + facNom + '</a></p>'));
+      }
       if(!MODO_PLAY) app.appendChild(el('<p style="font-size:13px;color:var(--ink-soft);text-align:center;margin:4px 0 0">El pago se hace de forma segura con Stripe. Si prefieres pagar por transferencia, escríbele a tu facilitador.</p>'));
       return;
     }
@@ -5043,4 +5069,4 @@
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V10.10 · App Metas Amables · 2026-09-30 18:13 ==== -->
+<!-- ==== Fin del index V10.12 · App Metas Amables · 2026-09-30 18:58 ==== -->
