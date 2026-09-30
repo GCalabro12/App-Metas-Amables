@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V10.3 · App Metas Amables · 2026-09-29 22:33 ==== -->
+<!-- ==== index V10.4 · App Metas Amables · 2026-09-30 13:00 ==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1399,7 +1399,7 @@
   }
 
 
-  const APP_VERSION = 'V10.3';
+  const APP_VERSION = 'V10.4';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -4423,6 +4423,11 @@
       const ref = (estaSemana && estaSemana.compromisoVeces) ? estaSemana : lista.slice().reverse().find(c => c.compromisoVeces);
       const veces = ref ? Number(ref.compromisoVeces) : null;
       const deEstaSemana = !!(ref && estaSemana && ref === estaSemana);
+      // La meta del trimestre se ve siempre, también la primera vez (antes del primer registro)
+      const metaT = textosCiclo().meta;
+      const bloqueMeta = metaT
+        ? '<p class="ps-label" style="margin:0 0 4px">🎯 Tu meta del trimestre</p><p class="ps-practica" style="font-style:normal;margin:0 0 12px">' + escapeAttr(metaT) + '</p>'
+        : '';
       let cuerpo;
       if(practica){
         // Una sola línea: cuántas veces se ha comprometido esta semana
@@ -4436,8 +4441,9 @@
       app.appendChild(el('<div style="text-align:center;margin:0 0 4px">' + practiReaccionHTML('correr', 'valla', 170) + '</div>'));
       app.appendChild(botonVolver());
       app.appendChild(el('<h1 style="text-align:center">Realiza tu práctica</h1>'
-        + '<div class="card ps-card">' + cuerpo + '</div>'));
-      if(practica) app.appendChild(tarjetaDias(estaSemana));
+        + '<div class="card ps-card">' + bloqueMeta + cuerpo + '</div>'));
+      // Se pueden marcar los días desde el primer momento, aunque aún no haya registro
+      app.appendChild(tarjetaDias(estaSemana));
       const acciones = el('<div><button type="button" class="panel-link-btn" id="psGuia" style="width:100%;border:none;cursor:pointer;background:#6B9362">📖 Ver tu guía de esta semana</button>'
         + '<button type="button" class="panel-link-btn" id="psRegistro" style="width:100%;border:none;cursor:pointer;margin-top:10px">✍️ Ir al registro</button></div>');
       const psGuia = acciones.querySelector('#psGuia'), psReg = acciones.querySelector('#psRegistro');
@@ -4792,6 +4798,8 @@
   }
   // Instalar: en Android/Chrome abre la ventana del navegador; en iPhone (Apple no
   // deja instalar con un botón) muestra los pasos en una ventana, con dibujos.
+  // Icono de Compartir de iOS (cuadrado con flecha hacia arriba)
+  const ICONO_COMPARTIR_IOS = '<svg viewBox="0 0 24 24" width="18" height="18" style="vertical-align:-3px" fill="none" stroke="#007AFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="Compartir"><path d="M12 3v12"/><path d="M8 7l4-4 4 4"/><path d="M8 11H6a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-8a1 1 0 0 0-1-1h-2"/></svg>';
   async function abrirInstalar(){
     if(avisoInstalar && !esIOS()){
       avisoInstalar.prompt();
@@ -4799,16 +4807,16 @@
       avisoInstalar = null;
       return;
     }
-    const safari = esIOS() && !/crios|fxios|edgios|opios/i.test(navigator.userAgent);
+    const safari = esIOS() &&!/crios|fxios|edgios|opios/i.test(navigator.userAgent);
     const pasos = esIOS()
       ? (safari
-        ? '<ol class="inst-pasos"><li>Toca el botón <b>Compartir</b> <span class="inst-ico">⬆️</span> (el cuadrado con una flecha hacia arriba, abajo en la pantalla).</li><li>Baja y toca <b>«Añadir a pantalla de inicio»</b> <span class="inst-ico">➕</span>.</li><li>Toca <b>«Añadir»</b>, arriba a la derecha.</li></ol><p class="inst-nota">Después abre la app desde el icono nuevo de tu pantalla de inicio.</p>'
+        ? '<ol class="inst-pasos"><li>Toca los <b>tres puntos •••</b>, abajo a la derecha de Safari.</li><li>Toca <b>Compartir</b> ' + ICONO_COMPARTIR_IOS + '.</li><li>Abajo, toca <b>«Ver más»</b> y luego <b>«Añadir a pantalla de inicio»</b>.</li><li>Toca <b>«Añadir»</b>, arriba a la derecha.</li></ol><p class="inst-nota">Si no ves los tres puntos, toca directamente el botón Compartir ' + ICONO_COMPARTIR_IOS + ' de la barra de abajo. Después abre la app desde el icono nuevo de tu pantalla de inicio.</p>'
         : '<p>En iPhone la app solo se puede instalar desde <b>Safari</b>.</p><ol class="inst-pasos"><li>Toca el botón de abajo para copiar la dirección.</li><li>Abre <b>Safari</b> y pégala en la barra de arriba.</li><li>Allí vuelve a tocar «📲 Instalar la app».</li></ol><button type="button" class="btn btn-yes inst-copiar" style="text-align:center">Copiar la dirección</button>')
       : '<ol class="inst-pasos"><li>Toca los <b>tres puntos ⋮</b>, arriba a la derecha del navegador.</li><li>Toca <b>«Instalar aplicación»</b> o <b>«Añadir a pantalla de inicio»</b>.</li><li>Confirma con <b>«Instalar»</b>.</li></ol><p class="inst-nota">Si ya la tenías y el icono falla, bórralo primero y vuelve a hacer estos pasos.</p>';
     const capa = document.createElement('div');
     capa.className = 'inst-capa';
     capa.innerHTML = `<div class="inst-ventana" role="dialog" aria-label="Instalar la app">
-      <p style="font-size:18px;margin:0 0 10px"><b>📲 Instalar Metas Amables</b></p>${pasos}
+      <p style="font-size:18px;margin:0 0 10px"><b>📲 Instalar la app Metas Amables</b></p>${pasos}
       <button type="button" class="btn inst-cerrar" style="text-align:center;margin-top:12px">Cerrar</button></div>`;
     capa.onclick = e => { if(e.target === capa || e.target.classList.contains('inst-cerrar')) capa.remove(); };
     const copiar = capa.querySelector('.inst-copiar');
@@ -4884,7 +4892,7 @@
       }
       pasos.style.display = 'block';
       pasos.innerHTML = ios
-        ? '<b>En iPhone (con Safari):</b><br>1. Toca el botón <b>Compartir</b> (el cuadrado con una flecha hacia arriba, abajo en la pantalla).<br>2. Baja y toca <b>«Añadir a pantalla de inicio»</b>.<br>3. Toca <b>«Añadir»</b>, arriba a la derecha.<br><span style="color:var(--ink-soft)">Si usas otro navegador, abre este enlace en Safari.</span>'
+        ? '<b>En iPhone (con Safari):</b><br>1. Toca los <b>tres puntos •••</b>, abajo a la derecha.<br>2. Toca <b>Compartir</b> ' + ICONO_COMPARTIR_IOS + '.<br>3. Abajo, toca <b>«Ver más»</b> y luego <b>«Añadir a pantalla de inicio»</b>.<br>4. Toca <b>«Añadir»</b>, arriba a la derecha.<br><span style="color:var(--ink-soft)">Si usas otro navegador, abre este enlace en Safari.</span>'
         : '<b>En Android (con Chrome):</b><br>1. Toca los <b>tres puntos ⋮</b>, arriba a la derecha.<br>2. Toca <b>«Instalar aplicación»</b> o <b>«Añadir a pantalla de inicio»</b>.<br>3. Confirma con <b>«Instalar»</b>.';
     });
     card.querySelector('.instalar-no').addEventListener('click', e => {
@@ -4903,4 +4911,4 @@
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V10.3 · App Metas Amables · 2026-09-29 22:33 ==== -->
+<!-- ==== Fin del index V10.4 · App Metas Amables · 2026-09-30 13:00 ==== -->
