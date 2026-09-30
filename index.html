@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V10.7 · App Metas Amables · 2026-09-30 16:38 ==== -->
+<!-- ==== index V10.8 · App Metas Amables · 2026-09-30 17:29 ==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1399,7 +1399,7 @@
   }
 
 
-  const APP_VERSION = 'V10.7';
+  const APP_VERSION = 'V10.8';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -4472,7 +4472,7 @@
       // Se pueden marcar los días desde el primer momento, aunque aún no haya registro
       app.appendChild(tarjetaDias(estaSemana));
       // Calendario completo con todos los días guardados (solo para mirar; se marca en la semana en curso)
-      const verCal = el('<button type="button" class="panel-link-btn" style="width:100%;border:2px solid #6B9362;background:#fff;color:#6B9362;cursor:pointer;margin:0 0 12px">📅 Ver mi calendario completo</button>');
+      const verCal = el('<button type="button" class="panel-link-btn" style="width:100%;border:2px solid #6B9362;background:#fff;color:#6B9362;cursor:pointer;margin:0 0 12px">📅 Ver mi calendario completo</button>').firstElementChild;
       app.appendChild(verCal);
       verCal.onclick = () => { const c = calendarioDiario(true); verCal.replaceWith(c); c.scrollIntoView({ behavior: 'smooth', block: 'start' }); };
       const acciones = el('<div><button type="button" class="panel-link-btn" id="psGuia" style="width:100%;border:none;cursor:pointer;background:#6B9362">📖 Ver tu guía de esta semana</button>'
@@ -5024,4 +5024,4 @@
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V10.7 · App Metas Amables · 2026-09-30 16:38 ==== -->
+<!-- ==== Fin del index V10.8 · App Metas Amables · 2026-09-30 17:29 ==== -->
