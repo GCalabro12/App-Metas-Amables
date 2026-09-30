@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V10.9 · App Metas Amables · 2026-09-30 18:02 ==== -->
+<!-- ==== index V10.10 · App Metas Amables · 2026-09-30 18:13 ==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1404,7 +1404,7 @@
   }
 
 
-  const APP_VERSION = 'V10.9';
+  const APP_VERSION = 'V10.10';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -3561,7 +3561,17 @@
       nav.querySelector('#toCheckin').onclick = () => { state.view='checkin'; state.regPaso = null; window.scrollTo(0,0); render(); };
       if(nav.querySelector('#toGroup2')) nav.querySelector('#toGroup2').onclick = openGroupPanel;
 
-      app.appendChild(el(`<h1>📅 Mi calendario</h1><p class="lead">Cada casilla es una semana y muestra <b>las veces que lo hiciste</b> sobre las que te comprometiste.</p>
+      // A la derecha de «← Volver»: salto al calendario diario (el de «b · Practica y registra»)
+      const volverCal = app.querySelector('.volver-arriba');
+      if(volverCal){
+        const fila = document.createElement('div');
+        fila.style.cssText = 'display:flex;justify-content:space-between;align-items:center;gap:10px';
+        volverCal.replaceWith(fila); fila.appendChild(volverCal);
+        const aDiario = el('<button type="button" style="padding:10px 14px;border-radius:10px;background:#fff;border:2px solid #6B9362;color:#4E7446;font-weight:700;font-size:14px;cursor:pointer">📅 Calendario diario</button>').firstElementChild;
+        aDiario.onclick = () => { state.abrirCalDiario = true; state.prevView = 'calendar'; state.view = 'practicaSemanal'; window.scrollTo(0,0); render(); };
+        fila.appendChild(aDiario);
+      }
+      app.appendChild(el(`<h1>📅 Mi calendario de semanas</h1><p class="lead">Cada casilla es una semana y muestra <b>las veces que lo hiciste</b> sobre las que te comprometiste.</p>
         <div class="cal-leyenda">
           <span><i class="cal-muestra yes">5/5</i> Cumpliste todas las veces</span>
           <span><i class="cal-muestra partial">3/5</i> Lo hiciste en parte</span>
@@ -3760,7 +3770,7 @@
 
       const nav = document.createElement('nav');
       nav.className = 'tabs';
-      nav.innerHTML = `<button class="active">🔄 Ciclo</button><button id="toCheckin">Registro</button>${tienePlan('sesiones') ? '<button id="toGroup">Mi grupo</button>' : ''}<button id="toCal">${calBloqueado() ? '🔒' : '📅'} <span class="tab-full">Calendario de registro</span><span class="tab-abbr">Cal. reg.</span></button>`;
+      nav.innerHTML = `<button class="active">🔄 Ciclo</button><button id="toCheckin">Registro</button>${tienePlan('sesiones') ? '<button id="toGroup">Mi grupo</button>' : ''}<button id="toCal">${calBloqueado() ? '🔒' : '📅'} <span class="tab-full">Calendario de semanas</span><span class="tab-abbr">Cal. sem.</span></button>`;
       // pestañas quitadas del Panel: las opciones ya están en la lista de abajo
       
       nav.querySelector('#toCheckin').onclick = () => { state.view='checkin'; state.regPaso = null; window.scrollTo(0,0); render(); };
@@ -4072,7 +4082,7 @@
 
       const nav = document.createElement('nav');
       nav.className = 'tabs';
-      nav.innerHTML = `<button id="toPanel">🔄 Ciclo</button><button class="active">Registro</button>${tienePlan('sesiones') ? '<button id="toGroup">Mi grupo</button>' : ''}<button id="toCal">${calBloqueado() ? '🔒' : '📅'} <span class="tab-full">Calendario de registro</span><span class="tab-abbr">Cal. reg.</span></button>`;
+      nav.innerHTML = `<button id="toPanel">🔄 Ciclo</button><button class="active">Registro</button>${tienePlan('sesiones') ? '<button id="toGroup">Mi grupo</button>' : ''}<button id="toCal">${calBloqueado() ? '🔒' : '📅'} <span class="tab-full">Calendario de semanas</span><span class="tab-abbr">Cal. sem.</span></button>`;
       // pestañas quitadas del Registro: abajo están los enlaces a grupo y calendario
       
       nav.querySelector('#toPanel').onclick = () => { state.view='panel'; window.scrollTo(0,0); render(); };
@@ -4282,7 +4292,7 @@
         const estiloPie = 'width:100%;text-align:center;padding:14px 16px;border-radius:12px;background:#fff;border:2px solid #6B9362;color:#4E7446;font-weight:700;font-size:16px;cursor:pointer';
         pie.innerHTML =
           (tienePlan('sesiones') ? '<button type="button" id="pieGrupo" style="' + estiloPie + '">🤝 Ver mi grupo</button>' : '') +
-          '<button type="button" id="pieCal" style="' + estiloPie + '">' + txtCal('Ver mi calendario de registro') + (calBloqueado() ? ' <small>(Plan Guías)</small>' : '') + '</button>';
+          '<button type="button" id="pieCal" style="' + estiloPie + '">' + txtCal('Ver mi calendario de semanas') + (calBloqueado() ? ' <small>(Plan Guías)</small>' : '') + '</button>';
         app.appendChild(pie);
         if(pie.querySelector('#pieGrupo')) pie.querySelector('#pieGrupo').onclick = openGroupPanel;
         pie.querySelector('#pieCal').onclick = irCalendario;
@@ -4482,6 +4492,8 @@
       const verCal = el('<button type="button" class="panel-link-btn" style="width:100%;border:2px solid #6B9362;background:#fff;color:#6B9362;cursor:pointer;margin:0 0 12px">📅 Ver mi calendario completo</button>').firstElementChild;
       app.appendChild(verCal);
       verCal.onclick = () => { const c = calendarioDiario(true); verCal.replaceWith(c); c.scrollIntoView({ behavior: 'smooth', block: 'start' }); };
+      // Viene de «Calendario diario» (en el calendario de semanas): se abre ya desplegado
+      if(state.abrirCalDiario){ state.abrirCalDiario = false; setTimeout(() => verCal.click(), 0); }
       const acciones = el('<div><button type="button" class="panel-link-btn" id="psGuia" style="width:100%;border:none;cursor:pointer;background:#6B9362">📖 Ver tu guía de esta semana</button>'
         + (registraLunes() ? '<button type="button" class="panel-link-btn" id="psRegistro" style="width:100%;border:none;cursor:pointer;margin-top:10px">✍️ Ir al registro semanal</button>' : '') + '</div>');
       const psGuia = acciones.querySelector('#psGuia'), psReg = acciones.querySelector('#psRegistro');
@@ -5031,4 +5043,4 @@
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V10.9 · App Metas Amables · 2026-09-30 18:02 ==== -->
+<!-- ==== Fin del index V10.10 · App Metas Amables · 2026-09-30 18:13 ==== -->
