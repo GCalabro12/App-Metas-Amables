@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V10.4 · App Metas Amables · 2026-09-30 13:00 ==== -->
+<!-- ==== index V10.6 · App Metas Amables · 2026-09-30 16:30 ==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1399,7 +1399,7 @@
   }
 
 
-  const APP_VERSION = 'V10.4';
+  const APP_VERSION = 'V10.6';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -2439,6 +2439,8 @@
       + [[14,11,3.4],[20.5,8,3.6],[27.5,8,3.6],[34,11,3.2]].map(c => '<circle cx="' + c[0] + '" cy="' + c[1] + '" r="' + c[2] + '" fill="#F7C6C6" stroke="#101010" stroke-width="2"/>').join('') + t(24, 36, 'b'));
     if(tipo === 'c') return svg('<path d="M13 20 L24 5 L35 20 L35 43 L13 43 Z" fill="#CFE3C0" stroke="#101010" stroke-width="2.4" stroke-linejoin="round"/><path d="M20 10.5 L24 5 L28 10.5 Z" fill="#101010"/><path d="M13 20 H35" stroke="#101010" stroke-width="1.6"/>' + t(24, 37, 'c'));
     if(tipo === 'd') return svg('<rect x="4" y="7" width="40" height="27" rx="4" fill="#DCCFF5" stroke="#101010" stroke-width="2.4"/><path d="M19 34 L17 41 H31 L29 34" fill="#DCCFF5" stroke="#101010" stroke-width="2.2" stroke-linejoin="round"/><path d="M13 41 H35" stroke="#101010" stroke-width="2.4" stroke-linecap="round"/>' + t(24, 27, 'd'));
+    // c = compromiso y grupo de apoyo: la pantalla del ordenador, en verde y con la letra c
+    if(tipo === 'cpc') return svg('<rect x="4" y="7" width="40" height="27" rx="4" fill="#CFE3C0" stroke="#101010" stroke-width="2.4"/><path d="M19 34 L17 41 H31 L29 34" fill="#CFE3C0" stroke="#101010" stroke-width="2.2" stroke-linejoin="round"/><path d="M13 41 H35" stroke="#101010" stroke-width="2.4" stroke-linecap="round"/>' + t(24, 27, 'c'));
     if(tipo === 'gorro') return svg('<path d="M24 9 L45 18 L24 27 L3 18 Z" fill="#2E2E2E" stroke="#101010" stroke-width="2" stroke-linejoin="round"/><path d="M12 22 V32 Q24 39 36 32 V22 L24 27 Z" fill="#2E2E2E" stroke="#101010" stroke-width="2" stroke-linejoin="round"/><path d="M40 20 V31" stroke="#C9942D" stroke-width="2.4"/><circle cx="40" cy="33" r="2.6" fill="#C9942D"/>');
     return '';
   }
@@ -2495,10 +2497,15 @@
   }
   // Lo que toca hoy (se remarca en el ciclo y Prácti lo recuerda):
   // meta sin hacer → guía sin abrir → sesión hoy o mañana → registro del lunes → practicar
+  // Registro semanal de los lunes (compromiso, veces, identidad…): solo con el Plan Guías + Sesiones.
+  // El resto marca cada día «hecho» en el calendario de «Practica y registra».
+  function registraLunes(){ return tienePlan('sesiones'); }
+
   function tareaDelDia(){
     if(!metaHechaYa()) return 'meta';
     if(guiaPendienteDeAbrir()) return 'a';
     if(tienePlan('sesiones') && (haySesionEnDias(0) || haySesionEnDias(1))) return 'd';
+    if(!registraLunes()) return 'b';
     const lista = (state.checkins && state.checkins[state.me]) || [];
     if(!lista.some(c => c.week === currentWeekShort && c.compromisoVeces)) return 'c';   // pendiente cualquier día de la semana
     return 'b';
@@ -2546,10 +2553,9 @@
     const pasos = [
       ['0', 'Formulario de meta trimestral.', metaHechaYa() ? 'Ya tienes rellenado tu formulario.' : 'Tienes pendiente rellenarlo (el primer botón).'],
       ['a', 'Lee tu guía semanal.', 'Recibirás tu guía de prácticas ' + (libre ? 'la primera semana de cada mes.' : 'cada semana.')],
-      ['b', 'Realiza tu práctica.', 'Cada día.'],
-      ['c', 'Registra tu práctica los lunes.', 'Tu compromiso y tus logros.']
+      ['b', 'Practica y registra.', 'Cada día marca los días en que la hiciste.'],
     ];
-    if(tienePlan('sesiones')) pasos.push(['d', 'Sesión grupal.', 'Cada 15 días.']);
+    if(registraLunes()) pasos.push(['c', 'Compromiso y grupo de apoyo.', 'Cada lunes registras tu compromiso y tus logros, y cada 15 días tienes sesión con tu grupo.']);
     const frase = '¡Hola, ' + nombre + '! Soy Prácti y te acompaño en tus prácticas. Pasos a seguir: '
       + pasos.map(p => 'Paso ' + p[0] + ': ' + p[1] + ' ' + p[2]).join(' ');
     return '<div class="practi-bocadillo bienvenida" id="bienvenidaPracti" data-voz="' + escapeAttr(frase) + '">'
@@ -3800,16 +3806,16 @@
           + boton('s3', 'ciclo-a' + (practicaBloqueada ? ' bloqueada' : '') + act('a'), 'a', 'Lee tu guía semanal', subGuia,
                 state.guiaTexto ? '<span class="etiqueta-recibida">Recibida</span>' : '', practicaBloqueada)
           + flechaAbajo
-          + boton('sB', 'ciclo-b' + act('b'), 'b', 'Realiza tu práctica',
-                (tx.practica ? '<span class="ciclo-dato">' + escapeAttr(corto(tx.practica, 110)) + '</span>' : 'La defines en tu registro del lunes')
+          + boton('sB', 'ciclo-b' + act('b'), 'b', 'Practica y registra',
+                (tx.practica ? '<span class="ciclo-dato">' + escapeAttr(corto(tx.practica, 110)) + '</span>' : registraLunes() ? 'La defines en tu registro del lunes' : 'Marca cada día que la hagas')
                 + (vecesTx ? '<br><span style="font-weight:700">' + vecesTx + '</span>' : ''), '', false)
           + flechaAbajo
-          + boton('s1', 'ciclo-c' + act('c'), 'c', 'Registra <span class="ciclo-normal">' + (registroPendienteEstaSemana() ? 'ahora · aún no has registrado esta semana' : textoProximoLunes()) + '</span>', 'El lunes de compromiso amable')
-          + flechaAbajo
-          + boton('s2', 'ciclo-d' + (sinSesiones ? ' bloqueada' : '') + act('d'), 'd', 'Sesiones online',
-                (!sinSesiones && textoProximaSesion()) ? '<span class="ciclo-dato" style="font-style:normal;font-weight:700">📅 ' + textoProximaSesion() + '</span>'
-                  : sinSesiones ? 'Cada 15 días, en grupo reducido. Aumenta tu plan: habla con tu facilitador' : 'Cada 15 días, en grupo reducido',
-                '', sinSesiones)
+          // c y d juntos: el registro del lunes y, con el plan de sesiones, la próxima sesión
+          + boton('s1', 'ciclo-c' + (sinSesiones ? ' bloqueada' : '') + (act('c') || act('d')), 'cpc', 'Compromiso y grupo de apoyo',
+                sinSesiones
+                  ? 'Registro de compromiso cada lunes y sesiones en grupo cada 15 días. Plan Guías + Sesiones'
+                  : '✍️ Registro ' + (registroPendienteEstaSemana() ? 'pendiente: aún no has registrado esta semana' : textoProximoLunes())
+                    + (textoProximaSesion() ? '<br><span style="font-weight:700">📅 ' + textoProximaSesion() + '</span>' : ''), '', sinSesiones)
           + '<button type="button" class="opcion-inicio ciclo-formacion" data-ir="s5"><span class="ciclo-icono">' + iconoCiclo('gorro') + '</span><span class="opcion-tx"><b>Formación</b><small>Libro, cuadrantes y módulos</small></span><span class="opcion-flecha">›</span></button>';
         app.appendChild(opciones);
         opciones.querySelectorAll('.opcion-inicio').forEach(btn => {
@@ -3817,9 +3823,9 @@
             const destino = btn.getAttribute('data-ir');
             if(destino === 'sB'){ state.prevView = 'panel'; state.view = 'practicaSemanal'; window.scrollTo(0,0); render(); return; }
             // Si marcó "No volver a mostrar", va directo al destino
-            if(destino === 's1' && saltarIntro('s1')){ state.view = 'checkin'; state.regPaso = null; window.scrollTo(0,0); render(); return; }
             if(destino === 's3' && !practicaBloqueada && saltarIntro('s3')){ state.prevView = 'panel'; state.view = 'practicas'; window.scrollTo(0,0); render(); return; }
             if(destino === 's2' && !sinSesiones && saltarIntro('s2')){ state.view = 'sesionesCal'; window.scrollTo(0,0); render(); return; }
+            if(destino === 's1' && sinSesiones){ state.prevView = 'panel'; state.view = 'planes'; window.scrollTo(0,0); render(); return; }
             if(destino === 's2' && sinSesiones){ state.prevView = 'panel'; state.view = 'planes'; window.scrollTo(0,0); render(); return; }
             if(destino === 's3' && practicaBloqueada){ state.prevView = 'panel'; state.view = 'planes'; window.scrollTo(0,0); render(); return; }
             if(destino === 's3' && practicaAbiertaEsteMes()){ state.panelSub = destino; render(); return; }
@@ -3975,13 +3981,27 @@
       // Bloque 5: Registro semanal
       const s5 = document.createElement('div');
       s5.className = 'card panel-section s5'; s5.id = 's1';
+      // c · Compromiso y grupo de apoyo: registro del lunes + sesiones online. Siempre visible
+      // (sin «No volver a mostrar»): es la entrada a esos dos sitios.
+      const proxSesion = textoProximaSesion();
       s5.innerHTML = `
-        ${badgeSeccion('c', 'Registra')}
-        <p>Cada lunes es el día de "Compromiso amable": primero cierras la semana que termina (¿cuántas veces lo hiciste de las que te comprometiste?) y después defines tu compromiso para los próximos 7 días.</p>
+        ${badgeSeccion('cpc', 'Compromiso y grupo de apoyo')}
+        <p style="font-weight:700;margin:0 0 4px">✍️ Registro del lunes</p>
+        <p style="margin:0 0 8px">${registroPendienteEstaSemana() ? 'Aún no has registrado esta semana.' : 'Próximo registro: ' + textoProximoLunes() + '.'}</p>
+        <p style="font-size:14px;color:var(--ink-soft);margin:0 0 8px">Cada lunes es el día de «Compromiso amable»: cierras la semana que termina (¿cuántas veces lo hiciste de las que te comprometiste?) y defines tu compromiso para los próximos 7 días.</p>
         <a class="panel-link-btn" id="btnToCheckin" href="#">Ir al Registro de Compromiso y Logro →</a>
-        ${casillaNoMostrar('s1')}
+        <hr style="border:none;border-top:1px solid var(--line, #e5e0d5);margin:18px 0">
+        <p style="font-weight:700;margin:0 0 4px">🤝 Sesiones online</p>
+        ${sinSesiones
+          ? '<p style="font-size:14px;color:var(--ink-soft);margin:0 0 8px">Cada 15 días, en grupo reducido, para desatascar situaciones y automotivarte. Están incluidas en el Plan Guías + Sesiones.</p><a class="panel-link-btn honey" id="btnVerPlanes" href="#">Ver planes →</a>'
+          : `<p style="margin:0 0 8px">${proxSesion ? '📅 ' + proxSesion : 'Cada 15 días, en grupo reducido.'}</p>
+        <p style="font-size:14px;color:var(--ink-soft);margin:0 0 8px">Cada 15 días nos encontramos en un espacio online seguro y cálido para que nunca camines sola en este proceso. Estas reuniones de 60 minutos son el corazón de nuestra comunidad.</p>
+        <button id="btnAbrirCalSesiones2" style="width:100%;text-align:center;padding:12px 16px;border-radius:10px;background:#fff;border:2px solid var(--honey);color:var(--honey);font-weight:700;font-size:14px;cursor:pointer;margin:8px 0">📅 Calendario sesiones</button>
+        <a class="panel-link-btn honey" href="https://meet.google.com/qvf-aefv-trc" target="_blank">Enlace a la llamada →</a>`}
       `;
       s5.querySelector('#btnToCheckin').onclick = (e) => { e.preventDefault(); state.view = 'checkin'; state.regPaso = null; window.scrollTo(0,0); render(); };
+      if(s5.querySelector('#btnAbrirCalSesiones2')) s5.querySelector('#btnAbrirCalSesiones2').onclick = () => { state.view = 'sesionesCal'; window.scrollTo(0,0); render(); };
+      if(s5.querySelector('#btnVerPlanes')) s5.querySelector('#btnVerPlanes').onclick = (e) => { e.preventDefault(); state.prevView = 'panel'; state.view = 'planes'; window.scrollTo(0,0); render(); };
 
       [s3, s4, s5].forEach(b => b.querySelectorAll('[data-nomostrar]').forEach(c => {
         c.onchange = () => marcarSaltarIntro(c.getAttribute('data-nomostrar'), c.checked);
@@ -4028,6 +4048,8 @@
       return;
     }
 
+    // El registro del lunes es solo del Plan Guías + Sesiones; los demás registran cada día en «Practica y registra»
+    if(state.view === 'checkin' && !registraLunes()){ state.prevView = 'panel'; state.view = 'practicaSemanal'; return renderVista(); }
     if(state.view === 'checkin'){
       const topbarCheckin = el(`<div class="topbar"><span></span><button class="hamburger-btn-text" id="btnMenuOpen" aria-label="Menú">☰ Menú</button></div>`);
       const btnMenuOpenCheckin = topbarCheckin.querySelector('#btnMenuOpen');
@@ -4248,10 +4270,12 @@
 
       function enlacesRegistro(){
         const pie = document.createElement('div');
-        pie.style.cssText = 'display:flex;flex-direction:column;gap:6px;margin-top:14px';
+        // Botones grandes (antes eran enlaces pequeños y pasaban desapercibidos)
+        pie.style.cssText = 'display:flex;flex-direction:column;gap:10px;margin-top:16px';
+        const estiloPie = 'width:100%;text-align:center;padding:14px 16px;border-radius:12px;background:#fff;border:2px solid #6B9362;color:#4E7446;font-weight:700;font-size:16px;cursor:pointer';
         pie.innerHTML =
-          (tienePlan('sesiones') ? '<button type="button" class="link-quiet" id="pieGrupo" style="padding:0">🤝 Ver mi grupo</button>' : '') +
-          '<button type="button" class="link-quiet" id="pieCal" style="padding:0">' + txtCal('Ver mi calendario de registro') + (calBloqueado() ? ' <small>(Plan Guías)</small>' : '') + '</button>';
+          (tienePlan('sesiones') ? '<button type="button" id="pieGrupo" style="' + estiloPie + '">🤝 Ver mi grupo</button>' : '') +
+          '<button type="button" id="pieCal" style="' + estiloPie + '">' + txtCal('Ver mi calendario de registro') + (calBloqueado() ? ' <small>(Plan Guías)</small>' : '') + '</button>';
         app.appendChild(pie);
         if(pie.querySelector('#pieGrupo')) pie.querySelector('#pieGrupo').onclick = openGroupPanel;
         pie.querySelector('#pieCal').onclick = irCalendario;
@@ -4429,7 +4453,10 @@
         ? '<p class="ps-label" style="margin:0 0 4px">🎯 Tu meta del trimestre</p><p class="ps-practica" style="font-style:normal;margin:0 0 12px">' + escapeAttr(metaT) + '</p>'
         : '';
       let cuerpo;
-      if(practica){
+      if(!registraLunes()){
+        // Sin registro del lunes: solo la meta y marcar cada día «hecho»
+        cuerpo = metaT ? '' : '<p class="ps-nota" style="margin:0">Tu práctica de esta semana está en tu guía. Cuando la hagas, márcala en el calendario.</p>';
+      } else if(practica){
         // Una sola línea: cuántas veces se ha comprometido esta semana
         cuerpo = '<p class="ps-label" style="margin:0 0 4px">Recuerda tu compromiso semanal</p>'
           + ((deEstaSemana && veces)
@@ -4440,16 +4467,20 @@
       }
       app.appendChild(el('<div style="text-align:center;margin:0 0 4px">' + practiReaccionHTML('correr', 'valla', 170) + '</div>'));
       app.appendChild(botonVolver());
-      app.appendChild(el('<h1 style="text-align:center">Realiza tu práctica</h1>'
+      app.appendChild(el('<h1 style="text-align:center">Practica y registra</h1>'
         + '<div class="card ps-card">' + bloqueMeta + cuerpo + '</div>'));
       // Se pueden marcar los días desde el primer momento, aunque aún no haya registro
       app.appendChild(tarjetaDias(estaSemana));
+      // Calendario completo con todos los días guardados (solo para mirar; se marca en la semana en curso)
+      const verCal = el('<button type="button" class="panel-link-btn" style="width:100%;border:2px solid #6B9362;background:#fff;color:#6B9362;cursor:pointer;margin:0 0 12px">📅 Ver mi calendario completo</button>');
+      app.appendChild(verCal);
+      verCal.onclick = () => { const c = calendarioDiario(true); verCal.replaceWith(c); c.scrollIntoView({ behavior: 'smooth', block: 'start' }); };
       const acciones = el('<div><button type="button" class="panel-link-btn" id="psGuia" style="width:100%;border:none;cursor:pointer;background:#6B9362">📖 Ver tu guía de esta semana</button>'
-        + '<button type="button" class="panel-link-btn" id="psRegistro" style="width:100%;border:none;cursor:pointer;margin-top:10px">✍️ Ir al registro</button></div>');
+        + (registraLunes() ? '<button type="button" class="panel-link-btn" id="psRegistro" style="width:100%;border:none;cursor:pointer;margin-top:10px">✍️ Ir al registro</button>' : '') + '</div>');
       const psGuia = acciones.querySelector('#psGuia'), psReg = acciones.querySelector('#psRegistro');
       app.appendChild(acciones);
       psGuia.onclick = () => { state.prevView = 'practicaSemanal'; state.view = 'practicas'; window.scrollTo(0,0); render(); };
-      psReg.onclick = () => { state.view = 'checkin'; state.regPaso = null; window.scrollTo(0,0); render(); };
+      if(psReg) psReg.onclick = () => { state.view = 'checkin'; state.regPaso = null; window.scrollTo(0,0); render(); };
       return;
     }
 
@@ -4598,7 +4629,7 @@
     const pintar = () => {
       cont.innerHTML = `
         <p style="margin:0 0 4px;font-size:16px"><b>📅 ¿Qué días la hiciste?</b></p>
-        <p style="font-size:13px;color:var(--ink-soft);margin:0 0 10px">Opcional. Márcalo cuando la hagas y el lunes tu cierre saldrá ya rellenado.</p>
+        <p style="font-size:13px;color:var(--ink-soft);margin:0 0 10px">${registraLunes() ? 'Opcional. Márcalo cuando la hagas y el lunes tu cierre saldrá ya rellenado.' : 'Márcalo cada día que hagas tu práctica ✓.'}</p>
         <div class="dias-fila">${DIAS_SEMANA.map((d, i) => `<button type="button" class="dia-btn${marcados.includes(d) ? ' hecho' : ''}${i === hoy ? ' hoy' : ''}" data-dia="${d}" ${i > hoy ? 'disabled' : ''} aria-pressed="${marcados.includes(d)}"><span class="dia-letra">${d}</span><span class="dia-tick">${marcados.includes(d) ? '✓' : ''}</span></button>`).join('')}</div>
         <p class="dias-msg" style="font-size:12px;color:var(--ink-soft);margin:8px 0 0">${marcados.length ? 'Esta semana: ' + marcados.length + (marcados.length === 1 ? ' día' : ' días') : 'Toca el día en que hiciste tu práctica.'}</p>`;
       card.querySelectorAll('.dia-btn').forEach(b => b.onclick = (e) => {
@@ -4631,6 +4662,88 @@
     };
     pintar();
     card.appendChild(recordatorioDiarioHTML());
+    return card;
+  }
+
+  // Calendario diario (planes sin registro del lunes): un mes a la vista y un ✓ en cada día
+  // que hizo la práctica. Se guarda igual que la fila L–D: «Días hechos» de la semana de ese día.
+  let calDiarioMes = null;   // primer día del mes que se está viendo
+  function calendarioDiario(soloVer){
+    const hoy = new Date(); hoy.setHours(0, 0, 0, 0);
+    if(!calDiarioMes) calDiarioMes = new Date(hoy.getFullYear(), hoy.getMonth(), 1);
+    const minMes = new Date(hoy.getFullYear(), hoy.getMonth() - 3, 1);   // hasta 3 meses atrás
+    const card = document.createElement('div');
+    card.className = 'card cal-diario';
+    const lista = () => state.checkins[state.me] || (state.checkins[state.me] = []);
+    const letraDe = d => DIAS_SEMANA[(d.getDay() + 6) % 7];
+    const hechoEl = d => {
+      const fila = lista().find(c => c.week === weekShort(lunesDe(d)));
+      return !!fila && String(fila.diasHechos || '').split(',').includes(letraDe(d));
+    };
+    const pintar = (msg) => {
+      const y = calDiarioMes.getFullYear(), m = calDiarioMes.getMonth();
+      const huecos = (new Date(y, m, 1).getDay() + 6) % 7;
+      const dias = new Date(y, m + 1, 0).getDate();
+      let celdas = '', total = 0;
+      for(let i = 0; i < huecos; i++) celdas += '<span></span>';
+      for(let n = 1; n <= dias; n++){
+        const d = new Date(y, m, n), futuro = d > hoy, h = !futuro && hechoEl(d);
+        if(h) total++;
+        celdas += `<button type="button" class="cd-dia${h ? ' hecho' : ''}${+d === +hoy ? ' hoy' : ''}" data-n="${n}" ${futuro ? 'disabled' : soloVer ? 'tabindex="-1"' : ''} aria-pressed="${h}">${n}<i>${h ? '✓' : ''}</i></button>`;
+      }
+      const puedeAtras = new Date(y, m - 1, 1) >= minMes, puedeAdelante = new Date(y, m + 1, 1) <= hoy;
+      card.innerHTML = `
+        <style>
+          .cal-diario .cd-cab{display:flex;align-items:center;justify-content:space-between;margin:0 0 8px}
+          .cal-diario .cd-cab button{background:none;border:1px solid var(--border);border-radius:8px;padding:4px 12px;font-size:18px;cursor:pointer;color:var(--ink)}
+          .cal-diario .cd-cab button:disabled{opacity:.3;cursor:default}
+          .cal-diario .cd-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center}
+          .cal-diario .cd-sem{font-size:12px;font-weight:700;color:var(--ink-soft)}
+          .cal-diario .cd-dia{position:relative;aspect-ratio:1;border:1px solid var(--border);border-radius:8px;background:var(--card, #fff);font-size:13px;color:var(--ink);cursor:pointer;padding:0;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1}
+          .cal-diario .cd-dia i{font-style:normal;font-weight:700;font-size:14px;height:14px;color:#fff}
+          .cal-diario .cd-dia.hecho{background:#6B9362;border-color:#6B9362;color:#fff}
+          .cal-diario .cd-dia.hoy{border:2px solid var(--honey)}
+          .cal-diario .cd-dia:disabled{opacity:.35;cursor:default}
+        </style>
+        <p style="margin:0 0 4px;font-size:16px"><b>📅 Mi calendario de prácticas</b></p>
+        <p style="font-size:13px;color:var(--ink-soft);margin:0 0 10px">Aquí se van guardando los días que marcas como hechos ✓.</p>
+        <div class="cd-cab"><button type="button" class="cd-atras" ${puedeAtras ? '' : 'disabled'} aria-label="Mes anterior">‹</button><b>${monthNamesEs[m].charAt(0).toUpperCase() + monthNamesEs[m].slice(1)} ${y}</b><button type="button" class="cd-adelante" ${puedeAdelante ? '' : 'disabled'} aria-label="Mes siguiente">›</button></div>
+        <div class="cd-grid">${DIAS_SEMANA.map(l => '<span class="cd-sem">' + l + '</span>').join('')}${celdas}</div>
+        <p class="cd-msg" style="font-size:12px;color:var(--ink-soft);margin:8px 0 0">${msg || (total ? 'Este mes: ' + total + (total === 1 ? ' día hecho' : ' días hechos') : 'Aún no has marcado ningún día este mes.')}</p>`;
+      card.querySelector('.cd-atras').onclick = () => { calDiarioMes = new Date(y, m - 1, 1); pintar(); };
+      card.querySelector('.cd-adelante').onclick = () => { calDiarioMes = new Date(y, m + 1, 1); pintar(); };
+      if(!soloVer) card.querySelectorAll('.cd-dia:not([disabled])').forEach(b => b.onclick = (e) => {
+        const d = new Date(y, m, Number(b.dataset.n));
+        if(!hechoEl(d)){
+          const r = b.getBoundingClientRect();
+          fuegoArtificial(e.clientX || r.left + r.width / 2, e.clientY || r.top + r.height / 2);
+          sonidoLogro();
+        }
+        cambiar(d);
+      });
+      if(!soloVer) card.appendChild(recordatorioDiarioHTML());
+    };
+    const cambiar = async (d) => {
+      const semana = weekShort(lunesDe(d)), letra = letraDe(d);
+      let fila = lista().find(c => c.week === semana);
+      const antes = fila ? String(fila.diasHechos || '') : '';
+      let marcados = antes.split(',').filter(x => DIAS_SEMANA.includes(x));
+      marcados = marcados.includes(letra) ? marcados.filter(x => x !== letra) : marcados.concat(letra);
+      marcados.sort((a, b) => DIAS_SEMANA.indexOf(a) - DIAS_SEMANA.indexOf(b));
+      if(!fila){ fila = { id: null, week: semana, label: weekLabel(lunesDe(d)), cumplida: false, nota: '', estadoSemana: '', compromisoVeces: null, vecesRealizadas: null }; lista().push(fila); }
+      fila.diasHechos = marcados.join(',');
+      pintar();
+      try {
+        const campos = {}; campos[AIR.fields.semana] = semana; campos[AIR.fields.diasHechos] = fila.diasHechos;
+        const data = await guardarSemana(campos);
+        if(data && data.id && !fila.id) fila.id = data.id;
+        pintar();
+        card.querySelector('.cd-msg').textContent = '✓ Guardado';
+      } catch(err){
+        fila.diasHechos = antes; pintar('No se pudo guardar. Revisa tu conexión e inténtalo de nuevo.');
+      }
+    };
+    pintar();
     return card;
   }
 
@@ -4911,4 +5024,4 @@
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V10.4 · App Metas Amables · 2026-09-30 13:00 ==== -->
+<!-- ==== Fin del index V10.6 · App Metas Amables · 2026-09-30 16:30 ==== -->
