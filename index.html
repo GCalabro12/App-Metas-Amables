@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V10.12 · App Metas Amables · 2026-09-30 18:58 ==== -->
+<!-- ==== index V10.13 · App Metas Amables · 2026-10-01 13:14 ==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1404,7 +1404,7 @@
   }
 
 
-  const APP_VERSION = 'V10.12';
+  const APP_VERSION = 'V10.13';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -1649,7 +1649,7 @@
         + '<div class="card alta-card">'
         + '<p>🎯 Para empezar, necesitamos que rellenes un formulario con <b>una meta importante para ti</b> <span style="color:var(--ink-soft)">(lleva 5 minutos)</span>.</p>'
         + '<p>Con tus respuestas preparamos tu guía de prácticas.</p>'
-        + '<a class="panel-link-btn" target="_blank" rel="noopener" href="' + urlFormulario() + '" style="background:#6B9362">🎯 Rellenar el formulario</a>'
+        + '<button type="button" class="panel-link-btn fm-abrir" style="background:#6B9362;width:100%;border:none;cursor:pointer">🎯 Rellenar el formulario</button>'
         + '</div>'
         + '<button type="button" class="btn btn-yes" id="btnAltaSig" style="text-align:center;margin-top:6px">Siguiente →</button>'
         + '<button type="button" class="link-quiet" id="btnAltaAtras" style="display:block;margin:10px auto 0">← Atrás</button>';
@@ -3865,7 +3865,7 @@
             if(destino === 's3' && practicaAbiertaEsteMes()){ state.panelSub = destino; render(); return; }
             state.panelSub = destino;
             if(destino === 's3' && esGratis) marcarPracticaAbierta();
-            if(destino === 's4') registrarAperturaMeta();
+            // (el intento de meta se cuenta al enviar el formulario de la app, no al abrir esta pantalla)
             window.scrollTo(0,0);
             render();
           };
@@ -3980,12 +3980,13 @@
           <p style="background:var(--honey-tint);border-radius:10px;padding:12px 14px">✅ <b>Ya tienes el formulario rellenado</b>${enviado ? ' (el ' + enviado.getDate() + '/' + (enviado.getMonth() + 1) + ')' : ''}: tu meta está definida para el <b>${trimestreMeta()}</b>.<br>
           ${state.guiaTexto ? 'Tu guía ya está lista en <b>«a · Lee tu guía semanal»</b>.' : 'En breve tendrás tu guía de prácticas en <b>«a · Lee tu guía semanal»</b>.'}</p>
           <p style="font-size:13px;color:var(--ink-soft)">${reglaMeta}</p>
-          ${cambios > 1 ? '<a class="panel-link-btn honey" href="' + urlFormulario() + '" target="_blank">Cambiar mi meta →</a>' : ''}`;
+          ${cambios > 1 ? '<button type="button" class="panel-link-btn honey fm-abrir" style="width:100%;border:none;cursor:pointer">Cambiar mi meta →</button>' : ''}`;
       } else s2.innerHTML = `
         ${badgeSeccion('', 'Formulario de meta trimestral')}
         <p>Rellena el formulario para definir tu meta trimestral más importante para ti, tus dificultades y a qué ritmo quieres ir. Te crearemos tu guía de prácticas.</p>
         <p style="background:var(--honey-tint);border-radius:10px;padding:10px 12px;font-size:14px">${reglaMeta}</p>
-        <a class="panel-link-btn honey" href="${urlFormulario()}" target="_blank">Rellenar formulario de meta →</a>
+        <button type="button" class="panel-link-btn honey fm-abrir" style="width:100%;border:none;cursor:pointer">Rellenar formulario de meta →</button>
+        <p style="font-size:12px;text-align:center;margin:8px 0 0"><a style="color:var(--ink-soft)" href="${urlFormulario()}" target="_blank" rel="noopener">o rellénalo en Google Forms</a></p>
       `;
 
       // Bloque 3: Guía mensual — ahora un único botón de acceso; el contenido vive en la vista 'practicas'
@@ -4473,6 +4474,7 @@
     }
 
     if(state.view === 'bienvenidaAlta'){ renderBienvenidaAlta(); return; }
+    if(state.view === 'formMeta'){ renderFormMeta(); return; }
 
     if(state.view === 'practicaSemanal'){
       app.querySelectorAll('.volver-arriba').forEach(b => b.remove());   // aquí el «Volver» va debajo del muñeco
@@ -4897,6 +4899,166 @@
 
   // Formulario de meta trimestral, ya rellenado con los datos personales que la
   // persona dio la última vez (correo, nombre, ciudad, género y edad)
+  // ===== Formulario de meta dentro de la app =====
+  // Mismas preguntas (y mismos «entry») que el Google Form; al terminar, el Worker las envía a ese
+  // formulario, así llegan a la hoja y el script de las guías sigue igual. En las respuestas largas,
+  // Prácti (Gemini, vía Worker /repregunta) pide un detalle si la respuesta es corta o vaga.
+  const FM_PREGUNTAS = [
+    { id: '1139323880', tipo: 'corta', titulo: '🙋 Nombre y apellido', obligatoria: true, datos: true },
+    { id: '82527459', tipo: 'corta', titulo: '🌍 Ciudad y país de residencia', datos: true },
+    { id: '1313109576', tipo: 'opciones', titulo: '🧑‍🤝‍🧑 Género', opciones: ['Mujer', 'Hombre', 'Prefiero no decirlo'], datos: true },
+    { id: '838787571', tipo: 'opciones', titulo: '🎂 Franja de edad', opciones: ['Menor de 25', '25 a 34', '35 a 44', '45 a 54', '55 a 64', '65 o más'], datos: true },
+    { id: '1469069724', tipo: 'opciones', titulo: '🌱 ¿Cuál es tu disposición para hacer prácticas en este trimestre?', obligatoria: true,
+      opciones: ['Voy a continuar con lo que estoy haciendo el trimestre anterior', 'Quiero comenzar una práctica nueva', 'Prefiero no hacer prácticas personales (me tomaré una pausa)'] },
+    { id: '1015444619', tipo: 'opciones', titulo: '⏱️ ¿Cuánto tiempo puedes dedicar a tus prácticas?', obligatoria: true,
+      opciones: ['Un poco cada día (5 a 10 minutos)', '3 o 4 días a la semana (15 a 25 minutos)', 'Me da igual / una combinación de las dos'] },
+    { id: '649833281', tipo: 'larga', titulo: '✍️ Explica en detalle lo que quieres lograr este trimestre', obligatoria: true, repreguntar: true,
+      ayuda: 'Cuantos más detalles me des, más personalizada será tu guía. Ej.: «Quiero meditar 10 minutos cada mañana para estar más tranquilo en el trabajo» 💡' },
+    { id: '1502404995', tipo: 'opciones', titulo: '⏳ ¿En cuánto tiempo quieres conseguirlo?', obligatoria: true, opciones: ['1 mes', '2 meses', '3 meses o más'] },
+    { id: '99842027', tipo: 'opciones', titulo: '🤔 Siendo sincero/a, ¿crees que puedes conseguirlo en ese tiempo?', obligatoria: true,
+      opciones: ['Sí, seguro', 'Creo que sí', 'No estoy seguro/a', 'Seguramente no'] },
+    { id: '785855484', tipo: 'larga', titulo: '🎯 Ajustemos tu meta para que sea amable', soloSi: r => /No estoy|Seguramente no/.test(r['99842027'] || ''),
+      ayuda: 'Las metas amables funcionan mejor con un plazo realista. Escribe una meta más pequeña o un plazo más largo. Ej.: «En 1 mes, empezar a cuadrar la agenda los domingos; en 3 meses, que sea costumbre».' },
+    { id: '788104521', tipo: 'escala', titulo: '📊 Del 1 al 5, ¿cómo calificas tu capacidad actual para conseguir esta meta?', obligatoria: true },
+    { id: '490104775', tipo: 'larga', titulo: '🔁 ¿Qué has intentado antes para conseguirlo? ¿Qué funcionó y qué no?', repreguntar: true },
+    { id: '1748549848', tipo: 'larga', titulo: '🧱 ¿Cuál es tu saboteador principal cuando intentas un cambio?', obligatoria: true, repreguntar: true,
+      ayuda: 'Perfeccionismo, postergación, falta de energía, frustración ante el error… ¿Qué emoción o pensamiento incómodo aparece cuando la práctica se vuelve difícil? 🤔' },
+    { id: '701895149', tipo: 'larga', titulo: '🏆 ¿Qué acción concreta o resultado tangible te demostrará, al final de cada mes, que has subido un escalón?', obligatoria: true, repreguntar: true }
+  ];
+  // Cualquier botón con la clase «fm-abrir» abre el formulario dentro de la app
+  document.addEventListener('click', e => {
+    const b = e.target.closest && e.target.closest('.fm-abrir');
+    if(b){ e.preventDefault(); abrirFormularioMeta(); }
+  });
+  function fmClave(){ return 'fm_borrador_' + (state.me || ''); }
+  function fmGuardar(){ try { localStorage.setItem(fmClave(), JSON.stringify(state.fm)); } catch(e){} }
+  function abrirFormularioMeta(){
+    let previo = null;
+    try { previo = JSON.parse(localStorage.getItem(fmClave()) || 'null'); } catch(e){}
+    if(!previo){
+      const g = state.gamifica || {}, d = g.datosFormulario || {};
+      previo = { paso: 0, email: g.email || state.miCorreo || '', r: { '1139323880': d.nombre || state.me || '', '82527459': d.ciudad || '', '1313109576': d.genero || '', '838787571': d.edad || '' }, preguntado: {} };
+    }
+    state.fm = previo;
+    state.prevView = state.view === 'formMeta' ? 'panel' : state.view;
+    state.view = 'formMeta'; window.scrollTo(0,0); render();
+  }
+  function fmVisibles(){ return FM_PREGUNTAS.filter(p => !p.soloSi || p.soloSi(state.fm.r)); }
+
+  function renderFormMeta(){
+    renderBackTopbar('Tu meta del trimestre');
+    const fm = state.fm;
+    if(!fm){ abrirFormularioMeta(); return; }
+    const preguntas = fmVisibles();
+    const total = preguntas.length + 1;   // +1: el correo, al principio
+
+    // Pantalla final (enviado)
+    if(fm.enviado){
+      app.appendChild(el(`<div class="card" style="text-align:center">${practiReaccionHTML('pensativo','empujonPensando',110)}
+        <h2 style="margin:10px 0 6px">¡Gracias! 🎉</h2>
+        <p style="margin:0 0 14px">Ya tengo tu meta. En un rato tendrás tu guía de prácticas en <b>«a · Lee tu guía semanal»</b>.</p>
+        <button type="button" class="btn btn-yes" id="fmFin" style="text-align:center">Volver al inicio</button></div>`));
+      app.querySelector('#fmFin').onclick = () => { state.fm = null; irAlPanel(); };
+      return;
+    }
+
+    const barra = '<div style="height:8px;background:var(--border);border-radius:99px;margin:0 0 14px;overflow:hidden"><div style="height:100%;width:' + Math.round(100 * (fm.paso + 1) / (total + 1)) + '%;background:#6B9362"></div></div>';
+    const card = document.createElement('div');
+    card.className = 'card';
+    app.appendChild(card);
+
+    // Paso 0: correo
+    if(fm.paso === 0){
+      card.innerHTML = barra + `<div class="practi-inicio">${practiReaccionHTML('pensativo','empujonPensando',90)}${bocadilloPracti('Vamos a definir tu meta del trimestre. Son unos 5 minutos y con tus respuestas te preparo tu guía de prácticas.', 'tono-calma')}</div>
+        <label class="note-label strong" for="fmEmail" style="margin-top:12px">📧 Tu correo</label>
+        <input id="fmEmail" type="email" value="${escapeAttr(fm.email)}" placeholder="tu@correo.com">
+        <p class="fm-error" style="color:#B94A3A;font-size:13px;margin:6px 0 0"></p>
+        <button type="button" class="btn btn-yes" id="fmSig" style="text-align:center;margin-top:14px">Empezar →</button>`;
+      card.querySelector('#fmSig').onclick = () => {
+        const v = card.querySelector('#fmEmail').value.trim();
+        if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)){ card.querySelector('.fm-error').textContent = 'Escribe un correo válido.'; return; }
+        fm.email = v; fm.paso = 1; fmGuardar(); window.scrollTo(0,0); render();
+      };
+      return;
+    }
+
+    // Resumen y envío
+    if(fm.paso > preguntas.length){
+      card.innerHTML = barra + `<h2 style="margin:0 0 10px">✅ Revisa tus respuestas</h2>` +
+        preguntas.filter(p => fm.r[p.id]).map(p => `<p style="margin:0 0 2px;font-size:13px;color:var(--ink-soft)">${p.titulo}</p><p style="margin:0 0 10px;white-space:pre-wrap">${escapeAttr(fm.r[p.id])}</p>`).join('') +
+        `<p class="fm-error" style="color:#B94A3A;font-size:13px;margin:6px 0 0"></p>
+        <button type="button" class="btn btn-yes" id="fmEnviar" style="text-align:center;margin-top:10px">Enviar mi meta 🚀</button>
+        <button type="button" class="link-quiet" id="fmAtras" style="display:block;margin:10px auto 0">← Atrás</button>`;
+      card.querySelector('#fmAtras').onclick = () => { fm.paso--; fmGuardar(); render(); };
+      card.querySelector('#fmEnviar').onclick = async (e) => {
+        const b = e.currentTarget; b.disabled = true; b.textContent = 'Enviando…';
+        try {
+          const respuestas = {};
+          preguntas.forEach(p => { if(fm.r[p.id]) respuestas[p.id] = fm.r[p.id]; });
+          await api('/formulario-app', { email: fm.email, respuestas });
+          const hoy = new Date(); const iso = hoy.getFullYear() + '-' + String(hoy.getMonth() + 1).padStart(2, '0') + '-' + String(hoy.getDate()).padStart(2, '0');
+          state.gamifica = state.gamifica || {}; state.gamifica.formulario = iso;
+          try { localStorage.setItem(claveMetaIntentos(), String(metaIntentosUsados() + 1)); localStorage.removeItem(fmClave()); } catch(err){}
+          fm.enviado = true; window.scrollTo(0,0); render();
+        } catch(err){
+          b.disabled = false; b.textContent = 'Enviar mi meta 🚀';
+          card.querySelector('.fm-error').textContent = err.message || 'No se pudo enviar. Revisa tu conexión.';
+        }
+      };
+      return;
+    }
+
+    // Una pregunta por pantalla
+    const p = preguntas[fm.paso - 1];
+    const valor = fm.r[p.id] || '';
+    let campo = '';
+    if(p.tipo === 'corta') campo = `<input id="fmCampo" type="text" value="${escapeAttr(valor)}">`;
+    else if(p.tipo === 'larga') campo = `<textarea id="fmCampo" style="min-height:110px">${escapeAttr(valor)}</textarea>`;
+    else if(p.tipo === 'escala') campo = `<div style="display:flex;gap:8px;justify-content:space-between;align-items:center"><small>Muy bajo</small>${[1,2,3,4,5].map(n => `<button type="button" class="fm-op dia-btn${valor === String(n) ? ' hecho' : ''}" data-v="${n}" style="flex:1"><span class="dia-letra">${n}</span></button>`).join('')}<small>Muy alto</small></div>`;
+    else campo = p.opciones.map(o => `<button type="button" class="fm-op opcion-inicio" data-v="${escapeAttr(o)}" style="width:100%;text-align:left;margin:0 0 8px;${valor === o ? 'border:2px solid #6B9362;background:#EEF6E9' : ''}"><span class="opcion-tx"><b style="font-weight:${valor === o ? 700 : 500}">${valor === o ? '✓ ' : ''}${o}</b></span></button>`).join('');
+    const rep = fm.repregunta && fm.repregunta.id === p.id ? fm.repregunta.texto : '';
+    card.innerHTML = barra + `<p style="font-size:12px;color:var(--ink-soft);margin:0 0 4px">Pregunta ${fm.paso} de ${preguntas.length}${p.obligatoria ? '' : ' · opcional'}</p>
+      <h3 style="margin:0 0 6px">${p.titulo}</h3>
+      ${p.ayuda ? `<p style="font-size:14px;color:var(--ink-soft);margin:0 0 10px">${p.ayuda}</p>` : ''}
+      ${campo}
+      ${rep ? `<div class="practi-inicio" style="margin-top:12px">${practiReaccionHTML('pensativo','empujonPensando',70)}${bocadilloPracti(escapeAttr(rep), 'tono-calma')}</div>
+        <textarea id="fmExtra" placeholder="Cuéntame un poco más…" style="min-height:80px;margin-top:8px"></textarea>` : ''}
+      <p class="fm-error" style="color:#B94A3A;font-size:13px;margin:6px 0 0"></p>
+      <button type="button" class="btn btn-yes" id="fmSig" style="text-align:center;margin-top:12px">${rep ? 'Añadir y seguir →' : 'Siguiente →'}</button>
+      ${rep ? '<button type="button" class="link-quiet" id="fmSeguir" style="display:block;margin:8px auto 0">Seguir así, sin añadir</button>' : ''}
+      <button type="button" class="link-quiet" id="fmAtras" style="display:block;margin:10px auto 0">← Atrás</button>`;
+
+    const avanzar = () => { fm.repregunta = null; fm.paso++; fmGuardar(); window.scrollTo(0,0); render(); };
+    card.querySelectorAll('.fm-op').forEach(b => b.onclick = () => {
+      fm.r[p.id] = b.dataset.v; fmGuardar();
+      // Si duda de poder conseguirlo, Prácti lo dice antes de seguir
+      if(p.id === '99842027' && /No estoy|Seguramente no/.test(b.dataset.v)){ avanzar(); return; }
+      avanzar();
+    });
+    card.querySelector('#fmAtras').onclick = () => { fm.repregunta = null; fm.paso--; fmGuardar(); window.scrollTo(0,0); render(); };
+    if(card.querySelector('#fmSeguir')) card.querySelector('#fmSeguir').onclick = avanzar;
+    card.querySelector('#fmSig').onclick = async (e) => {
+      const c = card.querySelector('#fmCampo');
+      if(c) fm.r[p.id] = c.value.trim();
+      const extra = card.querySelector('#fmExtra');
+      if(extra && extra.value.trim()){ fm.r[p.id] = (fm.r[p.id] + '\n' + extra.value.trim()).trim(); avanzar(); return; }
+      if(rep){ avanzar(); return; }
+      if(p.obligatoria && !fm.r[p.id]){ card.querySelector('.fm-error').textContent = 'Esta pregunta es obligatoria.'; return; }
+      fmGuardar();
+      // Repregunta de Prácti (una sola vez por pregunta)
+      if(p.repreguntar && fm.r[p.id] && !fm.preguntado[p.id]){
+        fm.preguntado[p.id] = true;
+        const b = e.currentTarget; b.disabled = true; b.textContent = '💭 Prácti está leyendo…';
+        try {
+          const contexto = FM_PREGUNTAS.filter(x => !x.datos && x.id !== p.id && fm.r[x.id]).map(x => x.titulo + ': ' + fm.r[x.id]).join(' | ');
+          const d = await api('/repregunta', { pregunta: p.titulo, respuesta: fm.r[p.id], contexto });
+          if(d.repregunta){ fm.repregunta = { id: p.id, texto: d.repregunta }; fmGuardar(); render(); return; }
+        } catch(err){}
+      }
+      avanzar();
+    };
+  }
+
   function urlFormulario(){
     const g = state.gamifica || {}, d = g.datosFormulario || {};
     const p = new URLSearchParams({ usp: 'pp_url' });
@@ -5069,4 +5231,4 @@
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V10.12 · App Metas Amables · 2026-09-30 18:58 ==== -->
+<!-- ==== Fin del index V10.13 · App Metas Amables · 2026-10-01 13:14 ==== -->
