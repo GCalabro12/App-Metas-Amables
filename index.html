@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V10.15 · App Metas Amables · 2026-10-01 13:43 ==== -->
+<!-- ==== index V10.16 · App Metas Amables · 2026-10-01 14:05 ==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1404,7 +1404,7 @@
   }
 
 
-  const APP_VERSION = 'V10.15';
+  const APP_VERSION = 'V10.16';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -4918,14 +4918,24 @@
       ayuda: 'Cuantos más detalles me des, más personalizada será tu guía. Ej.: «Quiero meditar 10 minutos cada mañana para estar más tranquilo en el trabajo» 💡' },
     { id: '1502404995', tipo: 'opciones', titulo: '⏳ ¿En cuánto tiempo quieres conseguirlo?', obligatoria: true, opciones: ['1 mes', '2 meses', '3 meses o más'] },
     { id: '99842027', tipo: 'opciones', titulo: '🤔 Siendo sincero/a, ¿crees que puedes conseguirlo en ese tiempo?', obligatoria: true,
-      opciones: ['Sí, seguro', 'Creo que sí', 'No estoy seguro/a', 'Seguramente no'] },
+      opciones: ['Sí, seguro', 'Creo que sí', 'No estoy seguro/a'] },
     { id: '785855484', tipo: 'larga', titulo: '🎯 Ajustemos tu meta para que sea amable', soloSi: r => /No estoy|Seguramente no/.test(r['99842027'] || ''),
       ayuda: 'Las metas amables funcionan mejor con un plazo realista. Escribe una meta más pequeña o un plazo más largo. Ej.: «En 1 mes, empezar a cuadrar la agenda los domingos; en 3 meses, que sea costumbre».' },
     { id: '788104521', tipo: 'escala', titulo: '📊 Del 1 al 5, ¿cómo calificas tu capacidad actual para conseguir esta meta?', obligatoria: true },
-    { id: '490104775', tipo: 'larga', titulo: '🔁 ¿Qué has intentado antes para conseguirlo? ¿Qué funcionó y qué no?', repreguntar: true },
-    { id: '1748549848', tipo: 'larga', titulo: '🧱 ¿Cuál es tu saboteador principal cuando intentas un cambio?', obligatoria: true, repreguntar: true,
-      ayuda: 'Perfeccionismo, postergación, falta de energía, frustración ante el error… ¿Qué emoción o pensamiento incómodo aparece cuando la práctica se vuelve difícil? 🤔' },
-    { id: '701895149', tipo: 'larga', titulo: '🏆 ¿Qué acción concreta o resultado tangible te demostrará, al final de cada mes, que has subido un escalón?', obligatoria: true, repreguntar: true }
+    // Varias opciones + nota opcional: al Google Form (pregunta de texto) le llega todo junto
+    // Una opción («¿lo has intentado?») y, si ya lo intentó, «¿con qué?» (varias) en la misma pantalla
+    { id: '490104775', tipo: 'multi', titulo: '🔁 ¿Lo has intentado antes?',
+      opciones: ['Es la primera vez que lo intento', 'Lo intenté, pero lo dejé', 'Me funcionó un tiempo, pero perdí la constancia'],
+      conQue: ['Por mi cuenta', 'Con una app', 'Con un libro o un curso', 'Con un grupo o alguien que me acompañaba', 'Con un profesional'],
+      nota: '¿Algo que quieras contarme de lo que funcionó o no? (opcional)' },
+    { id: '1748549848', tipo: 'chips', titulo: '🧱 ¿Qué te suele frenar cuando intentas un cambio?', obligatoria: true, ayuda: 'Marca los que te pasan (puedes elegir varios).',
+      opciones: ['Perfeccionismo («si no sale perfecto, no vale»)', 'Postergación («lo hago luego»)', 'Frustración cuando me equivoco',
+                 'Falta de tiempo, agenda llena', 'Me distraigo (móvil, redes…)', 'Dudo de mí («no soy capaz»)', 'Pierdo la motivación a los pocos días'],
+      nota: '¿Qué emoción o pensamiento aparece cuando se pone difícil? ¿Otro saboteador? (opcional)' },
+    { id: '701895149', tipo: 'chips', titulo: '🏆 ¿Cómo sabrás cada mes que has avanzado?', obligatoria: true, ayuda: 'Puedes elegir varias.',
+      opciones: ['Si lo hago más días', 'Si lo hago más tiempo', 'Si ya se me hizo costumbre (hábito)', 'Si, cuando fallo, lo retomo sin culpa',
+                 'Si me siento mejor', 'Si lo notan los demás'],
+      nota: 'Si es un resultado que se puede medir, escríbelo aquí (opcional). Ej.: leer 2 libros, meditar 20 días al mes' }
   ];
   // Cualquier botón con la clase «fm-abrir» abre el formulario dentro de la app
   document.addEventListener('click', e => {
@@ -5050,11 +5060,30 @@
 
     // Una pregunta por pantalla
     const p = preguntas[fm.paso - 1];
+    // «Ajustemos tu meta»: parte de la meta que ya escribió (se edita sobre ella)
+    if(p.id === '785855484' && !fm.r[p.id] && fm.r['649833281']) fm.r[p.id] = fm.r['649833281'];
     const valor = fm.r[p.id] || '';
     let campo = '';
     if(p.tipo === 'corta') campo = `<input id="fmCampo" type="text" value="${escapeAttr(valor)}" style="width:100%;box-sizing:border-box;font-size:17px;padding:12px 14px">`;
     else if(p.tipo === 'larga') campo = `<textarea id="fmCampo" style="min-height:110px;width:100%;box-sizing:border-box;font-size:16px">${escapeAttr(valor)}</textarea>`;
     else if(p.tipo === 'escala') campo = `<div style="display:flex;gap:8px;justify-content:space-between;align-items:center"><small>Muy bajo</small>${[1,2,3,4,5].map(n => `<button type="button" class="fm-op dia-btn${valor === String(n) ? ' hecho' : ''}" data-v="${n}" style="flex:1"><span class="dia-letra">${n}</span></button>`).join('')}<small>Muy alto</small></div>`;
+    else if(p.tipo === 'chips'){
+      const marcadas = (fm.multi && fm.multi[p.id]) || [];
+      campo = p.opciones.map(o => { const sel = marcadas.includes(o);
+          return `<button type="button" class="fm-multi opcion-inicio" data-v="${escapeAttr(o)}" style="width:100%;text-align:left;margin:0 0 8px;${sel ? 'border:2px solid #6B9362;background:#EEF6E9' : ''}"><span class="opcion-tx"><b style="font-weight:${sel ? 700 : 500}">${sel ? '☑️ ' : '⬜ '}${o}</b></span></button>`; }).join('')
+        + `<label class="note-label" for="fmCampo" style="margin-top:6px">${p.nota}</label><textarea id="fmCampo" style="min-height:80px;width:100%;box-sizing:border-box;font-size:16px">${escapeAttr((fm.notas && fm.notas[p.id]) || '')}</textarea>`;
+    }
+    else if(p.tipo === 'multi'){
+      const marcadas = (fm.multi && fm.multi[p.id]) || [];
+      const elegida = (fm.intento && fm.intento[p.id]) || '';
+      const boton = (o, sel, clase, marca) => `<button type="button" class="${clase} opcion-inicio" data-v="${escapeAttr(o)}" style="width:100%;text-align:left;margin:0 0 8px;${sel ? 'border:2px solid #6B9362;background:#EEF6E9' : ''}"><span class="opcion-tx"><b style="font-weight:${sel ? 700 : 500}">${marca(sel)}${o}</b></span></button>`;
+      campo = p.opciones.map(o => boton(o, elegida === o, 'fm-intento', s => s ? '✓ ' : '')).join('')
+        + (elegida && elegida !== p.opciones[0]
+            ? `<p style="font-weight:700;margin:14px 0 4px">¿Con qué lo intentaste?</p><p style="font-size:13px;color:var(--ink-soft);margin:0 0 8px">Puedes marcar varias.</p>`
+              + p.conQue.map(o => boton(o, marcadas.includes(o), 'fm-multi', s => s ? '☑️ ' : '⬜ ')).join('')
+            : '')
+        + `<label class="note-label" for="fmCampo" style="margin-top:6px">${p.nota}</label><textarea id="fmCampo" style="min-height:80px;width:100%;box-sizing:border-box;font-size:16px">${escapeAttr((fm.notas && fm.notas[p.id]) || '')}</textarea>`;
+    }
     else campo = p.opciones.map(op => {
       const [txt, v] = Array.isArray(op) ? op : [op, op];
       const sel = valor === v;
@@ -5064,7 +5093,9 @@
     card.innerHTML = barra + `<p style="font-size:12px;color:var(--ink-soft);margin:0 0 4px">Pregunta ${fm.paso} de ${preguntas.length}${p.obligatoria ? '' : ' · opcional'}</p>
       <h3 style="margin:0 0 6px">${p.titulo}</h3>
       ${p.ayuda ? `<p style="font-size:14px;color:var(--ink-soft);margin:0 0 10px">${p.ayuda}</p>` : ''}
+      ${p.id === '785855484' ? `<p style="font-size:13px;margin:0 0 6px">Esta es la meta que escribiste, con plazo de <b>${escapeAttr(fm.r['1502404995'] || '')}</b>. Edítala aquí abajo para hacerla más pequeña o cambiar el plazo:</p>` : ''}
       ${campo}
+      ${p.id === '785855484' ? '<button type="button" class="link-quiet" id="fmVolverMeta" style="display:block;margin:8px 0 0">✏️ Prefiero cambiar la meta original</button>' : ''}
       ${rep ? `<div class="practi-inicio" style="margin-top:12px">${practiReaccionHTML('pensativo','empujonPensando',70)}${bocadilloPracti(escapeAttr(rep), 'tono-calma')}</div>
         <textarea id="fmExtra" placeholder="Cuéntame un poco más…" style="min-height:80px;margin-top:8px"></textarea>` : ''}
       <p class="fm-error" style="color:#B94A3A;font-size:13px;margin:6px 0 0"></p>
@@ -5085,8 +5116,42 @@
     });
     card.querySelector('#fmAtras').onclick = () => { pararDictado(); fm.repregunta = null; fm.paso--; fmGuardar(); window.scrollTo(0,0); render(); };
     if(card.querySelector('#fmSeguir')) card.querySelector('#fmSeguir').onclick = avanzar;
+    // Volver a la pregunta de la meta («Explica en detalle…») para reescribirla
+    if(card.querySelector('#fmVolverMeta')) card.querySelector('#fmVolverMeta').onclick = () => {
+      pararDictado(); delete fm.r['785855484'];
+      fm.paso = preguntas.findIndex(x => x.id === '649833281') + 1; fm.repregunta = null; fmGuardar(); window.scrollTo(0,0); render();
+    };
+    // Varias opciones: marcar/desmarcar (guarda también la nota escrita)
+    card.querySelectorAll('.fm-multi').forEach(b => b.onclick = () => {
+      fm.multi = fm.multi || {}; fm.notas = fm.notas || {};
+      const c = card.querySelector('#fmCampo'); if(c) fm.notas[p.id] = c.value;
+      const l = fm.multi[p.id] || [];
+      fm.multi[p.id] = l.includes(b.dataset.v) ? l.filter(x => x !== b.dataset.v) : l.concat(b.dataset.v);
+      fmGuardar(); render();
+    });
+    card.querySelectorAll('.fm-intento').forEach(b => b.onclick = () => {
+      fm.intento = fm.intento || {}; fm.notas = fm.notas || {};
+      const c = card.querySelector('#fmCampo'); if(c) fm.notas[p.id] = c.value;
+      fm.intento[p.id] = b.dataset.v;
+      if(b.dataset.v === p.opciones[0] && fm.multi) fm.multi[p.id] = [];   // primera vez: no hay «con qué»
+      fmGuardar(); render();
+    });
     card.querySelector('#fmSig').onclick = async (e) => {
       const c = card.querySelector('#fmCampo');
+      if(p.tipo === 'chips'){
+        fm.notas = fm.notas || {}; fm.notas[p.id] = c ? c.value.trim() : '';
+        const l = (fm.multi && fm.multi[p.id]) || [];
+        fm.r[p.id] = [l.join('; '), fm.notas[p.id]].filter(Boolean).join('. ');
+        if(p.obligatoria && !fm.r[p.id]){ card.querySelector('.fm-error').textContent = 'Marca al menos uno o escribe el tuyo.'; return; }
+        fmGuardar(); avanzar(); return;
+      }
+      if(p.tipo === 'multi'){
+        fm.notas = fm.notas || {}; fm.notas[p.id] = c ? c.value.trim() : '';
+        const elegida = (fm.intento && fm.intento[p.id]) || '';
+        const l = (fm.multi && fm.multi[p.id]) || [];
+        fm.r[p.id] = [elegida, l.length ? 'Lo intenté: ' + l.join(', ').toLowerCase() : '', fm.notas[p.id]].filter(Boolean).join('. ');
+        fmGuardar(); avanzar(); return;
+      }
       if(c) fm.r[p.id] = c.value.trim();
       const extra = card.querySelector('#fmExtra');
       if(extra && extra.value.trim()){ fm.r[p.id] = (fm.r[p.id] + '\n' + extra.value.trim()).trim(); avanzar(); return; }
@@ -5279,4 +5344,4 @@
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V10.15 · App Metas Amables · 2026-10-01 13:43 ==== -->
+<!-- ==== Fin del index V10.16 · App Metas Amables · 2026-10-01 14:05 ==== -->
