@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V10.13 · App Metas Amables · 2026-10-01 13:14 ==== -->
+<!-- ==== index V10.14 · App Metas Amables · 2026-10-01 13:32 ==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1404,7 +1404,7 @@
   }
 
 
-  const APP_VERSION = 'V10.13';
+  const APP_VERSION = 'V10.14';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -4967,15 +4967,18 @@
     card.className = 'card';
     app.appendChild(card);
 
-    // Paso 0: correo
+    // Paso 0: presentación. El correo solo se pide si aún no lo tenemos (se usa para la guía)
     if(fm.paso === 0){
+      const conocido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test((state.gamifica && state.gamifica.email) || '');
+      if(conocido) fm.email = state.gamifica.email;
       card.innerHTML = barra + `<div class="practi-inicio">${practiReaccionHTML('pensativo','empujonPensando',90)}${bocadilloPracti('Vamos a definir tu meta del trimestre. Son unos 5 minutos y con tus respuestas te preparo tu guía de prácticas.', 'tono-calma')}</div>
-        <label class="note-label strong" for="fmEmail" style="margin-top:12px">📧 Tu correo</label>
-        <input id="fmEmail" type="email" value="${escapeAttr(fm.email)}" placeholder="tu@correo.com">
+        ${conocido ? '' : `<label class="note-label strong" for="fmEmail" style="margin-top:14px">📧 ¿A qué correo te avisamos?</label>
+        <p style="font-size:13px;color:var(--ink-soft);margin:0 0 6px">Lo necesitamos para enviarte tu guía de prácticas. Solo te lo pedimos esta vez.</p>
+        <input id="fmEmail" type="email" inputmode="email" autocomplete="email" value="${escapeAttr(fm.email)}" placeholder="tu@correo.com" style="width:100%;box-sizing:border-box;font-size:17px;padding:12px 14px">`}
         <p class="fm-error" style="color:#B94A3A;font-size:13px;margin:6px 0 0"></p>
         <button type="button" class="btn btn-yes" id="fmSig" style="text-align:center;margin-top:14px">Empezar →</button>`;
       card.querySelector('#fmSig').onclick = () => {
-        const v = card.querySelector('#fmEmail').value.trim();
+        const v = conocido ? fm.email : card.querySelector('#fmEmail').value.trim();
         if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)){ card.querySelector('.fm-error').textContent = 'Escribe un correo válido.'; return; }
         fm.email = v; fm.paso = 1; fmGuardar(); window.scrollTo(0,0); render();
       };
@@ -5012,8 +5015,8 @@
     const p = preguntas[fm.paso - 1];
     const valor = fm.r[p.id] || '';
     let campo = '';
-    if(p.tipo === 'corta') campo = `<input id="fmCampo" type="text" value="${escapeAttr(valor)}">`;
-    else if(p.tipo === 'larga') campo = `<textarea id="fmCampo" style="min-height:110px">${escapeAttr(valor)}</textarea>`;
+    if(p.tipo === 'corta') campo = `<input id="fmCampo" type="text" value="${escapeAttr(valor)}" style="width:100%;box-sizing:border-box;font-size:17px;padding:12px 14px">`;
+    else if(p.tipo === 'larga') campo = `<textarea id="fmCampo" style="min-height:110px;width:100%;box-sizing:border-box;font-size:16px">${escapeAttr(valor)}</textarea>`;
     else if(p.tipo === 'escala') campo = `<div style="display:flex;gap:8px;justify-content:space-between;align-items:center"><small>Muy bajo</small>${[1,2,3,4,5].map(n => `<button type="button" class="fm-op dia-btn${valor === String(n) ? ' hecho' : ''}" data-v="${n}" style="flex:1"><span class="dia-letra">${n}</span></button>`).join('')}<small>Muy alto</small></div>`;
     else campo = p.opciones.map(o => `<button type="button" class="fm-op opcion-inicio" data-v="${escapeAttr(o)}" style="width:100%;text-align:left;margin:0 0 8px;${valor === o ? 'border:2px solid #6B9362;background:#EEF6E9' : ''}"><span class="opcion-tx"><b style="font-weight:${valor === o ? 700 : 500}">${valor === o ? '✓ ' : ''}${o}</b></span></button>`).join('');
     const rep = fm.repregunta && fm.repregunta.id === p.id ? fm.repregunta.texto : '';
@@ -5231,4 +5234,4 @@
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V10.13 · App Metas Amables · 2026-10-01 13:14 ==== -->
+<!-- ==== Fin del index V10.14 · App Metas Amables · 2026-10-01 13:32 ==== -->
