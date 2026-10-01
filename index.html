@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V10.16 · App Metas Amables · 2026-10-01 14:05 ==== -->
+<!-- ==== index V10.19 · App Metas Amables · 2026-10-01 14:24 ==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1404,7 +1404,7 @@
   }
 
 
-  const APP_VERSION = 'V10.16';
+  const APP_VERSION = 'V10.19';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -3470,6 +3470,9 @@
     // Android con la app web instalada (no la de Google Play): aviso para pasarse a la de Play
     const avisoPlay = (state.me && state.view === 'panel' && !state.panelSub) ? tarjetaPasarseAPlay() : null;
     if(avisoPlay) app.appendChild(avisoPlay);
+    // Se cumple el plazo de su meta (1 o 2 meses): «¿La conseguiste?»
+    const avisoPlazo = (state.me && state.view === 'panel' && !state.panelSub) ? tarjetaPlazoMeta() : null;
+    if(avisoPlazo) app.appendChild(avisoPlazo);
     // «← Volver» rojo arriba, debajo de la cabecera, en todas las pantallas que no son el panel
     if(state.me && !['panel', 'pick', 'bienvenidaAlta'].includes(state.view)){
       const volverArriba = botonVolver();
@@ -4933,15 +4936,75 @@
                  'Falta de tiempo, agenda llena', 'Me distraigo (móvil, redes…)', 'Dudo de mí («no soy capaz»)', 'Pierdo la motivación a los pocos días'],
       nota: '¿Qué emoción o pensamiento aparece cuando se pone difícil? ¿Otro saboteador? (opcional)' },
     { id: '701895149', tipo: 'chips', titulo: '🏆 ¿Cómo sabrás cada mes que has avanzado?', obligatoria: true, ayuda: 'Puedes elegir varias.',
-      opciones: ['Si lo hago más días', 'Si lo hago más tiempo', 'Si ya se me hizo costumbre (hábito)', 'Si, cuando fallo, lo retomo sin culpa',
+      opciones: ['Si lo hago más días', 'Si lo hago más tiempo', 'Si se me hizo costumbre (hábito)', 'Si, cuando fallo, lo retomo sin culpa',
                  'Si me siento mejor', 'Si lo notan los demás'],
-      nota: 'Si es un resultado que se puede medir, escríbelo aquí (opcional). Ej.: leer 2 libros, meditar 20 días al mes' }
+      nota: 'Si es un resultado medible, escríbelo (opcional)', ejemplo: 'Ej.: leer 2 libros, meditar 20 días al mes' }
   ];
   // Cualquier botón con la clase «fm-abrir» abre el formulario dentro de la app
   document.addEventListener('click', e => {
     const b = e.target.closest && e.target.closest('.fm-abrir');
     if(b){ e.preventDefault(); abrirFormularioMeta(); }
   });
+  // ===== Plazo de la meta =====
+  // Con plazo de 1 o 2 meses (formulario de la app), al cumplirse se pregunta si la consiguió.
+  // Sí → nueva meta para lo que queda de trimestre (no cuenta como cambio) o seguir afianzándola.
+  let plazoPaso = null;   // 'si' | 'no' tras responder (solo en esta sesión)
+  function vencimientoMeta(){
+    const d = (state.gamifica && state.gamifica.datosFormulario) || {};
+    const meses = /^1 mes/.test(d.plazo || '') ? 1 : /^2 meses/.test(d.plazo || '') ? 2 : 0;
+    if(!meses || !d.fechaMeta) return null;
+    const f = new Date(d.fechaMeta + 'T12:00:00');
+    f.setMonth(f.getMonth() + meses);
+    return f;
+  }
+  function tarjetaPlazoMeta(){
+    const d = (state.gamifica && state.gamifica.datosFormulario) || {};
+    const vence = vencimientoMeta();
+    if(!vence || (!plazoPaso && (Date.now() < vence.getTime() || (d.plazoRespondido && d.plazoRespondido >= d.fechaMeta)))) return null;
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.style.cssText = 'border:2px solid #6B9362;text-align:center';
+    const meta = d.metaTexto ? '«' + escapeAttr(d.metaTexto.length > 120 ? d.metaTexto.slice(0, 119) + '…' : d.metaTexto) + '»' : 'tu meta';
+    const responder = async (conseguida, siguiente) => {
+      try { const r = await api('/meta-plazo', { conseguida, siguiente }); if(r.datosFormulario && state.gamifica) state.gamifica.datosFormulario = r.datosFormulario; } catch(e){}
+    };
+    if(!plazoPaso){
+      card.innerHTML = `${practiHTML('pizarra', '', 90)}
+        <p style="font-weight:700;margin:8px 0 4px">🎯 Se cumple el plazo de tu meta (${escapeAttr(d.plazo)})</p>
+        <p style="margin:0 0 12px">${meta}<br>¿La conseguiste?</p>
+        <button type="button" class="btn btn-yes" id="plazoSi" style="text-align:center">¡Sí, lo conseguí! 🎉</button>
+        <button type="button" class="btn btn-no" id="plazoNo" style="text-align:center;margin-top:8px">Todavía no</button>`;
+      card.querySelector('#plazoSi').onclick = () => { plazoPaso = 'si'; try { launchConfetti(); sonidoLogro(); } catch(e){} render(); };
+      card.querySelector('#plazoNo').onclick = () => { plazoPaso = 'no'; render(); };
+    } else if(plazoPaso === 'si'){
+      card.innerHTML = `${practiHTML('celebracion', '', 100)}
+        <p style="font-weight:700;margin:8px 0 4px">¡Enhorabuena! 🏆</p>
+        <p style="margin:0 0 12px">Te queda trimestre por delante. ¿Qué quieres hacer?</p>
+        <button type="button" class="btn btn-yes" id="plazoNueva" style="text-align:center">Ponerme una meta nueva</button>
+        <button type="button" class="btn btn-no" id="plazoSeguir" style="text-align:center;margin-top:8px">Seguir afianzándola</button>
+        <p style="font-size:12px;color:var(--ink-soft);margin:8px 0 0">La meta nueva no cuenta como cambio de meta.</p>`;
+      card.querySelector('#plazoNueva').onclick = async () => {
+        await responder(true, 'Quiere una meta nueva'); plazoPaso = null;
+        try { localStorage.removeItem(fmClave()); } catch(e){}
+        abrirFormularioMeta();
+      };
+      card.querySelector('#plazoSeguir').onclick = async () => { await responder(true, 'Sigue afianzándola'); plazoPaso = null; render(); };
+    } else {
+      card.innerHTML = `${practiHTML('animo', '', 90)}
+        <p style="font-weight:700;margin:8px 0 4px">No pasa nada 🌱</p>
+        <p style="margin:0 0 12px">Cada uno tiene su ritmo. Sigue con tu guía o, si lo prefieres, ajusta tu meta.</p>
+        <button type="button" class="btn btn-yes" id="plazoGuia" style="text-align:center">Seguir con mi guía</button>
+        <button type="button" class="btn btn-no" id="plazoAjustar" style="text-align:center;margin-top:8px">Ajustar mi meta</button>`;
+      card.querySelector('#plazoGuia').onclick = async () => { await responder(false, 'Sigue con su guía'); plazoPaso = null; render(); };
+      card.querySelector('#plazoAjustar').onclick = async () => {
+        await responder(false, 'Quiere ajustar su meta'); plazoPaso = null;
+        try { localStorage.removeItem(fmClave()); } catch(e){}
+        abrirFormularioMeta();
+      };
+    }
+    return card;
+  }
+
   // 🎤 Dictar: añade al cuadro lo que la persona dice (reconocimiento de voz del navegador).
   // Si el navegador no lo permite (p. ej. Brave), el botón no aparece: queda el micrófono del teclado.
   let dictadoActivo = null;
@@ -5001,11 +5064,16 @@
 
     // Pantalla final (enviado)
     if(fm.enviado){
-      app.appendChild(el(`<div class="card" style="text-align:center">${practiReaccionHTML('pensativo','empujonPensando',110)}
+      app.appendChild(el(`<div class="card" style="text-align:center">${practiHTML('celebracion', '', 140)}
         <h2 style="margin:10px 0 6px">¡Gracias! 🎉</h2>
-        <p style="margin:0 0 14px">Ya tengo tu meta. En un rato tendrás tu guía de prácticas en <b>«a · Lee tu guía semanal»</b>.</p>
-        <button type="button" class="btn btn-yes" id="fmFin" style="text-align:center">Volver al inicio</button></div>`));
+        <p style="margin:0 0 14px">Ya tengo tu meta. En unos 20 minutos tendrás tu guía de prácticas en <b>«Lee tu guía semanal»</b>.</p>
+        <button type="button" class="btn btn-yes" id="fmFin" style="text-align:center">Volver a la app</button></div>`));
       app.querySelector('#fmFin').onclick = () => { state.fm = null; irAlPanel(); };
+      // Celebración al llegar (una sola vez): confeti y sonido
+      if(!fm.celebrado){
+        fm.celebrado = true;
+        setTimeout(() => { try { launchConfetti(); } catch(e){} try { sonidoLogro(); } catch(e){} }, 300);
+      }
       return;
     }
 
@@ -5048,6 +5116,10 @@
           await api('/formulario-app', { email: fm.email, respuestas });
           const hoy = new Date(); const iso = hoy.getFullYear() + '-' + String(hoy.getMonth() + 1).padStart(2, '0') + '-' + String(hoy.getDate()).padStart(2, '0');
           state.gamifica = state.gamifica || {}; state.gamifica.formulario = iso;
+          // Igual que lo guarda el Worker: plazo y meta, para el aviso de «¿La conseguiste?»
+          const dfm = Object.assign({}, state.gamifica.datosFormulario || {});
+          dfm.plazo = fm.r['1502404995'] || ''; dfm.metaTexto = (fm.r['785855484'] || fm.r['649833281'] || '').slice(0, 300); dfm.fechaMeta = iso; delete dfm.plazoRespondido;
+          state.gamifica.datosFormulario = dfm;
           try { localStorage.setItem(claveMetaIntentos(), String(metaIntentosUsados() + 1)); localStorage.removeItem(fmClave()); } catch(err){}
           fm.enviado = true; window.scrollTo(0,0); render();
         } catch(err){
@@ -5071,7 +5143,7 @@
       const marcadas = (fm.multi && fm.multi[p.id]) || [];
       campo = p.opciones.map(o => { const sel = marcadas.includes(o);
           return `<button type="button" class="fm-multi opcion-inicio" data-v="${escapeAttr(o)}" style="width:100%;text-align:left;margin:0 0 8px;${sel ? 'border:2px solid #6B9362;background:#EEF6E9' : ''}"><span class="opcion-tx"><b style="font-weight:${sel ? 700 : 500}">${sel ? '☑️ ' : '⬜ '}${o}</b></span></button>`; }).join('')
-        + `<label class="note-label" for="fmCampo" style="margin-top:6px">${p.nota}</label><textarea id="fmCampo" style="min-height:80px;width:100%;box-sizing:border-box;font-size:16px">${escapeAttr((fm.notas && fm.notas[p.id]) || '')}</textarea>`;
+        + `<label for="fmCampo" style="display:block;margin:10px 0 6px;font-size:14.5px;font-weight:600">${p.nota}</label><textarea id="fmCampo" placeholder="${escapeAttr(p.ejemplo || '')}" style="min-height:80px;width:100%;box-sizing:border-box;font-size:16px">${escapeAttr((fm.notas && fm.notas[p.id]) || '')}</textarea>`;
     }
     else if(p.tipo === 'multi'){
       const marcadas = (fm.multi && fm.multi[p.id]) || [];
@@ -5344,4 +5416,4 @@
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V10.16 · App Metas Amables · 2026-10-01 14:05 ==== -->
+<!-- ==== Fin del index V10.19 · App Metas Amables · 2026-10-01 14:24 ==== -->
