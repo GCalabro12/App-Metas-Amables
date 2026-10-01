@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V10.14 · App Metas Amables · 2026-10-01 13:32 ==== -->
+<!-- ==== index V10.15 · App Metas Amables · 2026-10-01 13:43 ==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1404,7 +1404,7 @@
   }
 
 
-  const APP_VERSION = 'V10.14';
+  const APP_VERSION = 'V10.15';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -4909,7 +4909,9 @@
     { id: '1313109576', tipo: 'opciones', titulo: '🧑‍🤝‍🧑 Género', opciones: ['Mujer', 'Hombre', 'Prefiero no decirlo'], datos: true },
     { id: '838787571', tipo: 'opciones', titulo: '🎂 Franja de edad', opciones: ['Menor de 25', '25 a 34', '35 a 44', '45 a 54', '55 a 64', '65 o más'], datos: true },
     { id: '1469069724', tipo: 'opciones', titulo: '🌱 ¿Cuál es tu disposición para hacer prácticas en este trimestre?', obligatoria: true,
-      opciones: ['Voy a continuar con lo que estoy haciendo el trimestre anterior', 'Quiero comenzar una práctica nueva', 'Prefiero no hacer prácticas personales (me tomaré una pausa)'] },
+      // [texto en la app, valor que espera el Google Form]
+      opciones: ['Quiero comenzar una práctica nueva', 'Prefiero no hacer prácticas personales (me tomaré una pausa)',
+                 ['Continuaré con lo del trimestre anterior', 'Voy a continuar con lo que estoy haciendo el trimestre anterior']] },
     { id: '1015444619', tipo: 'opciones', titulo: '⏱️ ¿Cuánto tiempo puedes dedicar a tus prácticas?', obligatoria: true,
       opciones: ['Un poco cada día (5 a 10 minutos)', '3 o 4 días a la semana (15 a 25 minutos)', 'Me da igual / una combinación de las dos'] },
     { id: '649833281', tipo: 'larga', titulo: '✍️ Explica en detalle lo que quieres lograr este trimestre', obligatoria: true, repreguntar: true,
@@ -4930,6 +4932,35 @@
     const b = e.target.closest && e.target.closest('.fm-abrir');
     if(b){ e.preventDefault(); abrirFormularioMeta(); }
   });
+  // 🎤 Dictar: añade al cuadro lo que la persona dice (reconocimiento de voz del navegador).
+  // Si el navegador no lo permite (p. ej. Brave), el botón no aparece: queda el micrófono del teclado.
+  let dictadoActivo = null;
+  function botonDictar(caja){
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if(!SR || !caja) return null;
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.style.cssText = 'display:flex;align-items:center;gap:6px;margin:8px 0 0 auto;padding:8px 14px;border-radius:99px;border:2px solid #6B9362;background:#fff;color:#4E7446;font-weight:700;font-size:15px;cursor:pointer';
+    const pintar = on => { b.innerHTML = on ? '⏹️ Parar' : '🎤 Dictar'; b.style.background = on ? '#EEF6E9' : '#fff'; };
+    pintar(false);
+    b.onclick = () => {
+      if(dictadoActivo){ try { dictadoActivo.stop(); } catch(e){} return; }
+      const rec = new SR();
+      rec.lang = 'es-ES'; rec.continuous = true; rec.interimResults = false;
+      rec.onresult = ev => {
+        for(let i = ev.resultIndex; i < ev.results.length; i++){
+          if(ev.results[i].isFinal){
+            const t = ev.results[i][0].transcript.trim();
+            if(t) caja.value = (caja.value ? caja.value.replace(/\s+$/, '') + ' ' : '') + t;
+          }
+        }
+      };
+      rec.onend = () => { dictadoActivo = null; pintar(false); };
+      rec.onerror = () => { dictadoActivo = null; pintar(false); };
+      try { rec.start(); dictadoActivo = rec; pintar(true); } catch(e){ dictadoActivo = null; }
+    };
+    return b;
+  }
   function fmClave(){ return 'fm_borrador_' + (state.me || ''); }
   function fmGuardar(){ try { localStorage.setItem(fmClave(), JSON.stringify(state.fm)); } catch(e){} }
   function abrirFormularioMeta(){
@@ -4938,15 +4969,21 @@
     if(!previo){
       const g = state.gamifica || {}, d = g.datosFormulario || {};
       previo = { paso: 0, email: g.email || state.miCorreo || '', r: { '1139323880': d.nombre || state.me || '', '82527459': d.ciudad || '', '1313109576': d.genero || '', '838787571': d.edad || '' }, preguntado: {} };
+      // Los datos personales que ya tenemos no se vuelven a preguntar (se envían igual)
+      previo.saltar = FM_PREGUNTAS.filter(p => p.datos && String(previo.r[p.id] || '').trim()).map(p => p.id);
     }
     state.fm = previo;
     state.prevView = state.view === 'formMeta' ? 'panel' : state.view;
     state.view = 'formMeta'; window.scrollTo(0,0); render();
   }
-  function fmVisibles(){ return FM_PREGUNTAS.filter(p => !p.soloSi || p.soloSi(state.fm.r)); }
+  function fmVisibles(){ return FM_PREGUNTAS.filter(p => (!p.soloSi || p.soloSi(state.fm.r)) && !(state.fm.saltar || []).includes(p.id)); }
+  // Para enviar: todas las que tienen respuesta (también los datos que no se preguntaron)
+  function fmParaEnviar(){ return FM_PREGUNTAS.filter(p => (!p.soloSi || p.soloSi(state.fm.r)) && state.fm.r[p.id]); }
 
   function renderFormMeta(){
-    renderBackTopbar('Tu meta del trimestre');
+    renderBackTopbar('');
+    // Título en su propio renglón, debajo de «Volver» y «Menú», en una sola línea
+    app.appendChild(el('<h2 style="text-align:center;margin:4px 0 12px;font-size:clamp(18px,5.5vw,24px);white-space:nowrap">🎯 Tu meta del trimestre</h2>'));
     const fm = state.fm;
     if(!fm){ abrirFormularioMeta(); return; }
     const preguntas = fmVisibles();
@@ -4997,7 +5034,7 @@
         const b = e.currentTarget; b.disabled = true; b.textContent = 'Enviando…';
         try {
           const respuestas = {};
-          preguntas.forEach(p => { if(fm.r[p.id]) respuestas[p.id] = fm.r[p.id]; });
+          fmParaEnviar().forEach(p => { respuestas[p.id] = fm.r[p.id]; });
           await api('/formulario-app', { email: fm.email, respuestas });
           const hoy = new Date(); const iso = hoy.getFullYear() + '-' + String(hoy.getMonth() + 1).padStart(2, '0') + '-' + String(hoy.getDate()).padStart(2, '0');
           state.gamifica = state.gamifica || {}; state.gamifica.formulario = iso;
@@ -5018,7 +5055,11 @@
     if(p.tipo === 'corta') campo = `<input id="fmCampo" type="text" value="${escapeAttr(valor)}" style="width:100%;box-sizing:border-box;font-size:17px;padding:12px 14px">`;
     else if(p.tipo === 'larga') campo = `<textarea id="fmCampo" style="min-height:110px;width:100%;box-sizing:border-box;font-size:16px">${escapeAttr(valor)}</textarea>`;
     else if(p.tipo === 'escala') campo = `<div style="display:flex;gap:8px;justify-content:space-between;align-items:center"><small>Muy bajo</small>${[1,2,3,4,5].map(n => `<button type="button" class="fm-op dia-btn${valor === String(n) ? ' hecho' : ''}" data-v="${n}" style="flex:1"><span class="dia-letra">${n}</span></button>`).join('')}<small>Muy alto</small></div>`;
-    else campo = p.opciones.map(o => `<button type="button" class="fm-op opcion-inicio" data-v="${escapeAttr(o)}" style="width:100%;text-align:left;margin:0 0 8px;${valor === o ? 'border:2px solid #6B9362;background:#EEF6E9' : ''}"><span class="opcion-tx"><b style="font-weight:${valor === o ? 700 : 500}">${valor === o ? '✓ ' : ''}${o}</b></span></button>`).join('');
+    else campo = p.opciones.map(op => {
+      const [txt, v] = Array.isArray(op) ? op : [op, op];
+      const sel = valor === v;
+      return `<button type="button" class="fm-op opcion-inicio" data-v="${escapeAttr(v)}" style="width:100%;text-align:left;margin:0 0 8px;${sel ? 'border:2px solid #6B9362;background:#EEF6E9' : ''}"><span class="opcion-tx"><b style="font-weight:${sel ? 700 : 500}">${sel ? '✓ ' : ''}${txt}</b></span></button>`;
+    }).join('');
     const rep = fm.repregunta && fm.repregunta.id === p.id ? fm.repregunta.texto : '';
     card.innerHTML = barra + `<p style="font-size:12px;color:var(--ink-soft);margin:0 0 4px">Pregunta ${fm.paso} de ${preguntas.length}${p.obligatoria ? '' : ' · opcional'}</p>
       <h3 style="margin:0 0 6px">${p.titulo}</h3>
@@ -5031,14 +5072,18 @@
       ${rep ? '<button type="button" class="link-quiet" id="fmSeguir" style="display:block;margin:8px auto 0">Seguir así, sin añadir</button>' : ''}
       <button type="button" class="link-quiet" id="fmAtras" style="display:block;margin:10px auto 0">← Atrás</button>`;
 
-    const avanzar = () => { fm.repregunta = null; fm.paso++; fmGuardar(); window.scrollTo(0,0); render(); };
-    card.querySelectorAll('.fm-op').forEach(b => b.onclick = () => {
-      fm.r[p.id] = b.dataset.v; fmGuardar();
-      // Si duda de poder conseguirlo, Prácti lo dice antes de seguir
-      if(p.id === '99842027' && /No estoy|Seguramente no/.test(b.dataset.v)){ avanzar(); return; }
-      avanzar();
+    // 🎤 en las respuestas largas (y en el «Cuéntame un poco más» de Prácti)
+    ['#fmExtra', '#fmCampo'].forEach(sel => {
+      const caja = card.querySelector(sel);
+      if(caja && caja.tagName === 'TEXTAREA'){ const b = botonDictar(caja); if(b) caja.insertAdjacentElement('afterend', b); }
     });
-    card.querySelector('#fmAtras').onclick = () => { fm.repregunta = null; fm.paso--; fmGuardar(); window.scrollTo(0,0); render(); };
+    const pararDictado = () => { if(dictadoActivo){ try { dictadoActivo.stop(); } catch(e){} } };
+    const avanzar = () => { pararDictado(); fm.repregunta = null; fm.paso++; fmGuardar(); window.scrollTo(0,0); render(); };
+    // Elegir una opción solo la marca; se avanza siempre con «Siguiente»
+    card.querySelectorAll('.fm-op').forEach(b => b.onclick = () => {
+      fm.r[p.id] = b.dataset.v; fmGuardar(); render();
+    });
+    card.querySelector('#fmAtras').onclick = () => { pararDictado(); fm.repregunta = null; fm.paso--; fmGuardar(); window.scrollTo(0,0); render(); };
     if(card.querySelector('#fmSeguir')) card.querySelector('#fmSeguir').onclick = avanzar;
     card.querySelector('#fmSig').onclick = async (e) => {
       const c = card.querySelector('#fmCampo');
@@ -5234,4 +5279,4 @@
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V10.14 · App Metas Amables · 2026-10-01 13:32 ==== -->
+<!-- ==== Fin del index V10.15 · App Metas Amables · 2026-10-01 13:43 ==== -->
