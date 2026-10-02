@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V10.20 · App Metas Amables · 2026-10-02 09:28 ==== -->
+<!-- ==== index V10.21 · App Metas Amables · 2026-10-02 09:34 ==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1404,7 +1404,7 @@
   }
 
 
-  const APP_VERSION = 'V10.20';
+  const APP_VERSION = 'V10.21';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -4692,9 +4692,27 @@
   // fila de esa semana, en una sola columna («Días hechos», p. ej. «L,X,J»). No da
   // puntos: solo sirve para que el cierre del lunes salga ya rellenado.
   const DIAS_SEMANA = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
+  // «Días hechos» guarda cada día y cuántas veces: «L,M:3,X» (sin número = 1 vez, como antes)
+  function leerDias(texto){
+    const o = {};
+    String(texto || '').split(',').forEach(p => {
+      const [d, n] = p.trim().split(':');
+      if(DIAS_SEMANA.includes(d)) o[d] = Math.min(9, Math.max(1, parseInt(n || '1', 10) || 1));
+    });
+    return o;
+  }
+  function escribirDias(o){
+    return DIAS_SEMANA.filter(d => o[d] > 0).map(d => o[d] > 1 ? d + ':' + o[d] : d).join(',');
+  }
+  function resumenDias(o){
+    const dias = Object.keys(o).length, veces = Object.values(o).reduce((a, b) => a + b, 0);
+    if(!dias) return '';
+    return dias + (dias === 1 ? ' día' : ' días') + (veces > dias ? ' · ' + veces + ' veces' : '');
+  }
   function tarjetaDias(estaSemana){
     const hoy = (new Date().getDay() + 6) % 7;   // 0 = lunes
-    let marcados = String((estaSemana && estaSemana.diasHechos) || '').split(',').filter(d => DIAS_SEMANA.includes(d));
+    let veces = leerDias(estaSemana && estaSemana.diasHechos);
+    let elegido = null;   // día abierto para elegir el número
     const card = document.createElement('div');
     card.className = 'card dias-card';
     const cont = document.createElement('div');
@@ -4702,34 +4720,39 @@
     const pintar = () => {
       cont.innerHTML = `
         <p style="margin:0 0 4px;font-size:16px"><b>📅 ¿Qué días la hiciste?</b></p>
-        <p style="font-size:13px;color:var(--ink-soft);margin:0 0 10px">${registraLunes() ? 'Opcional. Márcalo cuando la hagas y el lunes tu cierre saldrá ya rellenado.' : 'Márcalo cada día que hagas tu práctica ✓.'}</p>
-        <div class="dias-fila">${DIAS_SEMANA.map((d, i) => `<button type="button" class="dia-btn${marcados.includes(d) ? ' hecho' : ''}${i === hoy ? ' hoy' : ''}" data-dia="${d}" ${i > hoy ? 'disabled' : ''} aria-pressed="${marcados.includes(d)}"><span class="dia-letra">${d}</span><span class="dia-tick">${marcados.includes(d) ? '✓' : ''}</span></button>`).join('')}</div>
-        <p class="dias-msg" style="font-size:12px;color:var(--ink-soft);margin:8px 0 0">${marcados.length ? 'Esta semana: ' + marcados.length + (marcados.length === 1 ? ' día' : ' días') : 'Toca el día en que hiciste tu práctica.'}</p>`;
-      card.querySelectorAll('.dia-btn').forEach(b => b.onclick = (e) => {
-        // Al marcar: sonidito y fuego artificial desde donde se ha tocado. Al desmarcar, solo se quita.
-        if(!marcados.includes(b.dataset.dia)){
+        <p style="font-size:13px;color:var(--ink-soft);margin:0 0 10px">${registraLunes() ? 'Opcional. Toca el día y elige cuántas veces lo hiciste; el lunes tu cierre saldrá ya rellenado.' : 'Toca el día y elige cuántas veces hiciste tu práctica (del 1 al 9).'}</p>
+        <div class="dias-fila">${DIAS_SEMANA.map((d, i) => `<button type="button" class="dia-btn${veces[d] ? ' hecho' : ''}${i === hoy ? ' hoy' : ''}" data-dia="${d}" ${i > hoy ? 'disabled' : ''} aria-pressed="${!!veces[d]}" style="${elegido === d ? 'outline:3px solid var(--honey);outline-offset:1px' : ''}"><span class="dia-letra">${d}</span><span class="dia-tick" style="font-size:16px">${veces[d] || ''}</span></button>`).join('')}</div>
+        ${elegido ? `<div style="margin:10px 0 0;padding:10px;border-radius:12px;background:var(--honey-tint)">
+          <p style="font-size:13px;margin:0 0 8px;text-align:center"><b>¿Cuántas veces el ${['lunes','martes','miércoles','jueves','viernes','sábado','domingo'][DIAS_SEMANA.indexOf(elegido)]}?</b> (0 = no lo hice)</p>
+          <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:6px">${[1,2,3,4,5,6,7,8,9,0].map(n => `<button type="button" class="dia-num" data-n="${n}" style="padding:10px 0;border-radius:10px;font-size:17px;font-weight:700;cursor:pointer;border:2px solid ${n ? '#6B9362' : 'var(--border)'};background:${(veces[elegido] || 0) === n ? (n ? '#6B9362;color:#fff' : '#ddd') : '#fff;color:' + (n ? '#4E7446' : 'var(--ink-soft)')}">${n}</button>`).join('')}</div></div>` : ''}
+        <p class="dias-msg" style="font-size:12px;color:var(--ink-soft);margin:8px 0 0">${resumenDias(veces) ? 'Esta semana: ' + resumenDias(veces) : 'Toca el día en que hiciste tu práctica.'}</p>`;
+      card.querySelectorAll('.dia-btn').forEach(b => b.onclick = () => { elegido = elegido === b.dataset.dia ? null : b.dataset.dia; pintar(); });
+      card.querySelectorAll('.dia-num').forEach(b => b.onclick = (e) => {
+        const n = Number(b.dataset.n), d = elegido;
+        // De 0 a algo: sonidito y fuego artificial. A 0: solo se quita.
+        if(n > 0 && !veces[d]){
           const r = b.getBoundingClientRect();
           fuegoArtificial(e.clientX || r.left + r.width / 2, e.clientY || r.top + r.height / 2);
           sonidoLogro();
         }
-        cambiar(b.dataset.dia);
+        elegido = null;
+        cambiar(d, n);
       });
     };
-    const cambiar = async (d) => {
-      const antes = marcados.slice();
-      marcados = marcados.includes(d) ? marcados.filter(x => x !== d) : marcados.concat(d);
-      marcados.sort((a, b) => DIAS_SEMANA.indexOf(a) - DIAS_SEMANA.indexOf(b));
+    const cambiar = async (d, n) => {
+      const antes = Object.assign({}, veces);
+      if(n > 0) veces[d] = n; else delete veces[d];
       pintar();
       try {
-        const campos = {}; campos[AIR.fields.semana] = currentWeekShort; campos[AIR.fields.diasHechos] = marcados.join(',');
+        const campos = {}; campos[AIR.fields.semana] = currentWeekShort; campos[AIR.fields.diasHechos] = escribirDias(veces);
         const data = await guardarSemana(campos);
         const lista = state.checkins[state.me] || (state.checkins[state.me] = []);
         let fila = lista.find(c => c.week === currentWeekShort);
         if(!fila){ fila = { id: data.id, week: currentWeekShort, label: currentWeekLabel, cumplida: false, nota: '', estadoSemana: '', compromisoVeces: null, vecesRealizadas: null }; lista.push(fila); }
-        fila.diasHechos = marcados.join(',');
-        card.querySelector('.dias-msg').textContent = '✓ Guardado · esta semana: ' + marcados.length + (marcados.length === 1 ? ' día' : ' días');
+        fila.diasHechos = escribirDias(veces);
+        card.querySelector('.dias-msg').textContent = '✓ Guardado' + (resumenDias(veces) ? ' · esta semana: ' + resumenDias(veces) : '');
       } catch(e){
-        marcados = antes; pintar();
+        veces = antes; pintar();
         card.querySelector('.dias-msg').textContent = 'No se pudo guardar. Revisa tu conexión e inténtalo de nuevo.';
       }
     };
@@ -4751,18 +4774,18 @@
     const letraDe = d => DIAS_SEMANA[(d.getDay() + 6) % 7];
     const hechoEl = d => {
       const fila = lista().find(c => c.week === weekShort(lunesDe(d)));
-      return !!fila && String(fila.diasHechos || '').split(',').includes(letraDe(d));
+      return fila ? (leerDias(fila.diasHechos)[letraDe(d)] || 0) : 0;   // veces de ese día (0 = no)
     };
     const pintar = (msg) => {
       const y = calDiarioMes.getFullYear(), m = calDiarioMes.getMonth();
       const huecos = (new Date(y, m, 1).getDay() + 6) % 7;
       const dias = new Date(y, m + 1, 0).getDate();
-      let celdas = '', total = 0;
+      let celdas = '', total = 0, totalVeces = 0;
       for(let i = 0; i < huecos; i++) celdas += '<span></span>';
       for(let n = 1; n <= dias; n++){
         const d = new Date(y, m, n), futuro = d > hoy, h = !futuro && hechoEl(d);
-        if(h) total++;
-        celdas += `<button type="button" class="cd-dia${h ? ' hecho' : ''}${+d === +hoy ? ' hoy' : ''}" data-n="${n}" ${futuro ? 'disabled' : soloVer ? 'tabindex="-1"' : ''} aria-pressed="${h}">${n}<i>${h ? '✓' : ''}</i></button>`;
+        if(h){ total++; totalVeces += h; }
+        celdas += `<button type="button" class="cd-dia${h ? ' hecho' : ''}${+d === +hoy ? ' hoy' : ''}" data-n="${n}" ${futuro ? 'disabled' : soloVer ? 'tabindex="-1"' : ''} aria-pressed="${!!h}">${n}<i>${h ? (h > 1 ? '×' + h : '✓') : ''}</i></button>`;
       }
       const puedeAtras = new Date(y, m - 1, 1) >= minMes, puedeAdelante = new Date(y, m + 1, 1) <= hoy;
       card.innerHTML = `
@@ -4779,10 +4802,10 @@
           .cal-diario .cd-dia:disabled{opacity:.35;cursor:default}
         </style>
         <p style="margin:0 0 4px;font-size:16px"><b>📅 Mi calendario de prácticas</b></p>
-        <p style="font-size:13px;color:var(--ink-soft);margin:0 0 10px">Aquí se van guardando los días que marcas como hechos ✓.</p>
+        <p style="font-size:13px;color:var(--ink-soft);margin:0 0 10px">Aquí se van guardando los días que marcas como hechos (✓ una vez, ×3 tres veces…).</p>
         <div class="cd-cab"><button type="button" class="cd-atras" ${puedeAtras ? '' : 'disabled'} aria-label="Mes anterior">‹</button><b>${monthNamesEs[m].charAt(0).toUpperCase() + monthNamesEs[m].slice(1)} ${y}</b><button type="button" class="cd-adelante" ${puedeAdelante ? '' : 'disabled'} aria-label="Mes siguiente">›</button></div>
         <div class="cd-grid">${DIAS_SEMANA.map(l => '<span class="cd-sem">' + l + '</span>').join('')}${celdas}</div>
-        <p class="cd-msg" style="font-size:12px;color:var(--ink-soft);margin:8px 0 0">${msg || (total ? 'Este mes: ' + total + (total === 1 ? ' día hecho' : ' días hechos') : 'Aún no has marcado ningún día este mes.')}</p>`;
+        <p class="cd-msg" style="font-size:12px;color:var(--ink-soft);margin:8px 0 0">${msg || (total ? 'Este mes: ' + total + (total === 1 ? ' día hecho' : ' días hechos') + (totalVeces > total ? ' · ' + totalVeces + ' veces' : '') : 'Aún no has marcado ningún día este mes.')}</p>`;
       card.querySelector('.cd-atras').onclick = () => { calDiarioMes = new Date(y, m - 1, 1); pintar(); };
       card.querySelector('.cd-adelante').onclick = () => { calDiarioMes = new Date(y, m + 1, 1); pintar(); };
       if(!soloVer) card.querySelectorAll('.cd-dia:not([disabled])').forEach(b => b.onclick = (e) => {
@@ -4800,11 +4823,10 @@
       const semana = weekShort(lunesDe(d)), letra = letraDe(d);
       let fila = lista().find(c => c.week === semana);
       const antes = fila ? String(fila.diasHechos || '') : '';
-      let marcados = antes.split(',').filter(x => DIAS_SEMANA.includes(x));
-      marcados = marcados.includes(letra) ? marcados.filter(x => x !== letra) : marcados.concat(letra);
-      marcados.sort((a, b) => DIAS_SEMANA.indexOf(a) - DIAS_SEMANA.indexOf(b));
+      const v = leerDias(antes);
+      if(v[letra]) delete v[letra]; else v[letra] = 1;
       if(!fila){ fila = { id: null, week: semana, label: weekLabel(lunesDe(d)), cumplida: false, nota: '', estadoSemana: '', compromisoVeces: null, vecesRealizadas: null }; lista().push(fila); }
-      fila.diasHechos = marcados.join(',');
+      fila.diasHechos = escribirDias(v);
       pintar();
       try {
         const campos = {}; campos[AIR.fields.semana] = semana; campos[AIR.fields.diasHechos] = fila.diasHechos;
@@ -5439,4 +5461,4 @@
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V10.20 · App Metas Amables · 2026-10-02 09:28 ==== -->
+<!-- ==== Fin del index V10.21 · App Metas Amables · 2026-10-02 09:34 ==== -->
