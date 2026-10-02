@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V10.22 · App Metas Amables · 2026-10-02 19:34 ==== -->
+<!-- ==== index V10.23 · App Metas Amables · 2026-10-02 19:58 ==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -605,7 +605,7 @@
   }
   .panel-section{ border-left: 4px solid var(--moss); padding-left:16px; margin-bottom:18px; }
   .panel-section.s2{ border-color: var(--honey); }
-  .panel-section.s3{ border-color: #6B9362; }
+  .panel-section.s3{ border-color: #8FB3DA; }
   .panel-section.s4{ border-color: var(--honey); }
   .panel-section.s5{ border-color: var(--moss); }
   .panel-badge{
@@ -646,8 +646,8 @@
     font-weight:700; font-size:14px; cursor:default; list-style:none;
   }
   .duo-nodo::-webkit-details-marker{ display:none; }
-  .duo-hecha{ background:var(--moss-tint); color:var(--moss-deep); cursor:pointer; }
-  .duo-actual{ background:linear-gradient(135deg, var(--moss) 0%, #2d5a3d 100%); color:#fff; cursor:pointer; box-shadow:0 4px 12px rgba(232,0,44,.5); font-weight:600; }
+  .duo-hecha{ background:#EEF4FB; color:#2F5F93; cursor:pointer; }
+  .duo-actual{ background:linear-gradient(135deg, #4F7FB5 0%, #2F5F93 100%); color:#fff; cursor:pointer; box-shadow:0 4px 12px rgba(79,127,181,.5); font-weight:600; }
   .duo-bloqueada{ background:#F1EFE6; color:#B4B2A4; }
   .duo-fuera-plan{ width:100%; border:none; font-family:inherit; text-align:left; cursor:pointer; }
   .duo-plan-tag{ margin-left:auto; font-size:11px; font-weight:700; color:#8A6A10; background:#FCF3D4; border:1px solid #E8C96A; border-radius:999px; padding:2px 8px; white-space:nowrap; }
@@ -655,7 +655,7 @@
   .duo-plan-aviso p{ margin:0 0 8px; }
   .duo-plan-aviso.oculto{ display:none; }
   .duo-icono{ font-size:18px; }
-  .duo-actual .duo-icono{ font-size:22px; text-shadow:0 0 6px rgba(232,0,44,.6); animation:starPulse 1.5s ease-in-out infinite; }
+  .duo-actual .duo-icono{ font-size:22px; text-shadow:0 0 6px rgba(79,127,181,.6); animation:starPulse 1.5s ease-in-out infinite; }
   @keyframes starPulse{ 0%, 100% { transform:scale(1); } 50% { transform:scale(1.15); } }
   details.duo-item .duo-contenido{
     margin-top:8px; padding:14px 16px; border:1px solid var(--border); border-radius:12px;
@@ -1404,7 +1404,7 @@
   }
 
 
-  const APP_VERSION = 'V10.22';
+  const APP_VERSION = 'V10.23';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -2862,7 +2862,7 @@
     return { nombre: t.nombre, registradas: conRegistro.length, cumplidas, parciales, comp, hechas, dias };
   }
   function renderSituacionGrupo(){
-    renderBackTopbar('Tu grupo');
+    renderBackTopbar('');
     app.appendChild(el('<h2 style="text-align:center;margin:4px 0 4px">👥 Situación de los practicantes</h2><p style="text-align:center;font-size:13px;color:var(--ink-soft);margin:0 0 12px">Para preparar la sesión. Solo lo ves tú, como moderador.</p>'));
     // Sin las cuentas de prueba ni la del revisor de Google
     const nombres = Object.keys(state.situacion || {}).filter(n => !/\(moderador\)\s*$/i.test(n) && n !== 'Revisor Google').sort((a, b) => a.localeCompare(b, 'es'));
@@ -2927,10 +2927,12 @@
 
   function renderBackTopbar(title){
     app.querySelectorAll('.volver-arriba').forEach(b => b.remove());   // esta barra ya trae su «← Volver»
-    const bar = el(`<div class="topbar"><button class="back-btn" id="btnVolver" aria-label="Volver">← Volver</button><span style="font-family:'Lora',serif;font-size:18px;font-weight:600">${title}</span><button class="hamburger-btn-text" id="btnMenuOpen2" aria-label="Menú">☰ Menú</button></div>`);
+    // El título va en su propio renglón, debajo de «Volver» y «Menú» (nunca entre los dos botones)
+    const bar = el(`<div class="topbar"><button class="back-btn" id="btnVolver" aria-label="Volver">← Volver</button><span></span><button class="hamburger-btn-text" id="btnMenuOpen2" aria-label="Menú">☰ Menú</button></div>`).firstElementChild;
     const btnVolver = bar.querySelector('#btnVolver');
     const btnMenu = bar.querySelector('#btnMenuOpen2');
     app.appendChild(bar);
+    if(title) app.appendChild(el(`<h2 class="titulo-pantalla" style="font-family:'Lora',serif;text-align:center;margin:4px 0 12px;font-size:clamp(18px,5.5vw,24px)">${title}</h2>`));
     btnVolver.onclick = irAlPanel;
     btnMenu.onclick = () => { state.menuOpen = true; render(); };
   }
@@ -3277,10 +3279,10 @@
                   ${[0,1,2,3,4,5,6,7,8,9,10].map(n => `<button type="button" class="duo-rate-btn ${yaValorado && state.miValoracion===n ? 'duo-rate-selected':''}" data-n="${n}">${n}</button>`).join('')}
                 </div>
                 <div class="saved-msg">${state.valoracionMsg}</div>
-                <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--border);text-align:center">
+                ${registraLunes() ? `<div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--border);text-align:center">
                   <p style="font-size:14px;color:var(--ink);margin:0 0 10px">${avisoLunesHTML()}</p>
                   <button type="button" class="panel-link-btn irARegistroBtn" style="background:var(--honey);border:none;cursor:pointer;width:100%">Ir al registro de los lunes →</button>
-                </div>
+                </div>` : ''}
               </div>`;
           }
           cuerpo += `<details class="duo-item" ${esActual ? 'open' : ''}>
@@ -3311,7 +3313,7 @@
   function renderPracticasView(){
     if(state.prevView === 'practicas') state.prevView = 'panel';   // al volver de "Tu plan"
     contarLecturaGuia();
-    renderBackTopbar('Prácticas de ' + state.me);
+    renderBackTopbar('📖 Guías de práctica');
     // Prácti leyendo (y la hoja que se le cae al tocarlo) está en la pantalla anterior, «a · Lee tu guía semanal»:
     // aquí se va directo a la guía
     const card = document.createElement('div');
@@ -5517,4 +5519,4 @@
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V10.22 · App Metas Amables · 2026-10-02 19:34 ==== -->
+<!-- ==== Fin del index V10.23 · App Metas Amables · 2026-10-02 19:58 ==== -->
