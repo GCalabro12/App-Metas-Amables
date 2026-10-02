@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V10.19 · App Metas Amables · 2026-10-01 14:24 ==== -->
+<!-- ==== index V10.20 · App Metas Amables · 2026-10-02 09:28 ==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1404,7 +1404,7 @@
   }
 
 
-  const APP_VERSION = 'V10.19';
+  const APP_VERSION = 'V10.20';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -1530,6 +1530,7 @@
     state.members = [d.nombre].concat((d.companeros || []).map(p => p.nombre));
     state.sesionesTexto = d.sesionesTexto || '';
     state.plan = d.plan || 'gratis';
+    if(planForzado()) state.plan = planForzado();   // moderador probando otro plan
     state.facturacion = d.facturacion || {};
     state.miCorreo = state.facturacion['Correo electrónico'] || '';
     state.gamifica = d.gamifica || null;
@@ -2767,6 +2768,14 @@
     return t.content;
   }
 
+  // Cuentas de prueba de Gustavo («Libre (moderador)», «Guías (moderador)») y la suya: en el menú
+  // pueden ver la app como cualquier plan, sin cerrar sesión. Solo cambia lo que se ve en este móvil.
+  function esCuentaPruebas(){ return /\(moderador\)\s*$/i.test(state.me || '') || state.me === 'Gustavo'; }
+  function clavePlanForzado(){ return 'ma_plan_mod_' + (state.me || ''); }
+  function planForzado(){
+    if(!esCuentaPruebas()) return null;
+    try { return localStorage.getItem(clavePlanForzado()); } catch(e){ return null; }
+  }
   function renderMenuOverlay(){
     const overlay = document.createElement('div');
     overlay.className = 'menu-overlay';
@@ -2784,6 +2793,11 @@
       <button class="menu-item" id="miPlanBtn">⭐ Tu plan: ${state.plan === 'sesiones' ? 'Guías + Sesiones' : (state.plan === 'guias' ? 'Guías' : 'Libre')}</button>
       ${MODO_PLAY ? '' : '<button class="menu-item" id="facturacionBtn">💳 Facturación</button>'}
       <button class="menu-item" id="ajustesBtn">⚙️ Ajustes</button>
+      ${esCuentaPruebas() ? `<div class="menu-divider"></div>
+      <p style="font-size:13px;font-weight:700;margin:6px 14px 4px">🛠️ Moderador · ver la app como:</p>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin:0 14px 8px">${[['gratis','Libre'],['guias','Guías'],['sesiones','Guías + Sesiones']].map(([k, t]) =>
+        `<button type="button" class="mod-plan" data-plan="${k}" style="flex:1;min-width:90px;padding:8px 6px;border-radius:10px;border:2px solid #6B9362;font-weight:700;font-size:13px;cursor:pointer;background:${(state.plan || 'gratis') === k || (k === 'gratis' && state.plan === 'libre') ? '#6B9362;color:#fff' : '#fff;color:#4E7446'}">${t}</button>`).join('')}</div>
+      ${planForzado() ? '<button class="menu-item" id="modPlanReal" style="font-size:13px">↩️ Volver a mi plan real</button>' : ''}` : ''}
       <div class="menu-divider"></div>
       <button class="menu-item" id="cerrarSesionBtn">🚪 Cerrar sesión</button>
     `;
@@ -2805,6 +2819,15 @@
     if(!MODO_PLAY) panel.querySelector('#facturacionBtn').onclick = () => { state.menuOpen = false; state.view = 'facturacion'; state.prevView = 'panel'; window.scrollTo(0,0); render(); };
     panel.querySelector('#ajustesBtn').onclick = () => { state.menuOpen = false; state.view = 'ajustes'; state.prevView = 'panel'; window.scrollTo(0,0); render(); };
     panel.querySelector('#cerrarSesionBtn').onclick = () => { state.menuOpen = false; switchUser(); };
+    // Moderador: cambiar de plan al momento para probar la app (solo en este móvil)
+    panel.querySelectorAll('.mod-plan').forEach(b => b.onclick = () => {
+      try { localStorage.setItem(clavePlanForzado(), b.dataset.plan); } catch(e){}
+      state.plan = b.dataset.plan; state.menuOpen = false; state.view = 'panel'; state.panelSub = null; window.scrollTo(0,0); render();
+    });
+    if(panel.querySelector('#modPlanReal')) panel.querySelector('#modPlanReal').onclick = async () => {
+      try { localStorage.removeItem(clavePlanForzado()); } catch(e){}
+      state.menuOpen = false; try { await refreshAll(); } catch(e){} state.view = 'panel'; state.panelSub = null; render();
+    };
     
     document.body.appendChild(overlay);
   }
@@ -5416,4 +5439,4 @@
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V10.19 · App Metas Amables · 2026-10-01 14:24 ==== -->
+<!-- ==== Fin del index V10.20 · App Metas Amables · 2026-10-02 09:28 ==== -->
