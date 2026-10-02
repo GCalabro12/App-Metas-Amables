@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V10.23 · App Metas Amables · 2026-10-02 19:58 ==== -->
+<!-- ==== index V10.24 · App Metas Amables · 2026-10-02 20:27 ==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1404,7 +1404,7 @@
   }
 
 
-  const APP_VERSION = 'V10.23';
+  const APP_VERSION = 'V10.24';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -2796,6 +2796,7 @@
       <button class="menu-item" id="miPlanBtn">⭐ Tu plan: ${state.plan === 'sesiones' ? 'Guías + Sesiones' : (state.plan === 'guias' ? 'Guías' : 'Libre')}</button>
       ${MODO_PLAY ? '' : '<button class="menu-item" id="facturacionBtn">💳 Facturación</button>'}
       <button class="menu-item" id="ajustesBtn">⚙️ Ajustes</button>
+      ${soyModerador() ? '<button class="menu-item" id="miSituacionBtn">👥 Situación de tu grupo</button>' : ''}
       ${esCuentaPruebas() ? `<div class="menu-divider"></div>
       <p style="font-size:13px;font-weight:700;margin:6px 14px 4px">🛠️ Moderador · ver la app como:</p>
       <div style="display:flex;gap:6px;flex-wrap:wrap;margin:0 14px 8px">${[['gratis','Libre'],['guias','Guías'],['sesiones','Guías + Sesiones']].map(([k, t]) =>
@@ -2822,6 +2823,7 @@
     if(!MODO_PLAY) panel.querySelector('#facturacionBtn').onclick = () => { state.menuOpen = false; state.view = 'facturacion'; state.prevView = 'panel'; window.scrollTo(0,0); render(); };
     panel.querySelector('#ajustesBtn').onclick = () => { state.menuOpen = false; state.view = 'ajustes'; state.prevView = 'panel'; window.scrollTo(0,0); render(); };
     panel.querySelector('#cerrarSesionBtn').onclick = () => { state.menuOpen = false; switchUser(); };
+    if(panel.querySelector('#miSituacionBtn')) panel.querySelector('#miSituacionBtn').onclick = () => { state.menuOpen = false; state.prevView = 'panel'; state.view = 'situacion'; window.scrollTo(0,0); render(); };
     // Moderador: cambiar de plan al momento para probar la app (solo en este móvil)
     panel.querySelectorAll('.mod-plan').forEach(b => b.onclick = () => {
       try { localStorage.setItem(clavePlanForzado(), b.dataset.plan); } catch(e){}
@@ -3274,7 +3276,7 @@
             const yaValorado = state.miValoracion !== null && state.miValoracion !== undefined;
             extra = `
               <div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--border)">
-                <p style="font-size:13px;font-weight:700;margin:0 0 8px">¿Qué te ha parecido esta práctica? (0-10)</p>
+                <p style="font-size:13px;font-weight:700;margin:0 0 8px">¿Qué te ha parecido esta guía de la semana? (0-10)</p>
                 <div class="duo-rate-row">
                   ${[0,1,2,3,4,5,6,7,8,9,10].map(n => `<button type="button" class="duo-rate-btn ${yaValorado && state.miValoracion===n ? 'duo-rate-selected':''}" data-n="${n}">${n}</button>`).join('')}
                 </div>
@@ -5519,4 +5521,4 @@
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V10.23 · App Metas Amables · 2026-10-02 19:58 ==== -->
+<!-- ==== Fin del index V10.24 · App Metas Amables · 2026-10-02 20:27 ==== -->
