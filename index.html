@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V10.21 · App Metas Amables · 2026-10-02 09:34 ==== -->
+<!-- ==== index V10.22 · App Metas Amables · 2026-10-02 19:34 ==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1404,7 +1404,7 @@
   }
 
 
-  const APP_VERSION = 'V10.21';
+  const APP_VERSION = 'V10.22';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -1523,8 +1523,11 @@
     state.checkins[d.nombre] = recordsToCheckins(d.filas || []).byName[d.nombre] || [];
     state.groups = {};
     state.groups[d.nombre] = d.grupo || [];
+    state.situacion = {};
     (d.companeros || []).forEach(p => {
       state.groups[p.nombre] = p.grupo || [];
+      // Solo llega para moderadores: meta, práctica y detalle de cada semana
+      if(p.meta !== undefined) state.situacion[p.nombre] = { meta: p.meta || '', practica: p.practica || '', semanas: p.semanas || [] };
       state.checkins[p.nombre] = (p.semanas || []).map(s => ({ week: s.semana, label: s.semana, cumplida: s.estado === ESTADO_CUMPLIDO, estadoSemana: s.estado }));
     });
     state.members = [d.nombre].concat((d.companeros || []).map(p => p.nombre));
@@ -2834,6 +2837,56 @@
 
   // «Volver» siempre lleva al panel del ciclo (antes volvía a la pantalla anterior y
   // a veces se quedaba en bucle, p. ej. Práctica semanal → Guía → Volver)
+  // ===== Situación de los practicantes (moderador, para preparar la sesión) =====
+  // Semanas (etiqueta corta) de un trimestre: 0 = el actual, -1 = el anterior.
+  // Cada semana va con el mes de su lunes.
+  function semanasDeTrimestre(desfase){
+    const q0 = Math.floor(lunesHoy.getMonth() / 3) + desfase;
+    const año = lunesHoy.getFullYear() + Math.floor(q0 / 4), q = ((q0 % 4) + 4) % 4;
+    const etiquetas = [];
+    for(let m = q * 3; m < q * 3 + 3; m++){
+      let d = primerLunesDelMes(año, m);
+      while(d.getMonth() === m){ etiquetas.push(weekShort(d)); d = new Date(d.getFullYear(), d.getMonth(), d.getDate() + 7); }
+    }
+    return { etiquetas, nombre: ['enero–marzo', 'abril–junio', 'julio–septiembre', 'octubre–diciembre'][q] + ' ' + año };
+  }
+  function resumenTrimestre(semanas, desfase){
+    const t = semanasDeTrimestre(desfase);
+    const filas = semanas.filter(s => t.etiquetas.includes(s.semana));
+    const conRegistro = filas.filter(s => s.estado || s.comp);
+    const cumplidas = filas.filter(s => s.estado === ESTADO_CUMPLIDO).length;
+    const parciales = filas.filter(s => s.estado === ESTADO_PARCIAL).length;
+    const comp = filas.reduce((a, s) => a + (Number(s.comp) || 0), 0);
+    const hechas = filas.reduce((a, s) => a + (Number(s.hechas) || 0), 0);
+    const dias = filas.reduce((a, s) => a + Object.keys(leerDias(s.dias)).length, 0);
+    return { nombre: t.nombre, registradas: conRegistro.length, cumplidas, parciales, comp, hechas, dias };
+  }
+  function renderSituacionGrupo(){
+    renderBackTopbar('Tu grupo');
+    app.appendChild(el('<h2 style="text-align:center;margin:4px 0 4px">👥 Situación de los practicantes</h2><p style="text-align:center;font-size:13px;color:var(--ink-soft);margin:0 0 12px">Para preparar la sesión. Solo lo ves tú, como moderador.</p>'));
+    // Sin las cuentas de prueba ni la del revisor de Google
+    const nombres = Object.keys(state.situacion || {}).filter(n => !/\(moderador\)\s*$/i.test(n) && n !== 'Revisor Google').sort((a, b) => a.localeCompare(b, 'es'));
+    if(!nombres.length){
+      app.appendChild(el('<div class="card"><p style="margin:0">Todavía no hay datos de tu grupo. Comprueba que en Airtable tienes «Moderador» en «Grupo MAC» y vuelve a abrir la app.</p></div>'));
+      return;
+    }
+    const fila = (r) => r.registradas
+      ? `<b>${r.cumplidas}</b> ${r.cumplidas === 1 ? 'cumplida' : 'cumplidas'}${r.parciales ? ' · ' + r.parciales + ' en parte' : ''} de ${r.registradas} ${r.registradas === 1 ? 'semana registrada' : 'semanas registradas'}${r.comp ? ' · ' + r.hechas + ' de ' + r.comp + ' veces' : ''}${r.dias ? ' · ' + r.dias + ' días marcados' : ''}`
+      : '<span style="color:var(--ink-soft)">Sin registros</span>';
+    app.appendChild(el(nombres.map(n => {
+      const s = state.situacion[n], act = resumenTrimestre(s.semanas, 0), ant = resumenTrimestre(s.semanas, -1);
+      const ultima = [...s.semanas].reverse().find(x => x.estado || x.comp);
+      return `<div class="card" style="margin-bottom:10px">
+        <p style="font-weight:700;font-size:16px;margin:0 0 6px">${escapeAttr(conAvatar(n))}</p>
+        <p style="margin:0 0 4px;font-size:14px">🎯 <b>Meta:</b> ${s.meta ? escapeAttr(s.meta) : '<span style="color:var(--ink-soft)">sin meta escrita</span>'}</p>
+        ${s.practica ? `<p style="margin:0 0 6px;font-size:14px">🏃 <b>Práctica:</b> ${escapeAttr(s.practica)}</p>` : ''}
+        <p style="margin:0 0 2px;font-size:13px">📅 <b>Este trimestre</b> (${act.nombre}): ${fila(act)}</p>
+        <p style="margin:0 0 2px;font-size:13px">🗂️ <b>Trimestre anterior</b> (${ant.nombre}): ${fila(ant)}</p>
+        <p style="margin:4px 0 0;font-size:12px;color:var(--ink-soft)">Último registro: ${ultima ? escapeAttr(ultima.semana) + (ultima.estado ? ' · ' + escapeAttr(ultima.estado) : '') : '—'}</p>
+      </div>`;
+    }).join('')));
+  }
+
   function soyModerador(){
     const g = (state.groups && state.groups[state.me]) || [];
     return (Array.isArray(g) ? g : [g]).some(x => String(x).toLowerCase().includes('moderador'));
@@ -4058,11 +4111,13 @@
           ? '<p style="font-size:14px;color:var(--ink-soft);margin:0 0 8px">Cada 15 días, en grupo reducido, para desatascar situaciones y automotivarte. Están incluidas en el Plan Guías + Sesiones.</p><a class="panel-link-btn honey" id="btnVerPlanes" href="#">Ver planes →</a>'
           : `<p style="margin:0 0 8px">${proxSesion ? '📅 ' + proxSesion : 'Cada 15 días, en grupo reducido.'}</p>
         <button id="btnAbrirCalSesiones2" style="width:100%;text-align:center;padding:12px 16px;border-radius:10px;background:#fff;border:2px solid #6B9362;color:#4E7446;font-weight:700;font-size:14px;cursor:pointer;margin:8px 0">📅 Calendario sesiones</button>
-        <a class="panel-link-btn" href="https://meet.google.com/qvf-aefv-trc" target="_blank" style="background:#6B9362">Enlace a la llamada →</a>`}
+        <a class="panel-link-btn" href="https://meet.google.com/qvf-aefv-trc" target="_blank" style="background:#6B9362">Enlace a la llamada →</a>
+        ${soyModerador() ? '<button type="button" id="btnSituacion" style="width:100%;text-align:center;padding:12px 16px;border-radius:10px;background:#fff;border:2px solid #6B9362;color:#4E7446;font-weight:700;font-size:14px;cursor:pointer;margin:10px 0 0">👥 Situación de los practicantes de tu grupo</button>' : ''}`}
       `;
       // c = verde, como su botón en el ciclo
       s5.style.border = '2px solid #93BF80';
       s5.querySelector('#btnToCheckin').onclick = (e) => { e.preventDefault(); state.view = 'checkin'; state.regPaso = null; window.scrollTo(0,0); render(); };
+      if(s5.querySelector('#btnSituacion')) s5.querySelector('#btnSituacion').onclick = () => { state.prevView = 'panel'; state.view = 'situacion'; window.scrollTo(0,0); render(); };
       if(s5.querySelector('#btnAbrirCalSesiones2')) s5.querySelector('#btnAbrirCalSesiones2').onclick = () => { state.view = 'sesionesCal'; window.scrollTo(0,0); render(); };
       if(s5.querySelector('#btnVerPlanes')) s5.querySelector('#btnVerPlanes').onclick = (e) => { e.preventDefault(); state.prevView = 'panel'; state.view = 'planes'; window.scrollTo(0,0); render(); };
 
@@ -4637,6 +4692,7 @@
       return;
     }
 
+    if(state.view === 'situacion'){ renderSituacionGrupo(); return; }
     if(state.view === 'group'){
       const nav = document.createElement('nav');
       nav.className = 'tabs';
@@ -5461,4 +5517,4 @@
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V10.21 · App Metas Amables · 2026-10-02 09:34 ==== -->
+<!-- ==== Fin del index V10.22 · App Metas Amables · 2026-10-02 19:34 ==== -->
