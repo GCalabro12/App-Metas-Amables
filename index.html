@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V10.64 · App Metas Amables · 2026-10-04 01:22 ==== -->
+<!-- ==== index V10.66 · App Metas Amables · 2026-10-04 01:51 ==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -874,6 +874,11 @@
 .avisos-plan{display:flex;flex-direction:column;gap:8px;margin:0 0 12px}
 .aviso-plan{display:block;width:100%;text-align:left;padding:12px 14px;border-radius:14px;font:inherit;font-size:14.5px;line-height:1.4;cursor:pointer;border:2px solid}
 .aviso-plan.encuesta{background:#FFF6E0;border-color:#E2B33C;color:#5a4410}.aviso-plan.fin{background:#FDEDED;border-color:#E39A9A;color:#7a2b2b}
+.banda-fin-plan{position:fixed;left:0;right:0;bottom:0;z-index:850;min-height:25vh;box-sizing:border-box;padding:14px 18px calc(14px + env(safe-area-inset-bottom));background:#FFD43B;border-top:3px solid #101010;box-shadow:0 -6px 18px rgba(0,0,0,.18);display:flex;flex-direction:column;justify-content:center;gap:6px}
+.bfp-titulo{margin:0;font-size:19px;font-weight:800;color:#101010}.bfp-tx{margin:0;font-size:15px;color:#2b2200}.bfp-tx s{color:#7a6a20}
+.bfp-botones{display:flex;gap:10px;flex-wrap:wrap;margin-top:4px}.bfp-si{flex:1;text-align:center;padding:12px 14px;border-radius:99px;background:#101010;color:#FFD43B;font-weight:800;text-decoration:none}
+.bfp-planes{padding:12px 16px;border-radius:99px;border:2px solid #101010;background:transparent;font:inherit;font-weight:700;cursor:pointer}
+body:has(.banda-fin-plan) #app{padding-bottom:28vh}
 .prueba-caja{max-width:520px;margin:0 auto 14px}.prueba-nota{text-align:center;font-size:13px;color:#666;margin:6px 0 0}
 .encuesta-estrellas{display:flex;gap:8px;margin:6px 0 14px}.encuesta-estrellas button{flex:1;height:46px;border-radius:12px;border:2px solid #E2B33C;background:#fff;font:inherit;font-size:18px;font-weight:800;color:#8a6420;cursor:pointer}
 .encuesta-estrellas button.elegida{background:#E2B33C;color:#fff}
@@ -1520,7 +1525,7 @@
   }
 
 
-  const APP_VERSION = 'V10.64';
+  const APP_VERSION = 'V10.66';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -1951,14 +1956,14 @@
       'Habla con Prácti: 3 preguntas al día',
       'Frases motivadoras con 2 fondos y una música libre en cada módulo'
     ]},
-    guias: { nombre: 'Plan Guías 👑', precio: '49 € al año <span class="plan-precio-paren">(menos de 1 € a la semana)</span>', precio2: 'o 6 € al mes', pagos: [{ txt: 'Pagar anual (49 €) →', url: 'https://buy.stripe.com/28E28q0Q14h96LDbX8bZe0k' }, { txt: 'Pagar mensual (6 €) →', url: 'https://buy.stripe.com/3cI14m2Y9fZR4Dv4uGbZe0j' }], incluye: [
+    guias: { nombre: 'Plan Guías', corona: '👑', precio: '49 € al año <span class="plan-precio-paren">(menos de 1 € a la semana)</span>', precio2: 'o 6 € al mes', pagos: [{ txt: 'Pagar anual (49 €) →', url: 'https://buy.stripe.com/28E28q0Q14h96LDbX8bZe0k' }, { txt: 'Pagar mensual (6 €) →', url: 'https://buy.stripe.com/3cI14m2Y9fZR4Dv4uGbZe0j' }], incluye: [
       'Todo lo del Plan Libre',
       'Tu guía de prácticas personalizada, <b>nueva cada semana</b>',
       'Puedes cambiar tu meta hasta 2 veces por trimestre (y recibes una guía nueva)',
       'Habla con Prácti: 30 preguntas al día, adaptado a tu guía y tu motivación',
       'Todos los fondos de las frases motivadoras y toda la música motivacional'
     ]},
-    sesiones: { nombre: 'Plan Guías + Grupo 👑👑', precio: '360 € el primer año <span class="plan-precio-paren">(260 € a partir del segundo)</span>', precio2: 'o 105 € al trimestre', pagos: [{ txt: 'Pagar anual →', url: 'https://buy.stripe.com/7sY8wO0Q14h99XP0eqbZe0h' }, { txt: 'Pagar trimestral →', url: 'https://buy.stripe.com/6oU8wOcyJ00Tee5aT4bZe0e' }], incluye: [
+    sesiones: { nombre: 'Plan Guías + Grupo', corona: '👑👑', precio: '360 € el primer año <span class="plan-precio-paren">(260 € a partir del segundo)</span>', precio2: 'o 105 € al trimestre', pagos: [{ txt: 'Pagar anual →', url: 'https://buy.stripe.com/7sY8wO0Q14h99XP0eqbZe0h' }, { txt: 'Pagar trimestral →', url: 'https://buy.stripe.com/6oU8wOcyJ00Tee5aT4bZe0e' }], incluye: [
       'Todo lo del Plan Guías',
       'Sesiones online cada 15 días, en grupo reducido',
       'Registro semanal de compromiso y logros, con tu calendario de semanas',
@@ -3471,7 +3476,7 @@
       const sitio = app.querySelector('#hablaPracti'); if(!L || !sitio) return;
       // Solo saluda en voz alta la primera vez; al volver a entrar, la última respuesta se ve pero no se repite
       if(!habla.saludado && !habla.historial.length){ habla.saludado = true; hablaDecir(ultima); }
-      else { habla.ultima = ultima; const t = app.querySelector('#hablaTexto'); if(t) t.textContent = ultima; }
+      else { habla.ultima = ultima; const t = app.querySelector('#hablaTexto'); if(t) t.textContent = ultima; hablaPonerAnim(); try { habla.anim.goToAndStop(0, true); } catch(e){} }
     });
     if(!window.lottie && !window.bodymovin){ habla.ultima = ultima; caja.querySelector('#hablaTexto').textContent = ultima; }
   }
@@ -4172,6 +4177,7 @@
     document.querySelectorAll('.menu-overlay').forEach(o => o.remove());
     app.innerHTML = '';
     app.setAttribute('data-vista', state.view || '');
+    try { bandaFinDePlan(); } catch(e){}
     if(state.view !== 'formMeta' && typeof musica !== 'undefined' && musica && musica.porFormulario){ musica.porFormulario = false; musicaPoner(null); }   // para los colores de cada parte del ciclo
     app.setAttribute('data-sub', (state.view === 'panel' && state.panelSub) || '');
     applyTheme();
@@ -5329,7 +5335,7 @@
         tarjetas.innerHTML +=
           '<div class="card plan-card' + (esElSuyo ? ' destacado' : '') + '">' +
           (esElSuyo ? '<span class="plan-cinta">Tu plan</span>' : '') +
-          '<p class="plan-nombre">⭐ ' + p.nombre + '</p>' +
+          '<p class="plan-nombre">' + (p.corona ? p.corona + ' ' : '') + p.nombre + '</p>' +
           // En la app de Google Play no se muestran precios ni formas de pago
           (MODO_PLAY ? '' :
             '<p class="plan-precio">' + p.precio + '</p>' +
@@ -5889,7 +5895,7 @@
   // Días que le quedan a un plan que NO se renueva solo (prueba, regalo, transferencia). null si no aplica.
   function diasParaFinDePlan(){
     const f = state.facturacion || {};
-    if(!f['Vencimiento'] || f['Forma de pago'] === 'Stripe' || !tienePlan('guias')) return null;
+    if(!f['Vencimiento'] || f['Forma de pago'] === 'Stripe' || state.plan !== 'guias') return null;
     const hoy = new Date(today.getFullYear(), today.getMonth(), today.getDate());
     return diasEntre(hoy, new Date(f['Vencimiento'] + 'T00:00:00'));
   }
@@ -5899,14 +5905,25 @@
     const d = datosForm();
     if(d.pruebaGuias && !d.encuestaHecha && diasEntre(new Date(d.pruebaGuias + 'T00:00:00'), today) >= 20)
       html += '<button type="button" class="aviso-plan encuesta" id="abrirEncuesta">🎁 <b>¿Nos ayudas a mejorar?</b> Responde 3 preguntas y te regalamos <b>otro mes del Plan Guías 👑</b> ›</button>';
-    const quedan = diasParaFinDePlan();
-    if(quedan !== null && quedan >= 0 && quedan <= 5)
-      html += '<button type="button" class="aviso-plan fin" id="avisoFinPlan">⏳ <b>' + (quedan === 0 ? 'Hoy termina' : quedan === 1 ? 'Mañana termina' : 'En ' + quedan + ' días termina') + ' tu Plan Guías 👑.</b> Para seguir con tu guía nueva cada semana y todo Prácti, pásate al Plan Guías desde 6 € al mes ›</button>';
     return html;
   }
   function activarTarjetasPlan(raiz){
     const e = raiz.querySelector('#abrirEncuesta'); if(e) e.onclick = () => { state.view = 'encuesta'; window.scrollTo(0,0); render(); };
-    const p = raiz.querySelector('#avisoFinPlan'); if(p) p.onclick = () => irAPlanes();
+  }
+  // Oferta de fin de prueba: 33 € el primer año (en vez de 49 €), solo en los últimos 5 días de un plan que no se renueva solo
+  const OFERTA_33 = 'https://buy.stripe.com/7sYeVc56h5ldc5X1iubZe0l';
+  function bandaFinDePlan(){
+    document.querySelectorAll('.banda-fin-plan').forEach(b => b.remove());
+    const quedan = diasParaFinDePlan();
+    if(!state.me || quedan === null || quedan < 0 || quedan > 5 || ['pick', 'formMeta', 'encuesta'].includes(state.view)) return;
+    const cuando = quedan === 0 ? 'Hoy termina' : quedan === 1 ? 'Mañana termina' : 'En ' + quedan + ' días termina';
+    const b = document.createElement('div');
+    b.className = 'banda-fin-plan';
+    b.innerHTML = '<p class="bfp-titulo">⏳ ' + cuando + ' tu Plan Guías 👑</p>'
+      + '<p class="bfp-tx">Sigue con tu guía nueva cada semana y todo Prácti. <b>Oferta solo para ti: 33 € el primer año</b> <s>49 €</s></p>'
+      + '<div class="bfp-botones"><a class="bfp-si" href="' + OFERTA_33 + '" target="_blank" rel="noopener">Quiero la oferta (33 €)</a><button type="button" class="bfp-planes">Ver planes</button></div>';
+    b.querySelector('.bfp-planes').onclick = () => irAPlanes();
+    document.body.appendChild(b);
   }
   // Botón de la prueba gratis (en «Tu plan», solo para el Plan Libre que aún no la ha usado)
   function botonPruebaHTML(){
@@ -6350,4 +6367,4 @@
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V10.64 · App Metas Amables · 2026-10-04 01:22 ==== -->
+<!-- ==== Fin del index V10.66 · App Metas Amables · 2026-10-04 01:51 ==== -->
