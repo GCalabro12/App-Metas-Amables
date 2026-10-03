@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V10.53 · App Metas Amables · 2026-10-03 15:00 ==== -->
+<!-- ==== index V10.54 · App Metas Amables · 2026-10-03 15:18 ==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -872,6 +872,7 @@
 .musica-video{position:absolute;width:1px;height:1px;overflow:hidden;opacity:0;pointer-events:none;left:0;bottom:0}
 .musica-video iframe{width:100%;height:100%;border:0}
 .musica-onda{display:flex;align-items:flex-end;gap:3px;height:22px;padding-left:6px}.musica-onda i{width:4px;background:#7B5FB8;border-radius:2px;animation:musicaOnda .9s ease-in-out infinite}.musica-onda i:nth-child(2){animation-delay:.3s}.musica-onda i:nth-child(3){animation-delay:.6s}
+.musica-onda.quieta i{animation:none;height:6px}
 @keyframes musicaOnda{0%,100%{height:6px}50%{height:22px}}
 .musica-sonando{flex:1;min-width:0;font-size:14px;font-weight:700;color:#4a3a6e;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .musica-parar{flex:0 0 42px;height:42px;border-radius:50%;border:0;background:#7B5FB8;color:#fff;font-size:18px;cursor:pointer}
@@ -1497,7 +1498,7 @@
   }
 
 
-  const APP_VERSION = 'V10.53';
+  const APP_VERSION = 'V10.54';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -3430,35 +3431,32 @@
   // ===== Música motivacional: vídeos de YouTube que suenan en bucle =====
   // El reproductor vive fuera de la pantalla de la app, así la música sigue sonando al cambiar de pantalla.
   // Canciones por módulos (03/10/2026): las de meditación de la app de Calistenia y las recomendadas; Gustavo irá cambiando algunas
-const CANCIONES = [
+  const CANCIONES = [
     // Cuerpo: ejercicio, caminar, estirarse
     { id: 'd8OL6m0ZblA', titulo: 'Pop para entrenar (1 h)', modulo: 'cuerpo' },
-    { id: 'Ncu0A9dtieU', titulo: 'Electrónica para motivarte (1 h 30)', modulo: 'cuerpo' },
-    { id: '6c5CGYLY61g', titulo: 'Instrumental con energía (1 h)', modulo: 'cuerpo' },
+    { id: 'Ncu0A9dtieU', titulo: 'Electrónica para motivarte (1 h 31 min)', modulo: 'cuerpo' },
+    { id: '6c5CGYLY61g', titulo: 'Instrumental con energía (1 h 11 min)', modulo: 'cuerpo' },
     { id: '_vcZ7AYF7wo', titulo: 'Música para yoga y estiramientos (1 h)', modulo: 'cuerpo' },
     // Emoción: ánimo, soltar emociones
-    { id: 'mmqS75jUhW8', titulo: 'Buen rollo para levantar el ánimo', modulo: 'emocion' },
-    { id: 'hlWiI4xVXKY', titulo: 'Mañanas soleadas (Peder B. Helland)', modulo: 'emocion' },
-    { id: 'qtMvIyWn4is', titulo: 'Energía positiva, chill', modulo: 'emocion' },
-    { id: 'GLlL3CtS3vI', titulo: 'Soltar emociones negativas', modulo: 'emocion' },
+    { id: 'mmqS75jUhW8', titulo: 'Buen rollo para levantar el ánimo (2 h 10 min)', modulo: 'emocion' },
+    { id: 'hlWiI4xVXKY', titulo: 'Mañanas soleadas (3 h)', modulo: 'emocion' },
+    { id: 'qtMvIyWn4is', titulo: 'Energía positiva, chill (43 min)', modulo: 'emocion' },
+    { id: 'GLlL3CtS3vI', titulo: 'Soltar emociones negativas (2 h)', modulo: 'emocion' },
     // Mente: concentración, estudio
-    { id: 'jfKfPfyJRdk', titulo: 'Lofi para estudiar (en directo)', modulo: 'mente' },
-    { id: 'BMuknRb7woc', titulo: 'Clásica para concentrarte (Mozart, Vivaldi…)', modulo: 'mente' },
-    { id: 'oiGmGFxsJi8', titulo: 'Piano tranquilo para estudiar y leer', modulo: 'mente' },
-    { id: 'LwTv8S5co5Q', titulo: 'Clásica para el foco', modulo: 'mente' },
-    // Espíritu: meditación (las de la app de Calistenia y las nuevas)
-    { id: 'c_FBwFq7bug', titulo: 'Zen, meditación', modulo: 'espiritu' },
-    { id: 'DNrnDx-KZUY', titulo: 'Música para relajarse', modulo: 'espiritu' },
-    { id: 'TZundrFjNtc', titulo: 'Música andina para relajarse', modulo: 'espiritu' },
-    { id: '27uxtB-gmqk', titulo: 'OM, meditación (Deva Premal)', modulo: 'espiritu' },
-    { id: '6GicBf262fA', titulo: 'OM y cuencos tibetanos', modulo: 'espiritu' },
+    { id: 'BMuknRb7woc', titulo: 'Clásica para concentrarte (1 h 35 min)', modulo: 'mente' },
+    { id: 'oiGmGFxsJi8', titulo: 'Piano tranquilo para estudiar y leer (2 h 45 min)', modulo: 'mente' },
+    { id: 'LwTv8S5co5Q', titulo: 'Clásica para el foco (2 h 17 min)', modulo: 'mente' },
+    // Espíritu: meditación
+    { id: 'c_FBwFq7bug', titulo: 'Zen, meditación (2 h 4 min)', modulo: 'espiritu' },
+    { id: 'DNrnDx-KZUY', titulo: 'Música para relajarse (2 h 48 min)', modulo: 'espiritu' },
+    { id: '27uxtB-gmqk', titulo: 'OM, meditación (1 h)', modulo: 'espiritu' },
     { id: '0Lawyy6ZUU8', titulo: 'Cuencos tibetanos (1 h)', modulo: 'espiritu' },
-    { id: 'WZKW2Hq2fks', titulo: 'Meditación zen (3 h)', modulo: 'espiritu' },
-    // Exteriores: naturaleza, familia y amigos
-    { id: 'IvjMgVS6kng', titulo: 'Río en el bosque', modulo: 'exteriores' },
-    { id: 'xNN7iTA57jM', titulo: 'Sonidos del bosque y pájaros', modulo: 'exteriores' },
-    { id: 'bNuGQ4ZxPfI', titulo: 'Jazz para cenar en familia o con amigos', modulo: 'exteriores' },
-    { id: '1fueZCTYkpA', titulo: 'Café de la mañana (lofi suave)', modulo: 'exteriores' }
+    // Exteriores: relaciones, naturaleza y trabajo
+    { id: 'mrBERrcoGKg', titulo: 'Música para el amor (58 min)', modulo: 'exteriores' },
+    { id: 'MgZO7kJBa5E', titulo: 'Música para trabajar (2 h)', modulo: 'exteriores' },
+    { id: 'xNN7iTA57jM', titulo: 'Sonidos del bosque y pájaros (3 h)', modulo: 'exteriores' },
+    { id: 'bNuGQ4ZxPfI', titulo: 'Jazz para cenar en familia o con amigos (7 h 28 min)', modulo: 'exteriores' },
+    { id: '1fueZCTYkpA', titulo: 'Café de la mañana (1 h 4 min)', modulo: 'exteriores' }
   ];
   const MODULOS_MUSICA = [
     { id: 'cuerpo', nombre: '💪 Módulo del cuerpo' },
@@ -3467,10 +3465,21 @@ const CANCIONES = [
     { id: 'espiritu', nombre: '🧘 Módulo del espíritu' },
     { id: 'exteriores', nombre: '🌍 Módulos exteriores' }
   ];
-  const musica = { id: null };
+  const musica = { id: null, pausada: false };
+  function musicaOrden(func){
+    const fr = document.querySelector('#musicaBarra iframe');
+    try { if(fr) fr.contentWindow.postMessage(JSON.stringify({ event: 'command', func, args: [] }), '*'); } catch(e){}
+  }
+  function musicaPausar(){
+    musica.pausada = !musica.pausada;
+    musicaOrden(musica.pausada ? 'pauseVideo' : 'playVideo');
+    const b = document.querySelector('#musicaBarra .musica-pausa');
+    if(b){ b.textContent = musica.pausada ? '▶' : '⏸'; b.setAttribute('aria-label', musica.pausada ? 'Seguir con la música' : 'Pausar la música'); }
+    const o = document.querySelector('#musicaBarra .musica-onda'); if(o) o.classList.toggle('quieta', musica.pausada);
+  }
 
   function musicaPoner(id){
-    musica.id = id;
+    musica.id = id; musica.pausada = false;
     let barra = document.getElementById('musicaBarra');
     if(!id){ if(barra) barra.remove(); if(state.view === 'musica') render(); return; }
     const c = CANCIONES.find(x => x.id === id) || { titulo: 'Música' };
@@ -3478,10 +3487,12 @@ const CANCIONES = [
       barra = document.createElement('div'); barra.id = 'musicaBarra'; barra.className = 'musica-barra';
       document.body.appendChild(barra);
     }
-    barra.innerHTML = '<div class="musica-video"><iframe src="https://www.youtube.com/embed/' + id + '?autoplay=1&loop=1&playlist=' + id + '&playsinline=1&rel=0" allow="autoplay; encrypted-media" title="' + escapeAttr(c.titulo) + '"></iframe></div>'
+    barra.innerHTML = '<div class="musica-video"><iframe src="https://www.youtube.com/embed/' + id + '?autoplay=1&loop=1&playlist=' + id + '&playsinline=1&rel=0&enablejsapi=1" allow="autoplay; encrypted-media" title="' + escapeAttr(c.titulo) + '"></iframe></div>'
       + '<span class="musica-onda" aria-hidden="true"><i></i><i></i><i></i></span><span class="musica-sonando">' + escapeAttr(c.titulo) + '</span>'
+      + '<button type="button" class="musica-parar musica-pausa" aria-label="Pausar la música">⏸</button>'
       + '<button type="button" class="musica-parar" aria-label="Parar la música">⏹</button>';
-    barra.querySelector('.musica-parar').onclick = () => musicaPoner(null);
+    barra.querySelector('.musica-pausa').onclick = musicaPausar;
+    barra.querySelector('.musica-parar:not(.musica-pausa)').onclick = () => musicaPoner(null);
     if(state.view === 'musica') render();
   }
 
@@ -6151,4 +6162,4 @@ const CANCIONES = [
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V10.53 · App Metas Amables · 2026-10-03 15:00 ==== -->
+<!-- ==== Fin del index V10.54 · App Metas Amables · 2026-10-03 15:18 ==== -->
