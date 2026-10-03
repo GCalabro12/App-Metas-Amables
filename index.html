@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V10.55 · App Metas Amables · 2026-10-03 16:17 ==== -->
+<!-- ==== index V10.57 · App Metas Amables · 2026-10-03 21:04 ==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -819,8 +819,8 @@
 .util-card{display:flex;align-items:center;gap:14px;padding:16px;border:3px solid #101010;border-radius:20px;background:#E4DAF7;text-align:left;font:inherit;color:#101010;cursor:pointer;-webkit-tap-highlight-color:transparent}
 
 .util-dibujo{position:relative;flex:0 0 42%;display:flex;align-items:center;justify-content:center;min-height:110px}
-.util-tx b{display:block;font-size:20px;font-family:Lora,serif}.util-tx small{display:block;font-size:14px;color:#4a4a4a;margin-top:4px}
-.util-burbuja{position:absolute;top:-6px;left:0;right:-10px;background:#fff;border:2px solid #101010;border-radius:14px;padding:4px 8px;font-size:12px;font-weight:700;z-index:1}
+.util-tx b{display:block;font-size:20px;font-family:Lora,serif}.util-tx small{display:block;font-size:12.5px;color:#4a4a4a;margin-top:4px}
+.util-burbuja{position:absolute;top:-4px;right:-6px;background:#fff;border:2px solid #101010;border-radius:14px;padding:4px 8px;font-size:12px;font-weight:700;z-index:1}
 .util-mini-frase{display:block;height:130px;width:auto;aspect-ratio:9/16;border-radius:10px;border:2px solid #101010;background-size:cover;background-position:center}
 .frases-caja{display:flex;flex-direction:column;align-items:center;gap:12px}
 .frase-cv{width:auto;max-width:100%;height:calc(100vh - 360px);min-height:240px;max-height:560px;margin-top:-6px;border-radius:20px;border:3px solid #101010;background:#F4EFE3}
@@ -831,6 +831,7 @@
 .frase-flecha.der{right:-8px}.frase-flecha.izq{left:-8px}
 .frase-elige{margin:4px 0 0;font-weight:700;text-align:center;color:#4a3a6e}
 .frase-fondo{flex:0 0 calc((100% - 32px) / 5);scroll-snap-align:start;aspect-ratio:9/16;padding:0;border-radius:10px;border:2px solid #101010;background:#F4EFE3 center/cover no-repeat;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.frase-fondo{position:relative}.frase-fondo .corona,.musica-cancion .corona{position:absolute;top:4px;right:4px;font-size:16px;filter:drop-shadow(0 1px 2px rgba(0,0,0,.5))}
 .frase-fondo.elegido{border:4px solid #7B5FB8;box-shadow:inset 0 0 0 2px #fff}
 .frase-botones{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
 [data-vista="frases"] .btn-yes{background:#7B5FB8 !important;border:0 !important;border-radius:999px !important;padding:14px 26px !important;font-size:18px !important;font-weight:800 !important;color:#fff !important;box-shadow:0 3px 0 #4F3A86}
@@ -861,11 +862,13 @@
 .habla-lista-cuerpo{overflow:auto;padding:10px 16px 24px}
 .habla-lista-cuerpo p{margin:0 0 10px;line-height:1.4}
 .hl-yo b{color:#4F7FB5}.hl-practi b{color:#7B5FB8}
+.hablar-practi-btn{display:block;width:100%;margin:0 0 12px;padding:12px 16px;border-radius:999px;border:2px solid #7B5FB8;background:#F1ECFC;color:#4F3A86;font:inherit;font-size:16px;font-weight:800;cursor:pointer;-webkit-tap-highlight-color:transparent}
 .musica-lista{display:flex;flex-direction:column;gap:10px;padding-bottom:90px}
 .musica-modulo{margin:14px 0 2px;font-size:17px;color:#4a3a6e}
 .musica-pronto{margin:0;font-size:14px;color:#888;font-style:italic}
 .musica-ayuda{margin:0 0 4px;font-size:14px;color:#555;text-align:center}
 .musica-cancion{display:flex;align-items:center;gap:12px;width:100%;padding:14px 16px;border:3px solid #101010;border-radius:16px;background:#E4DAF7;font:inherit;font-size:16px;font-weight:700;color:#101010;text-align:left;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.musica-cancion{position:relative}.musica-cancion.con-corona{opacity:.75}
 .musica-cancion.sonando{background:#7B5FB8;border-color:#7B5FB8;color:#fff}
 .musica-icono{font-size:20px}
 .musica-barra{position:fixed;left:8px;right:8px;bottom:calc(8px + env(safe-area-inset-bottom));z-index:900;display:flex;align-items:center;gap:10px;padding:6px 8px;background:#fff;border:3px solid #7B5FB8;border-radius:16px;box-shadow:0 4px 14px rgba(0,0,0,.2);max-width:520px;margin:0 auto}
@@ -1026,7 +1029,7 @@
   // Las insignias son del Plan Guías + Sesiones: en los demás planes el botón sale con candado
   function insigniasBloqueadas(){ return !!state.plan && !tienePlan('sesiones'); }
   function nivelBadgeHTML(){
-    if(insigniasBloqueadas()) return `<button id="nivelBadgeBtn" class="nivel-badge-mini" title="Las insignias son del Plan Guías + Sesiones">🔒</button>`;
+    if(insigniasBloqueadas()) return `<button id="nivelBadgeBtn" class="nivel-badge-mini" title="Las insignias son del Plan Guías + Sesiones">👑👑</button>`;
     if(!state.nivel) return '';
     return `<button id="nivelBadgeBtn" class="nivel-badge-mini" title="Tu nivel: ${state.nivel.label}">${state.nivel.icon}</button>`;
   }
@@ -1498,7 +1501,7 @@
   }
 
 
-  const APP_VERSION = 'V10.55';
+  const APP_VERSION = 'V10.57';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -1946,7 +1949,7 @@
   function calBloqueado(){ return !tienePlan('sesiones'); }
   function irAPlanes(){ state.prevView = state.view; state.view = 'planes'; window.scrollTo(0,0); render(); }
   function irCalendario(){ if(calBloqueado()){ irAPlanes(); return; } state.view = 'calendar'; window.scrollTo(0,0); render(); }
-  function txtCal(t){ return (calBloqueado() ? '🔒 ' : '📅 ') + t; }
+  function txtCal(t){ return (calBloqueado() ? '👑👑 ' : '📅 ') + t; }
 
   // Lee el plan de Facturación. Acepta el nombre escrito en "Plan" o en "Membresía":
   // si contiene "sesion" → Plan Sesiones; si contiene "guia" → Plan Guías.
@@ -3040,13 +3043,16 @@
   // Fondos de las frases: la casa de Prácti (dibujada) y las 4 fotos de los elementos
   const FONDOS_FRASE = [
     { id:'practi', nombre:'🏠 Casa de Prácti' },
+    { id:'aire', nombre:'🌬️ Aire' },
     { id:'fuego', nombre:'🔥 Fuego' },
     { id:'agua', nombre:'🌊 Agua' },
     { id:'tierra', nombre:'🌲 Tierra' },
-    { id:'aire', nombre:'🌬️ Aire' },
     { id:'hogar', nombre:'🛋️ Prácti en el hogar' }
   ];
   const utilEstado = { frases:null, i:0, fondo:'practi' };
+  // Fondos libres para todos; los demás son del Plan Guías (con corona)
+  const FONDOS_LIBRES = ['practi', 'aire'];
+  const fondoBloqueado = id => !FONDOS_LIBRES.includes(id) && !tienePlan('guias');
 
   // Llave fija (mecánica), según el dibujo de Gustavo: cabeza redonda grande con un hueco ancho para la tuerca,
   // mango corto y gordo con la punta redonda, y la letra d en la base de la cabeza
@@ -3055,13 +3061,17 @@
       + '<path d="M8 -8 L19.9 -8 A18 18 0 0 1 53 -6 L42 -6 L42 6 L53 6 A18 18 0 0 1 19.9 8 L8 8 A8 8 0 0 1 8 -8 Z" fill="#DCCFF5" stroke="#101010" stroke-width="2.6" stroke-linejoin="round"/>'
       + '</g><text x="25" y="29.5" text-anchor="middle" font-family="Karla,Arial,sans-serif" font-size="17" font-weight="800" fill="#101010">d</text></svg>';
   }
+  function avisoCorona(texto){
+    if(confirm('👑 ' + texto + '.\n\n¿Quieres ver los planes?')){ state.prevView = state.view; state.view = 'planes'; window.scrollTo(0,0); render(); }
+  }
+
   function renderUtilidades(){
     renderBackTopbar('🔧 Utilidades');
     const caja = document.createElement('div');
     caja.className = 'util-grid';
     const tarjeta = (id, titulo, sub, dibujo) => '<button type="button" class="util-card" data-util="' + id + '"><span class="util-dibujo">' + dibujo + '</span><span class="util-tx"><b>' + titulo + '</b><small>' + sub + '</small></span></button>';
     caja.innerHTML =
-        tarjeta('habla', 'Habla con Prácti', 'Pregúntale lo que quieras, escribiendo o con el micrófono', '<span class="util-burbuja">Hola<br>¿En qué te ayudo?</span>' + practiHTML('saludo', '🦉', 84))
+        tarjeta('habla', 'Habla con Prácti', 'Pregúntale lo que quieras', '<span class="util-burbuja">Hola</span>' + practiHTML('saludo', '🦉', 84))
       + tarjeta('formacion', 'Formación', 'Libro, cuadrantes y módulos', practiHTML('formacion', '🦉', 108))
       + tarjeta('frases', 'Frases motivadoras', 'Elige un fondo y compártela', '<span class="util-mini-frase" style="background:center/cover url(' + FONDOS_FOTOS.practi + ')"></span>')
       + tarjeta('musica', 'Música motivacional', 'Música para acompañarte mientras usas la app', practiHTML('guitarra', '🎸', 120));
@@ -3071,7 +3081,7 @@
       const u = b.getAttribute('data-util');
       if(u === 'formacion'){ state.view = 'panel'; state.panelSub = 's5'; state.volverUtil = true; window.scrollTo(0,0); render(); return; }
       if(u === 'frases'){ state.view = 'frases'; window.scrollTo(0,0); render(); return; }
-      if(u === 'habla'){ state.view = 'habla'; window.scrollTo(0,0); render(); return; }
+      if(u === 'habla'){ state.hablaDesdeInicio = false; state.view = 'habla'; window.scrollTo(0,0); render(); return; }
       if(u === 'musica'){ state.view = 'musica'; window.scrollTo(0,0); render(); return; }
       alert(u === 'habla' ? 'Muy pronto podrás hablar con Prácti aquí. 🦉' : 'Muy pronto tendrás aquí música para motivarte. 🎵');
     });
@@ -3215,7 +3225,7 @@
     caja.className = 'frases-caja';
     caja.innerHTML = '<canvas class="frase-cv" width="900" height="1600"></canvas>'
       + '<p class="frase-elige">Escoge una imagen para compartir la frase motivadora</p>'
-      + '<div class="frase-fondos-caja"><button type="button" class="frase-flecha izq" aria-label="Ver las anteriores" hidden>‹</button><button type="button" class="frase-flecha der" aria-label="Ver más imágenes">›</button><div class="frase-fondos">' + FONDOS_FRASE.map(f => '<button type="button" class="frase-fondo' + (f.id === utilEstado.fondo ? ' elegido' : '') + '" data-fondo="' + f.id + '" aria-label="' + f.nombre + '" style="background-image:url(' + miniaturaFondo(f.id) + ')"></button>').join('') + '</div></div>'
+      + '<div class="frase-fondos-caja"><button type="button" class="frase-flecha izq" aria-label="Ver las anteriores" hidden>‹</button><button type="button" class="frase-flecha der" aria-label="Ver más imágenes">›</button><div class="frase-fondos">' + FONDOS_FRASE.map(f => '<button type="button" class="frase-fondo' + (f.id === utilEstado.fondo ? ' elegido' : '') + '" data-fondo="' + f.id + '" aria-label="' + f.nombre + '" style="background-image:url(' + miniaturaFondo(f.id) + ')">' + (fondoBloqueado(f.id) ? '<span class="corona">👑</span>' : '') + '</button>').join('') + '</div></div>'
       + '<div class="frase-botones"><button type="button" class="btn-yes" id="fraseOtra">Otra frase</button><button type="button" class="btn-yes" id="fraseCompartir">Compartir</button></div>';
     app.appendChild(caja);
     const cv = caja.querySelector('canvas');
@@ -3229,6 +3239,7 @@
     const pinta = () => dibujarTarjetaFrase(cv, lista[utilEstado.i % lista.length], utilEstado.fondo);
     pinta();
     caja.querySelectorAll('.frase-fondo').forEach(b => b.onclick = () => {
+      if(fondoBloqueado(b.getAttribute('data-fondo'))){ avisoCorona('Este fondo es del Plan Guías'); return; }
       utilEstado.fondo = b.getAttribute('data-fondo');
       caja.querySelectorAll('.frase-fondo').forEach(z => z.classList.toggle('elegido', z === b)); pinta(); });
     caja.querySelector('#fraseOtra').onclick = () => { utilEstado.i = (utilEstado.i + 1 + Math.floor(Math.random() * Math.max(1, lista.length - 1))) % lista.length; pinta(); };
@@ -3392,7 +3403,7 @@
 
   function renderHabla(){
     renderBackTopbar('💬 Habla con Prácti');
-    app.querySelector('#btnVolver').onclick = () => { try { window.speechSynthesis.cancel(); } catch(e){} habla.turno = (habla.turno || 0) + 1; state.view = 'utilidades'; window.scrollTo(0,0); render(); };
+    app.querySelector('#btnVolver').onclick = () => { try { window.speechSynthesis.cancel(); } catch(e){} habla.turno = (habla.turno || 0) + 1; if(state.hablaDesdeInicio){ state.hablaDesdeInicio = false; irAlPanel(); return; } state.view = 'utilidades'; window.scrollTo(0,0); render(); };
     hablaCargar();
     const ultima = habla.historial.length ? habla.historial[habla.historial.length - 1].texto : HABLA_SALUDO;
     const caja = el(`<div class="habla-caja">
@@ -3510,10 +3521,13 @@
     const caja = el(`<div class="musica-lista">
         <p class="musica-ayuda">Elige una música y sigue usando la app: sonará mientras tanto. Para pararla, toca ⏹ abajo.</p>
         ${MODULOS_MUSICA.map(m => { const lista = CANCIONES.filter(c => c.modulo === m.id);
-          return '<h3 class="musica-modulo">' + m.nombre + '</h3>' + (lista.length ? lista.map(c => '<button type="button" class="musica-cancion' + (c.id === musica.id ? ' sonando' : '') + '" data-id="' + c.id + '"><span class="musica-icono">' + (c.id === musica.id ? '🔊' : '▶️') + '</span><span>' + escapeAttr(c.titulo) + '</span></button>').join('') : '<p class="musica-pronto">Muy pronto</p>'); }).join('')}
+          return '<h3 class="musica-modulo">' + m.nombre + '</h3>' + (lista.length ? lista.map((c, n) => '<button type="button" class="musica-cancion' + (c.id === musica.id ? ' sonando' : '') + (n > 0 && !tienePlan('guias') ? ' con-corona' : '') + '" data-id="' + c.id + '">' + (n > 0 && !tienePlan('guias') ? '<span class="corona">👑</span>' : '') + '<span class="musica-icono">' + (c.id === musica.id ? '🔊' : '▶️') + '</span><span>' + escapeAttr(c.titulo) + '</span></button>').join('') : '<p class="musica-pronto">Muy pronto</p>'); }).join('')}
       </div>`).firstElementChild;
     app.appendChild(caja);
-    caja.querySelectorAll('.musica-cancion').forEach(b => b.onclick = () => musicaPoner(b.getAttribute('data-id') || null));
+    caja.querySelectorAll('.musica-cancion').forEach(b => b.onclick = () => {
+      if(b.classList.contains('con-corona')){ avisoCorona('Esta música es del Plan Guías. Tienes una libre en cada módulo.'); return; }
+      musicaPoner(b.getAttribute('data-id') || null);
+    });
   }
 
   function irAlPanel(){
@@ -3559,7 +3573,7 @@
       <p style="margin:0 0 2px;font-size:13px;color:var(--ink-soft)">Grupo: ${(state.groups && state.groups[state.me]) || '—'}</p>
       <p style="margin:0 0 14px;font-size:13px;color:var(--ink-soft)" id="perfilEmailRow">Email: <em>cargando…</em></p>
       <div id="insigniaActualBox" style="margin-bottom:16px"><p style="font-size:13px;color:var(--ink-soft)">Cargando tu nivel…</p></div>
-      <p style="font-weight:700;margin:0 0 4px">Escala de niveles${insigniasBloqueadas() ? ' <span style="font-weight:400;font-size:13px;color:var(--ink-soft)">(🔒 Plan Guías + Sesiones)</span>' : ''}</p>
+      <p style="font-weight:700;margin:0 0 4px">Escala de niveles${insigniasBloqueadas() ? ' <span style="font-weight:400;font-size:13px;color:var(--ink-soft)">(👑👑 Plan Guías + Sesiones)</span>' : ''}</p>
       <p style="font-size:13px;color:var(--ink-soft);margin:0 0 10px">
         Tu nivel sube sumando puntos: una semana <b>cumplida del todo</b> suma 1 punto.
         Si la hiciste <b>en parte</b>, suma esa parte (3 de 5 → 0,6). Si <b>no se dieron las oportunidades</b>, suma 0,25.
@@ -3671,7 +3685,7 @@
         if(insigniasBloqueadas()){
           box.innerHTML = `
             <div class="badge-medal-current">
-              <div class="medal-icon">🔒</div>
+              <div class="medal-icon">👑👑</div>
               <div class="medal-text">
                 <div class="medal-label">Tus puntos</div>
                 <div class="medal-name">${fmtPuntos(cumplidas)} puntos</div>
@@ -3897,7 +3911,7 @@
       semanas.forEach((b, i) => {
         if(soloLibre && b.weekNum !== 1 && i !== 0){
           // Plan Libre: la primera semana de la guía y la primera de cada mes
-          cuerpo += `<div class="duo-plan-item"><button type="button" class="duo-nodo duo-bloqueada duo-fuera-plan"><span class="duo-icono">🔒</span><span class="duo-texto">${b.monthName} · Semana ${b.weekNum}</span><span class="duo-plan-tag">⭐ Plan Guías</span></button>
+          cuerpo += `<div class="duo-plan-item"><button type="button" class="duo-nodo duo-bloqueada duo-fuera-plan"><span class="duo-icono">👑</span><span class="duo-texto">${b.monthName} · Semana ${b.weekNum}</span><span class="duo-plan-tag">⭐ Plan Guías</span></button>
             <div class="duo-plan-aviso oculto"><p><b>El Plan Libre incluye una semana de práctica al mes</b> (la primera de cada mes, además de tu semana de inicio).</p><p>Con el Plan Guías tienes tu guía completa, con una práctica nueva cada semana.</p><button type="button" class="panel-link-btn irAPlanesBtn" style="border:none;cursor:pointer;width:100%">Aumentar mi plan →</button></div></div>`;
           return;
         }
@@ -4513,7 +4527,7 @@
 
       const nav = document.createElement('nav');
       nav.className = 'tabs';
-      nav.innerHTML = `<button class="active">🔄 Ciclo</button><button id="toCheckin">Registro</button>${tienePlan('sesiones') ? '<button id="toGroup">Mi grupo</button>' : ''}<button id="toCal">${calBloqueado() ? '🔒' : '📅'} <span class="tab-full">Calendario de semanas</span><span class="tab-abbr">Cal. sem.</span></button>`;
+      nav.innerHTML = `<button class="active">🔄 Ciclo</button><button id="toCheckin">Registro</button>${tienePlan('sesiones') ? '<button id="toGroup">Mi grupo</button>' : ''}<button id="toCal">${calBloqueado() ? '👑👑' : '📅'} <span class="tab-full">Calendario de semanas</span><span class="tab-abbr">Cal. sem.</span></button>`;
       // pestañas quitadas del Panel: las opciones ya están en la lista de abajo
       
       nav.querySelector('#toCheckin').onclick = () => { state.view='checkin'; state.regPaso = null; window.scrollTo(0,0); render(); };
@@ -4537,7 +4551,7 @@
           '<button type="button" class="opcion-inicio ciclo-btn ' + clase + '" data-ir="' + ir + '">'
           + '<span class="ciclo-icono">' + iconoCiclo(icono) + '</span>'
           + '<span class="opcion-tx"><b>' + titulo + '</b><small>' + sub + '</small>' + (extra || '') + '</span>'
-          + '<span class="opcion-flecha">' + (candado ? '🔒' : '›') + '</span></button>';
+          + '<span class="opcion-flecha">' + (candado || '›') + '</span></button>';
         // Orden de arriba abajo: primero la meta, después a → b → c → d
         const metaHecha = !!(formularioEnviado() || state.guiaTexto || tx.meta);
         const listaCiclo = (state.checkins && state.checkins[state.me]) || [];
@@ -4552,7 +4566,8 @@
         const toca = tareaDelDia();
         const act = k => (k === toca ? ' actual' : '');
         opciones.innerHTML =
-          '<button type="button" class="opcion-inicio ciclo-btn ciclo-meta' + (metaHecha ? ' hecha' : ' pendiente') + act('meta') + '" data-ir="s4">'
+          '<button type="button" class="hablar-practi-btn">💬 Quiero hablar con Prácti</button>'
+          + '<button type="button" class="opcion-inicio ciclo-btn ciclo-meta' + (metaHecha ? ' hecha' : ' pendiente') + act('meta') + '" data-ir="s4">'
           + '<span class="ciclo-icono">' + iconoCiclo('cero') + '</span>'
           + '<span class="opcion-tx"><b>Formulario de meta trimestral</b>'
           + (metaHecha
@@ -4562,7 +4577,7 @@
           + '</span><span class="opcion-flecha">›</span></button>'
           + flechaAbajo
           + boton('s3', 'ciclo-a' + (practicaBloqueada ? ' bloqueada' : '') + act('a'), 'a', 'Lee tu guía semanal', subGuia,
-                state.guiaTexto ? '<span class="etiqueta-recibida">Recibida</span>' : '', practicaBloqueada)
+                state.guiaTexto ? '<span class="etiqueta-recibida">Recibida</span>' : '', practicaBloqueada && '👑')
           + flechaAbajo
           + boton('sB', 'ciclo-b' + act('b'), 'b', 'Practica y registra',
                 (tx.practica ? '<span class="ciclo-dato">' + escapeAttr(corto(tx.practica, 110)) + '</span>' : registraLunes() ? 'La defines en tu registro del lunes' : 'Marca cada día que la hagas')
@@ -4573,9 +4588,10 @@
                 sinSesiones
                   ? 'Registro de compromiso cada lunes y sesiones en grupo cada 15 días. Plan Guías + Sesiones'
                   : '✍️ Registro ' + (registroPendienteEstaSemana() ? 'pendiente: aún no has registrado esta semana' : textoProximoLunes())
-                    + (textoProximaSesion() ? '<br><span style="font-weight:700">📅 ' + textoProximaSesion() + '</span>' : ''), '', sinSesiones)
+                    + (textoProximaSesion() ? '<br><span style="font-weight:700">📅 ' + textoProximaSesion() + '</span>' : ''), '', sinSesiones && '👑👑')
           + '<button type="button" class="opcion-inicio ciclo-formacion" data-ir="util"><span class="ciclo-icono">' + iconoLlave() + '</span><span class="opcion-tx"><b>Utilidades</b><small>Habla con Prácti, formación, frases y música</small></span><span class="opcion-flecha">›</span></button>';
         app.appendChild(opciones);
+        opciones.querySelector('.hablar-practi-btn').onclick = () => { state.hablaDesdeInicio = true; state.view = 'habla'; window.scrollTo(0,0); render(); };
         opciones.querySelectorAll('.opcion-inicio').forEach(btn => {
           btn.onclick = () => {
             const destino = btn.getAttribute('data-ir');
@@ -4836,7 +4852,7 @@
 
       const nav = document.createElement('nav');
       nav.className = 'tabs';
-      nav.innerHTML = `<button id="toPanel">🔄 Ciclo</button><button class="active">Registro</button>${tienePlan('sesiones') ? '<button id="toGroup">Mi grupo</button>' : ''}<button id="toCal">${calBloqueado() ? '🔒' : '📅'} <span class="tab-full">Calendario de semanas</span><span class="tab-abbr">Cal. sem.</span></button>`;
+      nav.innerHTML = `<button id="toPanel">🔄 Ciclo</button><button class="active">Registro</button>${tienePlan('sesiones') ? '<button id="toGroup">Mi grupo</button>' : ''}<button id="toCal">${calBloqueado() ? '👑👑' : '📅'} <span class="tab-full">Calendario de semanas</span><span class="tab-abbr">Cal. sem.</span></button>`;
       // pestañas quitadas del Registro: abajo están los enlaces a grupo y calendario
       
       nav.querySelector('#toPanel').onclick = () => { state.view='panel'; window.scrollTo(0,0); render(); };
@@ -5084,7 +5100,7 @@
         <p style="font-size:13px;color:var(--ink-soft);margin:0 0 14px">Sin forzarte: elige un número que puedas sostener.</p>
 
         <button class="btn btn-yes" id="btnRegistrarTodo" style="text-align:center">${!tienePlan('guias') ? '✅ Registrar mi compromiso' : (tienePlan('sesiones') ? '📲 Registrar y compartir en WhatsApp' : '📲 Registrar y compartir con tu socio de compromiso')}</button>
-        ${!tienePlan('guias') ? '<button type="button" class="link-quiet" id="btnCompartirBloq" style="padding:0;margin-top:8px;text-align:left">🔒 Compartir tu compromiso por WhatsApp con tu socio de compromiso <small>(Plan Guías)</small></button>' : (tienePlan('sesiones') ? '' : '<p style="font-size:13px;color:var(--ink-soft);margin:6px 0 0">Tu <b>socio de compromiso</b> es alguien de confianza a quien le cuentas tu compromiso cada semana. Decirlo en voz alta hace que se cumpla mucho más.</p>')}
+        ${!tienePlan('guias') ? '<button type="button" class="link-quiet" id="btnCompartirBloq" style="padding:0;margin-top:8px;text-align:left">👑 Compartir tu compromiso por WhatsApp con tu socio de compromiso <small>(Plan Guías)</small></button>' : (tienePlan('sesiones') ? '' : '<p style="font-size:13px;color:var(--ink-soft);margin:6px 0 0">Tu <b>socio de compromiso</b> es alguien de confianza a quien le cuentas tu compromiso cada semana. Decirlo en voz alta hace que se cumpla mucho más.</p>')}
         <div class="saved-msg">${state.savedMsg || state.compromisoMsg || ''}</div>
         <button class="link-quiet" id="btnComoCuenta" style="padding:0;margin-top:10px">ℹ️ ¿Cómo cuenta la app mi cumplimiento?</button>
         ${soyModerador() ? '<button class="link-quiet" id="btnVolverCierre" style="padding:0;margin-top:6px">← Ver el cierre de la semana pasada</button>' : ''}
@@ -6170,4 +6186,4 @@
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V10.55 · App Metas Amables · 2026-10-03 16:17 ==== -->
+<!-- ==== Fin del index V10.57 · App Metas Amables · 2026-10-03 21:04 ==== -->
