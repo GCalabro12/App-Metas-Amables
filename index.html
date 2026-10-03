@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V10.50 · App Metas Amables · 2026-10-03 14:55 ==== -->
+<!-- ==== index V10.53 · App Metas Amables · 2026-10-03 15:00 ==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -821,7 +821,7 @@
 .util-dibujo{position:relative;flex:0 0 42%;display:flex;align-items:center;justify-content:center;min-height:110px}
 .util-tx b{display:block;font-size:20px;font-family:Lora,serif}.util-tx small{display:block;font-size:14px;color:#4a4a4a;margin-top:4px}
 .util-burbuja{position:absolute;top:-6px;left:0;right:-10px;background:#fff;border:2px solid #101010;border-radius:14px;padding:4px 8px;font-size:12px;font-weight:700;z-index:1}
-.util-mini-frase{display:flex;align-items:center;justify-content:center;width:100%;height:110px;border-radius:14px;border:2px solid #101010;background:linear-gradient(#2b2420,#d9480f);color:#fff;font-weight:700;font-size:14px;padding:6px;text-align:center}
+.util-mini-frase{display:block;height:130px;width:auto;aspect-ratio:9/16;border-radius:10px;border:2px solid #101010;background-size:cover;background-position:center}
 .frases-caja{display:flex;flex-direction:column;align-items:center;gap:12px}
 .frase-cv{width:auto;max-width:100%;height:calc(100vh - 360px);min-height:240px;max-height:560px;margin-top:-6px;border-radius:20px;border:3px solid #101010;background:#F4EFE3}
 .frase-fondos-caja{position:relative;width:100%;max-width:380px}
@@ -1497,7 +1497,7 @@
   }
 
 
-  const APP_VERSION = 'V10.50';
+  const APP_VERSION = 'V10.53';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -3062,8 +3062,8 @@
     caja.innerHTML =
         tarjeta('habla', 'Habla con Prácti', 'Pregúntale lo que quieras, escribiendo o con el micrófono', '<span class="util-burbuja">Hola<br>¿En qué te ayudo?</span>' + practiHTML('saludo', '🦉', 84))
       + tarjeta('formacion', 'Formación', 'Libro, cuadrantes y módulos', practiHTML('formacion', '🦉', 108))
-      + tarjeta('frases', 'Frases motivadoras', 'Elige un fondo y compártela', '<span class="util-mini-frase" style="background:center/cover url(' + FONDOS_FOTOS.practi + ')">«Hoy también cuenta»</span>')
-      + tarjeta('musica', 'Música motivacional', 'Música para acompañarte mientras usas la app', practiHTML('guitarra', '🎸', 100));
+      + tarjeta('frases', 'Frases motivadoras', 'Elige un fondo y compártela', '<span class="util-mini-frase" style="background:center/cover url(' + FONDOS_FOTOS.practi + ')"></span>')
+      + tarjeta('musica', 'Música motivacional', 'Música para acompañarte mientras usas la app', practiHTML('guitarra', '🎸', 120));
     app.appendChild(caja);
     try { activarPracti(caja); } catch(e){}
     caja.querySelectorAll('.util-card').forEach(b => b.onclick = () => {
@@ -3429,16 +3429,36 @@
 
   // ===== Música motivacional: vídeos de YouTube que suenan en bucle =====
   // El reproductor vive fuera de la pantalla de la app, así la música sigue sonando al cambiar de pantalla.
-  // (Mismas canciones que la app de Calistenia; Gustavo las cambiará más adelante)
+  // Canciones por módulos (03/10/2026): las de meditación de la app de Calistenia y las recomendadas; Gustavo irá cambiando algunas
 const CANCIONES = [
+    // Cuerpo: ejercicio, caminar, estirarse
+    { id: 'd8OL6m0ZblA', titulo: 'Pop para entrenar (1 h)', modulo: 'cuerpo' },
+    { id: 'Ncu0A9dtieU', titulo: 'Electrónica para motivarte (1 h 30)', modulo: 'cuerpo' },
+    { id: '6c5CGYLY61g', titulo: 'Instrumental con energía (1 h)', modulo: 'cuerpo' },
+    { id: '_vcZ7AYF7wo', titulo: 'Música para yoga y estiramientos (1 h)', modulo: 'cuerpo' },
+    // Emoción: ánimo, soltar emociones
+    { id: 'mmqS75jUhW8', titulo: 'Buen rollo para levantar el ánimo', modulo: 'emocion' },
+    { id: 'hlWiI4xVXKY', titulo: 'Mañanas soleadas (Peder B. Helland)', modulo: 'emocion' },
+    { id: 'qtMvIyWn4is', titulo: 'Energía positiva, chill', modulo: 'emocion' },
+    { id: 'GLlL3CtS3vI', titulo: 'Soltar emociones negativas', modulo: 'emocion' },
+    // Mente: concentración, estudio
+    { id: 'jfKfPfyJRdk', titulo: 'Lofi para estudiar (en directo)', modulo: 'mente' },
+    { id: 'BMuknRb7woc', titulo: 'Clásica para concentrarte (Mozart, Vivaldi…)', modulo: 'mente' },
+    { id: 'oiGmGFxsJi8', titulo: 'Piano tranquilo para estudiar y leer', modulo: 'mente' },
+    { id: 'LwTv8S5co5Q', titulo: 'Clásica para el foco', modulo: 'mente' },
+    // Espíritu: meditación (las de la app de Calistenia y las nuevas)
     { id: 'c_FBwFq7bug', titulo: 'Zen, meditación', modulo: 'espiritu' },
     { id: 'DNrnDx-KZUY', titulo: 'Música para relajarse', modulo: 'espiritu' },
     { id: 'TZundrFjNtc', titulo: 'Música andina para relajarse', modulo: 'espiritu' },
-    { id: 'KjnSO6RjJXE', titulo: 'Música ambiente matutina', modulo: 'mente' },
-    { id: 'ccP68897sdE', titulo: 'Beethoven, Mozart y Vivaldi Techno', modulo: 'mente' },
-    { id: 'iXchWUgWlcw', titulo: 'Bosa Nova Beach', modulo: 'emocion' },
-    { id: 'JGZphUS4Nzg', titulo: 'Summer Chill tropical', modulo: 'emocion' },
-    { id: '3GRVnyO_Zvo', titulo: 'Música andina', modulo: 'exteriores' }
+    { id: '27uxtB-gmqk', titulo: 'OM, meditación (Deva Premal)', modulo: 'espiritu' },
+    { id: '6GicBf262fA', titulo: 'OM y cuencos tibetanos', modulo: 'espiritu' },
+    { id: '0Lawyy6ZUU8', titulo: 'Cuencos tibetanos (1 h)', modulo: 'espiritu' },
+    { id: 'WZKW2Hq2fks', titulo: 'Meditación zen (3 h)', modulo: 'espiritu' },
+    // Exteriores: naturaleza, familia y amigos
+    { id: 'IvjMgVS6kng', titulo: 'Río en el bosque', modulo: 'exteriores' },
+    { id: 'xNN7iTA57jM', titulo: 'Sonidos del bosque y pájaros', modulo: 'exteriores' },
+    { id: 'bNuGQ4ZxPfI', titulo: 'Jazz para cenar en familia o con amigos', modulo: 'exteriores' },
+    { id: '1fueZCTYkpA', titulo: 'Café de la mañana (lofi suave)', modulo: 'exteriores' }
   ];
   const MODULOS_MUSICA = [
     { id: 'cuerpo', nombre: '💪 Módulo del cuerpo' },
@@ -6131,4 +6151,4 @@ const CANCIONES = [
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V10.50 · App Metas Amables · 2026-10-03 14:55 ==== -->
+<!-- ==== Fin del index V10.53 · App Metas Amables · 2026-10-03 15:00 ==== -->
