@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V10.38 · App Metas Amables · 2026-10-03 13:41 ==== -->
+<!-- ==== index V10.39 · App Metas Amables · 2026-10-03 13:55 ==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -798,12 +798,11 @@
 .juego-btn b{display:block;font-size:1.02rem}.juego-btn small{display:block;font-size:.82rem;opacity:.8;margin-top:2px}
 .juego-btn-ico{font-size:2rem;line-height:1}
 .util-grid{display:grid;grid-template-columns:1fr;gap:14px;min-height:calc(100vh - 170px);grid-auto-rows:1fr}
-.util-card{display:flex;align-items:center;gap:14px;padding:16px;border:3px solid #101010;border-radius:20px;background:#F1ECFC;text-align:left;font:inherit;color:#101010;cursor:pointer;-webkit-tap-highlight-color:transparent}
-.util-card:nth-child(2){background:#EDE5FA}.util-card:nth-child(3){background:#F4EFE3}.util-card:nth-child(4){background:#E8E1F7}
+.util-card{display:flex;align-items:center;gap:14px;padding:16px;border:3px solid #101010;border-radius:20px;background:#E4DAF7;text-align:left;font:inherit;color:#101010;cursor:pointer;-webkit-tap-highlight-color:transparent}
+
 .util-dibujo{position:relative;flex:0 0 42%;display:flex;align-items:flex-end;justify-content:center;min-height:110px}
 .util-tx b{display:block;font-size:20px;font-family:Lora,serif}.util-tx small{display:block;font-size:14px;color:#4a4a4a;margin-top:4px}
 .util-burbuja{position:absolute;top:-6px;left:0;right:-10px;background:#fff;border:2px solid #101010;border-radius:14px;padding:4px 8px;font-size:12px;font-weight:700;z-index:1}
-.util-burbuja::before{content:"";position:absolute;left:-10px;top:-10px;width:12px;height:12px;background:repeating-linear-gradient(45deg,#101010 0 2px,transparent 2px 5px)}
 .util-mini-frase{display:flex;align-items:center;justify-content:center;width:100%;height:110px;border-radius:14px;border:2px solid #101010;background:linear-gradient(#2b2420,#d9480f);color:#fff;font-weight:700;font-size:14px;padding:6px;text-align:center}
 .frases-caja{display:flex;flex-direction:column;align-items:center;gap:12px}
 .frase-cv{width:100%;max-width:380px;height:auto;border-radius:20px;border:3px solid #101010;background:#F4EFE3}
@@ -814,20 +813,29 @@
 .frase-botones{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
 [data-vista="frases"] .btn-yes{background:#7B5FB8 !important;border:0 !important;border-radius:999px !important;padding:14px 26px !important;font-size:18px !important;font-weight:800 !important;color:#fff !important;box-shadow:0 3px 0 #4F3A86}
 .frase-botones .btn-yes{flex:1;min-width:140px}
-body:has([data-vista="utilidades"]),body:has([data-vista="frases"]),body:has([data-vista="habla"]),[data-vista="utilidades"],[data-vista="frases"],[data-vista="habla"]{background:#E8E1F7 !important}
+
 .habla-caja{display:flex;flex-direction:column;align-items:center;min-height:calc(100vh - 150px)}
 .habla-burbuja{position:relative;width:100%;min-height:120px;background:#fff;border:3px solid #101010;border-radius:22px;padding:14px 18px;margin-top:6px;box-sizing:border-box}
 .habla-burbuja p{margin:0;font-size:18px;line-height:1.4;color:#101010}
 .habla-burbuja::after{content:"";position:absolute;left:46%;bottom:-18px;width:26px;height:26px;background:#fff;border-right:3px solid #101010;border-bottom:3px solid #101010;transform:rotate(45deg)}
-.habla-burbuja::before{content:"";position:absolute;right:-16px;top:-14px;width:22px;height:22px;background:repeating-linear-gradient(45deg,#101010 0 3px,transparent 3px 7px);border-radius:4px}
-.habla-practi{width:min(62vw,240px);height:min(66vw,254px);margin-top:14px}
-.habla-tu{min-height:20px;margin:6px 0;font-size:14px;color:#4a3a6e;text-align:center}
-.habla-abajo{width:100%;margin-top:auto;background:#fff;border:3px solid #101010;border-radius:18px;padding:10px;box-sizing:border-box}
-.habla-abajo textarea{width:100%;box-sizing:border-box;border:0;outline:none;resize:none;font:inherit;font-size:17px;background:transparent}
-.habla-botones{display:flex;gap:8px;align-items:center;justify-content:flex-end;flex-wrap:wrap}
-.habla-voz{padding:8px 12px;border-radius:99px;border:2px solid #7B5FB8;background:#fff;color:#7B5FB8;font-weight:700;font-size:15px;cursor:pointer}
-.habla-enviar{padding:10px 22px;border-radius:99px;border:0;background:#7B5FB8;color:#fff;font-weight:800;font-size:17px;cursor:pointer;box-shadow:0 3px 0 #4F3A86}
-[data-vista="habla"] .btn-dictar{border-color:#7B5FB8 !important;color:#7B5FB8 !important}
+.habla-medio{position:relative;width:100%;display:flex;justify-content:center;margin-top:14px}
+.habla-practi{width:min(62vw,240px);height:min(66vw,254px);padding:0;border:0;background:none;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.habla-voz{position:absolute;right:0;bottom:6px;padding:8px 12px;border-radius:99px;border:2px solid #7B5FB8;background:#fff;color:#7B5FB8;font-weight:700;font-size:14px;cursor:pointer}
+.habla-quedan{margin:4px 0 2px;font-size:14px;font-weight:700;color:#7B5FB8;text-align:center}
+.habla-ver{margin:4px 0 10px;padding:6px 14px;border-radius:99px;border:2px solid #7B5FB8;background:#fff;color:#7B5FB8;font-weight:700;font-size:14px;cursor:pointer}
+.habla-abajo{width:100%;margin-top:auto;display:flex;align-items:flex-end;gap:8px;background:#fff;border:3px solid #101010;border-radius:18px;padding:10px;box-sizing:border-box}
+.habla-abajo textarea{flex:1;min-width:0;box-sizing:border-box;border:0;outline:none;resize:none;font:inherit;font-size:17px;background:transparent}
+.habla-botones{display:flex;gap:8px;align-items:center;flex:0 0 auto}
+.habla-mic{width:46px;height:46px;flex:0 0 46px;display:flex;align-items:center;justify-content:center;padding:0;border-radius:50%;border:2px solid #7B5FB8;background:#fff;color:#7B5FB8;cursor:pointer}
+.habla-mic.grabando{background:#E39A9A;border-color:#B94A3A;color:#fff}
+.habla-enviar{height:46px;padding:0 20px;border-radius:99px;border:0;background:#7B5FB8;color:#fff;font-weight:800;font-size:17px;cursor:pointer;box-shadow:0 3px 0 #4F3A86}
+.habla-lista-fondo{position:fixed;inset:0;z-index:9000;background:rgba(0,0,0,.45);display:flex;align-items:flex-end;justify-content:center}
+.habla-lista{width:100%;max-width:520px;max-height:80vh;display:flex;flex-direction:column;background:#fff;border-radius:20px 20px 0 0;border:3px solid #101010;border-bottom:0}
+.habla-lista-cab{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border-bottom:2px solid #eee;font-size:17px}
+.habla-cerrar{border:0;background:none;font-size:22px;cursor:pointer}
+.habla-lista-cuerpo{overflow:auto;padding:10px 16px 24px}
+.habla-lista-cuerpo p{margin:0 0 10px;line-height:1.4}
+.hl-yo b{color:#4F7FB5}.hl-practi b{color:#7B5FB8}
 .juego-overlay{position:fixed;inset:0;z-index:9999;background:#111;-webkit-tap-highlight-color:transparent;display:flex;flex-direction:column}
 .juego-overlay iframe{flex:1;width:100%;border:0;display:block}
 .juego-cerrar{position:absolute;top:calc(12px + env(safe-area-inset-top));left:12px;z-index:2}
@@ -1450,7 +1458,7 @@ body:has([data-vista="utilidades"]),body:has([data-vista="frases"]),body:has([da
   }
 
 
-  const APP_VERSION = 'V10.38';
+  const APP_VERSION = 'V10.39';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -3188,8 +3196,18 @@ body:has([data-vista="utilidades"]),body:has([data-vista="frases"]),body:has([da
 
   // ===== Habla con Prácti: Prácti arriba con su bocadillo, la pregunta abajo (escrita o dictada) =====
   const HABLA_SALUDO = 'Hola, ¿en qué te ayudo? Puedes hablarme usando el micrófono o escribiendo en el recuadro de abajo.';
-  const habla = { historial: [], anim: null, esperando: false, voz: true };
+  const HABLA_MAX_DIA = 40;   // el mismo límite que en el Worker
+  const habla = { historial: [], anim: null, esperando: false, voz: true, ultima: '' };
   try { habla.voz = localStorage.getItem('habla_voz') !== '0'; } catch(e){}
+  // Conversación de hoy (se guarda en este móvil y se borra al cambiar de día)
+  const hablaClave = () => 'habla_' + (state.me || '') + '_' + new Date().toISOString().slice(0, 10);
+  function hablaCargar(){
+    try { const d = JSON.parse(localStorage.getItem(hablaClave()) || 'null'); if(d){ habla.historial = d.historial || []; habla.quedan = d.quedan; } else { habla.historial = []; habla.quedan = HABLA_MAX_DIA; } }
+    catch(e){ habla.historial = []; habla.quedan = HABLA_MAX_DIA; }
+  }
+  function hablaGuardar(){ try { localStorage.setItem(hablaClave(), JSON.stringify({ historial: habla.historial, quedan: habla.quedan })); } catch(e){} }
+  const textoQuedan = () => habla.quedan > 0 ? 'Te quedan ' + habla.quedan + (habla.quedan === 1 ? ' pregunta' : ' preguntas') + ' hoy' : 'Por hoy no quedan preguntas';
+  const ICONO_MIC = '<svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3" fill="currentColor"/><path d="M6 11a6 6 0 0 0 12 0M12 17v4M9 21h6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';
 
   function hablaBoca(mover){
     if(!habla.anim) return;
@@ -3199,6 +3217,7 @@ body:has([data-vista="utilidades"]),body:has([data-vista="frases"]),body:has([da
   // Escribe la respuesta poco a poco y mueve la boca mientras habla (con voz, hasta que termina la voz)
   function hablaDecir(texto){
     const caja = app.querySelector('#hablaTexto'); if(!caja) return;
+    habla.ultima = texto;
     const turno = (habla.turno = (habla.turno || 0) + 1);
     caja.textContent = ''; hablaBoca(true);
     let i = 0, escrito = false, hablado = !habla.voz;
@@ -3225,42 +3244,87 @@ body:has([data-vista="utilidades"]),body:has([data-vista="frases"]),body:has([da
     const campo = app.querySelector('#hablaPregunta'); if(!campo || habla.esperando) return;
     const mensaje = campo.value.trim(); if(!mensaje) return;
     if(dictadoActivo){ try { dictadoActivo.stop(); } catch(e){} }
+    if(habla.quedan <= 0){ hablaDecir('Por hoy ya hemos hablado mucho 😊. Mañana seguimos, ¿vale?'); return; }
     campo.value = ''; habla.esperando = true;
-    app.querySelector('#hablaTuPregunta').textContent = '🙋 ' + mensaje;
     app.querySelector('#hablaTexto').textContent = '…'; hablaBoca(false);
-    let respuesta;
-    try { respuesta = (await api('/habla', { mensaje, historial: habla.historial })).respuesta; }
-    catch(e){ respuesta = 'Uy, no me llega bien la conexión. Prueba otra vez en un momento.'; }
+    let r = {};
+    try { r = await api('/habla', { mensaje, historial: habla.historial.slice(-8) }); }
+    catch(e){ r = { respuesta: 'Uy, no me llega bien la conexión. Prueba otra vez en un momento.' }; }
     habla.esperando = false;
+    const respuesta = r.respuesta || 'Uy, no te he entendido bien. ¿Me lo cuentas de otra forma?';
+    habla.quedan = Math.max(0, Math.min(habla.quedan - 1, typeof r.quedan === 'number' ? r.quedan : HABLA_MAX_DIA));
     habla.historial.push({ de: 'yo', texto: mensaje }, { de: 'practi', texto: respuesta });
-    habla.historial = habla.historial.slice(-12);
-    if(state.view === 'habla') hablaDecir(respuesta);
+    hablaGuardar();
+    if(state.view !== 'habla') return;
+    const q = app.querySelector('#hablaQuedan'); if(q) q.textContent = textoQuedan();
+    hablaDecir(respuesta);
+  }
+
+  // Listado de la conversación de hoy: «Tú: …» / «Prácti: …»
+  function hablaVerConversacion(){
+    const fondo = el(`<div class="habla-lista-fondo"><div class="habla-lista">
+        <div class="habla-lista-cab"><b>Conversación de hoy</b><button type="button" class="habla-cerrar" aria-label="Cerrar">✕</button></div>
+        <div class="habla-lista-cuerpo">${habla.historial.length
+          ? habla.historial.map(m => '<p class="' + (m.de === 'yo' ? 'hl-yo' : 'hl-practi') + '"><b>' + (m.de === 'yo' ? 'Tú' : 'Prácti') + ':</b> ' + escapeAttr(m.texto) + '</p>').join('')
+          : '<p style="color:#666">Todavía no le has preguntado nada hoy.</p>'}</div>
+      </div></div>`).firstElementChild;
+    document.body.appendChild(fondo);
+    const cerrar = () => fondo.remove();
+    fondo.querySelector('.habla-cerrar').onclick = cerrar;
+    fondo.onclick = ev => { if(ev.target === fondo) cerrar(); };
+    const cuerpo = fondo.querySelector('.habla-lista-cuerpo'); cuerpo.scrollTop = cuerpo.scrollHeight;
+  }
+
+  // Micrófono: dicta en el recuadro (el símbolo de micrófono de siempre, al lado de Enviar)
+  function hablaMicrofono(boton, campo){
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if(!SR){ boton.hidden = true; return; }
+    const pintar = on => boton.classList.toggle('grabando', on);
+    boton.onclick = () => {
+      if(dictadoActivo){ try { dictadoActivo.stop(); } catch(e){} return; }
+      const rec = new SR();
+      rec.lang = 'es-ES'; rec.continuous = true; rec.interimResults = false;
+      rec.onresult = ev => {
+        for(let i = ev.resultIndex; i < ev.results.length; i++){
+          if(ev.results[i].isFinal){ const t = ev.results[i][0].transcript.trim(); if(t) campo.value = (campo.value ? campo.value.replace(/\s+$/, '') + ' ' : '') + t; }
+        }
+      };
+      rec.onend = rec.onerror = () => { dictadoActivo = null; pintar(false); };
+      try { rec.start(); dictadoActivo = rec; pintar(true); } catch(e){ dictadoActivo = null; }
+    };
   }
 
   function renderHabla(){
     renderBackTopbar('💬 Habla con Prácti');
     app.querySelector('#btnVolver').onclick = () => { try { window.speechSynthesis.cancel(); } catch(e){} habla.turno = (habla.turno || 0) + 1; state.view = 'utilidades'; window.scrollTo(0,0); render(); };
+    hablaCargar();
     const ultima = habla.historial.length ? habla.historial[habla.historial.length - 1].texto : HABLA_SALUDO;
     const caja = el(`<div class="habla-caja">
         <div class="habla-burbuja"><p id="hablaTexto"></p></div>
-        <div class="habla-practi" id="hablaPracti"></div>
-        <p class="habla-tu" id="hablaTuPregunta"></p>
+        <div class="habla-medio">
+          <button type="button" class="habla-practi" id="hablaPracti" aria-label="Prácti: tócale para que repita la respuesta"></button>
+          <button type="button" class="habla-voz" id="hablaVoz"></button>
+        </div>
+        <p class="habla-quedan" id="hablaQuedan"></p>
+        <button type="button" class="habla-ver" id="hablaVer">📜 Ver la conversación de hoy</button>
         <div class="habla-abajo">
           <textarea id="hablaPregunta" rows="2" placeholder="Escribe aquí tu pregunta…"></textarea>
-          <div class="habla-botones" id="hablaBotones">
-            <button type="button" class="habla-voz" id="hablaVoz"></button>
+          <div class="habla-botones">
+            <button type="button" class="habla-mic" id="hablaMic" aria-label="Dictar con el micrófono">${ICONO_MIC}</button>
             <button type="button" class="habla-enviar" id="hablaEnviar">Enviar</button>
           </div>
         </div>
       </div>`).firstElementChild;
     app.appendChild(caja);
     const campo = caja.querySelector('#hablaPregunta');
-    const mic = botonDictar(campo);
-    if(mic){ mic.style.margin = '0'; caja.querySelector('#hablaBotones').prepend(mic); }
+    caja.querySelector('#hablaQuedan').textContent = textoQuedan();
+    hablaMicrofono(caja.querySelector('#hablaMic'), campo);
     const voz = caja.querySelector('#hablaVoz');
-    const pintaVoz = () => { voz.textContent = habla.voz ? '🔊 Voz' : '🔇 Voz'; };
+    const pintaVoz = () => { voz.textContent = habla.voz ? '🔊 Voz: sí' : '🔇 Voz: no'; };
     pintaVoz();
     voz.onclick = () => { habla.voz = !habla.voz; try { localStorage.setItem('habla_voz', habla.voz ? '1' : '0'); } catch(e){} if(!habla.voz){ try { window.speechSynthesis.cancel(); } catch(e){} } pintaVoz(); };
+    caja.querySelector('#hablaPracti').onclick = () => { if(habla.ultima && !habla.esperando) hablaDecir(habla.ultima); };
+    caja.querySelector('#hablaVer').onclick = hablaVerConversacion;
     caja.querySelector('#hablaEnviar').onclick = hablaEnviar;
     campo.addEventListener('keydown', ev => { if(ev.key === 'Enter' && !ev.shiftKey){ ev.preventDefault(); hablaEnviar(); } });
     // Prácti hablando (animación propia: se mueve solo mientras habla)
@@ -3271,7 +3335,7 @@ body:has([data-vista="utilidades"]),body:has([data-vista="frases"]),body:has([da
       habla.anim.goToAndStop(0, true);
       hablaDecir(ultima);
     });
-    if(!window.lottie && !window.bodymovin) caja.querySelector('#hablaTexto').textContent = ultima;
+    if(!window.lottie && !window.bodymovin){ habla.ultima = ultima; caja.querySelector('#hablaTexto').textContent = ultima; }
   }
 
   function irAlPanel(){
@@ -5886,4 +5950,4 @@ body:has([data-vista="utilidades"]),body:has([data-vista="frases"]),body:has([da
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V10.38 · App Metas Amables · 2026-10-03 13:41 ==== -->
+<!-- ==== Fin del index V10.39 · App Metas Amables · 2026-10-03 13:55 ==== -->
