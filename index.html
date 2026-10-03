@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V10.54 · App Metas Amables · 2026-10-03 15:18 ==== -->
+<!-- ==== index V10.55 · App Metas Amables · 2026-10-03 16:17 ==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1498,7 +1498,7 @@
   }
 
 
-  const APP_VERSION = 'V10.54';
+  const APP_VERSION = 'V10.55';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -3322,7 +3322,15 @@
       c.plan = ({ gratis: 'Libre', libre: 'Libre', guias: 'Guías', sesiones: 'Guías + Sesiones' })[state.plan] || String(state.plan || '');
       c.grupo = (state.groups && state.groups[state.me]) || '';
       c.proximaSesion = tienePlan('sesiones') && typeof textoProximaSesion === 'function' ? (textoProximaSesion() || '') : '';
-      c.guia = String(state.guiaTexto || '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 2500);
+      c.guia = String(state.guiaTexto || '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 9000);
+      // Identidad y cómo va la semana (último registro)
+      const lista = (state.checkins && state.checkins[state.me]) || [];
+      const conId = lista.slice().reverse().find(x => x.identidad && x.identidad.trim()); c.identidad = conId ? conId.identidad : '';
+      const ult = lista[lista.length - 1];
+      if(ult) c.semana = 'semana ' + (ult.week || '') + (ult.diasHechos ? '; días hechos: ' + ult.diasHechos : '') + (ult.compromisoVeces != null ? '; se comprometió a ' + ult.compromisoVeces + ' veces' : '') + (ult.vecesRealizadas != null ? '; lleva ' + ult.vecesRealizadas : '') + (ult.estadoSemana ? '; estado: ' + ult.estadoSemana : '');
+      // Motivación del formulario de la meta (si lo rellenó desde la app)
+      const df = (state.gamifica && state.gamifica.datosFormulario) || {};
+      if(df.motivacion) c.motivacion = df.motivacion;
     } catch(e){}
     return c;
   }
@@ -6162,4 +6170,4 @@
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V10.54 · App Metas Amables · 2026-10-03 15:18 ==== -->
+<!-- ==== Fin del index V10.55 · App Metas Amables · 2026-10-03 16:17 ==== -->
