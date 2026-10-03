@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V10.33 · App Metas Amables · 2026-10-02 23:10 ==== -->
+<!-- ==== index V10.34 · App Metas Amables · 2026-10-03 11:51 ==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -797,6 +797,21 @@
 .juego-btn{display:flex;align-items:center;gap:12px;width:100%;margin-top:18px;padding:14px 16px;border:3px solid #111;border-radius:16px;background:#F4EFE3;color:#111;text-align:left;cursor:pointer;font:inherit;-webkit-tap-highlight-color:transparent}
 .juego-btn b{display:block;font-size:1.02rem}.juego-btn small{display:block;font-size:.82rem;opacity:.8;margin-top:2px}
 .juego-btn-ico{font-size:2rem;line-height:1}
+.util-grid{display:grid;grid-template-columns:1fr;gap:14px;min-height:calc(100vh - 170px);grid-auto-rows:1fr}
+.util-card{display:flex;align-items:center;gap:14px;padding:16px;border:3px solid #101010;border-radius:20px;background:#F1ECFC;text-align:left;font:inherit;color:#101010;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.util-card:nth-child(2){background:#EDE5FA}.util-card:nth-child(3){background:#F4EFE3}.util-card:nth-child(4){background:#E8E1F7}
+.util-dibujo{position:relative;flex:0 0 42%;display:flex;align-items:flex-end;justify-content:center;min-height:110px}
+.util-tx b{display:block;font-size:20px;font-family:Lora,serif}.util-tx small{display:block;font-size:14px;color:#4a4a4a;margin-top:4px}
+.util-burbuja{position:absolute;top:-6px;left:0;right:-10px;background:#fff;border:2px solid #101010;border-radius:14px;padding:4px 8px;font-size:12px;font-weight:700;z-index:1}
+.util-burbuja::before{content:"";position:absolute;left:-10px;top:-10px;width:12px;height:12px;background:repeating-linear-gradient(45deg,#101010 0 2px,transparent 2px 5px)}
+.util-mini-frase{display:flex;align-items:center;justify-content:center;width:100%;height:110px;border-radius:14px;border:2px solid #101010;background:linear-gradient(#2b2420,#d9480f);color:#fff;font-weight:700;font-size:14px;padding:6px;text-align:center}
+.frases-caja{display:flex;flex-direction:column;align-items:center;gap:12px}
+.frase-cv{width:100%;max-width:380px;height:auto;border-radius:20px;border:3px solid #101010;background:#F4EFE3}
+.frase-fondos{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.frase-fondo{padding:8px 12px;border-radius:999px;border:2px solid #101010;background:#fff;font:inherit;font-size:14px;cursor:pointer;color:#101010}
+.frase-fondo.elegido{background:#7B5FB8;color:#fff;border-color:#7B5FB8}
+.frase-botones{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+[data-vista="frases"] .btn-yes{background:#7B5FB8 !important;border-color:#7B5FB8 !important}
 .juego-overlay{position:fixed;inset:0;z-index:9999;background:#111;-webkit-tap-highlight-color:transparent;display:flex;flex-direction:column}
 .juego-overlay iframe{flex:1;width:100%;border:0;display:block}
 .juego-cerrar{position:absolute;top:calc(12px + env(safe-area-inset-top));left:12px;z-index:2}
@@ -840,7 +855,7 @@
   [data-vista="formMeta"] .back-btn, [data-sub="s4"] .back-btn{ background:#C9942D !important; border-color:#C9942D !important; color:#fff !important; }
   [data-vista="practicas"] .back-btn, [data-sub="s3"] .back-btn{ background:#4F7FB5 !important; border-color:#4F7FB5 !important; color:#fff !important; }
   [data-vista="checkin"] .back-btn, [data-vista="calendar"] .back-btn, [data-vista="sesionesCal"] .back-btn, [data-vista="situacion"] .back-btn, [data-vista="group"] .back-btn, [data-sub="s1"] .back-btn, [data-sub="s2"] .back-btn{ background:#6B9362 !important; border-color:#6B9362 !important; color:#fff !important; }
-  [data-sub="s5"] .back-btn{ background:#7B5FB8 !important; border-color:#7B5FB8 !important; color:#fff !important; }
+  [data-vista="utilidades"] .back-btn,[data-vista="frases"] .back-btn,[data-sub="s5"] .back-btn{ background:#7B5FB8 !important; border-color:#7B5FB8 !important; color:#fff !important; }
   [data-vista="formMeta"] .btn-dictar{ border-color:#C9942D !important; color:#7A5410 !important; }
   .dias-fila{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px}
   .dia-btn{min-width:0;height:54px;box-sizing:border-box;border:2px solid #d8d3c6;border-radius:12px;background:#FCFCF9;font-family:'Karla',sans-serif;font-size:15px;font-weight:700;color:var(--ink);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;padding:0;transition:transform .12s,background .2s}
@@ -1419,7 +1434,7 @@
   }
 
 
-  const APP_VERSION = 'V10.33';
+  const APP_VERSION = 'V10.34';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -2941,7 +2956,156 @@
     return !!(formularioEnviado() || state.guiaTexto || lista.some(c => c.metaTrim && c.metaTrim.trim()));
   }
 
+  // ===== Utilidades: Habla con Prácti, Formación, Frases motivadoras y Música =====
+  // Recuadros grandes que llenan la pantalla. Formación vive aquí (antes estaba en el inicio).
+  const WEB_METAS = 'https://metasamables.club';
+  const FRASES_RESERVA = ['No se trata de no fallar, sino de volver.', 'Lo pequeño y sostenido pesa más que lo grande y puntual.',
+    'Un paso pequeño hoy vale más que un plan enorme mañana.', 'Sé amable contigo: el camino es largo y vas bien.',
+    'Recuerda por qué empezaste.'];
+  // Fondos de las frases. «foto» se rellena cuando Gustavo pase las imágenes (ruta en el repositorio)
+  const FONDOS_FRASE = [
+    { id:'practi', nombre:'🏠 Casa de Prácti', foto:'' },
+    { id:'fuego', nombre:'🔥 Fuego', foto:'' },
+    { id:'chimenea', nombre:'🪵 Chimenea', foto:'' },
+    { id:'playa', nombre:'🌊 Playa', foto:'' },
+    { id:'aire', nombre:'🌬️ Aire', foto:'' }
+  ];
+  const utilEstado = { frases:null, i:0, fondo:'practi' };
+
+  function iconoLlave(){
+    return '<svg class="ciclo-svg" viewBox="0 0 48 48" aria-hidden="true"><path d="M9 39 L27 21 A10 10 0 1 1 31 27 L13 43 Q9 44 7 41 Q6 40 9 39 Z" fill="#DCCFF5" stroke="#101010" stroke-width="2.4" stroke-linejoin="round"/>'
+      + '<path d="M33 9 L29 13 L31 19 L37 17 L41 13" fill="#FBF8F1" stroke="#101010" stroke-width="2.2" stroke-linejoin="round"/>'
+      + '<text x="20" y="37" text-anchor="middle" font-family="Karla,Arial,sans-serif" font-size="13" font-weight="800" fill="#101010" transform="rotate(-45 20 33)">D</text></svg>';
+  }
+
+  function renderUtilidades(){
+    renderBackTopbar('🔧 Utilidades');
+    const caja = document.createElement('div');
+    caja.className = 'util-grid';
+    const tarjeta = (id, titulo, sub, dibujo) => '<button type="button" class="util-card" data-util="' + id + '"><span class="util-dibujo">' + dibujo + '</span><span class="util-tx"><b>' + titulo + '</b><small>' + sub + '</small></span></button>';
+    caja.innerHTML =
+        tarjeta('habla', 'Habla con Prácti', 'Muy pronto: pregúntale lo que quieras', '<span class="util-burbuja">¡Hola! ¿En qué te ayudo?</span>' + practiHTML('saludo', '🦉', 84))
+      + tarjeta('formacion', 'Formación', 'Libro, cuadrantes y módulos', practiHTML('formacion', '🦉', 90))
+      + tarjeta('frases', 'Frases motivadoras', 'Elige un fondo y compártela', '<span class="util-mini-frase">«Hoy también cuenta»</span>')
+      + tarjeta('musica', 'Música motivacional', 'Muy pronto', '<span style="font-size:44px">🎵</span>');
+    app.appendChild(caja);
+    try { activarPracti(caja); } catch(e){}
+    caja.querySelectorAll('.util-card').forEach(b => b.onclick = () => {
+      const u = b.getAttribute('data-util');
+      if(u === 'formacion'){ state.view = 'panel'; state.panelSub = 's5'; state.volverUtil = true; window.scrollTo(0,0); render(); return; }
+      if(u === 'frases'){ state.view = 'frases'; window.scrollTo(0,0); render(); return; }
+      alert(u === 'habla' ? 'Muy pronto podrás hablar con Prácti aquí. 🦉' : 'Muy pronto tendrás aquí música para motivarte. 🎵');
+    });
+  }
+
+  // --- Dibujo de los fondos en un canvas (sirve para verlo y para compartirlo como imagen) ---
+  function pintarFondo(x, W, H, id){
+    const g = (c1, c2) => { const gr = x.createLinearGradient(0, 0, 0, H); gr.addColorStop(0, c1); gr.addColorStop(1, c2); return gr; };
+    if(id === 'fuego'){ x.fillStyle = g('#2a0d05', '#d9480f'); x.fillRect(0,0,W,H);
+      for(let i=0;i<40;i++){ x.fillStyle='rgba(255,'+(140+i*2)+',40,0.08)'; x.beginPath(); x.ellipse(W/2+Math.sin(i)*W*0.25, H*0.95, W*0.3, H*0.08*(1+i/10), 0, 0, 7); x.fill(); } return; }
+    if(id === 'chimenea'){ x.fillStyle = g('#2b2420', '#4a3a2e'); x.fillRect(0,0,W,H);
+      x.fillStyle='#5b4636'; x.fillRect(W*0.2,H*0.55,W*0.6,H*0.35); x.fillStyle='#1c1410'; x.fillRect(W*0.3,H*0.63,W*0.4,H*0.27);
+      const f=x.createRadialGradient(W/2,H*0.86,5,W/2,H*0.86,W*0.25); f.addColorStop(0,'#ffd27a'); f.addColorStop(1,'rgba(255,120,30,0)'); x.fillStyle=f; x.fillRect(0,H*0.5,W,H*0.5); return; }
+    if(id === 'playa'){ x.fillStyle = g('#8ecae6', '#f6e7c1'); x.fillRect(0,0,W,H);
+      x.fillStyle='#219ebc'; x.fillRect(0,H*0.55,W,H*0.18); x.fillStyle='rgba(255,255,255,.6)'; x.fillRect(0,H*0.72,W,6);
+      x.fillStyle='#ffd166'; x.beginPath(); x.arc(W*0.78,H*0.2,W*0.08,0,7); x.fill(); return; }
+    if(id === 'aire'){ x.fillStyle = g('#a8c8f0', '#eef4fb'); x.fillRect(0,0,W,H);
+      x.fillStyle='rgba(255,255,255,.85)'; [[.25,.25,.16],[.7,.4,.2],[.35,.75,.18]].forEach(n=>{ x.beginPath(); x.ellipse(W*n[0],H*n[1],W*n[2],W*n[2]*0.4,0,0,7); x.fill(); }); return; }
+    // Casa de Prácti: pared crema, ventana, mesa y sillas, con el mismo trazo negro de los iconos
+    x.fillStyle = '#F4EFE3'; x.fillRect(0,0,W,H); x.fillStyle='#E2C79A'; x.fillRect(0,H*0.78,W,H*0.22);
+    x.lineWidth = Math.max(3, W/180); x.strokeStyle = '#101010';
+    x.fillStyle='#C6DBF2'; x.fillRect(W*0.12,H*0.1,W*0.3,H*0.25); x.strokeRect(W*0.12,H*0.1,W*0.3,H*0.25);
+    x.beginPath(); x.moveTo(W*0.27,H*0.1); x.lineTo(W*0.27,H*0.35); x.moveTo(W*0.12,H*0.225); x.lineTo(W*0.42,H*0.225); x.stroke();
+    x.beginPath(); x.moveTo(0,H*0.78); x.lineTo(W,H*0.78); x.stroke();
+    x.fillStyle='#CFE3C0'; x.fillRect(W*0.5,H*0.66,W*0.38,H*0.035); x.strokeRect(W*0.5,H*0.66,W*0.38,H*0.035);
+    x.beginPath(); x.moveTo(W*0.54,H*0.695); x.lineTo(W*0.54,H*0.86); x.moveTo(W*0.84,H*0.695); x.lineTo(W*0.84,H*0.86); x.stroke();
+    x.fillStyle='#F7C6C6'; [[0.9,1],[0.44,-1]].forEach(([cx,s])=>{ x.fillRect(W*cx-W*0.04,H*0.72,W*0.08,H*0.02); x.strokeRect(W*cx-W*0.04,H*0.72,W*0.08,H*0.02);
+      x.beginPath(); x.moveTo(W*cx+s*W*0.04,H*0.72); x.lineTo(W*cx+s*W*0.04,H*0.6); x.moveTo(W*cx-W*0.03,H*0.74); x.lineTo(W*cx-W*0.03,H*0.86); x.moveTo(W*cx+W*0.03,H*0.74); x.lineTo(W*cx+W*0.03,H*0.86); x.stroke(); });
+  }
+
+  function partirLineas(x, texto, ancho){
+    const out = []; let l = '';
+    texto.split(/\s+/).forEach(p => { const t = l ? l + ' ' + p : p; if(x.measureText(t).width > ancho && l){ out.push(l); l = p; } else l = t; });
+    if(l) out.push(l); return out;
+  }
+
+  // Dibuja la tarjeta completa: fondo + frase + botón «metasamables.club»
+  async function dibujarTarjetaFrase(cv, frase, fondoId){
+    const W = cv.width, H = cv.height, x = cv.getContext('2d');
+    const f = FONDOS_FRASE.find(z => z.id === fondoId) || FONDOS_FRASE[0];
+    let foto = null;
+    if(f.foto){ foto = await new Promise(r => { const im = new Image(); im.crossOrigin = 'anonymous'; im.onload = () => r(im); im.onerror = () => r(null); im.src = f.foto; }); }
+    if(foto){ const s = Math.max(W/foto.width, H/foto.height); x.drawImage(foto, (W-foto.width*s)/2, (H-foto.height*s)/2, foto.width*s, foto.height*s); }
+    else pintarFondo(x, W, H, fondoId);
+    const claro = fondoId === 'practi' && !foto;
+    if(!claro){ x.fillStyle = 'rgba(0,0,0,0.28)'; x.fillRect(0,0,W,H); }
+    if(fondoId === 'practi' && !foto){
+      const im = await new Promise(r => { const i = new Image(); i.onload = () => r(i); i.onerror = () => r(null); i.src = PRACTI_PENSANDO; });
+      if(im){ const h = H*0.3, w = im.width*h/im.height; x.drawImage(im, W*0.06, H*0.86 - h, w, h); }
+    }
+    // Bocadillo (casa de Prácti) o texto suelto (fotos)
+    const tam = Math.round(W/12); x.font = '600 ' + tam + 'px Fredoka, Karla, sans-serif'; x.textAlign = 'center';
+    const lineas = partirLineas(x, frase, W*0.78), alto = lineas.length * tam * 1.25, y0 = H*0.42 - alto/2;
+    if(claro){
+      x.fillStyle = '#fff'; x.strokeStyle = '#101010'; x.lineWidth = Math.max(3, W/150);
+      const bx = W*0.06, by = y0 - tam*0.9, bw = W*0.88, bh = alto + tam*0.9;
+      x.beginPath(); x.roundRect ? x.roundRect(bx, by, bw, bh, 28) : x.rect(bx, by, bw, bh); x.fill(); x.stroke();
+      x.beginPath(); x.moveTo(W*0.2, by+bh); x.lineTo(W*0.17, by+bh+tam); x.lineTo(W*0.28, by+bh); x.fill(); x.stroke();
+      x.fillStyle = '#fff'; x.fillRect(W*0.2+2, by+bh-x.lineWidth, W*0.08-4, x.lineWidth*1.5);
+      // rayitas de «hablando»
+      x.beginPath(); [[-1,-1],[0,-1.3],[1,-1]].forEach(([a,b]) => { x.moveTo(W*0.14+a*tam*0.4, by-tam*0.25); x.lineTo(W*0.14+a*tam*0.9, by+b*tam*0.6); }); x.stroke();
+      x.fillStyle = '#101010';
+    } else { x.fillStyle = '#fff'; x.shadowColor = 'rgba(0,0,0,.5)'; x.shadowBlur = 12; }
+    lineas.forEach((l, i) => x.fillText(l, W/2, y0 + i*tam*1.25));
+    x.shadowBlur = 0;
+    // Botón con el enlace a la web
+    const et = '🌱 metasamables.club'; x.font = '600 ' + Math.round(W/26) + 'px Fredoka, Karla, sans-serif';
+    const ew = x.measureText(et).width + W*0.08, eh = W/14, ex = (W-ew)/2, ey = H*0.9;
+    x.fillStyle = 'rgba(255,255,255,0.85)'; x.beginPath(); x.roundRect ? x.roundRect(ex, ey, ew, eh, eh/2) : x.rect(ex, ey, ew, eh); x.fill();
+    x.fillStyle = '#101010'; x.textBaseline = 'middle'; x.fillText(et, W/2, ey + eh/2); x.textBaseline = 'alphabetic';
+  }
+
+  async function cargarFrases(){
+    if(utilEstado.frases) return utilEstado.frases;
+    try { const r = await fetch(API_URL + '/frases'); const d = await r.json(); if(d.frases && d.frases.length) utilEstado.frases = d.frases.map(f => f.frase); } catch(e){}
+    if(!utilEstado.frases) utilEstado.frases = FRASES_RESERVA.slice();
+    utilEstado.i = Math.floor(Math.random() * utilEstado.frases.length);
+    return utilEstado.frases;
+  }
+
+  async function renderFrases(){
+    renderBackTopbar('💬 Frases motivadoras');
+    app.querySelector('#btnVolver').onclick = () => { state.view = 'utilidades'; window.scrollTo(0,0); render(); };
+    const caja = document.createElement('div');
+    caja.className = 'frases-caja';
+    caja.innerHTML = '<canvas class="frase-cv" width="900" height="1600"></canvas>'
+      + '<div class="frase-fondos">' + FONDOS_FRASE.map(f => '<button type="button" class="frase-fondo' + (f.id === utilEstado.fondo ? ' elegido' : '') + '" data-fondo="' + f.id + '">' + f.nombre + '</button>').join('') + '</div>'
+      + '<div class="frase-botones"><button type="button" class="btn-yes" id="fraseOtra">🔀 Otra frase</button><button type="button" class="btn-yes" id="fraseCompartir">📤 Compartir</button></div>';
+    app.appendChild(caja);
+    const cv = caja.querySelector('canvas');
+    const lista = await cargarFrases();
+    const pinta = () => dibujarTarjetaFrase(cv, lista[utilEstado.i % lista.length], utilEstado.fondo);
+    pinta();
+    caja.querySelectorAll('.frase-fondo').forEach(b => b.onclick = () => {
+      utilEstado.fondo = b.getAttribute('data-fondo');
+      caja.querySelectorAll('.frase-fondo').forEach(z => z.classList.toggle('elegido', z === b)); pinta(); });
+    caja.querySelector('#fraseOtra').onclick = () => { utilEstado.i = (utilEstado.i + 1 + Math.floor(Math.random() * Math.max(1, lista.length - 1))) % lista.length; pinta(); };
+    caja.querySelector('#fraseCompartir').onclick = async () => {
+      const frase = lista[utilEstado.i % lista.length];
+      const texto = '«' + frase + '»\n\nMetas Amables 🌱 ' + WEB_METAS;
+      try {
+        const blob = await new Promise(r => cv.toBlob(r, 'image/png'));
+        const archivo = new File([blob], 'frase-metas-amables.png', { type: 'image/png' });
+        if(navigator.canShare && navigator.canShare({ files: [archivo] })){ await navigator.share({ files: [archivo], text: texto }); return; }
+        if(navigator.share){ await navigator.share({ text: texto, url: WEB_METAS }); return; }
+        const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'frase-metas-amables.png'; a.click();
+      } catch(e){ if(e && e.name === 'AbortError') return; try { await navigator.clipboard.writeText(texto); alert('Frase copiada. Pégala donde quieras.'); } catch(_){} }
+    };
+  }
+
   function irAlPanel(){
+    if(state.volverUtil && state.view === 'panel' && state.panelSub === 's5'){ state.volverUtil = false; state.panelSub = null; state.view = 'utilidades'; window.scrollTo(0,0); render(); return; }
+    state.volverUtil = false;
     state.view = 'panel'; state.panelSub = null; state.prevView = 'panel'; state.regPaso = null;
     window.scrollTo(0,0); render();
   }
@@ -3544,6 +3708,8 @@
     if(state.view === 'ajustes'){ renderAjustesView(); if(state.menuOpen) renderMenuOverlay(); return; }
     if(state.view === 'facturacion'){ renderFacturacionView(); if(state.menuOpen) renderMenuOverlay(); return; }
     if(state.view === 'practicas'){ renderPracticasView(); if(state.menuOpen) renderMenuOverlay(); return; }
+    if(state.view === 'utilidades'){ renderUtilidades(); if(state.menuOpen) renderMenuOverlay(); return; }
+    if(state.view === 'frases'){ renderFrases(); if(state.menuOpen) renderMenuOverlay(); return; }
 
     if(state.menuOpen){
       renderMenuOverlay();
@@ -3960,11 +4126,12 @@
                   ? 'Registro de compromiso cada lunes y sesiones en grupo cada 15 días. Plan Guías + Sesiones'
                   : '✍️ Registro ' + (registroPendienteEstaSemana() ? 'pendiente: aún no has registrado esta semana' : textoProximoLunes())
                     + (textoProximaSesion() ? '<br><span style="font-weight:700">📅 ' + textoProximaSesion() + '</span>' : ''), '', sinSesiones)
-          + '<button type="button" class="opcion-inicio ciclo-formacion" data-ir="s5"><span class="ciclo-icono">' + iconoCiclo('gorro') + '</span><span class="opcion-tx"><b>Formación</b><small>Libro, cuadrantes y módulos</small></span><span class="opcion-flecha">›</span></button>';
+          + '<button type="button" class="opcion-inicio ciclo-formacion" data-ir="util"><span class="ciclo-icono">' + iconoLlave() + '</span><span class="opcion-tx"><b>Utilidades</b><small>Habla con Prácti, formación, frases y música</small></span><span class="opcion-flecha">›</span></button>';
         app.appendChild(opciones);
         opciones.querySelectorAll('.opcion-inicio').forEach(btn => {
           btn.onclick = () => {
             const destino = btn.getAttribute('data-ir');
+            if(destino === 'util'){ state.view = 'utilidades'; window.scrollTo(0,0); render(); return; }
             if(destino === 'sB'){ state.prevView = 'panel'; state.view = 'practicaSemanal'; window.scrollTo(0,0); render(); return; }
             // Si marcó "No volver a mostrar", va directo al destino
             if(destino === 's3' && !practicaBloqueada && saltarIntro('s3')){ state.prevView = 'panel'; state.view = 'practicas'; window.scrollTo(0,0); render(); return; }
@@ -5548,4 +5715,4 @@
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V10.33 · App Metas Amables · 2026-10-02 23:10 ==== -->
+<!-- ==== Fin del index V10.34 · App Metas Amables · 2026-10-03 11:51 ==== -->
