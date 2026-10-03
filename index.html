@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V10.63 · App Metas Amables · 2026-10-03 23:45 ==== -->
+<!-- ==== index V10.64 · App Metas Amables · 2026-10-04 01:22 ==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -871,6 +871,13 @@
 .pp-fila small{display:block;font-size:12px;color:#666}.pp-fila b{display:block;font-size:15px;margin:2px 0 5px}
 .pp-barra{display:flex;gap:3px}.pp-barra i{flex:1;height:6px;border-radius:3px}
 .pp-dato{margin:10px 0 0;font-size:14.5px;line-height:1.4}.pp-animo{margin:14px 0 0;padding:10px 12px;background:#EEF6E9;border-radius:12px;font-size:14.5px}
+.avisos-plan{display:flex;flex-direction:column;gap:8px;margin:0 0 12px}
+.aviso-plan{display:block;width:100%;text-align:left;padding:12px 14px;border-radius:14px;font:inherit;font-size:14.5px;line-height:1.4;cursor:pointer;border:2px solid}
+.aviso-plan.encuesta{background:#FFF6E0;border-color:#E2B33C;color:#5a4410}.aviso-plan.fin{background:#FDEDED;border-color:#E39A9A;color:#7a2b2b}
+.prueba-caja{max-width:520px;margin:0 auto 14px}.prueba-nota{text-align:center;font-size:13px;color:#666;margin:6px 0 0}
+.encuesta-estrellas{display:flex;gap:8px;margin:6px 0 14px}.encuesta-estrellas button{flex:1;height:46px;border-radius:12px;border:2px solid #E2B33C;background:#fff;font:inherit;font-size:18px;font-weight:800;color:#8a6420;cursor:pointer}
+.encuesta-estrellas button.elegida{background:#E2B33C;color:#fff}
+.encuesta-caja textarea{width:100%;box-sizing:border-box;border:1px solid var(--border);border-radius:10px;padding:10px;font:inherit;margin:4px 0 12px}
 .ciencia{max-width:520px;margin:6px auto 14px;background:#EEF6E9;border:2px solid #93BF80;border-radius:14px;padding:8px 14px;font-size:14px;color:#2f4a28}
 .ciencia summary{cursor:pointer;font-weight:800;text-align:center;list-style:none}.ciencia summary::-webkit-details-marker{display:none}
 .ciencia ul{margin:6px 0;padding-left:20px}.ciencia li{margin:4px 0}.ciencia p{margin:6px 0}
@@ -1513,7 +1520,7 @@
   }
 
 
-  const APP_VERSION = 'V10.63';
+  const APP_VERSION = 'V10.64';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -4197,6 +4204,7 @@
     if(state.view === 'frases'){ renderFrases(); if(state.menuOpen) renderMenuOverlay(); return; }
     if(state.view === 'habla'){ renderHabla(); if(state.menuOpen) renderMenuOverlay(); return; }
     if(state.view === 'musica'){ renderMusica(); if(state.menuOpen) renderMenuOverlay(); return; }
+    if(state.view === 'encuesta'){ renderEncuesta(); if(state.menuOpen) renderMenuOverlay(); return; }
 
     if(state.menuOpen){
       renderMenuOverlay();
@@ -4568,6 +4576,8 @@
       if(!state.panelSub){
 
 
+        const avisos = tarjetasPlanHTML();
+        if(avisos){ const a = el('<div class="avisos-plan">' + avisos + '</div>').firstElementChild; app.appendChild(a); activarTarjetasPlan(a); }
         const opciones = document.createElement('div');
         opciones.className = 'ciclo';
         const tx = textosCiclo();
@@ -5304,6 +5314,7 @@
       app.appendChild(el(`<div class="practi-inicio">${practiReaccionHTML('pensativo','empujonPensando',96)}${bocadilloPracti('Este es tu plan y lo que incluye.', 'tono-calma', null, 'Debajo tienes las otras formas de acompañarte:')}</div>`));
 
       app.appendChild(el(cienciaHTML()));
+      if(botonPruebaHTML()){ const bp = el('<div class="prueba-caja">' + botonPruebaHTML() + '</div>').firstElementChild; app.appendChild(bp); bp.querySelector('#btnPruebaGuias').onclick = ev => empezarPrueba(ev.currentTarget); }
       // Primero el plan de la persona, después los que puede añadir
       const actual = (!state.plan || state.plan === 'gratis') ? 'libre' : state.plan;
       // El Plan Libre solo se enseña a quien lo tiene: a quien paga no se le ofrece
@@ -5871,6 +5882,82 @@
       + '<p class="pp-animo">Este es tu punto de partida, no un examen. Paso a paso, con prácticas pequeñas y tu grupo, vamos a por ello. 💚</p></div>';
   }
 
+  // ===== Mes de prueba del Plan Guías, encuesta con mes de regalo y aviso de fin de plan =====
+  const PLAY_FICHA = 'https://play.google.com/store/apps/details?id=club.practicaintegral.metasamables';
+  const diasEntre = (a, b) => Math.round((b - a) / 86400000);
+  function datosForm(){ return (state.gamifica && state.gamifica.datosFormulario) || {}; }
+  // Días que le quedan a un plan que NO se renueva solo (prueba, regalo, transferencia). null si no aplica.
+  function diasParaFinDePlan(){
+    const f = state.facturacion || {};
+    if(!f['Vencimiento'] || f['Forma de pago'] === 'Stripe' || !tienePlan('guias')) return null;
+    const hoy = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+    return diasEntre(hoy, new Date(f['Vencimiento'] + 'T00:00:00'));
+  }
+  // Tarjetas del inicio: encuesta (a los 20 días de la prueba) y aviso de fin de plan (5 días antes)
+  function tarjetasPlanHTML(){
+    let html = '';
+    const d = datosForm();
+    if(d.pruebaGuias && !d.encuestaHecha && diasEntre(new Date(d.pruebaGuias + 'T00:00:00'), today) >= 20)
+      html += '<button type="button" class="aviso-plan encuesta" id="abrirEncuesta">🎁 <b>¿Nos ayudas a mejorar?</b> Responde 3 preguntas y te regalamos <b>otro mes del Plan Guías 👑</b> ›</button>';
+    const quedan = diasParaFinDePlan();
+    if(quedan !== null && quedan >= 0 && quedan <= 5)
+      html += '<button type="button" class="aviso-plan fin" id="avisoFinPlan">⏳ <b>' + (quedan === 0 ? 'Hoy termina' : quedan === 1 ? 'Mañana termina' : 'En ' + quedan + ' días termina') + ' tu Plan Guías 👑.</b> Para seguir con tu guía nueva cada semana y todo Prácti, pásate al Plan Guías desde 6 € al mes ›</button>';
+    return html;
+  }
+  function activarTarjetasPlan(raiz){
+    const e = raiz.querySelector('#abrirEncuesta'); if(e) e.onclick = () => { state.view = 'encuesta'; window.scrollTo(0,0); render(); };
+    const p = raiz.querySelector('#avisoFinPlan'); if(p) p.onclick = () => irAPlanes();
+  }
+  // Botón de la prueba gratis (en «Tu plan», solo para el Plan Libre que aún no la ha usado)
+  function botonPruebaHTML(){
+    return (!tienePlan('guias') && !datosForm().pruebaGuias)
+      ? '<button type="button" class="btn btn-yes prueba-guias" id="btnPruebaGuias" style="text-align:center">🎁 Prueba el Plan Guías 1 mes gratis</button><p class="prueba-nota">Sin tarjeta y sin compromiso. Al acabar el mes vuelves al Plan Libre si no quieres seguir.</p>'
+      : '';
+  }
+  async function empezarPrueba(boton){
+    boton.disabled = true; boton.textContent = 'Activando…';
+    try {
+      const r = await api('/prueba-guias', {});
+      if(state.gamifica && r.datosFormulario) state.gamifica.datosFormulario = r.datosFormulario;
+      await refreshAll();
+      alert('🎉 ¡Listo! Tienes el Plan Guías 👑 gratis hasta el ' + (r.vence || '').split('-').reverse().join('/') + '. Disfrútalo.');
+      irAlPanel();
+    } catch(e){ alert(e.message || 'No se pudo activar. Prueba otra vez.'); boton.disabled = false; boton.textContent = '🎁 Prueba el Plan Guías 1 mes gratis'; }
+  }
+  function renderEncuesta(){
+    renderBackTopbar('🎁 3 preguntas');
+    const caja = el(`<div class="card encuesta-caja">
+        <p style="margin:0 0 12px">Tu opinión nos ayuda muchísimo. Al enviarla te regalamos <b>otro mes del Plan Guías 👑</b>.</p>
+        <label class="note-label">1. Del 1 al 5, ¿cuánto te está ayudando Metas Amables?</label>
+        <div class="encuesta-estrellas">${[1,2,3,4,5].map(n => '<button type="button" data-n="' + n + '">' + n + '</button>').join('')}</div>
+        <label class="note-label">2. ¿Qué es lo que más te gusta?</label>
+        <textarea id="encGusta" rows="3"></textarea>
+        <label class="note-label">3. ¿Qué mejorarías?</label>
+        <textarea id="encMejorar" rows="3"></textarea>
+        <button type="button" class="btn btn-yes" id="encEnviar" style="text-align:center;margin-top:12px">Enviar y recibir mi mes de regalo</button>
+        <p id="encError" style="color:#B94A3A;font-size:14px;margin:8px 0 0"></p>
+      </div>`).firstElementChild;
+    app.appendChild(caja);
+    let nota = 0;
+    caja.querySelectorAll('.encuesta-estrellas button').forEach(b => b.onclick = () => {
+      nota = Number(b.dataset.n); caja.querySelectorAll('.encuesta-estrellas button').forEach(x => x.classList.toggle('elegida', Number(x.dataset.n) <= nota)); });
+    caja.querySelector('#encEnviar').onclick = async () => {
+      if(!nota){ caja.querySelector('#encError').textContent = 'Elige un número del 1 al 5.'; return; }
+      const b = caja.querySelector('#encEnviar'); b.disabled = true; b.textContent = 'Enviando…';
+      try {
+        const r = await api('/encuesta', { valoracion: nota, gusta: caja.querySelector('#encGusta').value.trim(), mejorar: caja.querySelector('#encMejorar').value.trim() });
+        if(state.gamifica && r.datosFormulario) state.gamifica.datosFormulario = r.datosFormulario;
+        try { await refreshAll(); } catch(e){}
+        caja.innerHTML = practiHTML('celebracion', '🎉', 120) + '<h2 style="text-align:center;margin:10px 0 6px">¡Muchas gracias! 💚</h2>'
+          + '<p style="text-align:center;margin:0 0 14px">' + (r.vence ? 'Ya tienes tu mes de regalo: el Plan Guías 👑 es tuyo hasta el <b>' + r.vence.split('-').reverse().join('/') + '</b>.' : 'Hemos recibido tu opinión.') + '</p>'
+          + (nota >= 4 ? '<p style="text-align:center;margin:0 0 10px">¿Nos ayudarías también valorando la app en Google Play? ⭐</p><a class="btn btn-yes" style="display:block;text-align:center;text-decoration:none" href="' + PLAY_FICHA + '" target="_blank" rel="noopener">Valorar en Google Play ⭐</a>' : '')
+          + '<button type="button" class="link-quiet" id="encFin" style="display:block;margin:14px auto 0">Volver a la app</button>';
+        try { activarPracti(caja); } catch(e){} try { launchConfetti(); } catch(e){}
+        caja.querySelector('#encFin').onclick = () => irAlPanel();
+      } catch(e){ caja.querySelector('#encError').textContent = e.message || 'No se pudo enviar.'; b.disabled = false; b.textContent = 'Enviar y recibir mi mes de regalo'; }
+    };
+  }
+
   function abrirFormularioMeta(){
     let previo = null;
     try { previo = JSON.parse(localStorage.getItem(fmClave()) || 'null'); } catch(e){}
@@ -6263,4 +6350,4 @@
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V10.63 · App Metas Amables · 2026-10-03 23:45 ==== -->
+<!-- ==== Fin del index V10.64 · App Metas Amables · 2026-10-04 01:22 ==== -->
