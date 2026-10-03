@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V10.44 · App Metas Amables · 2026-10-03 14:17 ==== -->
+<!-- ==== index V10.48 · App Metas Amables · 2026-10-03 14:34 ==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -629,17 +629,24 @@
     .acc-grid-2col{ grid-template-columns: 1fr; }
   }
   .panel-img{ width:100%; border-radius:10px; margin:8px 0; border:1px solid var(--border); }
-/* Niveles de conciencia: la imagen pasada a texto (misma disposición y colores) */
-.niveles-tabla{ display:grid; grid-template-columns:auto auto 1fr; column-gap:8px; row-gap:6px; align-items:center; background:#fff; color:#555; padding:8px; margin:8px 0; border:1px solid var(--border); border-radius:10px; cursor:zoom-in; font-family:"Open Sans",Arial,sans-serif; }
-.nv-color{ color:#fff; font-size:13px; padding:7px 10px; min-width:78px; text-align:center; border-radius:2px; }
-.nv-grupo{ align-self:stretch; display:flex; align-items:center; justify-content:center; writing-mode:vertical-rl; transform:rotate(180deg); font-size:10px; font-style:italic; letter-spacing:1px; color:#999; border-left:1px solid #ccc; padding:0 2px; }
-.nv-tx{ font-size:12px; line-height:1.35; }
-.nv-tx b{ font-weight:400; }
-.visor-horizontal{ position:fixed; inset:0; z-index:9999; background:#fff; overflow:hidden; }
-.visor-horizontal .vh-giro{ position:absolute; top:50%; left:50%; width:100vh; height:100vw; transform:translate(-50%,-50%) rotate(90deg); display:flex; align-items:center; justify-content:center; padding:16px; box-sizing:border-box; }
-.visor-horizontal .niveles-tabla{ cursor:default; border:0; max-width:100%; }
-.visor-horizontal .nv-tx{ font-size:clamp(12px,2.4vh,18px); } .visor-horizontal .nv-color{ font-size:clamp(13px,2.4vh,18px); }
-@media (orientation:landscape){ .visor-horizontal .vh-giro{ width:100vw; height:100vh; transform:translate(-50%,-50%); } }
+/* Niveles de conciencia: la imagen pasada a texto. En vertical, cada color con su descripción debajo;
+   en horizontal (botón «Ver en horizontal»), la misma disposición que la imagen original */
+.niveles-tabla{ display:grid; grid-template-columns:1fr; row-gap:4px; background:#fff; color:#555; padding:10px; margin:8px 0; border:1px solid var(--border); border-radius:10px; cursor:zoom-in; font-family:"Open Sans",Arial,sans-serif; }
+.nv-color{ color:#fff; font-size:14px; font-weight:700; padding:7px 10px; border-radius:4px; justify-self:start; min-width:96px; text-align:center; margin-top:8px; }
+.nv-grupo{ display:none; }
+.nv-tx{ font-size:14px; line-height:1.4; }
+.nv-tx b{ font-weight:800; color:#333; }
+.niveles-tabla.horizontal{ grid-template-columns:auto auto 1fr; column-gap:8px; row-gap:6px; align-items:center; cursor:default; border:0; }
+.niveles-tabla.horizontal .nv-color{ margin-top:0; justify-self:stretch; font-size:12px; min-width:78px; }
+.niveles-tabla.horizontal .nv-grupo{ align-self:stretch; display:flex; align-items:center; justify-content:center; writing-mode:vertical-rl; transform:rotate(180deg); font-size:9px; font-style:italic; letter-spacing:1px; color:#999; border-left:1px solid #ccc; padding:0 2px; }
+.niveles-tabla.horizontal .nv-tx{ font-size:11.5px; line-height:1.3; }
+.visor-horizontal{ position:fixed; inset:0; z-index:9999; background:#fff; overflow:hidden; touch-action:none; }
+.visor-horizontal .vh-giro{ position:absolute; inset:0; overflow:auto; padding:60px 16px 90px; box-sizing:border-box; touch-action:pan-x pan-y; }
+.visor-horizontal .vh-zoom{ transform-origin:0 0; }
+.visor-horizontal.girado .vh-giro{ inset:auto; top:50%; left:50%; width:100vh; height:100vw; transform:translate(-50%,-50%) rotate(90deg); padding:28px 40px; }
+.visor-horizontal .niveles-tabla{ cursor:default; border:0; margin:0; }
+.vh-boton{ position:absolute; z-index:2; right:16px; bottom:calc(16px + env(safe-area-inset-bottom)); padding:10px 16px; border-radius:99px; border:0; background:#7B5FB8; color:#fff; font-weight:800; font-size:15px; cursor:pointer; }
+@media (orientation:landscape){ .visor-horizontal.girado .vh-giro{ width:100vw; height:100vh; transform:translate(-50%,-50%); } }
   .panel-img-placeholder{
     width:100%; min-height:120px; border-radius:10px; margin:8px 0; border:1px dashed var(--border);
     display:flex; align-items:center; justify-content:center; color:var(--ink-soft); font-size:13px; background:#FAFAF6;
@@ -835,7 +842,7 @@
 .habla-burbuja::after{content:"";position:absolute;left:46%;bottom:-18px;width:26px;height:26px;background:#fff;border-right:3px solid #101010;border-bottom:3px solid #101010;transform:rotate(45deg)}
 .habla-medio{position:relative;width:100%;display:flex;justify-content:center;margin-top:14px}
 .habla-practi{width:min(62vw,240px);height:min(66vw,254px);padding:0;border:0;background:none;cursor:pointer;-webkit-tap-highlight-color:transparent}
-.habla-voz{position:absolute;right:0;bottom:6px;width:46px;height:46px;display:flex;align-items:center;justify-content:center;padding:0;border-radius:50%;border:2px solid #7B5FB8;background:#fff;color:#7B5FB8;cursor:pointer}
+.habla-voz{position:absolute;right:0;top:4px;width:46px;height:46px;display:flex;align-items:center;justify-content:center;padding:0;border-radius:50%;border:2px solid #7B5FB8;background:#fff;color:#7B5FB8;cursor:pointer}
 .habla-voz.apagada{border-color:#999;color:#999}
 .habla-quedan{margin:4px 0 2px;font-size:14px;font-weight:700;color:#7B5FB8;text-align:center}
 .habla-ver{margin:4px 0 10px;padding:6px 14px;border-radius:99px;border:2px solid #7B5FB8;background:#fff;color:#7B5FB8;font-weight:700;font-size:14px;cursor:pointer}
@@ -843,7 +850,7 @@
 .habla-abajo textarea{width:100%;min-width:0;padding:4px 6px;box-sizing:border-box;border:0;outline:none;resize:none;font:inherit;font-size:17px;background:transparent}
 .habla-botones{display:flex;gap:10px;align-items:center;justify-content:flex-end}
 .habla-mic{width:46px;height:46px;flex:0 0 46px;display:flex;align-items:center;justify-content:center;padding:0;border-radius:50%;border:2px solid #7B5FB8;background:#fff;color:#7B5FB8;cursor:pointer}
-.habla-mic.grabando{background:#E39A9A;border-color:#B94A3A;color:#fff}
+.habla-mic.grabando{background:#6B9362;border-color:#4E7446;color:#fff}
 .habla-enviar{width:50px;height:50px;display:flex;align-items:center;justify-content:center;padding:0;border-radius:50%;border:0;background:#7B5FB8;color:#fff;cursor:pointer;box-shadow:0 3px 0 #4F3A86}
 .habla-pensando{display:none;height:92%;width:auto;margin:0 auto}
 .habla-anim{display:block;width:100%;height:100%}.habla-practi.pensando .habla-anim{display:none}.habla-practi.pensando .habla-pensando{display:block}
@@ -854,6 +861,16 @@
 .habla-lista-cuerpo{overflow:auto;padding:10px 16px 24px}
 .habla-lista-cuerpo p{margin:0 0 10px;line-height:1.4}
 .hl-yo b{color:#4F7FB5}.hl-practi b{color:#7B5FB8}
+.musica-lista{display:flex;flex-direction:column;gap:10px;padding-bottom:90px}
+.musica-ayuda{margin:0 0 4px;font-size:14px;color:#555;text-align:center}
+.musica-cancion{display:flex;align-items:center;gap:12px;width:100%;padding:14px 16px;border:3px solid #101010;border-radius:16px;background:#E4DAF7;font:inherit;font-size:16px;font-weight:700;color:#101010;text-align:left;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.musica-cancion.sonando{background:#7B5FB8;border-color:#7B5FB8;color:#fff}
+.musica-icono{font-size:20px}
+.musica-barra{position:fixed;left:8px;right:8px;bottom:calc(8px + env(safe-area-inset-bottom));z-index:900;display:flex;align-items:center;gap:10px;padding:6px 8px;background:#fff;border:3px solid #7B5FB8;border-radius:16px;box-shadow:0 4px 14px rgba(0,0,0,.2);max-width:520px;margin:0 auto}
+.musica-video{flex:0 0 96px;height:54px;border-radius:8px;overflow:hidden;background:#000}
+.musica-video iframe{width:100%;height:100%;border:0}
+.musica-sonando{flex:1;min-width:0;font-size:14px;font-weight:700;color:#4a3a6e;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.musica-parar{flex:0 0 42px;height:42px;border-radius:50%;border:0;background:#7B5FB8;color:#fff;font-size:18px;cursor:pointer}
 .juego-overlay{position:fixed;inset:0;z-index:9999;background:#111;-webkit-tap-highlight-color:transparent;display:flex;flex-direction:column}
 .juego-overlay iframe{flex:1;width:100%;border:0;display:block}
 .juego-cerrar{position:absolute;top:calc(12px + env(safe-area-inset-top));left:12px;z-index:2}
@@ -897,7 +914,7 @@
   [data-vista="formMeta"] .back-btn, [data-sub="s4"] .back-btn{ background:#C9942D !important; border-color:#C9942D !important; color:#fff !important; }
   [data-vista="practicas"] .back-btn, [data-sub="s3"] .back-btn{ background:#4F7FB5 !important; border-color:#4F7FB5 !important; color:#fff !important; }
   [data-vista="checkin"] .back-btn, [data-vista="calendar"] .back-btn, [data-vista="sesionesCal"] .back-btn, [data-vista="situacion"] .back-btn, [data-vista="group"] .back-btn, [data-sub="s1"] .back-btn, [data-sub="s2"] .back-btn{ background:#6B9362 !important; border-color:#6B9362 !important; color:#fff !important; }
-  [data-vista="utilidades"] .back-btn,[data-vista="frases"] .back-btn,[data-vista="habla"] .back-btn,[data-sub="s5"] .back-btn{ background:#7B5FB8 !important; border-color:#7B5FB8 !important; color:#fff !important; }
+  [data-vista="utilidades"] .back-btn,[data-vista="frases"] .back-btn,[data-vista="habla"] .back-btn,[data-vista="musica"] .back-btn,[data-sub="s5"] .back-btn{ background:#7B5FB8 !important; border-color:#7B5FB8 !important; color:#fff !important; }
   [data-vista="formMeta"] .btn-dictar{ border-color:#C9942D !important; color:#7A5410 !important; }
   .dias-fila{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px}
   .dia-btn{min-width:0;height:54px;box-sizing:border-box;border:2px solid #d8d3c6;border-radius:12px;background:#FCFCF9;font-family:'Karla',sans-serif;font-size:15px;font-weight:700;color:var(--ink);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;padding:0;transition:transform .12s,background .2s}
@@ -1476,7 +1493,7 @@
   }
 
 
-  const APP_VERSION = 'V10.44';
+  const APP_VERSION = 'V10.48';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -3039,7 +3056,7 @@
         tarjeta('habla', 'Habla con Prácti', 'Pregúntale lo que quieras, escribiendo o con el micrófono', '<span class="util-burbuja">Hola<br>¿En qué te ayudo?</span>' + practiHTML('saludo', '🦉', 84))
       + tarjeta('formacion', 'Formación', 'Libro, cuadrantes y módulos', practiHTML('formacion', '🦉', 90))
       + tarjeta('frases', 'Frases motivadoras', 'Elige un fondo y compártela', '<span class="util-mini-frase" style="background:center/cover url(' + FONDOS_FOTOS.fuego + ')">«Hoy también cuenta»</span>')
-      + tarjeta('musica', 'Música motivacional', 'Muy pronto', '<span style="font-size:44px">🎵</span>');
+      + tarjeta('musica', 'Música motivacional', 'Música para acompañarte mientras usas la app', '<span style="font-size:44px">🎵</span>');
     app.appendChild(caja);
     try { activarPracti(caja); } catch(e){}
     caja.querySelectorAll('.util-card').forEach(b => b.onclick = () => {
@@ -3047,6 +3064,7 @@
       if(u === 'formacion'){ state.view = 'panel'; state.panelSub = 's5'; state.volverUtil = true; window.scrollTo(0,0); render(); return; }
       if(u === 'frases'){ state.view = 'frases'; window.scrollTo(0,0); render(); return; }
       if(u === 'habla'){ state.view = 'habla'; window.scrollTo(0,0); render(); return; }
+      if(u === 'musica'){ state.view = 'musica'; window.scrollTo(0,0); render(); return; }
       alert(u === 'habla' ? 'Muy pronto podrás hablar con Prácti aquí. 🦉' : 'Muy pronto tendrás aquí música para motivarte. 🎵');
     });
   }
@@ -3159,7 +3177,7 @@
     lineas.forEach((l, i) => x.fillText(l, W/2, y0 + i*tam*1.25));
     x.shadowBlur = 0;
     // Botón con el enlace a la web
-    const et = '❤️ metasamables.club'; x.font = '600 ' + Math.round(W/24) + 'px Fredoka, Karla, sans-serif';
+    const et = '🌱 metasamables.club'; x.font = '600 ' + Math.round(W/24) + 'px Fredoka, Karla, sans-serif';
     const ew = x.measureText(et).width + W*0.09, eh = W/12, ex = foto ? (W-ew)/2 : Math.min(W*0.97 - ew, W*0.63 - ew/2), ey = Math.min(H*0.75 - eh, Math.max(H*0.64, y0 + (lineas.length - 1)*tam*1.25 + tam*0.9));
     x.fillStyle = 'rgba(255,255,255,0.88)'; x.strokeStyle = '#101010'; x.lineWidth = foto ? 0 : Math.max(3, W/220);
     x.beginPath(); x.roundRect ? x.roundRect(ex, ey, ew, eh, eh/2) : x.rect(ex, ey, ew, eh); x.fill(); if(!foto) x.stroke();
@@ -3281,6 +3299,20 @@
     } else hablado = true;
   }
 
+  // Lo que Prácti sabe de la persona (sus propios datos de la app)
+  function hablaContexto(){
+    const c = {};
+    try {
+      const tx = textosCiclo();
+      c.meta = tx.meta || ''; c.practica = tx.practica || '';
+      c.plan = ({ gratis: 'Libre', libre: 'Libre', guias: 'Guías', sesiones: 'Guías + Sesiones' })[state.plan] || String(state.plan || '');
+      c.grupo = (state.groups && state.groups[state.me]) || '';
+      c.proximaSesion = tienePlan('sesiones') && typeof textoProximaSesion === 'function' ? (textoProximaSesion() || '') : '';
+      c.guia = String(state.guiaTexto || '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 2500);
+    } catch(e){}
+    return c;
+  }
+
   async function hablaEnviar(){
     const campo = app.querySelector('#hablaPregunta'); if(!campo || habla.esperando) return;
     const mensaje = campo.value.trim(); if(!mensaje) return;
@@ -3289,7 +3321,7 @@
     campo.value = ''; habla.esperando = true;
     app.querySelector('#hablaTexto').textContent = 'Déjame pensar…'; hablaBoca(false); hablaPensando(true);
     let r = {};
-    try { r = await api('/habla', { mensaje, historial: habla.historial.slice(-8) }); }
+    try { r = await api('/habla', { mensaje, historial: habla.historial.slice(-8), contexto: hablaContexto() }); }
     catch(e){ r = { respuesta: 'Uy, no me llega bien la conexión. Prueba otra vez en un momento.' }; }
     habla.esperando = false; hablaPensando(false);
     const respuesta = r.respuesta || 'Uy, no te he entendido bien. ¿Me lo cuentas de otra forma?';
@@ -3366,7 +3398,9 @@
     const ALTAVOZ = '<svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>';
     const pintaVoz = () => { voz.innerHTML = ALTAVOZ + (habla.voz ? '' : '<path d="M3 3l18 18" stroke="#B94A3A" stroke-width="2.6" stroke-linecap="round"/>') + '</svg>'; voz.classList.toggle('apagada', !habla.voz); voz.setAttribute('aria-label', habla.voz ? 'Voz activada: toca para silenciar a Prácti' : 'Voz desactivada: toca para que Prácti hable'); };
     pintaVoz();
-    voz.onclick = () => { habla.voz = !habla.voz; try { localStorage.setItem('habla_voz', habla.voz ? '1' : '0'); } catch(e){} if(!habla.voz){ try { window.speechSynthesis.cancel(); } catch(e){} } pintaVoz(); };
+    voz.onclick = () => { habla.voz = !habla.voz; try { localStorage.setItem('habla_voz', habla.voz ? '1' : '0'); } catch(e){} pintaVoz();
+      if(!habla.voz){ try { window.speechSynthesis.cancel(); } catch(e){} hablaBoca(false); }
+      else if(habla.ultima && !habla.esperando) hablaDecir(habla.ultima); };
     caja.querySelector('#hablaPracti').onclick = () => { if(habla.ultima && !habla.esperando) hablaDecir(habla.ultima); };
     caja.querySelector('#hablaVer').onclick = hablaVerConversacion;
     caja.querySelector('#hablaEnviar').onclick = hablaEnviar;
@@ -3378,6 +3412,49 @@
       hablaDecir(ultima);
     });
     if(!window.lottie && !window.bodymovin){ habla.ultima = ultima; caja.querySelector('#hablaTexto').textContent = ultima; }
+  }
+
+  // ===== Música motivacional: vídeos de YouTube que suenan en bucle =====
+  // El reproductor vive fuera de la pantalla de la app, así la música sigue sonando al cambiar de pantalla.
+  // (Mismas canciones que la app de Calistenia; Gustavo las cambiará más adelante)
+  const CANCIONES = [
+    { id: 'c_FBwFq7bug', titulo: 'Zen, meditación' },
+    { id: 'TZundrFjNtc', titulo: 'Música andina para relajarse' },
+    { id: 'KjnSO6RjJXE', titulo: 'Música ambiente matutina' },
+    { id: 'DNrnDx-KZUY', titulo: 'Música para relajarse' },
+    { id: '3GRVnyO_Zvo', titulo: 'Música andina' },
+    { id: 'iXchWUgWlcw', titulo: 'Bosa Nova Beach' },
+    { id: 'JGZphUS4Nzg', titulo: 'Summer Chill tropical' },
+    { id: 'ccP68897sdE', titulo: 'Beethoven, Mozart y Vivaldi Techno' }
+  ];
+  const musica = { id: null };
+
+  function musicaPoner(id){
+    musica.id = id;
+    let barra = document.getElementById('musicaBarra');
+    if(!id){ if(barra) barra.remove(); if(state.view === 'musica') render(); return; }
+    const c = CANCIONES.find(x => x.id === id) || { titulo: 'Música' };
+    if(!barra){
+      barra = document.createElement('div'); barra.id = 'musicaBarra'; barra.className = 'musica-barra';
+      document.body.appendChild(barra);
+    }
+    barra.innerHTML = '<div class="musica-video"><iframe src="https://www.youtube.com/embed/' + id + '?autoplay=1&loop=1&playlist=' + id + '&playsinline=1&rel=0" allow="autoplay; encrypted-media" title="' + escapeAttr(c.titulo) + '"></iframe></div>'
+      + '<span class="musica-sonando">🎵 ' + escapeAttr(c.titulo) + '</span>'
+      + '<button type="button" class="musica-parar" aria-label="Parar la música">⏹</button>';
+    barra.querySelector('.musica-parar').onclick = () => musicaPoner(null);
+    if(state.view === 'musica') render();
+  }
+
+  function renderMusica(){
+    renderBackTopbar('🎵 Música motivacional');
+    app.querySelector('#btnVolver').onclick = () => { state.view = 'utilidades'; window.scrollTo(0,0); render(); };
+    const caja = el(`<div class="musica-lista">
+        <p class="musica-ayuda">Elige una música y sigue usando la app: sonará mientras tanto. Para pararla, toca ⏹ abajo.</p>
+        ${CANCIONES.map(c => '<button type="button" class="musica-cancion' + (c.id === musica.id ? ' sonando' : '') + '" data-id="' + c.id + '"><span class="musica-icono">' + (c.id === musica.id ? '🔊' : '▶️') + '</span><span>' + escapeAttr(c.titulo) + '</span></button>').join('')}
+        <button type="button" class="musica-cancion${musica.id ? '' : ' sonando'}" data-id=""><span class="musica-icono">🔇</span><span>Sin música</span></button>
+      </div>`).firstElementChild;
+    app.appendChild(caja);
+    caja.querySelectorAll('.musica-cancion').forEach(b => b.onclick = () => musicaPoner(b.getAttribute('data-id') || null));
   }
 
   function irAlPanel(){
@@ -3595,9 +3672,32 @@
   function abrirEnHorizontal(nodo){
     const capa = document.createElement('div');
     capa.className = 'visor-horizontal';
-    capa.innerHTML = '<div class="vh-giro"></div><button type="button" class="visor-cerrar" style="position:absolute;z-index:2;top:auto;bottom:calc(16px + env(safe-area-inset-bottom));left:16px">← Volver</button>';
-    capa.querySelector('.vh-giro').appendChild(nodo.cloneNode(true));
+    capa.innerHTML = '<div class="vh-giro"><div class="vh-zoom"></div></div>'
+      + '<button type="button" class="visor-cerrar" style="position:absolute;z-index:2;top:auto;bottom:calc(16px + env(safe-area-inset-bottom));left:16px">← Volver</button>'
+      + '<button type="button" class="vh-boton">↻ Ver en horizontal</button>';
+    const copia = nodo.cloneNode(true);
+    capa.querySelector('.vh-zoom').appendChild(copia);
     capa.querySelector('.visor-cerrar').onclick = () => capa.remove();
+    const zoom = capa.querySelector('.vh-zoom');
+    let escala = 1;
+    const aplicar = () => { zoom.style.transform = 'scale(' + escala + ')'; zoom.style.width = (100 / escala) + '%'; };
+    const boton = capa.querySelector('.vh-boton');
+    boton.onclick = () => {
+      const girar = !capa.classList.contains('girado');
+      capa.classList.toggle('girado', girar); copia.classList.toggle('horizontal', girar);
+      boton.textContent = girar ? '↻ Ver en vertical' : '↻ Ver en horizontal';
+      escala = 1; aplicar();
+    };
+    // Pellizcar con dos dedos para ampliar o reducir
+    let inicio = null;
+    const distancia = t => Math.hypot(t[0].clientX - t[1].clientX, t[0].clientY - t[1].clientY);
+    capa.addEventListener('touchstart', ev => { if(ev.touches.length === 2) inicio = { d: distancia(ev.touches), e: escala }; }, { passive: true });
+    capa.addEventListener('touchmove', ev => {
+      if(ev.touches.length !== 2 || !inicio) return;
+      ev.preventDefault();
+      escala = Math.min(3, Math.max(0.5, inicio.e * distancia(ev.touches) / inicio.d)); aplicar();
+    }, { passive: false });
+    capa.addEventListener('touchend', ev => { if(ev.touches.length < 2) inicio = null; });
     document.body.appendChild(capa);
   }
   function activarImagenesAmpliables(raiz){
@@ -3998,6 +4098,7 @@
     if(state.view === 'utilidades'){ renderUtilidades(); if(state.menuOpen) renderMenuOverlay(); return; }
     if(state.view === 'frases'){ renderFrases(); if(state.menuOpen) renderMenuOverlay(); return; }
     if(state.view === 'habla'){ renderHabla(); if(state.menuOpen) renderMenuOverlay(); return; }
+    if(state.view === 'musica'){ renderMusica(); if(state.menuOpen) renderMenuOverlay(); return; }
 
     if(state.menuOpen){
       renderMenuOverlay();
@@ -6009,4 +6110,4 @@
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V10.44 · App Metas Amables · 2026-10-03 14:17 ==== -->
+<!-- ==== Fin del index V10.48 · App Metas Amables · 2026-10-03 14:34 ==== -->
