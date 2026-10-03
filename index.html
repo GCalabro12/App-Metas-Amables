@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V10.36 · App Metas Amables · 2026-10-03 12:03 ==== -->
+<!-- ==== index V10.37 · App Metas Amables · 2026-10-03 12:41 ==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -807,9 +807,10 @@
 .util-mini-frase{display:flex;align-items:center;justify-content:center;width:100%;height:110px;border-radius:14px;border:2px solid #101010;background:linear-gradient(#2b2420,#d9480f);color:#fff;font-weight:700;font-size:14px;padding:6px;text-align:center}
 .frases-caja{display:flex;flex-direction:column;align-items:center;gap:12px}
 .frase-cv{width:100%;max-width:380px;height:auto;border-radius:20px;border:3px solid #101010;background:#F4EFE3}
-.frase-fondos{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
-.frase-fondo{padding:8px 12px;border-radius:999px;border:2px solid #101010;background:#fff;font:inherit;font-size:14px;cursor:pointer;color:#101010}
-.frase-fondo.elegido{background:#7B5FB8;color:#fff;border-color:#7B5FB8}
+.frase-fondos{display:flex;gap:8px;justify-content:center;width:100%;max-width:380px}
+.frase-elige{margin:4px 0 0;font-weight:700;text-align:center;color:#4a3a6e}
+.frase-fondo{flex:1;aspect-ratio:9/16;padding:0;border-radius:10px;border:2px solid #101010;background:#F4EFE3 center/cover no-repeat;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.frase-fondo.elegido{outline:4px solid #7B5FB8;outline-offset:2px}
 .frase-botones{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
 [data-vista="frases"] .btn-yes{background:#7B5FB8 !important;border-color:#7B5FB8 !important}
 .juego-overlay{position:fixed;inset:0;z-index:9999;background:#111;-webkit-tap-highlight-color:transparent;display:flex;flex-direction:column}
@@ -1434,7 +1435,7 @@
   }
 
 
-  const APP_VERSION = 'V10.36';
+  const APP_VERSION = 'V10.37';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -2483,7 +2484,6 @@
     if(tipo === 'b') return svg('<ellipse cx="24" cy="30" rx="10.5" ry="13" fill="#F7C6C6" stroke="#101010" stroke-width="2.2"/>'
       + [[14,11,3.4],[20.5,8,3.6],[27.5,8,3.6],[34,11,3.2]].map(c => '<circle cx="' + c[0] + '" cy="' + c[1] + '" r="' + c[2] + '" fill="#F7C6C6" stroke="#101010" stroke-width="2"/>').join('') + t(24, 36, 'b'));
     if(tipo === 'c') return svg('<path d="M13 20 L24 5 L35 20 L35 43 L13 43 Z" fill="#CFE3C0" stroke="#101010" stroke-width="2.4" stroke-linejoin="round"/><path d="M20 10.5 L24 5 L28 10.5 Z" fill="#101010"/><path d="M13 20 H35" stroke="#101010" stroke-width="1.6"/>' + t(24, 37, 'c'));
-    if(tipo === 'd') return svg('<rect x="4" y="7" width="40" height="27" rx="4" fill="#DCCFF5" stroke="#101010" stroke-width="2.4"/><path d="M19 34 L17 41 H31 L29 34" fill="#DCCFF5" stroke="#101010" stroke-width="2.2" stroke-linejoin="round"/><path d="M13 41 H35" stroke="#101010" stroke-width="2.4" stroke-linecap="round"/>' + t(24, 27, 'd'));
     // c = compromiso y grupo de apoyo: la pantalla del ordenador, en verde y con la letra c
     if(tipo === 'cpc') return svg('<rect x="4" y="7" width="40" height="27" rx="4" fill="#CFE3C0" stroke="#101010" stroke-width="2.4"/><path d="M19 34 L17 41 H31 L29 34" fill="#CFE3C0" stroke="#101010" stroke-width="2.2" stroke-linejoin="round"/><path d="M13 41 H35" stroke="#101010" stroke-width="2.4" stroke-linecap="round"/>' + t(24, 27, 'c'));
     if(tipo === 'gorro') return svg('<path d="M24 9 L45 18 L24 27 L3 18 Z" fill="#2E2E2E" stroke="#101010" stroke-width="2" stroke-linejoin="round"/><path d="M12 22 V32 Q24 39 36 32 V22 L24 27 Z" fill="#2E2E2E" stroke="#101010" stroke-width="2" stroke-linejoin="round"/><path d="M40 20 V31" stroke="#C9942D" stroke-width="2.4"/><circle cx="40" cy="33" r="2.6" fill="#C9942D"/>');
@@ -2979,11 +2979,12 @@
   ];
   const utilEstado = { frases:null, i:0, fondo:'practi' };
 
-  // Llave fija (mecánica): una sola pieza, con la letra d en la cabeza en U, en diagonal como una llave de verdad
+  // Llave fija (mecánica), según el dibujo de Gustavo: cabeza redonda grande con un hueco ancho para la tuerca,
+  // mango corto y gordo con la punta redonda, y la letra d en la base de la cabeza
   function iconoLlave(){
-    return '<svg class="ciclo-svg" viewBox="0 0 48 48" aria-hidden="true"><g transform="translate(24 24) rotate(-40) scale(0.72) translate(-31 -24)">'
-      + '<path d="M4 15 H36 L42 7 Q51 4 58 8 L62 13 L53 18 L53 30 L62 35 L58 40 Q51 44 42 41 L36 33 H4 Q0 33 0 29 V19 Q0 15 4 15 Z" fill="#DCCFF5" stroke="#101010" stroke-width="2.6" stroke-linejoin="round"/>'
-      + '</g><text x="31.5" y="23.5" text-anchor="middle" font-family="Karla,Arial,sans-serif" font-size="17" font-weight="800" fill="#101010">d</text></svg>';
+    return '<svg class="ciclo-svg" viewBox="0 0 48 48" aria-hidden="true"><g transform="translate(24 24) rotate(-40) scale(0.78) translate(-28 0)">'
+      + '<path d="M8 -8 L19.9 -8 A18 18 0 0 1 53 -6 L42 -6 L42 6 L53 6 A18 18 0 0 1 19.9 8 L8 8 A8 8 0 0 1 8 -8 Z" fill="#DCCFF5" stroke="#101010" stroke-width="2.6" stroke-linejoin="round"/>'
+      + '</g><text x="25" y="29.5" text-anchor="middle" font-family="Karla,Arial,sans-serif" font-size="17" font-weight="800" fill="#101010">d</text></svg>';
   }
   function renderUtilidades(){
     renderBackTopbar('🔧 Utilidades');
@@ -3112,11 +3113,11 @@
     lineas.forEach((l, i) => x.fillText(l, W/2, y0 + i*tam*1.25));
     x.shadowBlur = 0;
     // Botón con el enlace a la web
-    const et = '🌱 metasamables.club'; x.font = '600 ' + Math.round(W/24) + 'px Fredoka, Karla, sans-serif';
-    const ew = x.measureText(et).width + W*0.09, eh = W/12, ex = (W-ew)/2, ey = H*0.925;
+    const et = '❤️ metasamables.club'; x.font = '600 ' + Math.round(W/24) + 'px Fredoka, Karla, sans-serif';
+    const ew = x.measureText(et).width + W*0.09, eh = W/12, ex = foto ? (W-ew)/2 : Math.min(W*0.97 - ew, W*0.63 - ew/2), ey = Math.min(H*0.75 - eh, Math.max(H*0.64, y0 + (lineas.length - 1)*tam*1.25 + tam*0.9));
     x.fillStyle = 'rgba(255,255,255,0.88)'; x.strokeStyle = '#101010'; x.lineWidth = foto ? 0 : Math.max(3, W/220);
     x.beginPath(); x.roundRect ? x.roundRect(ex, ey, ew, eh, eh/2) : x.rect(ex, ey, ew, eh); x.fill(); if(!foto) x.stroke();
-    x.fillStyle = '#101010'; x.textBaseline = 'middle'; x.fillText(et, W/2, ey + eh/2); x.textBaseline = 'alphabetic';
+    x.fillStyle = '#101010'; x.textBaseline = 'middle'; x.fillText(et, ex + ew/2, ey + eh/2); x.textBaseline = 'alphabetic';
   }
 
   async function cargarFrases(){
@@ -3127,14 +3128,23 @@
     return utilEstado.frases;
   }
 
+  // Miniatura de cada fondo (las fotos tal cual; la casa de Prácti dibujada en pequeño)
+  let miniCasa = null;
+  function miniaturaFondo(id){
+    if(FONDOS_FOTOS[id]) return FONDOS_FOTOS[id];
+    if(!miniCasa){ const c = document.createElement('canvas'); c.width = 180; c.height = 320; pintarCasaPracti(c.getContext('2d'), 180, 320); miniCasa = c.toDataURL('image/png'); }
+    return miniCasa;
+  }
+
   async function renderFrases(){
     renderBackTopbar('💬 Frases motivadoras');
     app.querySelector('#btnVolver').onclick = () => { state.view = 'utilidades'; window.scrollTo(0,0); render(); };
     const caja = document.createElement('div');
     caja.className = 'frases-caja';
     caja.innerHTML = '<canvas class="frase-cv" width="900" height="1600"></canvas>'
-      + '<div class="frase-fondos">' + FONDOS_FRASE.map(f => '<button type="button" class="frase-fondo' + (f.id === utilEstado.fondo ? ' elegido' : '') + '" data-fondo="' + f.id + '">' + f.nombre + '</button>').join('') + '</div>'
-      + '<div class="frase-botones"><button type="button" class="btn-yes" id="fraseOtra">🔀 Otra frase</button><button type="button" class="btn-yes" id="fraseCompartir">📤 Compartir</button></div>';
+      + '<p class="frase-elige">Escoge una imagen para compartir la frase motivadora</p>'
+      + '<div class="frase-fondos">' + FONDOS_FRASE.map(f => '<button type="button" class="frase-fondo' + (f.id === utilEstado.fondo ? ' elegido' : '') + '" data-fondo="' + f.id + '" aria-label="' + f.nombre + '" style="background-image:url(' + miniaturaFondo(f.id) + ')"></button>').join('') + '</div>'
+      + '<div class="frase-botones"><button type="button" class="btn-yes" id="fraseOtra">Otra frase</button><button type="button" class="btn-yes" id="fraseCompartir">Compartir</button></div>';
     app.appendChild(caja);
     const cv = caja.querySelector('canvas');
     const lista = await cargarFrases();
@@ -5769,4 +5779,4 @@
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V10.36 · App Metas Amables · 2026-10-03 12:03 ==== -->
+<!-- ==== Fin del index V10.37 · App Metas Amables · 2026-10-03 12:41 ==== -->
