@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V11.05 · App Metas Amables · 2026-10-04 23:41 ==== -->
+<!-- ==== index V11.06 · App Metas Amables · 2026-10-04 23:48 ==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -935,7 +935,11 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 .perg-sello.hueco{border:3px dashed rgba(140,30,20,.55);border-radius:50%;width:92px;height:92px;bottom:18px;display:flex;align-items:center;justify-content:center;text-align:center;font-size:12px;line-height:1.2;color:rgba(120,30,20,.7);font-family:Karla,sans-serif}
 .perg-sello.hueco.activo{border-color:#F2C14E;background:rgba(242,193,78,.25);animation:hueco-late .6s ease-in-out infinite alternate}
 @keyframes hueco-late{to{transform:scale(1.08)}}
-.lacre-btn{transition:transform .08s linear}
+.lacre-btn{transition:transform .08s linear;outline:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-user-drag:none}
+.lacre-btn:focus,.lacre-btn:focus-visible{outline:none}
+.lacre-btn *{pointer-events:none;-webkit-user-select:none;user-select:none}
+.contrato-escena{-webkit-user-select:none;user-select:none}
+.contrato-escena textarea{-webkit-user-select:text;user-select:text}
 .lacre-btn.cargando .lacre-progreso,.lacre-btn.sellando .lacre-progreso{animation:anillo-parpadeo .22s steps(2) infinite}
 @keyframes anillo-parpadeo{50%{stroke:#FFF6C9}}
 .lacre-btn.listo,.lacre-btn.sellando{position:relative;z-index:70;box-shadow:0 0 30px 10px rgba(242,193,78,.7)}
@@ -1628,7 +1632,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V11.05';
+  const APP_VERSION = 'V11.06';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -5607,13 +5611,13 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       const tDias = tarjetaDias(estaSemana);
       app.appendChild(tDias);
       // Calendario completo con todos los días guardados, dentro del registro (solo para mirar)
-      const verCal = el('<button type="button" class="panel-link-btn" style="width:100%;border:2px solid #C0392B;background:#fff;color:#A93226;cursor:pointer;margin:12px 0 0">📅 Ver mi calendario de registro</button>').firstElementChild;
+      const verCal = el('<button type="button" class="panel-link-btn" style="width:100%;border:2px solid #C0392B;background:#fff;color:#A93226;cursor:pointer;margin:12px 0 0">Ver mi calendario de registro</button>').firstElementChild;
       tDias.appendChild(verCal);
       verCal.onclick = () => { const c = calendarioDiario(true); verCal.replaceWith(c); c.scrollIntoView({ behavior: 'smooth', block: 'start' }); };
       // Viene de «Calendario diario» (en el calendario de semanas): se abre ya desplegado
       if(state.abrirCalDiario){ state.abrirCalDiario = false; setTimeout(() => verCal.click(), 0); }
       // Contrato de compromiso del trimestre (Plan Guías), en su recuadro
-      const contrato = el('<div class="card ps-recuadro"><p style="font-weight:700;margin:0 0 4px">📜 Mi contrato de compromiso</p><p style="margin:0 0 8px;font-size:14px">' + (contratoGuardado() ? 'Ya sellaste tu compromiso de este trimestre.' : 'Comprométete contigo para este trimestre y séllalo con tu dedo.') + '</p><button type="button" class="panel-link-btn" style="width:100%;border:none;cursor:pointer;background:#B3261E">' + (!tienePlan('guias') ? '👑 Sellar mi compromiso' : contratoGuardado() ? '📜 Ver mi contrato →' : '🔏 Sellar mi compromiso →') + '</button></div>');
+      const contrato = el('<div class="card ps-recuadro"><p style="font-weight:700;margin:0 0 4px">📜 Mi contrato de compromiso</p><p style="margin:0 0 8px;font-size:14px">' + (contratoGuardado() ? 'Ya sellaste tu compromiso de este trimestre.' : 'Comprométete contigo para este trimestre y séllalo con tu dedo.') + '</p><button type="button" class="panel-link-btn" style="width:100%;border:none;cursor:pointer;background:#B3261E">' + (!tienePlan('guias') ? '👑 Compromiso trimestral' : contratoGuardado() ? 'Ver mi compromiso trimestral' : 'Compromiso trimestral') + '</button></div>');
       contrato.querySelector('button').onclick = () => {
         if(!tienePlan('guias')){ avisoCorona('El contrato de compromiso es del Plan Guías'); return; }
         sonidoTing(); state.view = 'contrato'; window.scrollTo(0,0); render();
@@ -5621,14 +5625,14 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       app.appendChild(contrato);
       // Pósit para fin de mes (Plan Guías)
       const ep = estadoPosit();
-      const posit = el('<div class="card ps-recuadro"><p style="font-weight:700;margin:0 0 4px">📝 Pósit para fin de mes</p><p style="margin:0 0 8px;font-size:14px">' + (ep.estado === 'abrir' ? '¡Ya puedes abrir la nota que te dejaste! 💛' : ep.estado === 'guardado' ? 'Guardado. Se abre el ' + fechaLarga(ep.abre) + '.' : 'Una nota corta para ti al final del mes. Se abre tu último lunes del mes.') + '</p><button type="button" class="panel-link-btn" style="width:100%;border:none;cursor:pointer;background:#C9942D">' + (!tienePlan('guias') ? '👑 Escribir mi pósit' : ep.estado === 'abrir' ? '📖 Abrir mi pósit →' : ep.estado === 'guardado' ? '📌 Ver mi pósit →' : '✍️ Escribir mi pósit →') + '</button></div>');
+      const posit = el('<div class="card ps-recuadro"><p style="font-weight:700;margin:0 0 4px">📝 Pósit para fin de mes</p><p style="margin:0 0 8px;font-size:14px">' + (ep.estado === 'abrir' ? '¡Ya puedes abrir la nota que te dejaste! 💛' : ep.estado === 'guardado' ? 'Guardado. Se abre el ' + fechaLarga(ep.abre) + '.' : 'Una nota corta para ti al final del mes. Se abre tu último lunes del mes.') + '</p><button type="button" class="panel-link-btn" style="width:100%;border:none;cursor:pointer;background:#C9942D">' + (!tienePlan('guias') ? '👑 Escribir mi pósit' : ep.estado === 'abrir' ? 'Abrir mi pósit' : ep.estado === 'guardado' ? 'Ver mi pósit' : 'Escribir mi pósit') + '</button></div>');
       posit.querySelector('button').onclick = () => {
         if(!tienePlan('guias')){ avisoCorona('El pósit para fin de mes es del Plan Guías'); return; }
         sonidoTing(); state.view = 'posit'; window.scrollTo(0,0); render();
       };
       app.appendChild(posit);
       // Carta a mi yo del futuro, para todos, en su recuadro
-      const carta = el('<div class="card ps-recuadro"><p style="font-weight:700;margin:0 0 4px">✉️ Carta a mi yo del futuro</p><p style="margin:0 0 8px;font-size:14px">' + (cartaGuardada() ? 'Ya la escribiste. Puedes releerla cuando quieras.' : 'Escríbete a ti dentro de 3 meses: te la enseñaremos cuando más la necesites.') + '</p><button type="button" class="panel-link-btn" style="width:100%;border:none;cursor:pointer;background:#E39A9A">' + (!tienePlan('sesiones') ? '👑👑 Escribir mi carta' : cartaGuardada() ? '💌 Leer mi carta →' : '✍️ Escribir mi carta →') + '</button></div>');
+      const carta = el('<div class="card ps-recuadro"><p style="font-weight:700;margin:0 0 4px">✉️ Carta a mi yo del futuro</p><p style="margin:0 0 8px;font-size:14px">' + (cartaGuardada() ? 'Ya la escribiste. Puedes releerla cuando quieras.' : 'Escríbete a ti dentro de 3 meses: te la enseñaremos cuando más la necesites.') + '</p><button type="button" class="panel-link-btn" style="width:100%;border:none;cursor:pointer;background:#E39A9A">' + (!tienePlan('sesiones') ? '👑👑 Escribir mi carta' : cartaGuardada() ? 'Leer mi carta' : 'Escribir mi carta') + '</button></div>');
       carta.querySelector('button').onclick = () => {
         if(!tienePlan('sesiones')){ avisoCorona('La carta a tu yo del futuro es del Plan Guías + Grupo'); return; }
         state.prevView = 'practicaSemanal'; state.view = 'carta'; window.scrollTo(0,0); render();
@@ -5636,7 +5640,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       app.appendChild(carta);
       // Lunes de compromiso con el grupo (solo Plan Guías + Grupo), en su recuadro
       if(registraLunes()){
-        const lunes = el('<div class="card ps-recuadro"><p style="font-weight:700;margin:0 0 4px">✍️ Lunes de compromiso con el grupo</p><p style="margin:0 0 8px">' + (registroPendienteEstaSemana() ? 'Aún no has hecho tu compromiso de esta semana.' : 'Próximo: ' + textoProximoLunes() + '.') + '</p><button type="button" class="panel-link-btn" style="width:100%;border:none;cursor:pointer;background:#E39A9A">Ir al lunes de compromiso →</button></div>');
+        const lunes = el('<div class="card ps-recuadro"><p style="font-weight:700;margin:0 0 4px">✍️ Lunes de compromiso con el grupo</p><p style="margin:0 0 8px">' + (registroPendienteEstaSemana() ? 'Aún no has hecho tu compromiso de esta semana.' : 'Próximo: ' + textoProximoLunes() + '.') + '</p><button type="button" class="panel-link-btn" style="width:100%;border:none;cursor:pointer;background:#E39A9A">Ir al lunes de compromiso</button></div>');
         lunes.querySelector('button').onclick = () => { state.view = 'checkin'; state.regPaso = null; window.scrollTo(0,0); render(); };
         app.appendChild(lunes);
       }
@@ -5815,7 +5819,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     card.appendChild(cont);
     const pintar = () => {
       cont.innerHTML = `
-        <p style="margin:0 0 4px;font-size:16px;letter-spacing:1px"><b>REGISTRO</b></p>
+        <p style="margin:0 0 4px;font-size:16px;"><b>✅ Registra tu práctica</b></p>
         <p style="font-size:13px;color:var(--ink-soft);margin:0 0 10px">${registraLunes() ? 'Opcional. Toca el día y elige cuántas veces lo hiciste; el lunes tu cierre saldrá ya rellenado.' : 'Toca el día y elige cuántas veces hiciste tu práctica (del 1 al 9).'}</p>
         <div class="dias-fila">${DIAS_SEMANA.map((d, i) => `<button type="button" class="dia-btn${veces[d] ? ' hecho' : ''}${i === hoy ? ' hoy' : ''}" data-dia="${d}" ${i > hoy ? 'disabled' : ''} aria-pressed="${!!veces[d]}" style="${elegido === d ? 'outline:3px solid var(--honey);outline-offset:1px' : ''}"><span class="dia-letra">${d}</span><span class="dia-tick" style="font-size:16px">${veces[d] || ''}</span></button>`).join('')}</div>
         ${elegido ? `<div style="margin:10px 0 0;padding:10px;border-radius:12px;background:var(--honey-tint)">
@@ -6249,6 +6253,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     btn.addEventListener('pointerup', levantar);
     btn.addEventListener('pointercancel', levantar);
     btn.addEventListener('contextmenu', e => e.preventDefault());
+    ['touchstart', 'touchmove'].forEach(t => btn.addEventListener(t, e => e.preventDefault(), { passive: false }));
     const guardar = async () => {
       fase = 'hecho'; btn.remove(); const nota = caja.querySelector('.contrato-nota'); if(nota) nota.textContent = 'Este es tu compromiso contigo para este trimestre. Vuelve a leerlo cuando lo necesites. 🙏';
       const ta = caja.querySelector('.perg-edit'), texto = ta.value.trim();
@@ -7023,4 +7028,4 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V11.05 · App Metas Amables · 2026-10-04 23:41 ==== -->
+<!-- ==== Fin del index V11.06 · App Metas Amables · 2026-10-04 23:48 ==== -->
