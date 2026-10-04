@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V11.06 · App Metas Amables · 2026-10-04 23:48 ==== -->
+<!-- ==== index V11.07 · App Metas Amables · 2026-10-04 23:51 ==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1632,7 +1632,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V11.06';
+  const APP_VERSION = 'V11.07';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -4537,7 +4537,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       const ep = estadoPosit(), clave = 'posit_visto_' + state.me + '_' + (ep.p ? (ep.p.mes || ep.p.trimestre) : '');
       let visto = false; try { visto = !!localStorage.getItem(clave); } catch(e){}
       if(ep.estado === 'abrir' && !visto){
-        const t = el('<div class="card carta-aviso" style="border-color:#E2C79A;background:#FFF8DC"><p style="font-weight:800;margin:0 0 6px">📝 Tienes un pósit de tu yo de principio de mes</p><button type="button" class="panel-link-btn" style="width:100%;border:none;cursor:pointer;background:#C9942D">Abrirlo →</button></div>');
+        const t = el('<div class="card carta-aviso" style="border-color:#E2C79A;background:#FFF8DC"><p style="font-weight:800;margin:0 0 6px">📝 Tienes una nota de tu yo de hace un mes</p><button type="button" class="panel-link-btn" style="width:100%;border:none;cursor:pointer;background:#C9942D">Abrirlo →</button></div>');
         t.querySelector('button').onclick = () => { try { localStorage.setItem(clave, '1'); } catch(e){} state.view = 'posit'; window.scrollTo(0,0); render(); };
         app.appendChild(t);
       }
@@ -5625,9 +5625,9 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       app.appendChild(contrato);
       // Pósit para fin de mes (Plan Guías)
       const ep = estadoPosit();
-      const posit = el('<div class="card ps-recuadro"><p style="font-weight:700;margin:0 0 4px">📝 Pósit para fin de mes</p><p style="margin:0 0 8px;font-size:14px">' + (ep.estado === 'abrir' ? '¡Ya puedes abrir la nota que te dejaste! 💛' : ep.estado === 'guardado' ? 'Guardado. Se abre el ' + fechaLarga(ep.abre) + '.' : 'Una nota corta para ti al final del mes. Se abre tu último lunes del mes.') + '</p><button type="button" class="panel-link-btn" style="width:100%;border:none;cursor:pointer;background:#C9942D">' + (!tienePlan('guias') ? '👑 Escribir mi pósit' : ep.estado === 'abrir' ? 'Abrir mi pósit' : ep.estado === 'guardado' ? 'Ver mi pósit' : 'Escribir mi pósit') + '</button></div>');
+      const posit = el('<div class="card ps-recuadro"><p style="font-weight:700;margin:0 0 4px">📝 Una nota para mi yo dentro de un mes</p><p style="margin:0 0 8px;font-size:14px">' + (ep.estado === 'abrir' ? '¡Ya puedes abrir la nota que te dejaste! 💛' : ep.estado === 'guardado' ? 'Guardado. Se abre el ' + fechaLarga(ep.abre) + '.' : 'Una nota corta para ti al final del mes. Se abre tu último lunes del mes.') + '</p><button type="button" class="panel-link-btn" style="width:100%;border:none;cursor:pointer;background:#C9942D">' + (!tienePlan('guias') ? '👑 Escribir mi nota' : ep.estado === 'abrir' ? 'Abrir mi nota' : ep.estado === 'guardado' ? 'Ver mi nota' : 'Escribir mi nota') + '</button></div>');
       posit.querySelector('button').onclick = () => {
-        if(!tienePlan('guias')){ avisoCorona('El pósit para fin de mes es del Plan Guías'); return; }
+        if(!tienePlan('guias')){ avisoCorona('La nota para tu yo dentro de un mes es del Plan Guías'); return; }
         sonidoTing(); state.view = 'posit'; window.scrollTo(0,0); render();
       };
       app.appendChild(posit);
@@ -6186,7 +6186,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
         : '<p class="contrato-nota">Puedes retocar el texto.<br>Cuando estés listo/a, <b>mantén el dedo en el punto rojo</b> y llévalo al círculo punteado del contrato para sellar con lacre tu compromiso.</p>'
           + '<button type="button" class="lacre-btn" aria-label="Mantén pulsado para sellar"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="46" class="lacre-aro"/><circle cx="50" cy="50" r="46" class="lacre-progreso"/></svg><svg class="huella" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M6.5 5.5A8 8 0 0 1 19 8"/><path d="M4.2 9.5a8 8 0 0 1 1.3-2.6"/><path d="M19.8 11.2c.3 2.6-.1 5-1 7"/><path d="M7.5 18.5c1-2 1.5-4.2 1.5-6.5a3 3 0 0 1 6 0c0 .9 0 1.7-.1 2.5"/><path d="M12 12c0 3.5-.8 6.6-2.5 9"/><path d="M14.6 17.2c-.4 1.6-1 3-1.8 4.3"/><path d="M5.8 15.5c.4-1.1.7-2.3.7-3.5a5.5 5.5 0 0 1 9.4-3.9"/><path d="M17.5 13.5c0 1.2-.1 2.3-.4 3.4"/></svg></button>'
           + '<p class="contrato-msg"></p>')
-      + '</div>');
+      + '</div>').firstElementChild;
     app.appendChild(caja);
     if(hecho) return;
     const perg = caja.querySelector('.pergamino'), btn = caja.querySelector('.lacre-btn'), prog = caja.querySelector('.lacre-progreso'), msg = caja.querySelector('.contrato-msg'), hueco = caja.querySelector('.perg-sello');
@@ -6288,13 +6288,13 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
   function fechaLarga(d){ return d.toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' }); }
   function renderPosit(){
-    renderBackTopbar('📝 Pósit para fin de mes');
+    renderBackTopbar('📝 Una nota para mi yo dentro de un mes');
     app.querySelector('#btnVolver').onclick = () => { state.view = 'practicaSemanal'; window.scrollTo(0,0); render(); };
-    const e = estadoPosit(), caja = el('<div class="posit-escena"></div>');
+    const e = estadoPosit(), caja = el('<div class="posit-escena"></div>').firstElementChild;
     app.appendChild(caja);
     if(e.estado === 'guardado'){
       const faltan = Math.ceil((e.abre - new Date()) / 86400000);
-      caja.innerHTML = '<div class="posit posit-cerrado"><p class="posit-tit">📌 Pósit guardado en el cajón</p><p>Se abrirá el <b>' + fechaLarga(e.abre) + '</b>' + (faltan > 0 ? ' (faltan ' + faltan + (faltan === 1 ? ' día' : ' días') + ')' : '') + '.</p><p style="font-size:14px;opacity:.75">No hagas trampa 😉: tu yo de fin de mes lo leerá con otros ojos.</p></div>';
+      caja.innerHTML = '<div class="posit posit-cerrado"><p class="posit-tit">📌 Nota guardada en el cajón</p><p>Se abrirá el <b>' + fechaLarga(e.abre) + '</b>' + (faltan > 0 ? ' (faltan ' + faltan + (faltan === 1 ? ' día' : ' días') + ')' : '') + '.</p><p style="font-size:14px;opacity:.75">No hagas trampa 😉: tu yo de fin de mes lo leerá con otros ojos.</p></div>';
       return;
     }
     if(e.estado === 'abrir'){
@@ -6362,7 +6362,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   function renderCarta(){
     renderBackTopbar('✉️ Carta a mi yo del futuro');
     app.querySelector('#btnVolver').onclick = () => { state.view = 'practicaSemanal'; window.scrollTo(0,0); render(); };
-    const caja = el('<div class="card carta-pantalla"><div style="text-align:center;margin-bottom:6px">' + practiHTML('escribiendo1', '✍️', 120) + '</div><div id="cartaFuturo"></div></div>');
+    const caja = el('<div class="card carta-pantalla"><div style="text-align:center;margin-bottom:6px">' + practiHTML('escribiendo1', '✍️', 120) + '</div><div id="cartaFuturo"></div></div>').firstElementChild;
     app.appendChild(caja);
     if(typeof activarPracti === 'function') activarPracti(caja);
     pintarCartaFuturo(caja.querySelector('#cartaFuturo'));
@@ -6373,7 +6373,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     if(!tienePlan('sesiones') || !c || !a || a.numero < a.total - 1) return null;
     const clave = 'carta_vista_' + state.me + '_' + a.total + '_' + (typeof currentQLabel !== 'undefined' ? currentQLabel : '');
     try { if(localStorage.getItem(clave)) return null; } catch(e){}
-    const t = el('<div class="card carta-aviso"><p style="font-weight:800;margin:0 0 6px">✉️ Tu yo del pasado te escribió una carta</p><p style="margin:0 0 8px">Se acaba el trimestre. Léela: es de ti, para ti.</p><details><summary>Abrir la carta</summary>' + cartaLeidaHTML(c) + '</details><button type="button" class="carta-btn-sec">Ya la he leído ✔️</button></div>');
+    const t = el('<div class="card carta-aviso"><p style="font-weight:800;margin:0 0 6px">✉️ Tu yo del pasado te escribió una carta</p><p style="margin:0 0 8px">Se acaba el trimestre. Léela: es de ti, para ti.</p><details><summary>Abrir la carta</summary>' + cartaLeidaHTML(c) + '</details><button type="button" class="carta-btn-sec">Ya la he leído ✔️</button></div>').firstElementChild;
     t.querySelector('details').addEventListener('toggle', ev => { if(ev.target.open && typeof sonarSintonia === 'function') sonarSintonia(15, 0.5); });
     t.querySelector('button').onclick = () => { try { localStorage.setItem(clave, '1'); } catch(e){} t.remove(); };
     return t;
@@ -7028,4 +7028,4 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V11.06 · App Metas Amables · 2026-10-04 23:48 ==== -->
+<!-- ==== Fin del index V11.07 · App Metas Amables · 2026-10-04 23:51 ==== -->
