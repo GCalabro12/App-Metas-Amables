@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V10.78 · App Metas Amables · 2026-10-04 19:19 ==== -->
+<!-- ==== index V10.80 · App Metas Amables · 2026-10-04 20:01 ==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1560,7 +1560,7 @@ body.con-fondo-nivel::before{content:"";position:fixed;inset:0;z-index:-1;backgr
   }
 
 
-  const APP_VERSION = 'V10.78';
+  const APP_VERSION = 'V10.80';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -2400,6 +2400,10 @@ body.con-fondo-nivel::before{content:"";position:fixed;inset:0;z-index:-1;backgr
         if(!sp || !caja.classList.contains('modo-subrayar')) return;
         e.preventDefault();
         const u = sp.dataset.u;
+        // Algunos móviles mandan dos toques seguidos: el segundo quitaba el amarillo recién puesto
+        const ahora = Date.now();
+        if(texto._ultimoToque && texto._ultimoToque.u === u && ahora - texto._ultimoToque.t < 700) return;
+        texto._ultimoToque = { u: u, t: ahora };
         const poner = !sp.classList.contains('resaltada');
         texto.querySelectorAll('.frase[data-u="' + u + '"]').forEach(x => x.classList.toggle('resaltada', poner));
         const lista = Array.from(new Set(Array.from(texto.querySelectorAll('.frase.resaltada')).map(x => Number(x.dataset.u))));
@@ -4314,7 +4318,8 @@ body.con-fondo-nivel::before{content:"";position:fixed;inset:0;z-index:-1;backgr
     app.innerHTML = '';
     app.setAttribute('data-vista', state.view || '');
     try {
-      const inicio = state.me && state.view === 'panel' && !state.panelSub;
+      // Fondo en las pantallas de ambiente (inicio, insignias, Prácti, frases, música); blanco en las de trabajo
+      const inicio = state.me && ((state.view === 'panel' && !state.panelSub) || ['perfil','habla','frases','musica'].indexOf(state.view) >= 0);
       let fondo = '';
       if(inicio){
         const n = state.gamifica ? BADGE_SCALE.indexOf(insigniaActual(state.gamifica.cumplidas || 0)) : -1;
@@ -6527,4 +6532,4 @@ body.con-fondo-nivel::before{content:"";position:fixed;inset:0;z-index:-1;backgr
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V10.78 · App Metas Amables · 2026-10-04 19:19 ==== -->
+<!-- ==== Fin del index V10.80 · App Metas Amables · 2026-10-04 20:01 ==== -->
