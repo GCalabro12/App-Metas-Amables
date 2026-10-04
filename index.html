@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V10.67 · App Metas Amables · 2026-10-04 02:03 ==== -->
+<!-- ==== index V10.68 · App Metas Amables · 2026-10-04 02:14 ==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -844,6 +844,7 @@
 .habla-medio{position:relative;width:100%;display:flex;justify-content:center;margin-top:14px}
 .habla-practi{width:min(62vw,240px);height:min(66vw,254px);padding:0;border:0;background:none;cursor:pointer;-webkit-tap-highlight-color:transparent}
 .habla-voz{position:absolute;right:0;top:4px;width:46px;height:46px;display:flex;align-items:center;justify-content:center;padding:0;border-radius:50%;border:2px solid #7B5FB8;background:#fff;color:#7B5FB8;cursor:pointer}
+.habla-tipo-voz{position:absolute;right:0;top:56px;padding:5px 10px;border-radius:99px;border:2px solid #7B5FB8;background:#fff;color:#7B5FB8;font:inherit;font-size:12.5px;font-weight:700;cursor:pointer}
 .habla-voz.apagada{border-color:#999;color:#999}
 .habla-quedan{margin:4px 0 2px;font-size:14px;font-weight:700;color:#7B5FB8;text-align:center}
 .habla-ver{margin:4px 0 10px;padding:6px 14px;border-radius:99px;border:2px solid #7B5FB8;background:#fff;color:#7B5FB8;font-weight:700;font-size:14px;cursor:pointer}
@@ -1526,7 +1527,7 @@ body:has(.banda-fin-plan) #app{padding-bottom:28vh}
   }
 
 
-  const APP_VERSION = 'V10.67';
+  const APP_VERSION = 'V10.68';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -3336,15 +3337,19 @@ body:has(.banda-fin-plan) #app{padding-bottom:28vh}
     const caja = app.querySelector('#hablaTexto'); if(!caja) return;
     habla.ultima = texto;
     const turno = (habla.turno = (habla.turno || 0) + 1);
-    caja.textContent = ''; hablaBoca(true);
-    let i = 0, escrito = false, hablado = !habla.voz;
-    const fin = () => { if(escrito && hablado && habla.turno === turno) hablaBoca(false); };
-    const paso = () => {
-      if(habla.turno !== turno) return;
-      i += 2; caja.textContent = texto.slice(0, i);
-      if(i < texto.length) setTimeout(paso, 28); else { escrito = true; fin(); }
+    let escrito = false, hablado = !habla.voz;
+    const fin = () => { if(escrito && hablado && habla.turno === turno){ hablaBoca(false); hablaPensando(false); } };
+    // Escribe el texto poco a poco (a la vez que empieza la voz)
+    const escribir = () => {
+      hablaPensando(false); hablaBoca(true);
+      let i = 0; caja.textContent = '';
+      const paso = () => {
+        if(habla.turno !== turno) return;
+        i += 2; caja.textContent = texto.slice(0, i);
+        if(i < texto.length) setTimeout(paso, 28); else { escrito = true; fin(); }
+      };
+      paso();
     };
-    paso();
     const vozMovil = () => { if(!('speechSynthesis' in window)){ hablado = true; fin(); return; } try {
         window.speechSynthesis.cancel();
         const u = new SpeechSynthesisUtterance(sinEmojis(texto));
@@ -3353,17 +3358,28 @@ body:has(.banda-fin-plan) #app{padding-bottom:28vh}
         u.onend = u.onerror = () => { hablado = true; fin(); };
         window.speechSynthesis.speak(u);
       } catch(e){ hablado = true; fin(); } };
-    if(habla.voz){
-      if(vozNaturalActiva()){
-        hablaVozNatural(texto, turno).then(audio => {
-          if(habla.turno !== turno) return;
-          if(!audio){ vozMovil(); return; }
-          habla.audio = audio;
-          audio.onended = audio.onerror = () => { hablado = true; fin(); };
-          audio.play().catch(() => { hablado = true; fin(); });
-        });
-      } else vozMovil();
-    } else hablado = true;
+    if(!habla.voz){ escribir(); return; }
+    if(!vozNaturalActiva()){ escribir(); vozMovil(); return; }
+    // Voz natural: la primera frase se pide sola (sale antes) y el resto a la vez, en paralelo.
+    // Mientras llega la primera, Prácti sigue pensando; texto y voz empiezan juntos.
+    const frases = texto.match(/[^.!?…]+[.!?…]+["»”)]*\s*|[^.!?…]+$/g) || [texto];
+    const primera = frases[0].trim(), resto = frases.slice(1).join('').trim();
+    caja.textContent = 'Déjame pensar…'; hablaPensando(true);
+    const pAudio1 = hablaVozNatural(primera), pAudio2 = resto ? hablaVozNatural(resto) : Promise.resolve(null);
+    let arrancado = false;
+    const respaldo = setTimeout(() => { if(!arrancado && habla.turno === turno){ arrancado = true; escribir(); vozMovil(); } }, 6000);
+    pAudio1.then(a1 => {
+      if(arrancado || habla.turno !== turno) return;
+      arrancado = true; clearTimeout(respaldo);
+      if(!a1){ escribir(); vozMovil(); return; }
+      escribir();
+      const tocar = (audio, despues) => { habla.audio = audio; audio.onended = audio.onerror = despues; audio.play().catch(despues); };
+      tocar(a1, () => {
+        if(habla.turno !== turno) return;
+        if(!resto){ hablado = true; fin(); return; }
+        pAudio2.then(a2 => { if(habla.turno !== turno) return; if(a2) tocar(a2, () => { hablado = true; fin(); }); else { hablado = true; fin(); } });
+      });
+    });
   }
 
   // Lo que Prácti sabe de la persona (sus propios datos de la app)
@@ -3464,7 +3480,7 @@ body:has(.banda-fin-plan) #app{padding-bottom:28vh}
         <div class="habla-burbuja"><p id="hablaTexto"></p></div>
         <div class="habla-medio">
           <button type="button" class="habla-practi" id="hablaPracti" aria-label="Prácti: tócale para que repita la respuesta"><span class="habla-anim"></span><span class="habla-pensando" aria-label="Prácti pensando"></span></button>
-          <button type="button" class="habla-voz" id="hablaVoz"></button>
+          <button type="button" class="habla-voz" id="hablaVoz"></button><button type="button" class="habla-tipo-voz" id="hablaTipoVoz"></button>
         </div>
         <p class="habla-quedan" id="hablaQuedan"></p>
         <button type="button" class="habla-ver" id="hablaVer">📜 Ver la conversación de hoy</button>
@@ -3488,6 +3504,9 @@ body:has(.banda-fin-plan) #app{padding-bottom:28vh}
     voz.onclick = () => { habla.voz = !habla.voz; try { localStorage.setItem('habla_voz', habla.voz ? '1' : '0'); } catch(e){} pintaVoz();
       if(!habla.voz){ hablaCallar(); hablaBoca(false); }
       else if(habla.ultima && !habla.esperando) hablaDecir(habla.ultima); };
+    const tv = caja.querySelector('#hablaTipoVoz');
+    const pintaTV = () => { tv.textContent = vozNaturalActiva() ? '✨ Voz natural' : '⚡ Voz rápida'; };
+    pintaTV(); tv.onclick = () => { try { localStorage.setItem('voz_natural', vozNaturalActiva() ? '0' : '1'); } catch(e){} pintaTV(); };
     caja.querySelector('#hablaPracti').onclick = () => { if(habla.ultima && !habla.esperando) hablaDecir(habla.ultima); };
     caja.querySelector('#hablaVer').onclick = hablaVerConversacion;
     caja.querySelector('#hablaEnviar').onclick = hablaEnviar;
@@ -3930,7 +3949,7 @@ body:has(.banda-fin-plan) #app{padding-bottom:28vh}
       });
       vozCard.querySelector('#btnProbarVoz').onclick = probar;
       const bvn = vozCard.querySelector('#btnVozNatural');
-      const pintaVN = () => { const on = vozNaturalActiva(); bvn.textContent = on ? '✨ Voz natural: sí' : 'Voz natural: no'; bvn.classList.toggle('active', on); };
+      const pintaVN = () => { const on = vozNaturalActiva(); bvn.textContent = on ? '✨ Voz natural' : '⚡ Voz rápida'; bvn.classList.toggle('active', on); };
       pintaVN(); bvn.onclick = () => { try { localStorage.setItem('voz_natural', vozNaturalActiva() ? '0' : '1'); } catch(e){} pintaVN(); };
       if(!/android/i.test(navigator.userAgent)){ const a = vozCard.querySelector('#btnAjustesVoz'); if(a) a.style.display = 'none'; }
     }
@@ -6403,4 +6422,4 @@ body:has(.banda-fin-plan) #app{padding-bottom:28vh}
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V10.67 · App Metas Amables · 2026-10-04 02:03 ==== -->
+<!-- ==== Fin del index V10.68 · App Metas Amables · 2026-10-04 02:14 ==== -->
