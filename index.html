@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V11.04 · App Metas Amables · 2026-10-04 23:37 ==== -->
+<!-- ==== index V11.05 · App Metas Amables · 2026-10-04 23:41 ==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -17,6 +17,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600;700&family=Karla:wght@400;500;700&family=UnifrakturMaguntia&display=swap" rel="stylesheet">
 <style>
+  /* Sin el recuadro azul que Android pinta al tocar */
+  *{ -webkit-tap-highlight-color: transparent; }
+  button, a, .lacre-btn{ -webkit-touch-callout:none; }
   :root{
     --bg: #FFFFFF;
     --surface: #FFFFFF;
@@ -927,7 +930,15 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 @keyframes sello-cae{0%{transform:scale(2.2) rotate(-18deg);opacity:0}60%{opacity:1}100%{transform:scale(1) rotate(-8deg);opacity:1}}
 .sello-svg{width:100%;height:100%;transform:rotate(-8deg);filter:drop-shadow(0 3px 3px rgba(0,0,0,.35))}
 .contrato-nota{margin:12px 16px;font-size:15px}
-.contrato-msg{min-height:20px;font-size:14px;margin:8px 16px}
+.contrato-msg{position:fixed;left:50%;top:76px;transform:translateX(-50%);z-index:60;max-width:88vw;margin:0;padding:10px 16px;border-radius:14px;background:rgba(40,25,8,.88);color:#FFF3D6;font-size:15px;text-align:center;box-shadow:0 6px 18px rgba(0,0,0,.3);opacity:0;pointer-events:none;transition:opacity .25s}
+.contrato-msg.visible{opacity:1}
+.perg-sello.hueco{border:3px dashed rgba(140,30,20,.55);border-radius:50%;width:92px;height:92px;bottom:18px;display:flex;align-items:center;justify-content:center;text-align:center;font-size:12px;line-height:1.2;color:rgba(120,30,20,.7);font-family:Karla,sans-serif}
+.perg-sello.hueco.activo{border-color:#F2C14E;background:rgba(242,193,78,.25);animation:hueco-late .6s ease-in-out infinite alternate}
+@keyframes hueco-late{to{transform:scale(1.08)}}
+.lacre-btn{transition:transform .08s linear}
+.lacre-btn.cargando .lacre-progreso,.lacre-btn.sellando .lacre-progreso{animation:anillo-parpadeo .22s steps(2) infinite}
+@keyframes anillo-parpadeo{50%{stroke:#FFF6C9}}
+.lacre-btn.listo,.lacre-btn.sellando{position:relative;z-index:70;box-shadow:0 0 30px 10px rgba(242,193,78,.7)}
 .lacre-btn{position:relative;width:110px;height:110px;border-radius:50%;border:none;background:radial-gradient(circle at 40% 35%,#D94A3D,#9C1E17);color:#fff;font-size:38px;cursor:pointer;touch-action:none;user-select:none;-webkit-user-select:none;box-shadow:0 6px 16px rgba(120,20,15,.45)}
 .lacre-btn .huella{position:relative;width:54px;height:54px;color:#FFE9C2;inset:auto;transform:none}
 .lacre-btn svg{position:absolute;inset:-10px;width:130px;height:130px;transform:rotate(-90deg)}
@@ -1617,7 +1628,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V11.04';
+  const APP_VERSION = 'V11.05';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -6128,26 +6139,24 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       });
     } catch(e){}
   }
+  // «Tan, tan, taaan»: tres golpes graves de timbal y un acorde de órgano con campanas. Devuelve parar()
   function sonidoSolemne(){
     try {
       audioSolemne = audioSolemne || new (window.AudioContext || window.webkitAudioContext)();
-      const c = audioSolemne, t0 = c.currentTime;
-      // Acorde de órgano suave (Do mayor abierto) y una campana encima
-      [130.8, 196, 261.6, 329.6, 392].forEach((f, i) => {
-        const o = c.createOscillator(), g = c.createGain();
-        o.type = i < 2 ? 'triangle' : 'sine'; o.frequency.value = f;
-        g.gain.setValueAtTime(0.0001, t0); g.gain.exponentialRampToValueAtTime(0.07, t0 + 0.6); g.gain.exponentialRampToValueAtTime(0.0001, t0 + 4.5);
-        o.connect(g); g.connect(c.destination); o.start(t0); o.stop(t0 + 4.6);
-      });
-      [[1046.5, 0.15], [1568, 0.45], [2093, 0.75]].forEach(([f, t]) => {
-        const o = c.createOscillator(), g = c.createGain(), ti = t0 + t;
-        o.type = 'sine'; o.frequency.value = f;
-        g.gain.setValueAtTime(0.0001, ti); g.gain.exponentialRampToValueAtTime(0.09, ti + 0.01); g.gain.exponentialRampToValueAtTime(0.0001, ti + 2.2);
-        o.connect(g); g.connect(c.destination); o.start(ti); o.stop(ti + 2.3);
-      });
-    } catch(e){}
-  }
-  function selloSVG(inicial){
+      const c = audioSolemne, t0 = c.currentTime, master = c.createGain();
+      master.gain.value = 1; master.connect(c.destination);
+      const nota = (f, ini, dur, vol, tipo, ataque) => {
+        const o = c.createOscillator(), g = c.createGain(), ti = t0 + ini;
+        o.type = tipo || 'sine'; o.frequency.value = f;
+        g.gain.setValueAtTime(0.0001, ti); g.gain.exponentialRampToValueAtTime(vol, ti + (ataque || 0.02)); g.gain.exponentialRampToValueAtTime(0.0001, ti + dur);
+        o.connect(g); g.connect(master); o.start(ti); o.stop(ti + dur + 0.05);
+      };
+      [[0, 98], [0.55, 98], [1.1, 130.8]].forEach(([t, f]) => { nota(f, t, 0.9, 0.22, 'triangle'); nota(f * 2, t, 0.5, 0.06); });
+      [130.8, 196, 261.6, 329.6, 392].forEach((f, i) => nota(f, 1.7, 5, 0.07, i < 2 ? 'triangle' : 'sine', 0.7));
+      [[1046.5, 1.9], [1568, 2.3], [2093, 2.7], [2637, 3.1]].forEach(([f, t]) => nota(f, t, 2.4, 0.08));
+      return { parar(){ try { master.gain.setTargetAtTime(0.0001, c.currentTime, 0.15); } catch(e){} } };
+    } catch(e){ return { parar(){} }; }
+  }  function selloSVG(inicial){
     return '<svg class="sello-svg" viewBox="0 0 120 150" aria-hidden="true">'
       + '<path d="M44 70 L34 146 L48 132 L58 148 L62 72 Z" fill="#8E1B1B"/><path d="M76 70 L86 146 L72 132 L62 148 L58 72 Z" fill="#A82424"/>'
       + '<path d="M60 8 C78 6 92 14 100 26 C112 34 114 52 108 66 C112 82 102 98 88 104 C78 114 60 116 46 110 C30 108 18 96 14 82 C6 68 8 50 18 38 C24 22 42 10 60 8 Z" fill="#B3261E"/>'
@@ -6167,46 +6176,91 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
         ? '<div class="perg-texto">' + escapeAttr(hecho.texto).replace(/\n/g, '<br>') + '</div>'
         : '<textarea class="perg-texto perg-edit" rows="9" maxlength="1500">' + escapeAttr(textoContrato()) + '</textarea>')
       + '<div class="perg-firma"><span>' + escapeAttr(nombre) + '</span><small>' + (hecho ? 'Sellado el ' + new Date(hecho.fecha + 'T00:00:00').toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' }) : 'Firma con tu sello') + '</small></div>'
-      + '<div class="perg-sello">' + (hecho ? selloSVG(inicial) : '') + '</div>'
+      + '<div class="perg-sello' + (hecho ? '' : ' hueco') + '">' + (hecho ? selloSVG(inicial) : '<span>Tu sello<br>aquí</span>') + '</div>'
       + '</div>'
       + (hecho ? '<p class="contrato-nota">Este es tu compromiso contigo para este trimestre. Vuelve a leerlo cuando lo necesites. 🙏</p>'
-        : '<p class="contrato-nota">Puedes retocar el texto.<br>Cuando estés listo/a, <b>mantén el dedo en el punto rojo</b> para sellar con lacre tu compromiso.</p>'
+        : '<p class="contrato-nota">Puedes retocar el texto.<br>Cuando estés listo/a, <b>mantén el dedo en el punto rojo</b> y llévalo al círculo punteado del contrato para sellar con lacre tu compromiso.</p>'
           + '<button type="button" class="lacre-btn" aria-label="Mantén pulsado para sellar"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="46" class="lacre-aro"/><circle cx="50" cy="50" r="46" class="lacre-progreso"/></svg><svg class="huella" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M6.5 5.5A8 8 0 0 1 19 8"/><path d="M4.2 9.5a8 8 0 0 1 1.3-2.6"/><path d="M19.8 11.2c.3 2.6-.1 5-1 7"/><path d="M7.5 18.5c1-2 1.5-4.2 1.5-6.5a3 3 0 0 1 6 0c0 .9 0 1.7-.1 2.5"/><path d="M12 12c0 3.5-.8 6.6-2.5 9"/><path d="M14.6 17.2c-.4 1.6-1 3-1.8 4.3"/><path d="M5.8 15.5c.4-1.1.7-2.3.7-3.5a5.5 5.5 0 0 1 9.4-3.9"/><path d="M17.5 13.5c0 1.2-.1 2.3-.4 3.4"/></svg></button>'
           + '<p class="contrato-msg"></p>')
       + '</div>');
     app.appendChild(caja);
     if(hecho) return;
-    const perg = caja.querySelector('.pergamino'), btn = caja.querySelector('.lacre-btn'), prog = caja.querySelector('.lacre-progreso'), msg = caja.querySelector('.contrato-msg');
-    const LARGO = 2 * Math.PI * 46, DURA = 3000;
+    const perg = caja.querySelector('.pergamino'), btn = caja.querySelector('.lacre-btn'), prog = caja.querySelector('.lacre-progreso'), msg = caja.querySelector('.contrato-msg'), hueco = caja.querySelector('.perg-sello');
+    const LARGO = 2 * Math.PI * 46, CARGA = 1500, SELLO = 3500;
     prog.style.strokeDasharray = LARGO; prog.style.strokeDashoffset = LARGO;
-    let inicio = 0, raf = 0, terminado = false;
-    const pintar = p => { prog.style.strokeDashoffset = LARGO * (1 - p); perg.style.setProperty('--brillo', p); };
-    const paso = () => {
-      const p = Math.min(1, (performance.now() - inicio) / DURA);
-      pintar(p);
-      if(p >= 1){ sellar(); return; }
-      raf = requestAnimationFrame(paso);
+    // fase: 'quieto' → 'cargando' (dedo quieto) → 'arrastrando' → 'sellando' (en el hueco) → 'sellado' (falta levantar) → 'hecho'
+    let fase = 'quieto', t0 = 0, raf = 0, x0 = 0, y0 = 0, musica = null;
+    const aviso = t => { msg.textContent = t; msg.classList.toggle('visible', !!t); };
+    const anillo = p => { prog.style.strokeDashoffset = LARGO * (1 - p); };
+    const mover = (dx, dy, esc) => { btn.style.transform = 'translate(' + dx + 'px,' + dy + 'px) scale(' + esc + ')'; };
+    const enHueco = (x, y) => { const r = hueco.getBoundingClientRect(); return x > r.left - 10 && x < r.right + 10 && y > r.top - 10 && y < r.bottom + 10; };
+    const volver = texto => {
+      cancelAnimationFrame(raf); if(musica){ musica.parar(); musica = null; }
+      fase = 'quieto'; btn.className = 'lacre-btn'; btn.style.transform = ''; anillo(0); perg.style.setProperty('--brillo', 0); hueco.classList.remove('activo');
+      aviso(texto);
     };
-    const empezar = e => { if(terminado) return; e.preventDefault(); inicio = performance.now(); btn.classList.add('pulsando'); msg.textContent = 'Sigue… respira… es tu compromiso contigo.'; raf = requestAnimationFrame(paso); };
-    const soltar = () => { if(terminado) return; cancelAnimationFrame(raf); btn.classList.remove('pulsando'); pintar(0); msg.textContent = 'Mantén el dedo hasta que se complete el círculo.'; };
-    btn.addEventListener('pointerdown', empezar);
-    ['pointerup', 'pointerleave', 'pointercancel'].forEach(t => btn.addEventListener(t, soltar));
+    const bucleCarga = () => {
+      const p = Math.min(1, (performance.now() - t0) / CARGA);
+      anillo(p); mover(0, 0, 1 + p * 0.25);
+      if(p >= 1){ fase = 'arrastrando'; btn.classList.remove('cargando'); btn.classList.add('listo'); anillo(1); aviso('✋ Ahora lleva el sello al círculo punteado del contrato, sin levantar el dedo.'); try { navigator.vibrate && navigator.vibrate(40); } catch(e){} return; }
+      raf = requestAnimationFrame(bucleCarga);
+    };
+    const bucleSello = () => {
+      const p = Math.min(1, (performance.now() - t0) / SELLO);
+      perg.style.setProperty('--brillo', p); anillo(p);
+      if(p >= 1){ estampar(); return; }
+      raf = requestAnimationFrame(bucleSello);
+    };
+    const estampar = () => {
+      fase = 'sellado';
+      try { navigator.vibrate && navigator.vibrate([60, 40, 140]); } catch(e){}
+      perg.classList.add('sellado'); hueco.classList.remove('hueco', 'activo'); hueco.innerHTML = selloSVG(inicial);
+      btn.style.visibility = 'hidden';
+      aviso('🙏 Ya puedes levantar el dedo.');
+    };
+    btn.addEventListener('pointerdown', e => {
+      if(fase !== 'quieto') return;
+      e.preventDefault(); try { btn.setPointerCapture(e.pointerId); } catch(err){}
+      x0 = e.clientX; y0 = e.clientY; t0 = performance.now(); fase = 'cargando'; btn.classList.add('cargando');
+      aviso('Mantén el dedo unos segundos…');
+      raf = requestAnimationFrame(bucleCarga);
+    });
+    btn.addEventListener('pointermove', e => {
+      if(fase === 'cargando' && Math.hypot(e.clientX - x0, e.clientY - y0) > 25){ volver('Primero mantén el dedo quieto unos segundos, hasta que el círculo amarillo se llene.'); return; }
+      if(fase !== 'arrastrando' && fase !== 'sellando') return;
+      mover(e.clientX - x0, e.clientY - y0, 1.25);
+      const dentro = enHueco(e.clientX, e.clientY);
+      if(fase === 'arrastrando' && dentro){
+        fase = 'sellando'; t0 = performance.now(); hueco.classList.add('activo'); btn.classList.add('sellando');
+        musica = sonidoSolemne(); aviso('Mantén el sello sobre el contrato unos segundos…');
+        raf = requestAnimationFrame(bucleSello);
+      } else if(fase === 'sellando' && !dentro){
+        cancelAnimationFrame(raf); if(musica){ musica.parar(); musica = null; }
+        fase = 'arrastrando'; hueco.classList.remove('activo'); btn.classList.remove('sellando'); perg.style.setProperty('--brillo', 0); anillo(1);
+        aviso('Vuelve a ponerlo dentro del círculo punteado.');
+      }
+    });
+    const levantar = () => {
+      if(fase === 'quieto' || fase === 'hecho') return;
+      if(fase === 'sellado'){ guardar(); return; }
+      if(fase === 'cargando') volver('Mantén el dedo durante unos segundos, hasta que se llene el círculo amarillo.');
+      else volver('Lleva el sello hasta el círculo punteado y mantenlo ahí, sin levantar el dedo.');
+    };
+    btn.addEventListener('pointerup', levantar);
+    btn.addEventListener('pointercancel', levantar);
     btn.addEventListener('contextmenu', e => e.preventDefault());
-    const sellar = async () => {
-      terminado = true; btn.classList.remove('pulsando'); btn.disabled = true;
+    const guardar = async () => {
+      fase = 'hecho'; btn.remove(); const nota = caja.querySelector('.contrato-nota'); if(nota) nota.textContent = 'Este es tu compromiso contigo para este trimestre. Vuelve a leerlo cuando lo necesites. 🙏';
       const ta = caja.querySelector('.perg-edit'), texto = ta.value.trim();
-      try { navigator.vibrate && navigator.vibrate([60, 40, 120]); } catch(e){}
-      sonidoSolemne();
-      perg.classList.add('sellado');
-      caja.querySelector('.perg-sello').innerHTML = selloSVG(inicial);
       const div = document.createElement('div'); div.className = 'perg-texto'; div.innerHTML = escapeAttr(texto).replace(/\n/g, '<br>'); ta.replaceWith(div);
-      btn.remove(); msg.textContent = 'Guardando tu compromiso…';
+      aviso('Guardando tu compromiso…');
       try {
         const r = await api('/carta', { tipo: 'contrato', texto, trimestre: trimestreClave() });
         if(state.gamifica && r.datosFormulario) state.gamifica.datosFormulario = r.datosFormulario;
-        msg.textContent = '📜 Compromiso sellado. Es un acto sagrado contigo.';
-        setTimeout(sonidoTing, 1200);
-      } catch(err){ msg.textContent = 'Está sellado, pero no se pudo guardar. Revisa tu conexión y vuelve a intentarlo.'; }
+        aviso('📜 Compromiso sellado. Es un acto sagrado contigo.');
+        setTimeout(sonidoTing, 900);
+        setTimeout(() => aviso(''), 6000);
+      } catch(err){ aviso('Está sellado, pero no se pudo guardar. Revisa tu conexión y vuelve a intentarlo.'); }
     };
   }
   // ===== Pósit para fin de mes (Plan Guías) =====
@@ -6969,4 +7023,4 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V11.04 · App Metas Amables · 2026-10-04 23:37 ==== -->
+<!-- ==== Fin del index V11.05 · App Metas Amables · 2026-10-04 23:41 ==== -->
