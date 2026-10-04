@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V10.68 · App Metas Amables · 2026-10-04 02:14 ==== -->
+<!-- ==== index V10.70 · App Metas Amables · 2026-10-04 14:58 ==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -880,6 +880,8 @@
 .bfp-botones{display:flex;gap:10px;flex-wrap:wrap;margin-top:4px}.bfp-si{flex:1;text-align:center;padding:12px 14px;border-radius:99px;background:#101010;color:#FFD43B;font-weight:800;text-decoration:none}
 .bfp-planes{padding:12px 16px;border-radius:99px;border:2px solid #101010;background:transparent;font:inherit;font-weight:700;cursor:pointer}
 body:has(.banda-fin-plan) #app{padding-bottom:28vh}
+.ayuda-voz ol{margin:0;padding-left:22px;line-height:1.55}.ayuda-voz li{margin:0 0 6px}
+.acceso-google{max-width:520px;margin:4px auto 14px;text-align:center}.acceso-google p{margin:0 0 8px;font-size:14px;color:var(--ink-soft)}.acceso-google #btnGoogle{display:flex;justify-content:center}
 .voz-ayuda{margin-top:16px;padding:12px;border-radius:12px;background:#F1ECFC}
 .prueba-caja{max-width:520px;margin:0 auto 14px}.prueba-nota{text-align:center;font-size:13px;color:#666;margin:6px 0 0}
 .encuesta-estrellas{display:flex;gap:8px;margin:6px 0 14px}.encuesta-estrellas button{flex:1;height:46px;border-radius:12px;border:2px solid #E2B33C;background:#fff;font:inherit;font-size:18px;font-weight:800;color:#8a6420;cursor:pointer}
@@ -1527,7 +1529,7 @@ body:has(.banda-fin-plan) #app{padding-bottom:28vh}
   }
 
 
-  const APP_VERSION = 'V10.68';
+  const APP_VERSION = 'V10.70';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -1690,6 +1692,32 @@ body:has(.banda-fin-plan) #app{padding-bottom:28vh}
   function nombreLogin(){
     if(state.loginNombre !== undefined) return state.loginNombre;
     try{ return localStorage.getItem('ma_nombre_login') || ''; }catch(e){ return ''; }
+  }
+
+  // ===== Entrar con Google (segunda opción) =====
+  const GOOGLE_CLIENT_ID = '976261264218-26cmuog040g9l4qns79q56344n8fcq7m.apps.googleusercontent.com';   // el mismo que en el Worker; mientras esté vacío, el botón no sale
+  function cargarGoogle(){
+    if(window.google && google.accounts) return Promise.resolve(true);
+    return new Promise(r => { const s = document.createElement('script'); s.src = 'https://accounts.google.com/gsi/client'; s.async = true; s.onload = () => r(true); s.onerror = () => r(false); document.head.appendChild(s); });
+  }
+  async function botonGoogle(caja){
+    if(!GOOGLE_CLIENT_ID || !caja) return;
+    if(!(await cargarGoogle())) return;
+    google.accounts.id.initialize({ client_id: GOOGLE_CLIENT_ID, callback: async resp => {
+      state.loginError = 'Comprobando…'; render();
+      try {
+        const r = await api('/login-google', { credential: resp.credential });
+        if(r.nuevo){
+          // Aún no tiene cuenta: se rellena «Crear cuenta» con su nombre y su correo de Google
+          state.altaDraft = Object.assign({}, state.altaDraft || {}, { nombre: r.nombre, email: r.email });
+          state.loginView = 'signup'; state.loginError = 'No hay ninguna cuenta con ' + r.email + '. Completa tus datos para crearla.'; render(); return;
+        }
+        guardarSesion(r.token); state.loginError = '';
+        try{ localStorage.setItem('ma_user', r.nombre); }catch(e){}
+        pickMe(r.nombre);
+      } catch(e){ state.loginError = mensajeError(e, 'No se pudo entrar con Google. Prueba con tu nombre y contraseña.'); render(); }
+    }});
+    google.accounts.id.renderButton(caja, { theme: 'outline', size: 'large', shape: 'pill', text: 'continue_with', locale: 'es', width: Math.min(360, caja.clientWidth || 320) });
   }
 
   async function loginWithPassword(nombre, pass){
@@ -3859,6 +3887,27 @@ body:has(.banda-fin-plan) #app{padding-bottom:28vh}
     raiz.querySelectorAll('.niveles-tabla').forEach(t => { t.onclick = () => abrirEnHorizontal(t); });
   }
 
+  // Pantalla de ayuda: cómo cambiar la voz del móvil (Android), con los pasos tal como salen en el teléfono
+  function renderAyudaVoz(){
+    renderBackTopbar('📱 Cómo mejorar la voz');
+    app.querySelector('#btnVolver').onclick = () => { state.view = 'ajustes'; window.scrollTo(0,0); render(); };
+    const android = /android/i.test(navigator.userAgent);
+    app.appendChild(el(`<div class="card ayuda-voz">
+      <p style="margin:0 0 12px">Si al cambiar la voz en la app todas suenan igual, es porque <b>en Android la app lee con la voz que tiene puesta el móvil</b>. Se cambia en los ajustes del teléfono, así:</p>
+      <ol>
+        <li>Abre los <b>Ajustes</b> del móvil y busca <b>«Texto a voz»</b>.</li>
+        <li>En <b>Motor preferido</b>, marca <b>«Reconocimiento y síntesis de voz de Google»</b>.</li>
+        <li>Toca la <b>ⓘ</b> (o la rueda ⚙️) que está a su derecha.</li>
+        <li>Entra en <b>«Instalar archivos de voz»</b> y elige <b>Español (España)</b>.</li>
+        <li>Verás <b>Voz I, II, III, IV y V</b>. Tócalas para oírlas y deja marcada la que más te guste.</li>
+        <li>Vuelve atrás y pulsa <b>«Escuchar una muestra»</b> para comprobarla. Puedes subir un poco el <b>Tono</b> si quieres una voz más alegre.</li>
+        <li>Vuelve a la app: Prácti leerá tus guías con esa voz.</li>
+      </ol>
+      ${android ? '<a class="btn btn-yes" style="display:block;text-align:center;text-decoration:none;margin-top:14px" href="intent:#Intent;action=com.android.settings.TTS_SETTINGS;end">⚙️ Abrir «Texto a voz» del móvil</a><p style="font-size:12px;color:var(--ink-soft);margin:6px 0 0">Si el botón no abre nada, sigue los pasos a mano: algunos móviles no lo permiten.</p>' : '<p style="font-size:13px;color:var(--ink-soft)">En iPhone puedes elegir la voz directamente en la app (Menú → Ajustes → Voz de Prácti).</p>'}
+      <p style="margin:14px 0 0;font-size:13px">✨ En «Habla con Prácti» puedes usar además la <b>voz natural</b>, que no depende del móvil.</p>
+    </div>`));
+  }
+
   function renderAjustesView(){
     renderBackTopbar('Ajustes');
     const card = document.createElement('div');
@@ -3916,11 +3965,7 @@ body:has(.banda-fin-plan) #app{padding-bottom:28vh}
           <p style="font-weight:700;margin:0 0 6px">✨ Voz natural en «Habla con Prácti»</p>
           <p style="font-size:13px;margin:0 0 8px">Cuando hablas con Prácti, te responde con una voz más humana (tarda un segundo más). Si falla, usa la voz del móvil.</p>
           <button type="button" class="theme-toggle-btn" id="btnVozNatural"></button>
-          <p style="font-weight:700;margin:14px 0 6px">📱 ¿Todas las voces suenan igual?</p>
-          <p style="font-size:13px;margin:0 0 6px">En Android la app lee las guías con la voz que tenga puesta el móvil. Para cambiarla:</p>
-          <ol style="font-size:13px;margin:0 0 10px;padding-left:20px;line-height:1.5"><li>Abre los <b>Ajustes</b> del móvil y busca <b>«Texto a voz»</b> (o «Salida de texto a voz»).</li><li>En <b>Motor preferido</b>, elige <b>Servicios de voz de Google</b>.</li><li>Toca ⚙️ → <b>Instalar datos de voz</b> → <b>Español (España)</b> y elige la voz que más te guste.</li><li>Vuelve a la app: Prácti leerá con esa voz.</li></ol>
-          <a class="btn btn-no" id="btnAjustesVoz" style="display:block;text-align:center;text-decoration:none" href="intent:#Intent;action=com.android.settings.TTS_SETTINGS;end">⚙️ Abrir los ajustes de voz del móvil</a>
-          <p style="font-size:12px;color:var(--ink-soft);margin:6px 0 0">Si el botón no abre nada, sigue los pasos a mano: algunos móviles no lo permiten.</p>
+          <button type="button" class="btn btn-no" id="btnAyudaVoz" style="text-align:center;margin-top:14px">📱 ¿Tu voz suena igual? Cómo mejorarla</button>
         </div>
       `;
       app.appendChild(vozCard);
@@ -3951,7 +3996,7 @@ body:has(.banda-fin-plan) #app{padding-bottom:28vh}
       const bvn = vozCard.querySelector('#btnVozNatural');
       const pintaVN = () => { const on = vozNaturalActiva(); bvn.textContent = on ? '✨ Voz natural' : '⚡ Voz rápida'; bvn.classList.toggle('active', on); };
       pintaVN(); bvn.onclick = () => { try { localStorage.setItem('voz_natural', vozNaturalActiva() ? '0' : '1'); } catch(e){} pintaVN(); };
-      if(!/android/i.test(navigator.userAgent)){ const a = vozCard.querySelector('#btnAjustesVoz'); if(a) a.style.display = 'none'; }
+      vozCard.querySelector('#btnAyudaVoz').onclick = () => { state.view = 'ayudaVoz'; window.scrollTo(0,0); render(); };
     }
     const reponer = el('<div class="card"><p style="font-weight:700;margin:0 0 6px">Pantallas de explicación</p><p style="font-size:13px;color:var(--ink-soft);margin:0 0 10px">Si marcaste «No volver a mostrar» en alguna sección del ciclo, aquí puedes recuperarlas.</p><button type="button" class="btn btn-no" id="btnReponerIntros" style="text-align:center">Volver a mostrarlas</button><div class="saved-msg" id="msgReponer"></div></div>');
     const btnRep = reponer.querySelector('#btnReponerIntros'), msgRep = reponer.querySelector('#msgReponer');
@@ -4259,6 +4304,7 @@ body:has(.banda-fin-plan) #app{padding-bottom:28vh}
 
     if(state.view === 'perfil'){ renderPerfilView(); if(state.menuOpen) renderMenuOverlay(); return; }
     if(state.view === 'ajustes'){ renderAjustesView(); if(state.menuOpen) renderMenuOverlay(); return; }
+    if(state.view === 'ayudaVoz'){ renderAyudaVoz(); if(state.menuOpen) renderMenuOverlay(); return; }
     if(state.view === 'facturacion'){ renderFacturacionView(); if(state.menuOpen) renderMenuOverlay(); return; }
     if(state.view === 'practicas'){ renderPracticasView(); if(state.menuOpen) renderMenuOverlay(); return; }
     if(state.view === 'utilidades'){ renderUtilidades(); if(state.menuOpen) renderMenuOverlay(); return; }
@@ -4533,6 +4579,7 @@ body:has(.banda-fin-plan) #app{padding-bottom:28vh}
           ${state.loginError ? '<div style="color:' + (state.loginError.endsWith('…') ? 'var(--ink-soft)' : '#B94A3A') + ';font-size:13px;margin-top:8px">'+state.loginError+'</div>' : ''}
         `;
         app.appendChild(altaCard);
+        if(GOOGLE_CLIENT_ID && !d.email){ const g = el('<div class="acceso-google"><p>o crea tu cuenta con</p><div id="btnGoogle"></div></div>').firstElementChild; app.appendChild(g); botonGoogle(g.querySelector('#btnGoogle')); }
         const altaPassEl = altaCard.querySelector('#altaPass'), toggleAlta = altaCard.querySelector('#toggleAltaPass');
         toggleAlta.onclick = () => {
           const viendo = altaPassEl.type === 'text';
@@ -4561,6 +4608,7 @@ body:has(.banda-fin-plan) #app{padding-bottom:28vh}
           ${state.savedMsg ? '<div class="saved-msg">'+state.savedMsg+'</div>' : ''}
         `;
         app.appendChild(formCard);
+        if(GOOGLE_CLIENT_ID){ const g = el('<div class="acceso-google"><p>o bien</p><div id="btnGoogle"></div></div>').firstElementChild; app.appendChild(g); botonGoogle(g.querySelector('#btnGoogle')); }
         const passInput = formCard.querySelector('#passInput');
         const togglePass = formCard.querySelector('#togglePass');
         togglePass.onclick = () => {
@@ -6422,4 +6470,4 @@ body:has(.banda-fin-plan) #app{padding-bottom:28vh}
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V10.68 · App Metas Amables · 2026-10-04 02:14 ==== -->
+<!-- ==== Fin del index V10.70 · App Metas Amables · 2026-10-04 14:58 ==== -->
