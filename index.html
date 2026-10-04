@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V10.66 · App Metas Amables · 2026-10-04 01:51 ==== -->
+<!-- ==== index V10.67 · App Metas Amables · 2026-10-04 02:03 ==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -879,6 +879,7 @@
 .bfp-botones{display:flex;gap:10px;flex-wrap:wrap;margin-top:4px}.bfp-si{flex:1;text-align:center;padding:12px 14px;border-radius:99px;background:#101010;color:#FFD43B;font-weight:800;text-decoration:none}
 .bfp-planes{padding:12px 16px;border-radius:99px;border:2px solid #101010;background:transparent;font:inherit;font-weight:700;cursor:pointer}
 body:has(.banda-fin-plan) #app{padding-bottom:28vh}
+.voz-ayuda{margin-top:16px;padding:12px;border-radius:12px;background:#F1ECFC}
 .prueba-caja{max-width:520px;margin:0 auto 14px}.prueba-nota{text-align:center;font-size:13px;color:#666;margin:6px 0 0}
 .encuesta-estrellas{display:flex;gap:8px;margin:6px 0 14px}.encuesta-estrellas button{flex:1;height:46px;border-radius:12px;border:2px solid #E2B33C;background:#fff;font:inherit;font-size:18px;font-weight:800;color:#8a6420;cursor:pointer}
 .encuesta-estrellas button.elegida{background:#E2B33C;color:#fff}
@@ -1525,7 +1526,7 @@ body:has(.banda-fin-plan) #app{padding-bottom:28vh}
   }
 
 
-  const APP_VERSION = 'V10.66';
+  const APP_VERSION = 'V10.67';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -3344,15 +3345,24 @@ body:has(.banda-fin-plan) #app{padding-bottom:28vh}
       if(i < texto.length) setTimeout(paso, 28); else { escrito = true; fin(); }
     };
     paso();
-    if(habla.voz && 'speechSynthesis' in window){
-      try {
+    const vozMovil = () => { if(!('speechSynthesis' in window)){ hablado = true; fin(); return; } try {
         window.speechSynthesis.cancel();
         const u = new SpeechSynthesisUtterance(sinEmojis(texto));
         u.lang = 'es-ES'; u.rate = Math.min(2, 0.95 * velocidadLector()); u.pitch = tonoLector();
         const v = vozEspanol(); if(v) u.voice = v;
         u.onend = u.onerror = () => { hablado = true; fin(); };
         window.speechSynthesis.speak(u);
-      } catch(e){ hablado = true; }
+      } catch(e){ hablado = true; fin(); } };
+    if(habla.voz){
+      if(vozNaturalActiva()){
+        hablaVozNatural(texto, turno).then(audio => {
+          if(habla.turno !== turno) return;
+          if(!audio){ vozMovil(); return; }
+          habla.audio = audio;
+          audio.onended = audio.onerror = () => { hablado = true; fin(); };
+          audio.play().catch(() => { hablado = true; fin(); });
+        });
+      } else vozMovil();
     } else hablado = true;
   }
 
@@ -3378,13 +3388,25 @@ body:has(.banda-fin-plan) #app{padding-bottom:28vh}
     return c;
   }
 
+  // Voz natural (Gemini). Devuelve un Audio listo para sonar, o null si no se pudo (entonces, voz del móvil)
+  function vozNaturalActiva(){ try { return localStorage.getItem('voz_natural') !== '0'; } catch(e){ return true; } }
+  async function hablaVozNatural(texto){
+    try {
+      const ses = leerSesion();
+      const r = await fetch(API_URL + '/voz', { method: 'POST', headers: { 'Content-Type': 'application/json', ...(ses ? { 'Authorization': 'Bearer ' + ses } : {}) }, body: JSON.stringify({ texto }) });
+      if(!r.ok || !/audio/.test(r.headers.get('Content-Type') || '')) return null;
+      return new Audio(URL.createObjectURL(await r.blob()));
+    } catch(e){ return null; }
+  }
+  function hablaCallar(){ try { window.speechSynthesis.cancel(); } catch(e){} try { if(habla.audio){ habla.audio.pause(); habla.audio = null; } } catch(e){} }
+
   async function hablaEnviar(){
     const campo = app.querySelector('#hablaPregunta'); if(!campo || habla.esperando) return;
     const mensaje = campo.value.trim(); if(!mensaje) return;
     if(dictadoActivo){ try { dictadoActivo.stop(); } catch(e){} }
     if(habla.quedan <= 0){ hablaDecir('Por hoy ya hemos hablado mucho 😊. Mañana seguimos, ¿vale?'); return; }
     campo.value = ''; habla.esperando = true;
-    habla.turno = (habla.turno || 0) + 1; try { window.speechSynthesis.cancel(); } catch(e){}
+    habla.turno = (habla.turno || 0) + 1; hablaCallar();
     app.querySelector('#hablaTexto').textContent = 'Déjame pensar…'; hablaBoca(false); hablaPensando(true);
     let r = {};
     try { r = await api('/habla', { mensaje, historial: habla.historial.slice(-8), contexto: hablaContexto() }); }
@@ -3435,7 +3457,7 @@ body:has(.banda-fin-plan) #app{padding-bottom:28vh}
 
   function renderHabla(){
     renderBackTopbar('💬 Habla con Prácti');
-    app.querySelector('#btnVolver').onclick = () => { try { window.speechSynthesis.cancel(); } catch(e){} habla.turno = (habla.turno || 0) + 1; if(state.hablaDesdeInicio){ state.hablaDesdeInicio = false; irAlPanel(); return; } state.view = 'utilidades'; window.scrollTo(0,0); render(); };
+    app.querySelector('#btnVolver').onclick = () => { hablaCallar(); habla.turno = (habla.turno || 0) + 1; if(state.hablaDesdeInicio){ state.hablaDesdeInicio = false; irAlPanel(); return; } state.view = 'utilidades'; window.scrollTo(0,0); render(); };
     hablaCargar();
     const ultima = habla.historial.length ? habla.historial[habla.historial.length - 1].texto : HABLA_SALUDO;
     const caja = el(`<div class="habla-caja">
@@ -3464,7 +3486,7 @@ body:has(.banda-fin-plan) #app{padding-bottom:28vh}
     const pintaVoz = () => { voz.innerHTML = ALTAVOZ + (habla.voz ? '' : '<path d="M3 3l18 18" stroke="#B94A3A" stroke-width="2.6" stroke-linecap="round"/>') + '</svg>'; voz.classList.toggle('apagada', !habla.voz); voz.setAttribute('aria-label', habla.voz ? 'Voz activada: toca para silenciar a Prácti' : 'Voz desactivada: toca para que Prácti hable'); };
     pintaVoz();
     voz.onclick = () => { habla.voz = !habla.voz; try { localStorage.setItem('habla_voz', habla.voz ? '1' : '0'); } catch(e){} pintaVoz();
-      if(!habla.voz){ try { window.speechSynthesis.cancel(); } catch(e){} hablaBoca(false); }
+      if(!habla.voz){ hablaCallar(); hablaBoca(false); }
       else if(habla.ultima && !habla.esperando) hablaDecir(habla.ultima); };
     caja.querySelector('#hablaPracti').onclick = () => { if(habla.ultima && !habla.esperando) hablaDecir(habla.ultima); };
     caja.querySelector('#hablaVer').onclick = hablaVerConversacion;
@@ -3871,6 +3893,16 @@ body:has(.banda-fin-plan) #app{padding-bottom:28vh}
         <p style="font-weight:700;margin:14px 0 6px;font-size:14px">Velocidad</p>
         <div class="theme-toggle-row">${VELOCIDADES.map(v => `<button class="theme-toggle-btn ${v === vel ? 'active' : ''}" data-vel="${v}">${String(v).replace('.', ',')}x</button>`).join('')}</div>
         <button class="btn btn-yes" id="btnProbarVoz" style="text-align:center;margin-top:14px">▶ Probar voz</button>
+        <div class="voz-ayuda">
+          <p style="font-weight:700;margin:0 0 6px">✨ Voz natural en «Habla con Prácti»</p>
+          <p style="font-size:13px;margin:0 0 8px">Cuando hablas con Prácti, te responde con una voz más humana (tarda un segundo más). Si falla, usa la voz del móvil.</p>
+          <button type="button" class="theme-toggle-btn" id="btnVozNatural"></button>
+          <p style="font-weight:700;margin:14px 0 6px">📱 ¿Todas las voces suenan igual?</p>
+          <p style="font-size:13px;margin:0 0 6px">En Android la app lee las guías con la voz que tenga puesta el móvil. Para cambiarla:</p>
+          <ol style="font-size:13px;margin:0 0 10px;padding-left:20px;line-height:1.5"><li>Abre los <b>Ajustes</b> del móvil y busca <b>«Texto a voz»</b> (o «Salida de texto a voz»).</li><li>En <b>Motor preferido</b>, elige <b>Servicios de voz de Google</b>.</li><li>Toca ⚙️ → <b>Instalar datos de voz</b> → <b>Español (España)</b> y elige la voz que más te guste.</li><li>Vuelve a la app: Prácti leerá con esa voz.</li></ol>
+          <a class="btn btn-no" id="btnAjustesVoz" style="display:block;text-align:center;text-decoration:none" href="intent:#Intent;action=com.android.settings.TTS_SETTINGS;end">⚙️ Abrir los ajustes de voz del móvil</a>
+          <p style="font-size:12px;color:var(--ink-soft);margin:6px 0 0">Si el botón no abre nada, sigue los pasos a mano: algunos móviles no lo permiten.</p>
+        </div>
       `;
       app.appendChild(vozCard);
       const sel = vozCard.querySelector('#vozSelect');
@@ -3897,6 +3929,10 @@ body:has(.banda-fin-plan) #app{padding-bottom:28vh}
         probar();
       });
       vozCard.querySelector('#btnProbarVoz').onclick = probar;
+      const bvn = vozCard.querySelector('#btnVozNatural');
+      const pintaVN = () => { const on = vozNaturalActiva(); bvn.textContent = on ? '✨ Voz natural: sí' : 'Voz natural: no'; bvn.classList.toggle('active', on); };
+      pintaVN(); bvn.onclick = () => { try { localStorage.setItem('voz_natural', vozNaturalActiva() ? '0' : '1'); } catch(e){} pintaVN(); };
+      if(!/android/i.test(navigator.userAgent)){ const a = vozCard.querySelector('#btnAjustesVoz'); if(a) a.style.display = 'none'; }
     }
     const reponer = el('<div class="card"><p style="font-weight:700;margin:0 0 6px">Pantallas de explicación</p><p style="font-size:13px;color:var(--ink-soft);margin:0 0 10px">Si marcaste «No volver a mostrar» en alguna sección del ciclo, aquí puedes recuperarlas.</p><button type="button" class="btn btn-no" id="btnReponerIntros" style="text-align:center">Volver a mostrarlas</button><div class="saved-msg" id="msgReponer"></div></div>');
     const btnRep = reponer.querySelector('#btnReponerIntros'), msgRep = reponer.querySelector('#msgReponer');
@@ -6367,4 +6403,4 @@ body:has(.banda-fin-plan) #app{padding-bottom:28vh}
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V10.66 · App Metas Amables · 2026-10-04 01:51 ==== -->
+<!-- ==== Fin del index V10.67 · App Metas Amables · 2026-10-04 02:03 ==== -->
