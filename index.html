@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V11.07 · App Metas Amables · 2026-10-04 23:51 ==== -->
+<!-- ==== index V11.11 · App Metas Amables · 2026-10-05 00:11 ==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -908,6 +908,18 @@ body.con-fondo-nivel::before{content:"";position:fixed;inset:0;z-index:-1;backgr
 .posit{position:relative;margin:12px auto;max-width:440px;padding:22px 20px 18px;background:linear-gradient(170deg,#FFF59D 0%,#FFEE70 70%,#F9E15A 100%);box-shadow:0 10px 18px rgba(80,60,0,.22);transform:rotate(-1.5deg);border-radius:2px 2px 18px 2px;font-family:"Caveat","Lora",cursive;font-size:20px;line-height:1.45;color:#4A3B00}
 .posit::before{content:"";position:absolute;top:-12px;left:50%;width:90px;height:26px;margin-left:-45px;background:rgba(255,255,255,.55);box-shadow:0 1px 3px rgba(0,0,0,.12);transform:rotate(2deg)}
 .posit textarea{width:100%;box-sizing:border-box;background:transparent;border:none;outline:none;font:inherit;color:inherit;resize:vertical}
+.posit-arrastrable{touch-action:none;cursor:grab;transition:transform .05s linear}
+.posit-arrastrable.cogida{transition:none;box-shadow:0 18px 30px rgba(80,60,0,.35);z-index:50}
+.posit-arrastrable.entrando{transition:transform .45s ease-in,opacity .45s ease-in !important;transform:translateY(120px) scale(.2) !important;opacity:0}
+.cajon{position:relative;width:230px;height:120px;margin:22px auto 10px;-webkit-user-select:none;user-select:none}
+.cajon-hueco{position:absolute;left:12px;right:12px;top:0;height:34px;background:linear-gradient(#3B2414,#6B4426);border-radius:6px 6px 0 0;box-shadow:inset 0 6px 10px rgba(0,0,0,.6);transition:height .35s ease}
+.cajon-frente{position:absolute;left:0;right:0;bottom:0;height:86px;background:linear-gradient(#C08A55,#9C6B3D);border-radius:8px;box-shadow:0 8px 14px rgba(60,35,10,.35),inset 0 2px 0 rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;transition:bottom .35s ease}
+.cajon-tirador{width:60px;height:12px;border-radius:8px;background:#5A3A1E;box-shadow:inset 0 2px 3px rgba(0,0,0,.5)}
+.cajon.encima .cajon-hueco{box-shadow:inset 0 6px 10px rgba(0,0,0,.6),0 0 0 3px #F2C14E}
+.cajon.cerrado .cajon-hueco{height:0}
+.cajon.cerrado .cajon-frente{bottom:17px}
+.posit-fijo{margin:6px 0 2px;font-weight:700}
+.posit textarea{border-bottom:1px dashed rgba(74,59,0,.35) !important;margin-bottom:6px}
 .posit-tit{font-weight:700;margin:0 0 6px}.posit-fecha{font-size:15px;opacity:.7;margin:0 0 6px}
 .posit-cerrado{text-align:center}
 .contrato-escena{padding:6px 0 30px;text-align:center}
@@ -930,6 +942,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 @keyframes sello-cae{0%{transform:scale(2.2) rotate(-18deg);opacity:0}60%{opacity:1}100%{transform:scale(1) rotate(-8deg);opacity:1}}
 .sello-svg{width:100%;height:100%;transform:rotate(-8deg);filter:drop-shadow(0 3px 3px rgba(0,0,0,.35))}
 .contrato-nota{margin:12px 16px;font-size:15px}
+.contrato-compartir{display:block;width:calc(100% - 32px);max-width:420px;margin:6px auto 0;border:none;cursor:pointer;background:#B3261E}
+.perg-firma{max-width:calc(100% - 110px)}
 .contrato-msg{position:fixed;left:50%;top:76px;transform:translateX(-50%);z-index:60;max-width:88vw;margin:0;padding:10px 16px;border-radius:14px;background:rgba(40,25,8,.88);color:#FFF3D6;font-size:15px;text-align:center;box-shadow:0 6px 18px rgba(0,0,0,.3);opacity:0;pointer-events:none;transition:opacity .25s}
 .contrato-msg.visible{opacity:1}
 .perg-sello.hueco{border:3px dashed rgba(140,30,20,.55);border-radius:50%;width:92px;height:92px;bottom:18px;display:flex;align-items:center;justify-content:center;text-align:center;font-size:12px;line-height:1.2;color:rgba(120,30,20,.7);font-family:Karla,sans-serif}
@@ -949,7 +963,24 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 .lacre-aro{fill:none;stroke:rgba(179,38,30,.2);stroke-width:6}
 .lacre-progreso{fill:none;stroke:#F2C14E;stroke-width:6;stroke-linecap:round}
 .lacre-btn.pulsando{transform:scale(.95);box-shadow:0 0 30px 8px rgba(242,193,78,.6)}
-.carta-pantalla{border:2px solid #E39A9A}
+.carta-pantalla{margin:0 -20px;padding:14px 16px 30px;background:#fff;min-height:70vh}
+.carta-intro{margin:0 0 10px;font-size:15px}
+.carta-form{font-size:17px}
+.carta-form textarea{width:100%;box-sizing:border-box;border:none;border-bottom:1px dashed rgba(90,60,20,.4);background:transparent;font:inherit;color:inherit;padding:4px 0;margin:0 0 8px;resize:vertical}
+.carta-firma{font-style:italic;text-align:right;margin:10px 0 0}
+.carta-sobre{text-align:center;font-size:44px;padding:20px;background:#FFFDF5;border:1px solid #E8DFC6;border-radius:12px}
+.carta-sobre p{font-size:16px;margin:6px 0}
+@media (max-width: 899px){
+  [data-sub="s5"] #s5.panel-section{margin-left:-20px;margin-right:-20px;border-radius:0;border-left:none !important;border-right:none !important;padding:16px 0}
+  [data-sub="s5"] #s5 .panel-badge,[data-sub="s5"] #s5 .formacion-intro{margin-left:16px;margin-right:16px}
+  [data-sub="s5"] #s5 .acc-grid-2col{gap:0}
+  [data-sub="s5"] #s5 details.acc{border-radius:0;border-left:none;border-right:none;border-top:none;margin:0;padding:0}
+  [data-sub="s5"] #s5 details.acc > summary{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:16px;font-size:16px;font-weight:700}
+  [data-sub="s5"] #s5 details.acc > summary::before{content:none}
+  [data-sub="s5"] #s5 details.acc > summary::after{content:"›";font-size:26px;line-height:1;transition:transform .2s}
+  [data-sub="s5"] #s5 details.acc[open] > summary::after{transform:rotate(90deg)}
+  [data-sub="s5"] #s5 details.acc .acc-body{margin:0;padding:0 16px 18px;font-size:15.5px;background:#fff}
+}
 .ps-recuadro{border:2px solid #E39A9A;margin-top:12px}
 .carta-aviso{border:2px solid #93BF80;background:#F4FAEF}
 .voz-ayuda{margin-top:16px;padding:12px;border-radius:12px;background:#F1ECFC}
@@ -1632,7 +1663,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V11.07';
+  const APP_VERSION = 'V11.11';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -5625,14 +5656,14 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       app.appendChild(contrato);
       // Pósit para fin de mes (Plan Guías)
       const ep = estadoPosit();
-      const posit = el('<div class="card ps-recuadro"><p style="font-weight:700;margin:0 0 4px">📝 Una nota para mi yo dentro de un mes</p><p style="margin:0 0 8px;font-size:14px">' + (ep.estado === 'abrir' ? '¡Ya puedes abrir la nota que te dejaste! 💛' : ep.estado === 'guardado' ? 'Guardado. Se abre el ' + fechaLarga(ep.abre) + '.' : 'Una nota corta para ti al final del mes. Se abre tu último lunes del mes.') + '</p><button type="button" class="panel-link-btn" style="width:100%;border:none;cursor:pointer;background:#C9942D">' + (!tienePlan('guias') ? '👑 Escribir mi nota' : ep.estado === 'abrir' ? 'Abrir mi nota' : ep.estado === 'guardado' ? 'Ver mi nota' : 'Escribir mi nota') + '</button></div>');
+      const posit = el('<div class="card ps-recuadro"><p style="font-weight:700;margin:0 0 4px">📝 Una nota para mi yo de principio de mes</p><p style="margin:0 0 8px;font-size:14px">' + (ep.estado === 'abrir' ? '¡Ya puedes abrir la nota que te dejaste! 💛' : ep.estado === 'guardado' ? 'Guardado. Se abre el ' + fechaLarga(ep.abre) + '.' : 'Una nota para tu yo del lunes ' + diaUnoTexto(ultimoLunes(mesClave())) + '. Se abre ese día.') + '</p><button type="button" class="panel-link-btn" style="width:100%;border:none;cursor:pointer;background:#C9942D">' + (!tienePlan('guias') ? '👑 Escribir mi nota' : ep.estado === 'abrir' ? 'Abrir mi nota' : ep.estado === 'guardado' ? 'Ver mi nota' : 'Escribir mi nota') + '</button></div>');
       posit.querySelector('button').onclick = () => {
-        if(!tienePlan('guias')){ avisoCorona('La nota para tu yo dentro de un mes es del Plan Guías'); return; }
+        if(!tienePlan('guias')){ avisoCorona('La nota para tu yo de principio de mes es del Plan Guías'); return; }
         sonidoTing(); state.view = 'posit'; window.scrollTo(0,0); render();
       };
       app.appendChild(posit);
       // Carta a mi yo del futuro, para todos, en su recuadro
-      const carta = el('<div class="card ps-recuadro"><p style="font-weight:700;margin:0 0 4px">✉️ Carta a mi yo del futuro</p><p style="margin:0 0 8px;font-size:14px">' + (cartaGuardada() ? 'Ya la escribiste. Puedes releerla cuando quieras.' : 'Escríbete a ti dentro de 3 meses: te la enseñaremos cuando más la necesites.') + '</p><button type="button" class="panel-link-btn" style="width:100%;border:none;cursor:pointer;background:#E39A9A">' + (!tienePlan('sesiones') ? '👑👑 Escribir mi carta' : cartaGuardada() ? 'Leer mi carta' : 'Escribir mi carta') + '</button></div>');
+      const carta = el('<div class="card ps-recuadro"><p style="font-weight:700;margin:0 0 4px">✉️ Carta a mi yo del lunes ' + fechaConAnio(aperturaCarta(cartaGuardada()) || lunesProximoTrimestre()) + '</p><p style="margin:0 0 8px;font-size:14px">' + (cartaGuardada() ? 'Ya la escribiste. Puedes releerla cuando quieras.' : 'Escríbete a ti del primer lunes del próximo trimestre. Se abrirá ese día.') + '</p><button type="button" class="panel-link-btn" style="width:100%;border:none;cursor:pointer;background:#E39A9A">' + (!tienePlan('sesiones') ? '👑👑 Escribir mi carta' : cartaGuardada() ? 'Leer mi carta' : 'Escribir mi carta') + '</button></div>');
       carta.querySelector('button').onclick = () => {
         if(!tienePlan('sesiones')){ avisoCorona('La carta a tu yo del futuro es del Plan Guías + Grupo'); return; }
         state.prevView = 'practicaSemanal'; state.view = 'carta'; window.scrollTo(0,0); render();
@@ -6131,6 +6162,18 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       + 'Sello este compromiso como un acto sagrado conmigo.';
   }
   let audioSolemne = null;
+  function sonidoCajon(){
+    try {
+      audioSolemne = audioSolemne || new (window.AudioContext || window.webkitAudioContext)();
+      const c = audioSolemne, t = c.currentTime, n = c.sampleRate * 0.25, buf = c.createBuffer(1, n, c.sampleRate), dat = buf.getChannelData(0);
+      for(let i = 0; i < n; i++) dat[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / n, 6);
+      const src = c.createBufferSource(), fil = c.createBiquadFilter(), g = c.createGain();
+      src.buffer = buf; fil.type = 'lowpass'; fil.frequency.value = 600; g.gain.value = 0.9;
+      src.connect(fil); fil.connect(g); g.connect(c.destination); src.start(t);
+      const o = c.createOscillator(), g2 = c.createGain(); o.type = 'sine'; o.frequency.setValueAtTime(140, t); o.frequency.exponentialRampToValueAtTime(70, t + 0.2);
+      g2.gain.setValueAtTime(0.3, t); g2.gain.exponentialRampToValueAtTime(0.0001, t + 0.25); o.connect(g2); g2.connect(c.destination); o.start(t); o.stop(t + 0.3);
+    } catch(e){}
+  }
   function sonidoTing(){
     try {
       audioSolemne = audioSolemne || new (window.AudioContext || window.webkitAudioContext)();
@@ -6160,7 +6203,17 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       [[1046.5, 1.9], [1568, 2.3], [2093, 2.7], [2637, 3.1]].forEach(([f, t]) => nota(f, t, 2.4, 0.08));
       return { parar(){ try { master.gain.setTargetAtTime(0.0001, c.currentTime, 0.15); } catch(e){} } };
     } catch(e){ return { parar(){} }; }
-  }  function selloSVG(inicial){
+  }  function momentoTexto(iso){
+    const m = new Date(iso);
+    return m.toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' }) + ', a las ' + m.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+  }
+  // Compartir el contrato sellado (WhatsApp, correo…); si el móvil no deja, se copia el texto
+  async function compartirContrato(c){
+    const texto = '📜 Contrato de compromiso · ' + (c.trimestre || trimestreClave()) + '\n\n' + c.texto + '\n\n— ' + String(state.me || '').trim() + '\nSellado el ' + momentoTexto(c.momento || c.fecha + 'T12:00:00') + '\n\nMetas Amables · https://play.google.com/store/apps/details?id=club.practicaintegral.metasamables';
+    try { if(navigator.share){ await navigator.share({ title: 'Mi contrato de compromiso', text: texto }); return; } } catch(e){ if(e && e.name === 'AbortError') return; }
+    try { await navigator.clipboard.writeText(texto); alert('Texto copiado. Pégalo donde quieras compartirlo.'); } catch(e){}
+  }
+  function selloSVG(inicial){
     return '<svg class="sello-svg" viewBox="0 0 120 150" aria-hidden="true">'
       + '<path d="M44 70 L34 146 L48 132 L58 148 L62 72 Z" fill="#8E1B1B"/><path d="M76 70 L86 146 L72 132 L62 148 L58 72 Z" fill="#A82424"/>'
       + '<path d="M60 8 C78 6 92 14 100 26 C112 34 114 52 108 66 C112 82 102 98 88 104 C78 114 60 116 46 110 C30 108 18 96 14 82 C6 68 8 50 18 38 C24 22 42 10 60 8 Z" fill="#B3261E"/>'
@@ -6179,16 +6232,16 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       + (hecho
         ? '<div class="perg-texto">' + escapeAttr(hecho.texto).replace(/\n/g, '<br>') + '</div>'
         : '<textarea class="perg-texto perg-edit" rows="9" maxlength="1500">' + escapeAttr(textoContrato()) + '</textarea>')
-      + '<div class="perg-firma"><span>' + escapeAttr(nombre) + '</span><small>' + (hecho ? 'Sellado el ' + new Date(hecho.fecha + 'T00:00:00').toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' }) : 'Firma con tu sello') + '</small></div>'
+      + '<div class="perg-firma"><span>' + escapeAttr(nombre) + '</span><small>' + (hecho ? 'Fecha y hora de compromiso:<br>' + momentoTexto(hecho.momento || hecho.fecha + 'T12:00:00') : 'Firma con tu sello') + '</small></div>'
       + '<div class="perg-sello' + (hecho ? '' : ' hueco') + '">' + (hecho ? selloSVG(inicial) : '<span>Tu sello<br>aquí</span>') + '</div>'
       + '</div>'
-      + (hecho ? '<p class="contrato-nota">Este es tu compromiso contigo para este trimestre. Vuelve a leerlo cuando lo necesites. 🙏</p>'
-        : '<p class="contrato-nota">Puedes retocar el texto.<br>Cuando estés listo/a, <b>mantén el dedo en el punto rojo</b> y llévalo al círculo punteado del contrato para sellar con lacre tu compromiso.</p>'
+      + (hecho ? '<p class="contrato-nota">Este es tu compromiso contigo para este trimestre. Vuelve a leerlo cuando lo necesites. 🙏</p><button type="button" class="panel-link-btn contrato-compartir">Compartir mi contrato</button>'
+        : '<p class="contrato-nota"><b>Puedes retocar el texto.</b><br>Cuando estés listo/a, <b>mantén el dedo en el punto rojo</b> y llévalo al círculo punteado del contrato para sellar con lacre tu compromiso.</p>'
           + '<button type="button" class="lacre-btn" aria-label="Mantén pulsado para sellar"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="46" class="lacre-aro"/><circle cx="50" cy="50" r="46" class="lacre-progreso"/></svg><svg class="huella" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M6.5 5.5A8 8 0 0 1 19 8"/><path d="M4.2 9.5a8 8 0 0 1 1.3-2.6"/><path d="M19.8 11.2c.3 2.6-.1 5-1 7"/><path d="M7.5 18.5c1-2 1.5-4.2 1.5-6.5a3 3 0 0 1 6 0c0 .9 0 1.7-.1 2.5"/><path d="M12 12c0 3.5-.8 6.6-2.5 9"/><path d="M14.6 17.2c-.4 1.6-1 3-1.8 4.3"/><path d="M5.8 15.5c.4-1.1.7-2.3.7-3.5a5.5 5.5 0 0 1 9.4-3.9"/><path d="M17.5 13.5c0 1.2-.1 2.3-.4 3.4"/></svg></button>'
           + '<p class="contrato-msg"></p>')
       + '</div>').firstElementChild;
     app.appendChild(caja);
-    if(hecho) return;
+    if(hecho){ caja.querySelector('.contrato-compartir').onclick = () => compartirContrato(hecho); return; }
     const perg = caja.querySelector('.pergamino'), btn = caja.querySelector('.lacre-btn'), prog = caja.querySelector('.lacre-progreso'), msg = caja.querySelector('.contrato-msg'), hueco = caja.querySelector('.perg-sello');
     const LARGO = 2 * Math.PI * 46, CARGA = 1500, SELLO = 3500;
     prog.style.strokeDasharray = LARGO; prog.style.strokeDashoffset = LARGO;
@@ -6258,9 +6311,14 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       fase = 'hecho'; btn.remove(); const nota = caja.querySelector('.contrato-nota'); if(nota) nota.textContent = 'Este es tu compromiso contigo para este trimestre. Vuelve a leerlo cuando lo necesites. 🙏';
       const ta = caja.querySelector('.perg-edit'), texto = ta.value.trim();
       const div = document.createElement('div'); div.className = 'perg-texto'; div.innerHTML = escapeAttr(texto).replace(/\n/g, '<br>'); ta.replaceWith(div);
+      const momento = new Date().toISOString();
+      const firma = caja.querySelector('.perg-firma small'); if(firma) firma.innerHTML = 'Fecha y hora de compromiso:<br>' + momentoTexto(momento);
+      const comp = el('<button type="button" class="panel-link-btn contrato-compartir">Compartir mi contrato</button>').firstElementChild;
+      comp.onclick = () => compartirContrato({ texto, momento, trimestre: trimestreClave(), fecha: momento.slice(0, 10) });
+      caja.appendChild(comp);
       aviso('Guardando tu compromiso…');
       try {
-        const r = await api('/carta', { tipo: 'contrato', texto, trimestre: trimestreClave() });
+        const r = await api('/carta', { tipo: 'contrato', texto, trimestre: trimestreClave(), momento });
         if(state.gamifica && r.datosFormulario) state.gamifica.datosFormulario = r.datosFormulario;
         aviso('📜 Compromiso sellado. Es un acto sagrado contigo.');
         setTimeout(sonidoTing, 900);
@@ -6271,11 +6329,13 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   // ===== Pósit para fin de mes (Plan Guías) =====
   // Se escribe durante el mes y queda guardado hasta el último lunes del mes (el lunes es el día clave)
   function mesClave(f){ f = f || new Date(); return f.getFullYear() + '-' + String(f.getMonth() + 1).padStart(2, '0'); }
+  // La nota del mes se abre el primer lunes del mes siguiente («para mi yo del 2 de noviembre»)
   function ultimoLunes(clave){
-    const [y, m] = clave.split('-').map(Number), d = new Date(y, m, 0);
-    while(d.getDay() !== 1) d.setDate(d.getDate() - 1);
-    d.setHours(0, 0, 0, 0); return d;
+    const [y, m] = clave.split('-').map(Number), d = new Date(y, m, 1, 0, 0, 0, 0);
+    while(d.getDay() !== 1) d.setDate(d.getDate() + 1);
+    return d;
   }
+  function diaUnoTexto(d){ return d.getDate() + ' de ' + d.toLocaleDateString('es-ES', { month: 'long' }); }
   function positGuardado(){ const d = (state.gamifica && state.gamifica.datosFormulario) || {}; return d.cartaMensual && d.cartaMensual.texto ? d.cartaMensual : null; }
   // Estado del pósit: 'escribir' | 'guardado' (aún cerrado) | 'abrir' (ya se puede leer)
   function estadoPosit(){
@@ -6288,36 +6348,70 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
   function fechaLarga(d){ return d.toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' }); }
   function renderPosit(){
-    renderBackTopbar('📝 Una nota para mi yo dentro de un mes');
+    renderBackTopbar('📝 Una nota para mi yo de principio de mes');
     app.querySelector('#btnVolver').onclick = () => { state.view = 'practicaSemanal'; window.scrollTo(0,0); render(); };
     const e = estadoPosit(), caja = el('<div class="posit-escena"></div>').firstElementChild;
     app.appendChild(caja);
     if(e.estado === 'guardado'){
       const faltan = Math.ceil((e.abre - new Date()) / 86400000);
-      caja.innerHTML = '<div class="posit posit-cerrado"><p class="posit-tit">📌 Nota guardada en el cajón</p><p>Se abrirá el <b>' + fechaLarga(e.abre) + '</b>' + (faltan > 0 ? ' (faltan ' + faltan + (faltan === 1 ? ' día' : ' días') + ')' : '') + '.</p><p style="font-size:14px;opacity:.75">No hagas trampa 😉: tu yo de fin de mes lo leerá con otros ojos.</p></div>';
+      caja.innerHTML = '<div class="posit posit-cerrado"><p class="posit-tit">📌 Nota guardada en el cajón</p><p>Se abrirá el <b>' + fechaLarga(e.abre) + '</b>' + (faltan > 0 ? ' (faltan ' + faltan + (faltan === 1 ? ' día' : ' días') + ')' : '') + '.</p><p style="font-size:14px;opacity:.75">No hagas trampa 😉: tu yo del lunes ' + diaUnoTexto(e.abre) + ' la leerá con otros ojos.</p></div>';
       return;
     }
-    if(e.estado === 'abrir'){
-      caja.innerHTML = '<p class="posit-intro">Tu yo de principio de mes te dejó esta nota:</p><div class="posit posit-abierto"><p class="posit-fecha">Escrita el ' + new Date(e.p.fecha + 'T00:00:00').toLocaleDateString('es-ES', { day: 'numeric', month: 'long' }) + '</p>' + escapeAttr(e.p.texto).replace(/\n/g, '<br>') + '</div><p class="posit-intro">¿Qué aprendiste este mes que puedas usar en el siguiente? Llévalo a tu lunes de compromiso. 💛</p>';
+    if(e.estado === 'abrir' && !state.positNueva){
+      caja.innerHTML = '<p class="posit-intro">Tu yo de principio del mes pasado te dejó esta nota:</p><div class="posit posit-abierto"><p class="posit-fecha">Escrita el ' + new Date(e.p.fecha + 'T00:00:00').toLocaleDateString('es-ES', { day: 'numeric', month: 'long' }) + '</p>' + escapeAttr(e.p.texto).replace(/\n/g, '<br>') + '</div><p class="posit-intro">Llévalo a tu lunes de compromiso de hoy. 💛</p><button type="button" class="panel-link-btn" id="positOtra" style="background:#C9942D;border:none;width:100%;cursor:pointer;margin-top:10px">Escribir la nota para el lunes ' + diaUnoTexto(ultimoLunes(mesClave())) + '</button>';
+      caja.querySelector('#positOtra').onclick = () => { state.positNueva = true; renderVista(); };
       if(typeof sonarSintonia === 'function') sonarSintonia(12, 0.5);
       return;
     }
+    state.positNueva = false;
     const abre = ultimoLunes(mesClave());
-    caja.innerHTML = '<p class="posit-intro">Escríbete una nota corta (3 o 4 líneas) para el final de este mes. Se abrirá el <b>' + fechaLarga(abre) + '</b>, tu último lunes del mes.</p>'
-      + '<ul class="carta-guia"><li><b>Empatía:</b> «Seguramente estás cansado/a porque este mes queríamos…»</li><li><b>Perdón:</b> «Si no llegamos a la meta, no pasa nada; lo importante es no abandonar.»</li><li><b>Aprendizaje:</b> «¿Qué aprendiste que podamos usar el mes que viene?»</li></ul>'
-      + '<div class="posit"><textarea id="positTexto" rows="5" maxlength="600" placeholder="Hola, yo de fin de mes:…"></textarea></div><div id="positDictar"></div>'
-      + '<button type="button" class="panel-link-btn" id="positGuardar" style="background:#C9942D;border:none;width:100%;cursor:pointer;margin-top:12px">📌 Guardar en el cajón hasta fin de mes</button><p id="positMsg" style="margin:6px 0 0;font-size:14px"></p>';
-    const ta = caja.querySelector('#positTexto');
-    const dict = botonDictar(ta); if(dict) caja.querySelector('#positDictar').appendChild(dict);
+    const saludo = 'Hola, yo del ' + diaUnoTexto(abre) + ':', p1 = 'Me había planteado para esta fecha…', p2 = 'Si no lo lograste…', cierre = '¿Qué aprendiste que podamos usar el mes que viene?';
+    caja.innerHTML = '<p class="posit-intro">Escribe una nota <b>para tu yo del lunes ' + diaUnoTexto(abre) + '</b>. Se abrirá ese día.</p>'
+      + '<div class="posit"><p class="posit-fijo">' + saludo + '</p><p class="posit-fijo">' + p1 + '</p><textarea id="positTexto" rows="3" maxlength="400" placeholder="…conseguir…"></textarea>'
+      + '<p class="posit-fijo">' + p2 + '</p><textarea id="positTexto2" rows="3" maxlength="400" placeholder="…no pasa nada; lo importante es…"></textarea>'
+      + '<p class="posit-fijo">' + cierre + '</p></div><div id="positDictar"></div>'
+      + '<button type="button" class="panel-link-btn" id="positGuardar" style="background:#C9942D;border:none;width:100%;cursor:pointer;margin-top:12px">Guardar en el cajón hasta ese lunes</button><p id="positMsg" style="margin:6px 0 0;font-size:14px"></p>';
+    const ta = caja.querySelector('#positTexto'), ta2 = caja.querySelector('#positTexto2');
+    // El dictado escribe en el hueco que tenga el foco
+    let activo = ta; [ta, ta2].forEach(t => t.addEventListener('focus', () => { activo = t; }));
+    const proxy = { get value(){ return activo.value; }, set value(v){ activo.value = v; } };
+    const dict = botonDictar(proxy); if(dict) caja.querySelector('#positDictar').appendChild(dict);
     caja.querySelector('#positGuardar').onclick = async ev => {
       const b = ev.currentTarget, msg = caja.querySelector('#positMsg');
-      if(ta.value.trim().length < 15){ msg.textContent = 'Escribe un poquito más: es para ti 🙂'; return; }
-      b.disabled = true; b.textContent = 'Guardando…';
-      try {
-        const r = await api('/carta', { tipo: 'mensual', texto: ta.value, trimestre: mesClave() });
-        if(state.gamifica && r.datosFormulario){ state.gamifica.datosFormulario = r.datosFormulario; }
-        sonidoTing(); renderVista();
-      } catch(err){ b.disabled = false; b.textContent = '📌 Guardar en el cajón hasta fin de mes'; msg.textContent = (err && err.message) || 'No se pudo guardar. Prueba de nuevo.'; }
+      if(ta.value.trim().length < 5){ msg.textContent = 'Cuéntate qué te habías planteado para esta fecha 🙂'; ta.focus(); return; }
+      const texto = saludo + '\n\n' + p1 + ' ' + ta.value.trim() + '\n\n' + p2 + ' ' + (ta2.value.trim() || '…') + '\n\n' + cierre;
+      // Modo cajón: la nota queda lista y hay que arrastrarla dentro
+      [ta, ta2].forEach(t => { t.readOnly = true; t.blur(); });
+      b.remove(); const dct = caja.querySelector('#positDictar'); if(dct) dct.remove();
+      const nota = caja.querySelector('.posit'); nota.classList.add('posit-arrastrable');
+      const cajon = el('<div class="cajon"><div class="cajon-hueco"></div><div class="cajon-frente"><span class="cajon-tirador"></span></div></div>').firstElementChild;
+      caja.insertBefore(cajon, msg);
+      msg.textContent = '👆 Arrastra la nota con el dedo y métela en el cajón.';
+      nota.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      let x0 = 0, y0 = 0, arrastrando = false;
+      const dentro = (x, y) => { const r = cajon.getBoundingClientRect(); return x > r.left && x < r.right && y > r.top - 20 && y < r.bottom; };
+      nota.addEventListener('pointerdown', e2 => { e2.preventDefault(); arrastrando = true; x0 = e2.clientX; y0 = e2.clientY; try { nota.setPointerCapture(e2.pointerId); } catch(er){} nota.classList.add('cogida'); });
+      nota.addEventListener('pointermove', e2 => {
+        if(!arrastrando) return;
+        nota.style.transform = 'translate(' + (e2.clientX - x0) + 'px,' + (e2.clientY - y0) + 'px) rotate(3deg) scale(.8)';
+        cajon.classList.toggle('encima', dentro(e2.clientX, e2.clientY));
+      });
+      ['touchstart', 'touchmove'].forEach(t => nota.addEventListener(t, e2 => e2.preventDefault(), { passive: false }));
+      const soltar = async e2 => {
+        if(!arrastrando) return; arrastrando = false; nota.classList.remove('cogida');
+        if(!dentro(e2.clientX, e2.clientY)){ nota.style.transform = ''; cajon.classList.remove('encima'); msg.textContent = 'Casi… suéltala encima del cajón.'; return; }
+        nota.classList.add('entrando'); cajon.classList.remove('encima');
+        setTimeout(() => { nota.remove(); cajon.classList.add('cerrado'); sonidoCajon(); try { navigator.vibrate && navigator.vibrate(50); } catch(er){} }, 450);
+        msg.textContent = 'Guardando…';
+        try {
+          const r = await api('/carta', { tipo: 'mensual', texto, trimestre: mesClave() });
+          if(state.gamifica && r.datosFormulario){ state.gamifica.datosFormulario = r.datosFormulario; }
+          setTimeout(() => { sonidoTing(); msg.innerHTML = '🔒 <b>Cajón cerrado hasta el lunes ' + diaUnoTexto(abre) + '.</b>'; }, 900);
+        } catch(err){ msg.textContent = (err && err.message) || 'No se pudo guardar. Revisa tu conexión y vuelve a intentarlo.'; }
+      };
+      nota.addEventListener('pointerup', soltar); nota.addEventListener('pointercancel', soltar);
+      return;
+      try {} catch(err){ b.disabled = false; b.textContent = 'Guardar en el cajón hasta ese lunes'; msg.textContent = (err && err.message) || 'No se pudo guardar. Prueba de nuevo.'; }
     };
   }
   // ===== Carta a mi yo del futuro =====
@@ -6327,58 +6421,78 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     return '<div class="carta-papel"><p class="carta-fecha">Escrita el ' + new Date(c.fecha + 'T00:00:00').toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' }) + '</p>'
       + escapeAttr(c.texto).replace(/\n/g, '<br>') + '</div>';
   }
+  // La carta se abre el primer lunes del trimestre siguiente (p. ej. lunes 4 de enero de 2027)
+  function lunesProximoTrimestre(){
+    const h = new Date(), d = new Date(h.getFullYear(), (Math.floor(h.getMonth() / 3) + 1) * 3, 1);
+    while(d.getDay() !== 1) d.setDate(d.getDate() + 1);
+    return d;
+  }
+  function fechaConAnio(d){ return d.getDate() + ' de ' + d.toLocaleDateString('es-ES', { month: 'long' }) + ' de ' + d.getFullYear(); }
+  function aperturaCarta(c){ return c && /^\d{4}-\d{2}-\d{2}$/.test(c.trimestre || '') ? new Date(c.trimestre + 'T00:00:00') : null; }
   function pintarCartaFuturo(caja){
     if(!caja) return;
     const c = cartaGuardada();
     if(c && !caja.dataset.editando){
-      caja.innerHTML = '<p style="font-weight:700;margin:0 0 4px">✉️ Carta a mi yo del futuro</p>'
-        + '<details class="carta-ver"><summary>Leer mi carta</summary>' + cartaLeidaHTML(c) + '</details>'
-        + '<button type="button" class="carta-btn-sec" id="cartaEditar">✏️ Reescribirla</button>';
+      const abre = aperturaCarta(c), hoy = new Date();
+      const cerrada = abre && hoy < abre;
+      caja.innerHTML = (cerrada
+          ? '<div class="carta-sobre">✉️<p><b>Carta sellada</b></p><p>Se abrirá el <b>lunes ' + fechaConAnio(abre) + '</b> (faltan ' + Math.ceil((abre - hoy) / 86400000) + ' días).</p></div>'
+          : cartaLeidaHTML(c))
+        + '<button type="button" class="carta-btn-sec" id="cartaEditar">Reescribirla</button>';
       caja.querySelector('#cartaEditar').onclick = () => { caja.dataset.editando = '1'; pintarCartaFuturo(caja); };
       return;
     }
-    caja.innerHTML = '<p style="font-weight:700;margin:0 0 4px">✉️ Carta a mi yo del futuro</p>'
-      + '<p style="margin:0 0 8px;font-size:14px">Escríbete a ti dentro de 3 meses. Te la enseñaremos cuando más la necesites.</p>'
-      + '<ul class="carta-guia"><li>¿<b>Por qué</b> quieres conseguir esta meta? ¿Qué valor tuyo hay detrás?</li><li>¿<b>Cómo te sentirás</b> cuando lo hayas logrado?</li><li>¿Qué te dirías el día que <b>flojees</b> o te salga mal una semana?</li></ul>'
-      + '<textarea id="cartaTexto" rows="7" maxlength="4000" placeholder="Querido/a yo del futuro:…" style="width:100%;box-sizing:border-box;border-radius:12px;border:2px solid #93BF80;padding:10px;font:inherit">' + (c ? escapeAttr(c.texto) : '') + '</textarea>'
+    const abre = lunesProximoTrimestre(), hoyTxt = fechaConAnio(new Date());
+    const saludo = 'Querido/a yo del lunes ' + fechaConAnio(abre) + ':';
+    const p1 = 'Hoy empiezo este trimestre sintiéndome…', p2 = 'Sé que a mitad de camino te vas a querer rendir con… Acuérdate de que empezamos esto por…', p3 = 'Cuando leas esto, espero que…';
+    const cierre = '¿De qué estás más orgulloso/a en estos 90 días?', firma = 'Con cariño, tu yo del ' + hoyTxt + '.';
+    caja.innerHTML = '<p class="carta-intro">Escríbete a ti del <b>lunes ' + fechaConAnio(abre) + '</b>, el primer lunes del próximo trimestre. Se abrirá ese día.</p>'
+      + '<div class="carta-papel carta-form"><p class="posit-fijo">' + saludo + '</p>'
+      + '<p class="posit-fijo">' + p1 + '</p><textarea id="cartaT1" rows="3" maxlength="800" placeholder="…cansado/a, pero con ganas de…"></textarea>'
+      + '<p class="posit-fijo">' + p2 + '</p><textarea id="cartaT2" rows="3" maxlength="800" placeholder="…la pereza de los lunes… porque quiero…"></textarea>'
+      + '<p class="posit-fijo">' + p3 + '</p><textarea id="cartaT3" rows="3" maxlength="800" placeholder="…hayas conseguido…"></textarea>'
+      + '<p class="posit-fijo">' + cierre + '</p><p class="carta-firma">' + firma + '</p></div>'
       + '<div id="cartaDictar"></div>'
-      + '<button type="button" class="panel-link-btn" id="cartaGuardar" style="background:#6B9362;border:none;width:100%;cursor:pointer;margin-top:10px">💌 Guardar mi carta</button>'
+      + '<button type="button" class="panel-link-btn" id="cartaGuardar" style="background:#B3261E;border:none;width:100%;cursor:pointer;margin-top:10px">Sellar y guardar mi carta</button>'
       + '<p id="cartaMsg" style="margin:6px 0 0;font-size:14px"></p>';
-    const ta = caja.querySelector('#cartaTexto');
-    const dict = botonDictar(ta); if(dict) caja.querySelector('#cartaDictar').appendChild(dict);
+    const ts = ['#cartaT1', '#cartaT2', '#cartaT3'].map(s => caja.querySelector(s));
+    let activo = ts[0]; ts.forEach(t => t.addEventListener('focus', () => { activo = t; }));
+    const proxy = { get value(){ return activo.value; }, set value(v){ activo.value = v; } };
+    const dict = botonDictar(proxy); if(dict) caja.querySelector('#cartaDictar').appendChild(dict);
     caja.querySelector('#cartaGuardar').onclick = async (e) => {
       const b = e.currentTarget, msg = caja.querySelector('#cartaMsg');
-      if(ta.value.trim().length < 20){ msg.textContent = 'Escribe un poquito más: es para ti 🙂'; return; }
+      if(ts.filter(t => t.value.trim()).length < 2){ msg.textContent = 'Rellena al menos dos de los huecos: es para ti 🙂'; return; }
+      const texto = saludo + '\n\n' + p1 + ' ' + (ts[0].value.trim() || '…') + '\n\n' + p2 + ' ' + (ts[1].value.trim() || '…') + '\n\n' + p3 + ' ' + (ts[2].value.trim() || '…') + '\n\n' + cierre + '\n\n' + firma;
+      const iso = abre.getFullYear() + '-' + String(abre.getMonth() + 1).padStart(2, '0') + '-' + String(abre.getDate()).padStart(2, '0');
       b.disabled = true; b.textContent = 'Guardando…';
       try {
-        const r = await api('/carta', { texto: ta.value });
+        const r = await api('/carta', { texto, trimestre: iso });
         if(state.gamifica && r.datosFormulario) state.gamifica.datosFormulario = r.datosFormulario;
         delete caja.dataset.editando;
         sonidoTing();
         pintarCartaFuturo(caja);
-      } catch(err){ b.disabled = false; b.textContent = '💌 Guardar mi carta'; msg.textContent = (err && err.message) || 'No se pudo guardar. Prueba de nuevo.'; }
+      } catch(err){ b.disabled = false; b.textContent = 'Sellar y guardar mi carta'; msg.textContent = (err && err.message) || 'No se pudo guardar. Prueba de nuevo.'; }
     };
   }
   function renderCarta(){
-    renderBackTopbar('✉️ Carta a mi yo del futuro');
+    const c = cartaGuardada(), abre = aperturaCarta(c) || lunesProximoTrimestre();
+    renderBackTopbar('✉️ Carta a mi yo del lunes ' + fechaConAnio(abre));
     app.querySelector('#btnVolver').onclick = () => { state.view = 'practicaSemanal'; window.scrollTo(0,0); render(); };
-    const caja = el('<div class="card carta-pantalla"><div style="text-align:center;margin-bottom:6px">' + practiHTML('escribiendo1', '✍️', 120) + '</div><div id="cartaFuturo"></div></div>').firstElementChild;
+    const caja = el('<div class="carta-pantalla"><div id="cartaFuturo"></div></div>').firstElementChild;
     app.appendChild(caja);
-    if(typeof activarPracti === 'function') activarPracti(caja);
     pintarCartaFuturo(caja.querySelector('#cartaFuturo'));
   }
-  // En el inicio, las 2 últimas semanas del trimestre: «Tu yo del pasado te escribió»
+  // En el inicio, a partir del lunes de apertura (3 semanas): «Tu yo del pasado te escribió»
   function tarjetaCartaFuturo(){
-    const c = cartaGuardada(), a = typeof avanceTrimestre === 'function' ? avanceTrimestre() : null;
-    if(!tienePlan('sesiones') || !c || !a || a.numero < a.total - 1) return null;
-    const clave = 'carta_vista_' + state.me + '_' + a.total + '_' + (typeof currentQLabel !== 'undefined' ? currentQLabel : '');
+    const c = cartaGuardada(), abre = aperturaCarta(c), hoy = new Date();
+    if(!tienePlan('sesiones') || !c || !abre || hoy < abre || hoy - abre > 21 * 86400000) return null;
+    const clave = 'carta_vista_' + state.me + '_' + c.trimestre;
     try { if(localStorage.getItem(clave)) return null; } catch(e){}
-    const t = el('<div class="card carta-aviso"><p style="font-weight:800;margin:0 0 6px">✉️ Tu yo del pasado te escribió una carta</p><p style="margin:0 0 8px">Se acaba el trimestre. Léela: es de ti, para ti.</p><details><summary>Abrir la carta</summary>' + cartaLeidaHTML(c) + '</details><button type="button" class="carta-btn-sec">Ya la he leído ✔️</button></div>').firstElementChild;
+    const t = el('<div class="card carta-aviso"><p style="font-weight:800;margin:0 0 6px">✉️ Tu yo del pasado te escribió una carta</p><p style="margin:0 0 8px">Empieza un trimestre nuevo. Léela: es de ti, para ti.</p><details><summary>Abrir la carta</summary>' + cartaLeidaHTML(c) + '</details><button type="button" class="carta-btn-sec">Ya la he leído</button></div>').firstElementChild;
     t.querySelector('details').addEventListener('toggle', ev => { if(ev.target.open && typeof sonarSintonia === 'function') sonarSintonia(15, 0.5); });
     t.querySelector('button').onclick = () => { try { localStorage.setItem(clave, '1'); } catch(e){} t.remove(); };
     return t;
-  }
-  function tarjetaPlazoMeta(){
+  }  function tarjetaPlazoMeta(){
     const d = (state.gamifica && state.gamifica.datosFormulario) || {};
     const vence = vencimientoMeta();
     if(!vence || (!plazoPaso && (Date.now() < vence.getTime() || (d.plazoRespondido && d.plazoRespondido >= d.fechaMeta)))) return null;
@@ -7028,4 +7142,4 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V11.07 · App Metas Amables · 2026-10-04 23:51 ==== -->
+<!-- ==== Fin del index V11.11 · App Metas Amables · 2026-10-05 00:11 ==== -->
