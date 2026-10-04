@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V11.13 · App Metas Amables · 2026-10-05 00:27 ==== -->
+<!-- ==== index V11.15 · App Metas Amables · 2026-10-05 00:53 ==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -927,6 +927,24 @@ body.con-fondo-nivel::before{content:"";position:fixed;inset:0;z-index:-1;backgr
 .posit.doblando{transform-origin:top center;transition:transform .6s ease;transform:rotate(-1.5deg) scaleY(.5)}
 .posit.doblando::after{content:"";position:absolute;left:0;right:0;top:50%;height:2px;background:rgba(0,0,0,.12)}
 .posit.entrando{transition:transform .7s ease-in,opacity .7s ease-in;transform:translateY(var(--dy,200px)) scale(.25,.12);opacity:.2}
+.centro-pantalla{min-height:62vh;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.candado{position:relative;width:56px;height:64px;margin:0 0 6px;filter:drop-shadow(0 3px 3px rgba(0,0,0,.35))}
+.caja-nota.cerrada .caja-cuerpo{height:170px;flex-direction:column}
+.sobre-frente{width:min(330px,88vw) !important;height:210px !important}
+.sobre-frente::before{display:none}
+.estampilla{position:absolute;top:14px;right:14px;width:56px;height:66px;padding:3px;background:#fff;border:4px dotted #F3E8CC;box-shadow:0 0 0 1px rgba(0,0,0,.08);transform:rotate(3deg)}
+.estampilla svg{display:block;width:100%;height:100%}
+.matasellos{position:absolute;top:26px;right:52px;width:70px;height:70px;border:2px solid rgba(60,60,90,.45);border-radius:50%;display:flex;align-items:center;justify-content:center;transform:rotate(-14deg)}
+.matasellos::after{content:"";position:absolute;left:-40px;right:50px;top:24px;height:22px;background:repeating-linear-gradient(transparent 0 4px,rgba(60,60,90,.4) 4px 6px)}
+.matasellos span{font-size:9px;font-weight:700;color:rgba(60,60,90,.6);text-align:center;line-height:1.1;padding:0 6px}
+.sobre-para{position:absolute;left:30px;bottom:30px;margin:0;font-family:"Lora",Georgia,serif;font-style:italic;font-size:22px;line-height:1.35;color:#3B2A14}
+.sobre{position:relative;width:260px;height:170px;background:linear-gradient(#FBF4E2,#EFE2C2);border-radius:8px;box-shadow:0 12px 24px rgba(60,40,10,.25),inset 0 0 0 1px rgba(120,90,40,.25);overflow:hidden}
+.sobre::before{content:"";position:absolute;left:0;right:0;bottom:0;height:100%;background:linear-gradient(to top right,transparent 49.5%,rgba(120,90,40,.18) 50%,transparent 50.5%),linear-gradient(to top left,transparent 49.5%,rgba(120,90,40,.18) 50%,transparent 50.5%)}
+.sobre-solapa{position:absolute;left:0;right:0;top:0;height:95px;background:linear-gradient(#F6EBCF,#E9D8AE);clip-path:polygon(0 0,100% 0,50% 100%);box-shadow:inset 0 -1px 0 rgba(0,0,0,.1)}
+.sobre-sello{position:absolute;left:50%;top:58px;width:78px;height:98px;margin-left:-39px}
+.sobre-sello .sello-svg{transform:rotate(-6deg)}
+.sobre-texto{text-align:center;margin:16px 0 0;font-size:16px;line-height:1.5}
+.sobre-texto small{opacity:.7}
 .caja-nota{position:relative;width:250px;margin:26px auto 8px;-webkit-user-select:none;user-select:none}
 .caja-cuerpo{position:relative;height:110px;border-radius:6px 6px 10px 10px;background:linear-gradient(#C99A63,#A9773F);box-shadow:0 10px 18px rgba(60,35,10,.35),inset 0 0 0 3px rgba(90,55,20,.35);display:flex;align-items:center;justify-content:center;padding:10px;text-align:center}
 .caja-cuerpo::before{content:"";position:absolute;left:10px;right:10px;top:10px;bottom:10px;border:2px dashed rgba(255,240,210,.45);border-radius:6px}
@@ -1679,7 +1697,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V11.13';
+  const APP_VERSION = 'V11.15';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -6179,6 +6197,11 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
   let audioSolemne = null;
   // Micrófono pequeño dentro de un hueco de texto: toca para dictar, vuelve a tocar para parar
+  function candadoSVG(){
+    return '<svg class="candado" viewBox="0 0 64 72" aria-hidden="true"><path d="M18 32V22a14 14 0 0 1 28 0v10" fill="none" stroke="#8A8F98" stroke-width="7" stroke-linecap="round"/><path d="M18 32V22a14 14 0 0 1 28 0v10" fill="none" stroke="#C9CED6" stroke-width="3" stroke-linecap="round"/>'
+      + '<rect x="8" y="30" width="48" height="38" rx="7" fill="#E2B23C"/><rect x="8" y="30" width="48" height="10" rx="5" fill="#F2CC5E"/><rect x="8" y="30" width="48" height="38" rx="7" fill="none" stroke="#A87A16" stroke-width="2"/>'
+      + '<circle cx="32" cy="48" r="5" fill="#5A3E0A"/><path d="M30 51h4l1 9h-6z" fill="#5A3E0A"/></svg>';
+  }
   function micDentro(ta){
     const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
     const envoltura = document.createElement('div'); envoltura.className = 'campo-mic';
@@ -6388,12 +6411,10 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     app.querySelector('#btnVolver').onclick = () => { state.view = 'practicaSemanal'; window.scrollTo(0,0); render(); };
     const caja = el('<div class="posit-escena"></div>').firstElementChild;
     app.appendChild(caja);
-    const cajaHTML = (txt, cerrada) => '<div class="caja-nota' + (cerrada ? ' cerrada' : '') + '"><div class="caja-tapa"></div><div class="caja-cuerpo"><span class="caja-texto">' + txt + '</span></div></div>';
+    const cajaHTML = (txt, cerrada) => '<div class="caja-nota' + (cerrada ? ' cerrada' : '') + '"><div class="caja-tapa"></div><div class="caja-cuerpo">' + (cerrada ? candadoSVG() : '') + '<span class="caja-texto">' + txt + '</span></div></div>';
     if(e.estado === 'guardado' && !state.positNueva){
       const faltan = Math.ceil((e.abre - new Date()) / 86400000);
-      caja.innerHTML = '<p class="posit-intro">Se abrirá el primer lunes del siguiente mes.</p>'
-        + cajaHTML('🔒 Caja cerrada hasta el lunes ' + diaUnoTexto(e.abre) + (faltan > 0 ? '<small>Faltan ' + faltan + (faltan === 1 ? ' día' : ' días') + '</small>' : ''), true)
-        + '<p class="posit-intro" style="text-align:center;opacity:.75">No hagas trampa 😉: tu yo del lunes ' + diaUnoTexto(e.abre) + ' la leerá con otros ojos.</p>';
+      caja.innerHTML = '<div class="centro-pantalla">' + cajaHTML('Caja cerrada hasta el lunes ' + diaUnoTexto(e.abre) + (faltan > 0 ? '<small>Faltan ' + faltan + (faltan === 1 ? ' día' : ' días') + '</small>' : ''), true) + '</div>';
       return;
     }
     if(e.estado === 'abrir' && !state.positNueva){
@@ -6432,7 +6453,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       try {
         const r = await api('/carta', { tipo: 'mensual', texto, trimestre: mesClave() });
         if(state.gamifica && r.datosFormulario){ state.gamifica.datosFormulario = r.datosFormulario; }
-        setTimeout(() => { nota.remove(); sonidoTing(); cj.querySelector('.caja-texto').innerHTML = '🔒 Caja cerrada hasta el lunes ' + diaUnoTexto(abre); }, 1700);
+        setTimeout(() => { nota.remove(); sonidoTing(); cj.querySelector('.caja-cuerpo').insertAdjacentHTML('afterbegin', candadoSVG()); cj.querySelector('.caja-texto').innerHTML = 'Caja cerrada hasta el lunes ' + diaUnoTexto(abre); cj.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 1700);
       } catch(err){ setTimeout(() => { cj.querySelector('.caja-texto').textContent = 'No se pudo guardar'; msg.textContent = (err && err.message) || 'Revisa tu conexión y vuelve a intentarlo.'; }, 1700); }
     };
   }  // ===== Carta a mi yo del futuro =====
@@ -6457,7 +6478,11 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       const abre = aperturaCarta(c), hoy = new Date();
       const cerrada = abre && hoy < abre;
       caja.innerHTML = (cerrada
-          ? '<div class="carta-sobre">✉️<p><b>Carta sellada</b></p><p>Se abrirá el <b>lunes ' + fechaConAnio(abre) + '</b> (faltan ' + Math.ceil((abre - hoy) / 86400000) + ' días).</p></div>'
+          ? '<div class="centro-pantalla"><div class="sobre sobre-frente">'
+            + '<div class="estampilla"><svg viewBox="0 0 60 70"><rect width="60" height="70" fill="#CFE6F5"/><circle cx="44" cy="18" r="8" fill="#F6C945"/><path d="M0 70 L18 34 L28 48 L38 28 L60 62 L60 70 Z" fill="#6B9362"/><path d="M18 34 L23 44 L13 44 Z M38 28 L44 38 L32 40 Z" fill="#fff"/><text x="30" y="66" text-anchor="middle" font-size="8" font-family="Karla,Arial" font-weight="700" fill="#fff">METAS AMABLES</text></svg></div>'
+            + '<div class="matasellos"><span>' + escapeAttr(fechaConAnio(new Date(c.fecha + 'T00:00:00'))) + '</span></div>'
+            + '<p class="sobre-para">Para ' + escapeAttr(String(state.me || '').trim().split(' ')[0]) + '<br>del ' + diaUnoTexto(abre) + '</p></div>'
+            + '<p class="sobre-texto"><b>Carta cerrada</b><br>Se abrirá el lunes ' + diaUnoTexto(abre) + '<br><small>Faltan ' + Math.ceil((abre - hoy) / 86400000) + ' días</small></p></div>'
           : cartaLeidaHTML(c))
         + '<button type="button" class="carta-btn-sec" id="cartaEditar">Reescribirla</button>';
       caja.querySelector('#cartaEditar').onclick = () => { caja.dataset.editando = '1'; pintarCartaFuturo(caja); };
@@ -6474,7 +6499,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       + '<div class="carta-papel carta-form"><p class="posit-fijo">' + saludo + '</p>'
       + '<p class="posit-fijo">' + p1 + '</p><textarea id="cartaT1" rows="3" maxlength="800" placeholder="…cansado/a, pero con ganas de…"></textarea>'
       + '<p class="posit-fijo">' + p2 + '</p>'
-      + '<p class="posit-fijo">' + p3 + '</p><textarea id="cartaT3" rows="3" maxlength="800" placeholder="…hayas conseguido…"></textarea>'
+      + '<p class="posit-fijo">' + p3 + '</p><textarea id="cartaT3" rows="3" maxlength="800" placeholder="…haya conseguido…"></textarea>'
       + '<p class="posit-fijo">' + cierre + '</p><p class="carta-firma">' + firma + '</p></div>'
       + '<div id="cartaDictar"></div>'
       + '<button type="button" class="panel-link-btn" id="cartaGuardar" style="background:#B3261E;border:none;width:100%;cursor:pointer;margin-top:10px">Sellar y guardar mi carta</button>'
@@ -6498,7 +6523,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
   function renderCarta(){
     const c = cartaGuardada(), abre = aperturaCarta(c) || lunesProximoTrimestre();
-    renderBackTopbar('✉️ Carta a mi yo del lunes ' + fechaConAnio(abre));
+    renderBackTopbar('✉️ Carta a mi yo del lunes ' + diaUnoTexto(abre));
     app.querySelector('#btnVolver').onclick = () => { state.view = 'practicaSemanal'; window.scrollTo(0,0); render(); };
     const caja = el('<div class="carta-pantalla"><div id="cartaFuturo"></div></div>').firstElementChild;
     app.appendChild(caja);
@@ -7164,4 +7189,4 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V11.13 · App Metas Amables · 2026-10-05 00:27 ==== -->
+<!-- ==== Fin del index V11.15 · App Metas Amables · 2026-10-05 00:53 ==== -->
