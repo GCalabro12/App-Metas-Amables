@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V10.95 · App Metas Amables · 2026-10-04 21:36 ==== -->
+<!-- ==== index V11.00 · App Metas Amables · 2026-10-04 22:07 ==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -887,18 +887,21 @@ svg.escudo{vertical-align:-0.18em;flex:0 0 auto}
 body.con-fondo-nivel{background:#fff}
 body.con-fondo-nivel::before{content:"";position:fixed;inset:0;z-index:-1;background:linear-gradient(var(--velo-nivel,rgba(255,255,255,.55)),var(--velo-nivel,rgba(255,255,255,.55))),var(--fondo-nivel) center/cover no-repeat}
 .musica-oficial{display:grid;grid-template-columns:auto 1fr auto;grid-template-rows:auto auto;column-gap:10px;align-items:center;width:100%;text-align:left;background:linear-gradient(135deg,#FFF3C4,#FFD9E6);border:2px solid #101010;border-radius:16px;padding:12px 14px;margin:0 0 12px;font:inherit;color:var(--ink);cursor:pointer;box-shadow:0 3px 0 #101010}
-.musica-oficial b{grid-column:2}.musica-oficial small{grid-column:2;font-size:13px;opacity:.75}
+.musica-oficial b{grid-column:2;grid-row:1 / span 2}.musica-oficial small{grid-column:2;font-size:13px;opacity:.75}
 .musica-oficial-play{grid-column:3;grid-row:1 / span 2;width:40px;height:40px;border-radius:50%;background:#101010;color:#fff;display:flex;align-items:center;justify-content:center;font-size:16px}
 .ciencia-fuente{margin:6px 0;border:1px solid rgba(0,0,0,.12);border-radius:10px;background:rgba(255,255,255,.7);padding:6px 10px}
 .ciencia-fuente summary{cursor:pointer}.ciencia-fuente ul{margin:6px 0;padding-left:18px}.ciencia-fuente li{margin:3px 0}
 .ciencia-mas{margin-top:6px}.ciencia-mas summary{cursor:pointer;font-weight:700;color:#4F7FB5}.ciencia-mas p{margin:6px 0;text-align:left}
 .ciencia-img{display:block;width:100%;height:auto;border-radius:10px;margin:8px 0}
+.formacion-intro{margin:0 0 12px;text-align:center;font-size:15px}
 .ciencia-app{margin:4px 0 2px;font-size:.95em}
 .carta-papel{background:#FFFDF5;border:1px solid #E8DFC6;border-radius:12px;padding:14px 16px;margin:8px 0;font-family:"Lora",serif;line-height:1.55;text-align:left;box-shadow:0 2px 6px rgba(0,0,0,.06)}
 .carta-fecha{font-size:13px;color:#8a7f66;margin:0 0 8px;font-family:Karla,sans-serif}
 .carta-guia{margin:0 0 10px;padding-left:20px;font-size:14px}.carta-guia li{margin:3px 0}
 .carta-ver summary,.carta-aviso summary{cursor:pointer;font-weight:700;color:#4E7446}
 .carta-btn-sec{width:100%;margin-top:8px;padding:10px 14px;border-radius:10px;background:#fff;border:2px solid #6B9362;color:#4E7446;font-weight:700;font-size:14px;cursor:pointer}
+.carta-pantalla{border:2px solid #E39A9A}
+.ps-recuadro{border:2px solid #E39A9A;margin-top:12px}
 .carta-aviso{border:2px solid #93BF80;background:#F4FAEF}
 .voz-ayuda{margin-top:16px;padding:12px;border-radius:12px;background:#F1ECFC}
 .prueba-caja{max-width:520px;margin:0 auto 14px}.prueba-nota{text-align:center;font-size:13px;color:#666;margin:6px 0 0}
@@ -1580,7 +1583,7 @@ body.con-fondo-nivel::before{content:"";position:fixed;inset:0;z-index:-1;backgr
   }
 
 
-  const APP_VERSION = 'V10.95';
+  const APP_VERSION = 'V11.00';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -2059,8 +2062,9 @@ body.con-fondo-nivel::before{content:"";position:fixed;inset:0;z-index:-1;backgr
   // El calendario de semanas (registros del lunes) es del Plan Guías + Grupo: si no, candado y a «Tu plan»
   function calBloqueado(){ return !tienePlan('sesiones'); }
   function irAPlanes(){ state.prevView = state.view; state.view = 'planes'; window.scrollTo(0,0); render(); }
-  function irCalendario(){ if(calBloqueado()){ irAPlanes(); return; } state.view = 'calendar'; window.scrollTo(0,0); render(); }
-  function txtCal(t){ return (calBloqueado() ? '👑👑 ' : '📅 ') + t; }
+  // Un solo calendario para todos: el de «b · Compromiso y práctica», ya desplegado
+  function irCalendario(){ state.abrirCalDiario = true; state.view = 'practicaSemanal'; window.scrollTo(0,0); render(); }
+  function txtCal(t){ return '📅 ' + t; }
 
   // Lee el plan de Facturación. Acepta el nombre escrito en "Plan" o en "Membresía":
   // si contiene "sesion" → Plan Sesiones; si contiene "guia" → Plan Guías.
@@ -2794,9 +2798,9 @@ body.con-fondo-nivel::before{content:"";position:fixed;inset:0;z-index:-1;backgr
     const pasos = [
       ['0', 'Formulario de meta trimestral.', metaHechaYa() ? 'Ya tienes rellenado tu formulario.' : 'Tienes pendiente rellenarlo (el primer botón).'],
       ['a', 'Lee tu guía semanal.', 'Recibirás tu guía de prácticas ' + (libre ? 'la primera semana de cada mes.' : 'cada semana.')],
-      ['b', 'Practica y registra.', 'Cada día marca los días en que la hiciste.'],
+      ['b', 'Compromiso y práctica.', 'Cada día marca los días en que la hiciste.'],
     ];
-    if(registraLunes()) pasos.push(['c', 'Compromiso y grupo de apoyo.', 'Cada lunes registras tu compromiso y tus logros, y cada 15 días tienes sesión con tu grupo.']);
+    if(registraLunes()) pasos.push(['c', 'Grupo de apoyo.', 'Cada lunes haces tu compromiso con el grupo y cada 15 días tienes sesión con él.']);
     const frase = '¡Hola, ' + nombre + '! Soy Prácti y te acompaño en tus prácticas. Pasos a seguir: '
       + pasos.map(p => 'Paso ' + p[0] + ': ' + p[1] + ' ' + p[2]).join(' ');
     return '<div class="practi-bocadillo bienvenida" id="bienvenidaPracti" data-voz="' + escapeAttr(frase) + '">'
@@ -3717,7 +3721,7 @@ body.con-fondo-nivel::before{content:"";position:fixed;inset:0;z-index:-1;backgr
     renderBackTopbar('🎵 Música motivacional');
     app.querySelector('#btnVolver').onclick = () => { state.view = 'utilidades'; window.scrollTo(0,0); render(); };
     const caja = el(`<div class="musica-lista">
-        <button type="button" class="musica-oficial" id="btnSintonia">🎵 <b>Música oficial de Metas Amables</b><small>Creada para la app · gratis para todos</small><span class="musica-oficial-play">▶</span></button>
+        <button type="button" class="musica-oficial" id="btnSintonia">🎵 <b>Música oficial de Metas Amables</b><span class="musica-oficial-play">▶</span></button>
         <p class="musica-ayuda">Elige una música y sigue usando la app: sonará mientras tanto. Para pararla, toca ⏹ abajo.</p>
         <details class="ciencia musica-ciencia"><summary>🔬 ¿Por qué música mientras practicas?</summary>
           <p>Escuchar una música agradable mientras haces tu práctica funciona como un <b>reforzador</b>: tu cerebro asocia la conducta con algo placentero y, poco a poco, le apetece más repetirla.</p>
@@ -3983,7 +3987,7 @@ body.con-fondo-nivel::before{content:"";position:fixed;inset:0;z-index:-1;backgr
   }
   function activarImagenesAmpliables(raiz){
     if(!raiz) return;
-    raiz.querySelectorAll('img.panel-img').forEach(img => {
+    raiz.querySelectorAll('img.panel-img, img.ciencia-img').forEach(img => {
       img.classList.add('ampliable');
       img.onclick = () => abrirImagenGrande(img.src, img.alt);
     });
@@ -4394,7 +4398,7 @@ body.con-fondo-nivel::before{content:"";position:fixed;inset:0;z-index:-1;backgr
       if(!fondo && state.me){
         const paso = state.view === 'panel' && state.panelSub === 's4' ? '0'   // pantalla de la pizarra (meta), no el formulario
           : state.view === 'practicas' || (state.view === 'panel' && state.panelSub === 's3') ? 'a'
-          : state.view === 'practicaSemanal' ? 'b'
+          : (state.view === 'practicaSemanal' || state.view === 'carta') ? 'b'
           : state.view === 'panel' && state.panelSub === 's1' ? 'c'
           : state.view === 'panel' && state.panelSub === 's2' ? 'd'
           : (['utilidades','habla','frases','musica'].indexOf(state.view) >= 0 || (state.view === 'panel' && state.panelSub === 's5')) ? 'd' : '';
@@ -4438,6 +4442,7 @@ body.con-fondo-nivel::before{content:"";position:fixed;inset:0;z-index:-1;backgr
     if(state.view === 'frases'){ renderFrases(); if(state.menuOpen) renderMenuOverlay(); return; }
     if(state.view === 'habla'){ renderHabla(); if(state.menuOpen) renderMenuOverlay(); return; }
     if(state.view === 'musica'){ renderMusica(); if(state.menuOpen) renderMenuOverlay(); return; }
+    if(state.view === 'carta'){ renderCarta(); if(state.menuOpen) renderMenuOverlay(); return; }
     if(state.view === 'encuesta'){ renderEncuesta(); if(state.menuOpen) renderMenuOverlay(); return; }
 
     if(state.menuOpen){
@@ -4852,12 +4857,12 @@ body.con-fondo-nivel::before{content:"";position:fixed;inset:0;z-index:-1;backgr
           + boton('s3', 'ciclo-a' + (practicaBloqueada ? ' bloqueada' : '') + act('a'), 'a', 'Lee tu guía semanal', subGuia,
                 state.guiaTexto ? '<span class="etiqueta-recibida">Recibida</span>' : '', practicaBloqueada && '👑')
           + flechaAbajo
-          + boton('sB', 'ciclo-b' + act('b'), 'b', 'Practica y registra',
+          + boton('sB', 'ciclo-b' + act('b'), 'b', 'Compromiso y práctica',
                 (tx.practica ? '<span class="ciclo-dato">' + escapeAttr(corto(tx.practica, 110)) + '</span>' : registraLunes() ? 'La defines en tu registro del lunes' : 'Marca cada día que la hagas')
                 + (vecesTx ? '<br><span style="font-weight:700">' + vecesTx + '</span>' : ''), '', false)
           + flechaAbajo
           // c y d juntos: el registro del lunes y, con el plan de sesiones, la próxima sesión
-          + boton('s1', 'ciclo-c' + (sinSesiones ? ' bloqueada' : '') + (act('c') || act('d')), 'cpc', 'Compromiso y grupo de apoyo',
+          + boton('s1', 'ciclo-c' + (sinSesiones ? ' bloqueada' : '') + (act('c') || act('d')), 'cpc', 'Grupo de apoyo',
                 sinSesiones
                   ? 'Registro de compromiso cada lunes y sesiones en grupo cada 15 días. Plan Guías + Grupo'
                   : '✍️ Registro ' + (registroPendienteEstaSemana() ? 'pendiente: aún no has registrado esta semana' : textoProximoLunes())
@@ -4893,6 +4898,7 @@ body.con-fondo-nivel::before{content:"";position:fixed;inset:0;z-index:-1;backgr
       s1.className = 'card panel-section'; s1.id = 's5';
       s1.innerHTML = `
         ${badgeSeccion('gorro', 'Formación')}
+        <p class="formacion-intro">Metas Amables se apoya en lo que la investigación sabe sobre cómo cambiamos la conducta.</p>
         <div class="acc-grid-2col">
         <details class="acc">
           <summary>La visión integral de Ken Wilber</summary>
@@ -4919,7 +4925,6 @@ body.con-fondo-nivel::before{content:"";position:fixed;inset:0;z-index:-1;backgr
             <img class="panel-img" src="data:image/png;base64,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" alt="Cuadrantes de la visión integral">
           </div>
         </details>
-        ${cienciaHTML(true)}
         <details class="acc">
           <summary>La montaña y los tres caminos: crecer, sanar y despertar</summary>
           <div class="acc-body tres-areas">
@@ -4995,6 +5000,7 @@ body.con-fondo-nivel::before{content:"";position:fixed;inset:0;z-index:-1;backgr
             </details>
           </div>
         </details>
+        ${cienciaHTML(true)}
         </div>
       `;
 
@@ -5055,26 +5061,19 @@ body.con-fondo-nivel::before{content:"";position:fixed;inset:0;z-index:-1;backgr
       // (sin «No volver a mostrar»): es la entrada a esos dos sitios.
       const proxSesion = textoProximaSesion();
       s5.innerHTML = `
-        ${badgeSeccion('cpc', 'Compromiso y grupo de apoyo')}
-        <p style="font-weight:700;margin:0 0 4px">✍️ Registro del lunes</p>
-        <p style="margin:0 0 8px">${registroPendienteEstaSemana() ? 'Aún no has registrado esta semana.' : 'Próximo registro: ' + textoProximoLunes() + '.'}</p>
-        <a class="panel-link-btn" id="btnToCheckin" href="#" style="background:#6B9362">Ir al Registro de Compromiso y Logro →</a>
-        <hr style="border:none;border-top:1px solid var(--line, #e5e0d5);margin:18px 0">
-        <div id="cartaFuturo"></div>
-        <hr style="border:none;border-top:1px solid var(--line, #e5e0d5);margin:18px 0">
-        <p style="font-weight:700;margin:0 0 4px">🤝 Sesiones online</p>
+        ${badgeSeccion('cpc', 'Grupo de apoyo')}
+        <div id="bloqueSesiones"><p style="font-weight:700;margin:0 0 4px">🤝 Sesiones online</p>
         ${sinSesiones
           ? '<p style="font-size:14px;color:var(--ink-soft);margin:0 0 8px">Cada 15 días, en grupo reducido, para desatascar situaciones y automotivarte. Están incluidas en el Plan Guías + Grupo.</p><a class="panel-link-btn honey" id="btnVerPlanes" href="#">Ver planes →</a>'
           : `<p style="margin:0 0 8px">${proxSesion ? '📅 ' + proxSesion : 'Cada 15 días, en grupo reducido.'}</p>
         <button id="btnAbrirCalSesiones2" style="width:100%;text-align:center;padding:12px 16px;border-radius:10px;background:#fff;border:2px solid #6B9362;color:#4E7446;font-weight:700;font-size:14px;cursor:pointer;margin:8px 0">📅 Calendario sesiones</button>
         <a class="panel-link-btn" href="https://meet.google.com/qvf-aefv-trc" target="_blank" style="background:#6B9362">Enlace a la llamada →</a>
         ${soyModerador() ? '<button type="button" id="btnSituacion" style="width:100%;text-align:center;padding:12px 16px;border-radius:10px;background:#fff;border:2px solid #6B9362;color:#4E7446;font-weight:700;font-size:14px;cursor:pointer;margin:10px 0 0">👥 Situación de los practicantes de tu grupo</button>' : ''}`}
+        </div>
       `;
       // c = verde, como su botón en el ciclo
       s5.style.border = '2px solid #93BF80';
-      s5.querySelector('#btnToCheckin').onclick = (e) => { e.preventDefault(); state.view = 'checkin'; state.regPaso = null; window.scrollTo(0,0); render(); };
       if(s5.querySelector('#btnSituacion')) s5.querySelector('#btnSituacion').onclick = () => { state.prevView = 'panel'; state.view = 'situacion'; window.scrollTo(0,0); render(); };
-      pintarCartaFuturo(s5.querySelector('#cartaFuturo'));
       if(s5.querySelector('#btnAbrirCalSesiones2')) s5.querySelector('#btnAbrirCalSesiones2').onclick = () => { state.view = 'sesionesCal'; window.scrollTo(0,0); render(); };
       if(s5.querySelector('#btnVerPlanes')) s5.querySelector('#btnVerPlanes').onclick = (e) => { e.preventDefault(); state.prevView = 'panel'; state.view = 'planes'; window.scrollTo(0,0); render(); };
 
@@ -5350,7 +5349,7 @@ body.con-fondo-nivel::before{content:"";position:fixed;inset:0;z-index:-1;backgr
         const estiloPie = 'width:100%;text-align:center;padding:14px 16px;border-radius:12px;background:#fff;border:2px solid #6B9362;color:#4E7446;font-weight:700;font-size:16px;cursor:pointer';
         pie.innerHTML =
           (tienePlan('sesiones') ? '<button type="button" id="pieGrupo" style="' + estiloPie + '">🤝 Ver mi grupo</button>' : '') +
-          '<button type="button" id="pieCal" style="' + estiloPie + '">' + txtCal('Ver mi calendario de semanas') + (calBloqueado() ? ' <small>(Plan Guías + Grupo)</small>' : '') + '</button>';
+          '<button type="button" id="pieCal" style="' + estiloPie + '">' + txtCal('Ver mi calendario') + '</button>';
         app.appendChild(pie);
         if(pie.querySelector('#pieGrupo')) pie.querySelector('#pieGrupo').onclick = openGroupPanel;
         pie.querySelector('#pieCal').onclick = irCalendario;
@@ -5543,22 +5542,30 @@ body.con-fondo-nivel::before{content:"";position:fixed;inset:0;z-index:-1;backgr
       }
       app.appendChild(el('<div style="text-align:center;margin:0 0 4px">' + practiReaccionHTML('correr', 'valla', 170) + '</div>'));
       app.appendChild(botonVolver());
-      app.appendChild(el('<div style="display:flex;justify-content:center;margin:0 0 6px">' + badgeSeccion('b', 'Practica y registra') + '</div>'
+      app.appendChild(el('<div style="display:flex;justify-content:center;margin:0 0 6px">' + badgeSeccion('b', 'Compromiso y práctica') + '</div>'
         + '<div class="card ps-card">' + bloqueMeta + cuerpo + '</div>'));
       // Se pueden marcar los días desde el primer momento, aunque aún no haya registro
       app.appendChild(tarjetaDias(estaSemana));
       // Calendario completo con todos los días guardados (solo para mirar; se marca en la semana en curso)
-      const verCal = el('<button type="button" class="panel-link-btn" style="width:100%;border:2px solid #4F7FB5;background:#fff;color:#2F5F93;cursor:pointer;margin:0 0 12px">📅 Ver mi calendario completo</button>').firstElementChild;
+      const verCal = el('<button type="button" class="panel-link-btn" style="width:100%;border:2px solid #4F7FB5;background:#fff;color:#2F5F93;cursor:pointer;margin:0 0 12px">📅 Ver mi calendario</button>').firstElementChild;
       app.appendChild(verCal);
       verCal.onclick = () => { const c = calendarioDiario(true); verCal.replaceWith(c); c.scrollIntoView({ behavior: 'smooth', block: 'start' }); };
       // Viene de «Calendario diario» (en el calendario de semanas): se abre ya desplegado
       if(state.abrirCalDiario){ state.abrirCalDiario = false; setTimeout(() => verCal.click(), 0); }
-      const acciones = el('<div><button type="button" class="panel-link-btn" id="psGuia" style="width:100%;border:none;cursor:pointer;background:#4F7FB5">📖 Ver tu guía de esta semana</button>'
-        + (registraLunes() ? '<button type="button" class="panel-link-btn" id="psRegistro" style="width:100%;border:none;cursor:pointer;margin-top:10px">✍️ Ir al registro semanal</button>' : '') + '</div>');
-      const psGuia = acciones.querySelector('#psGuia'), psReg = acciones.querySelector('#psRegistro');
+      const acciones = el('<div><button type="button" class="panel-link-btn" id="psGuia" style="width:100%;border:none;cursor:pointer;background:#4F7FB5">📖 Ver tu guía de esta semana</button></div>');
+      const psGuia = acciones.querySelector('#psGuia');
       app.appendChild(acciones);
       psGuia.onclick = () => { state.prevView = 'practicaSemanal'; state.view = 'practicas'; window.scrollTo(0,0); render(); };
-      if(psReg) psReg.onclick = () => { state.view = 'checkin'; state.regPaso = null; window.scrollTo(0,0); render(); };
+      // Lunes de compromiso con el grupo (solo Plan Guías + Grupo), en su recuadro
+      if(registraLunes()){
+        const lunes = el('<div class="card ps-recuadro"><p style="font-weight:700;margin:0 0 4px">✍️ Lunes de compromiso con el grupo</p><p style="margin:0 0 8px">' + (registroPendienteEstaSemana() ? 'Aún no has hecho tu compromiso de esta semana.' : 'Próximo: ' + textoProximoLunes() + '.') + '</p><button type="button" class="panel-link-btn" style="width:100%;border:none;cursor:pointer;background:#E39A9A">Ir al lunes de compromiso →</button></div>');
+        lunes.querySelector('button').onclick = () => { state.view = 'checkin'; state.regPaso = null; window.scrollTo(0,0); render(); };
+        app.appendChild(lunes);
+      }
+      // Carta a mi yo del futuro, para todos, en su recuadro
+      const carta = el('<div class="card ps-recuadro"><p style="font-weight:700;margin:0 0 4px">✉️ Carta a mi yo del futuro</p><p style="margin:0 0 8px;font-size:14px">' + (cartaGuardada() ? 'Ya la escribiste. Puedes releerla cuando quieras.' : 'Escríbete a ti dentro de 3 meses: te la enseñaremos cuando más la necesites.') + '</p><button type="button" class="panel-link-btn" style="width:100%;border:none;cursor:pointer;background:#E39A9A">' + (cartaGuardada() ? '💌 Leer mi carta →' : '✍️ Escribir mi carta →') + '</button></div>');
+      carta.querySelector('button').onclick = () => { state.prevView = 'practicaSemanal'; state.view = 'carta'; window.scrollTo(0,0); render(); };
+      app.appendChild(carta);
       return;
     }
 
@@ -5779,6 +5786,20 @@ body.con-fondo-nivel::before{content:"";position:fixed;inset:0;z-index:-1;backgr
   // Calendario diario (planes sin registro del lunes): un mes a la vista y un ✓ en cada día
   // que hizo la práctica. Se guarda igual que la fila L–D: «Días hechos» de la semana de ese día.
   let calDiarioMes = null;   // primer día del mes que se está viendo
+  // Debajo del mes: lo que cada semana se comprometió con el grupo y lo que hizo
+  function resumenSemanasMes(y, m){
+    // Los lunes de este mes y su registro (la semana se guarda como «6-12 oct 2026»)
+    const lista = state.checkins[state.me] || [], filas = [];
+    for(let n = 1; n <= new Date(y, m + 1, 0).getDate(); n++){
+      const lun = new Date(y, m, n);
+      if(lun.getDay() !== 1) continue;
+      const c = lista.find(x => x.week === weekShort(lun) && x.compromisoVeces != null);
+      if(c) filas.push({ c, lun });
+    }
+    if(!filas.length) return '';
+    return '<div class="cd-semanas"><p style="margin:10px 0 4px;font-size:13px;font-weight:700">Lunes de compromiso con el grupo</p>'
+      + filas.map(({ c, lun }) => '<p style="margin:2px 0;font-size:13px">Semana del ' + lun.getDate() + ': 🎯 me comprometí a ' + c.compromisoVeces + (c.vecesRealizadas != null ? ' · ✅ hice ' + c.vecesRealizadas : '') + (c.estadoSemana ? ' · ' + escapeAttr(c.estadoSemana) : '') + '</p>').join('') + '</div>';
+  }
   function calendarioDiario(soloVer){
     const hoy = new Date(); hoy.setHours(0, 0, 0, 0);
     if(!calDiarioMes) calDiarioMes = new Date(hoy.getFullYear(), hoy.getMonth(), 1);
@@ -5820,6 +5841,7 @@ body.con-fondo-nivel::before{content:"";position:fixed;inset:0;z-index:-1;backgr
         <p style="font-size:13px;color:var(--ink-soft);margin:0 0 10px">Aquí se van guardando los días que marcas como hechos (✓ una vez, ×3 tres veces…).</p>
         <div class="cd-cab"><button type="button" class="cd-atras" ${puedeAtras ? '' : 'disabled'} aria-label="Mes anterior">‹</button><b>${monthNamesEs[m].charAt(0).toUpperCase() + monthNamesEs[m].slice(1)} ${y}</b><button type="button" class="cd-adelante" ${puedeAdelante ? '' : 'disabled'} aria-label="Mes siguiente">›</button></div>
         <div class="cd-grid">${DIAS_SEMANA.map(l => '<span class="cd-sem">' + l + '</span>').join('')}${celdas}</div>
+        ${resumenSemanasMes(y, m)}
         <p class="cd-msg" style="font-size:12px;color:var(--ink-soft);margin:8px 0 0">${msg || (total ? 'Este mes: ' + total + (total === 1 ? ' día hecho' : ' días hechos') + (totalVeces > total ? ' · ' + totalVeces + ' veces' : '') : 'Aún no has marcado ningún día este mes.')}</p>`;
       card.querySelector('.cd-atras').onclick = () => { calDiarioMes = new Date(y, m - 1, 1); pintar(); };
       card.querySelector('.cd-adelante').onclick = () => { calDiarioMes = new Date(y, m + 1, 1); pintar(); };
@@ -6056,6 +6078,14 @@ body.con-fondo-nivel::before{content:"";position:fixed;inset:0;z-index:-1;backgr
       } catch(err){ b.disabled = false; b.textContent = '💌 Guardar mi carta'; msg.textContent = (err && err.message) || 'No se pudo guardar. Prueba de nuevo.'; }
     };
   }
+  function renderCarta(){
+    renderBackTopbar('✉️ Carta a mi yo del futuro');
+    app.querySelector('#btnVolver').onclick = () => { state.view = 'practicaSemanal'; window.scrollTo(0,0); render(); };
+    const caja = el('<div class="card carta-pantalla"><div style="text-align:center;margin-bottom:6px">' + practiHTML('escribiendo1', '✍️', 120) + '</div><div id="cartaFuturo"></div></div>');
+    app.appendChild(caja);
+    if(typeof activarPracti === 'function') activarPracti(caja);
+    pintarCartaFuturo(caja.querySelector('#cartaFuturo'));
+  }
   // En el inicio, las 2 últimas semanas del trimestre: «Tu yo del pasado te escribió»
   function tarjetaCartaFuturo(){
     const c = cartaGuardada(), a = typeof avanceTrimestre === 'function' ? avanceTrimestre() : null;
@@ -6149,11 +6179,14 @@ body.con-fondo-nivel::before{content:"";position:fixed;inset:0;z-index:-1;backgr
   // Sello «basado en la ciencia»: al tocarlo se ven las fuentes del programa
   // Cada fuente se despliega al tocarla: sus ideas clave y qué hace la app con ellas
   function cienciaHTML(enFormacion){
-    const fuente = (titulo, autor, ideas, enLaApp, largo) => '<details class="ciencia-fuente"><summary><b>' + titulo + '</b> (' + autor + ')</summary><ul>'
+    const fuente = (titulo, autor, ideas, enLaApp, largo) => enFormacion
+      ? (titulo === 'Práctica Integral de Vida' ? '' : '<details class="acc"><summary>' + titulo + ' (' + autor + ')</summary><div class="acc-body"><ul>'
+          + ideas.map(x => '<li>' + x + '</li>').join('') + '</ul><p class="ciencia-app">📱 <b>En la app:</b> ' + enLaApp + '</p>' + (largo || '') + '</div></details>')
+      : '<details class="ciencia-fuente"><summary><b>' + titulo + '</b> (' + autor + ')</summary><ul>'
       + ideas.map(x => '<li>' + x + '</li>').join('') + '</ul><p class="ciencia-app">📱 <b>En la app:</b> ' + enLaApp + '</p>'
       + (largo && enFormacion ? '<details class="ciencia-mas"><summary>📖 Leer más</summary>' + largo + '</details>' : '') + '</details>';
-    return (enFormacion ? '<details class="acc"><summary>🔬 La ciencia de la conducta en la que se basa la app</summary><div class="acc-body">' : '<details class="ciencia"><summary>🔬 Basado en la ciencia de la conducta</summary>')
-      + '<p>Metas Amables se apoya en lo que la investigación sabe sobre cómo cambiamos de verdad. Toca cada una para ver sus ideas clave:</p>'
+    return (enFormacion ? '' : '<details class="ciencia"><summary>🔬 Basado en la ciencia de la conducta</summary>'
+      + '<p>Metas Amables se apoya en lo que la investigación sabe sobre cómo cambiamos de verdad. Toca cada una para ver sus ideas clave:</p>')
       + fuente('Práctica Integral de Vida', 'Ken Wilber', [
           'Crecemos de forma <b>integral</b>: cuerpo, mente, espíritu, sombra y relaciones.',
           'Vamos atravesando <b>niveles de conciencia</b>, como quien sube una montaña.',
@@ -6205,7 +6238,7 @@ body.con-fondo-nivel::before{content:"";position:fixed;inset:0;z-index:-1;backgr
           + '<p><b>2. Hazlo diminuto.</b> Reduce el nuevo hábito a su versión más simple: dos flexiones en lugar de 30 minutos de ejercicio; un párrafo en lugar de un libro. Sin resistencia inicial, ganas constancia.</p>'
           + '<p><b>3. Usa anclas.</b> Conecta el hábito diminuto a una rutina que ya tengas consolidada: «Después de [mi ancla], yo [nuevo hábito diminuto]». Por ejemplo: «Después de servirme el café, beberé un sorbo de agua».</p>'
           + '<p><b>4. Celebra de inmediato.</b> Las emociones crean los hábitos, no la repetición. Al terminar, felicítate al instante (una sonrisa, un «¡bien hecho!», un gesto de victoria): esa emoción positiva activa el sistema de recompensa del cerebro y consolida el hábito.</p>')
-      + '<p>Por eso tu guía es personal, tus metas son amables y registras cada semana: así se crea un hábito que dura.</p>' + (enFormacion ? '</div>' : '') + '</details>';
+      + (enFormacion ? '' : '<p>Por eso tu guía es personal, tus metas son amables y registras cada semana: así se crea un hábito que dura.</p></details>');
   }
 
   // «Tu perfil de partida»: al terminar el formulario, lo que nos ha contado, en «Ahora» → «Tu meta» (tono amable)
@@ -6714,4 +6747,4 @@ body.con-fondo-nivel::before{content:"";position:fixed;inset:0;z-index:-1;backgr
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V10.95 · App Metas Amables · 2026-10-04 21:36 ==== -->
+<!-- ==== Fin del index V11.00 · App Metas Amables · 2026-10-04 22:07 ==== -->
