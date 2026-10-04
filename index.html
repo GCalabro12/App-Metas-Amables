@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V11.02 · App Metas Amables · 2026-10-04 22:45 ==== -->
+<!-- ==== index V11.03 · App Metas Amables · 2026-10-04 23:22 ==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -900,6 +900,13 @@ body.con-fondo-nivel::before{content:"";position:fixed;inset:0;z-index:-1;backgr
 .carta-guia{margin:0 0 10px;padding-left:20px;font-size:14px}.carta-guia li{margin:3px 0}
 .carta-ver summary,.carta-aviso summary{cursor:pointer;font-weight:700;color:#4E7446}
 .carta-btn-sec{width:100%;margin-top:8px;padding:10px 14px;border-radius:10px;background:#fff;border:2px solid #6B9362;color:#4E7446;font-weight:700;font-size:14px;cursor:pointer}
+.posit-escena{padding:4px 0 30px}
+.posit-intro{margin:8px 4px;font-size:15px}
+.posit{position:relative;margin:12px auto;max-width:440px;padding:22px 20px 18px;background:linear-gradient(170deg,#FFF59D 0%,#FFEE70 70%,#F9E15A 100%);box-shadow:0 10px 18px rgba(80,60,0,.22);transform:rotate(-1.5deg);border-radius:2px 2px 18px 2px;font-family:"Caveat","Lora",cursive;font-size:20px;line-height:1.45;color:#4A3B00}
+.posit::before{content:"";position:absolute;top:-12px;left:50%;width:90px;height:26px;margin-left:-45px;background:rgba(255,255,255,.55);box-shadow:0 1px 3px rgba(0,0,0,.12);transform:rotate(2deg)}
+.posit textarea{width:100%;box-sizing:border-box;background:transparent;border:none;outline:none;font:inherit;color:inherit;resize:vertical}
+.posit-tit{font-weight:700;margin:0 0 6px}.posit-fecha{font-size:15px;opacity:.7;margin:0 0 6px}
+.posit-cerrado{text-align:center}
 .contrato-escena{padding:6px 0 30px;text-align:center}
 .pergamino{--brillo:0;position:relative;margin:4px auto 10px;max-width:520px;padding:26px 24px 120px;border-radius:6px;text-align:left;color:#3B2A14;font-family:"Lora",Georgia,serif;
   background:radial-gradient(ellipse at 50% 40%,#FBF1D6 0%,#F1DFB2 60%,#E2C78E 100%);
@@ -1609,7 +1616,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V11.02';
+  const APP_VERSION = 'V11.03';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -4426,6 +4433,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
           : state.view === 'practicas' || (state.view === 'panel' && state.panelSub === 's3') ? 'a'
           : (state.view === 'practicaSemanal' || state.view === 'carta') ? 'b'
           : state.view === 'contrato' ? 'neutro'
+          : state.view === 'posit' ? '0'
           : state.view === 'panel' && state.panelSub === 's1' ? 'c'
           : state.view === 'panel' && state.panelSub === 's2' ? 'd'
           : (['utilidades','habla','frases','musica'].indexOf(state.view) >= 0 || (state.view === 'panel' && state.panelSub === 's5')) ? 'd' : '';
@@ -4470,6 +4478,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     if(state.view === 'frases'){ renderFrases(); if(state.menuOpen) renderMenuOverlay(); return; }
     if(state.view === 'habla'){ renderHabla(); if(state.menuOpen) renderMenuOverlay(); return; }
     if(state.view === 'musica'){ renderMusica(); if(state.menuOpen) renderMenuOverlay(); return; }
+    if(state.view === 'posit'){ renderPosit(); if(state.menuOpen) renderMenuOverlay(); return; }
     if(state.view === 'contrato'){ renderContrato(); if(state.menuOpen) renderMenuOverlay(); return; }
     if(state.view === 'carta'){ renderCarta(); if(state.menuOpen) renderMenuOverlay(); return; }
     if(state.view === 'encuesta'){ renderEncuesta(); if(state.menuOpen) renderMenuOverlay(); return; }
@@ -4508,6 +4517,15 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     // Se cumple el plazo de su meta (1 o 2 meses): «¿La conseguiste?»
     const avisoPlazo = (state.me && state.view === 'panel' && !state.panelSub) ? tarjetaPlazoMeta() : null;
     if(avisoPlazo) app.appendChild(avisoPlazo);
+    if(state.me && state.view === 'panel' && !state.panelSub && tienePlan('guias')){
+      const ep = estadoPosit(), clave = 'posit_visto_' + state.me + '_' + (ep.p ? (ep.p.mes || ep.p.trimestre) : '');
+      let visto = false; try { visto = !!localStorage.getItem(clave); } catch(e){}
+      if(ep.estado === 'abrir' && !visto){
+        const t = el('<div class="card carta-aviso" style="border-color:#E2C79A;background:#FFF8DC"><p style="font-weight:800;margin:0 0 6px">📝 Tienes un pósit de tu yo de principio de mes</p><button type="button" class="panel-link-btn" style="width:100%;border:none;cursor:pointer;background:#C9942D">Abrirlo →</button></div>');
+        t.querySelector('button').onclick = () => { try { localStorage.setItem(clave, '1'); } catch(e){} state.view = 'posit'; window.scrollTo(0,0); render(); };
+        app.appendChild(t);
+      }
+    }
     const avisoCarta = (state.me && state.view === 'panel' && !state.panelSub) ? tarjetaCartaFuturo() : null;
     if(avisoCarta) app.appendChild(avisoCarta);
     // «← Volver» rojo arriba, debajo de la cabecera, en todas las pantallas que no son el panel
@@ -5592,6 +5610,14 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
         sonidoTing(); state.view = 'contrato'; window.scrollTo(0,0); render();
       };
       app.appendChild(contrato);
+      // Pósit para fin de mes (Plan Guías)
+      const ep = estadoPosit();
+      const posit = el('<div class="card ps-recuadro"><p style="font-weight:700;margin:0 0 4px">📝 Pósit para fin de mes</p><p style="margin:0 0 8px;font-size:14px">' + (ep.estado === 'abrir' ? '¡Ya puedes abrir la nota que te dejaste! 💛' : ep.estado === 'guardado' ? 'Guardado. Se abre el ' + fechaLarga(ep.abre) + '.' : 'Una nota corta para ti al final del mes. Se abre tu último lunes del mes.') + '</p><button type="button" class="panel-link-btn" style="width:100%;border:none;cursor:pointer;background:#C9942D">' + (!tienePlan('guias') ? '👑 Escribir mi pósit' : ep.estado === 'abrir' ? '📖 Abrir mi pósit →' : ep.estado === 'guardado' ? '📌 Ver mi pósit →' : '✍️ Escribir mi pósit →') + '</button></div>');
+      posit.querySelector('button').onclick = () => {
+        if(!tienePlan('guias')){ avisoCorona('El pósit para fin de mes es del Plan Guías'); return; }
+        sonidoTing(); state.view = 'posit'; window.scrollTo(0,0); render();
+      };
+      app.appendChild(posit);
       // Lunes de compromiso con el grupo (solo Plan Guías + Grupo), en su recuadro
       if(registraLunes()){
         const lunes = el('<div class="card ps-recuadro"><p style="font-weight:700;margin:0 0 4px">✍️ Lunes de compromiso con el grupo</p><p style="margin:0 0 8px">' + (registroPendienteEstaSemana() ? 'Aún no has hecho tu compromiso de esta semana.' : 'Próximo: ' + textoProximoLunes() + '.') + '</p><button type="button" class="panel-link-btn" style="width:100%;border:none;cursor:pointer;background:#E39A9A">Ir al lunes de compromiso →</button></div>');
@@ -6183,6 +6209,58 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
         msg.textContent = '📜 Compromiso sellado. Es un acto sagrado contigo.';
         setTimeout(sonidoTing, 1200);
       } catch(err){ msg.textContent = 'Está sellado, pero no se pudo guardar. Revisa tu conexión y vuelve a intentarlo.'; }
+    };
+  }
+  // ===== Pósit para fin de mes (Plan Guías) =====
+  // Se escribe durante el mes y queda guardado hasta el último lunes del mes (el lunes es el día clave)
+  function mesClave(f){ f = f || new Date(); return f.getFullYear() + '-' + String(f.getMonth() + 1).padStart(2, '0'); }
+  function ultimoLunes(clave){
+    const [y, m] = clave.split('-').map(Number), d = new Date(y, m, 0);
+    while(d.getDay() !== 1) d.setDate(d.getDate() - 1);
+    d.setHours(0, 0, 0, 0); return d;
+  }
+  function positGuardado(){ const d = (state.gamifica && state.gamifica.datosFormulario) || {}; return d.cartaMensual && d.cartaMensual.texto ? d.cartaMensual : null; }
+  // Estado del pósit: 'escribir' | 'guardado' (aún cerrado) | 'abrir' (ya se puede leer)
+  function estadoPosit(){
+    const p = positGuardado(), hoy = new Date(); hoy.setHours(0, 0, 0, 0);
+    if(!p) return { estado: 'escribir' };
+    const abre = ultimoLunes(p.mes || p.trimestre), cierre = new Date(abre); cierre.setDate(cierre.getDate() + 14);
+    if(hoy >= cierre) return { estado: 'escribir', anterior: p };          // ya pasó: toca uno nuevo
+    if(hoy >= abre) return { estado: 'abrir', p, abre };
+    return (p.mes || p.trimestre) === mesClave() ? { estado: 'guardado', p, abre } : { estado: 'escribir', anterior: p };
+  }
+  function fechaLarga(d){ return d.toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' }); }
+  function renderPosit(){
+    renderBackTopbar('📝 Pósit para fin de mes');
+    app.querySelector('#btnVolver').onclick = () => { state.view = 'practicaSemanal'; window.scrollTo(0,0); render(); };
+    const e = estadoPosit(), caja = el('<div class="posit-escena"></div>');
+    app.appendChild(caja);
+    if(e.estado === 'guardado'){
+      const faltan = Math.ceil((e.abre - new Date()) / 86400000);
+      caja.innerHTML = '<div class="posit posit-cerrado"><p class="posit-tit">📌 Pósit guardado en el cajón</p><p>Se abrirá el <b>' + fechaLarga(e.abre) + '</b>' + (faltan > 0 ? ' (faltan ' + faltan + (faltan === 1 ? ' día' : ' días') + ')' : '') + '.</p><p style="font-size:14px;opacity:.75">No hagas trampa 😉: tu yo de fin de mes lo leerá con otros ojos.</p></div>';
+      return;
+    }
+    if(e.estado === 'abrir'){
+      caja.innerHTML = '<p class="posit-intro">Tu yo de principio de mes te dejó esta nota:</p><div class="posit posit-abierto"><p class="posit-fecha">Escrita el ' + new Date(e.p.fecha + 'T00:00:00').toLocaleDateString('es-ES', { day: 'numeric', month: 'long' }) + '</p>' + escapeAttr(e.p.texto).replace(/\n/g, '<br>') + '</div><p class="posit-intro">¿Qué aprendiste este mes que puedas usar en el siguiente? Llévalo a tu lunes de compromiso. 💛</p>';
+      if(typeof sonarSintonia === 'function') sonarSintonia(12, 0.5);
+      return;
+    }
+    const abre = ultimoLunes(mesClave());
+    caja.innerHTML = '<p class="posit-intro">Escríbete una nota corta (3 o 4 líneas) para el final de este mes. Se abrirá el <b>' + fechaLarga(abre) + '</b>, tu último lunes del mes.</p>'
+      + '<ul class="carta-guia"><li><b>Empatía:</b> «Seguramente estás cansado/a porque este mes queríamos…»</li><li><b>Perdón:</b> «Si no llegamos a la meta, no pasa nada; lo importante es no abandonar.»</li><li><b>Aprendizaje:</b> «¿Qué aprendiste que podamos usar el mes que viene?»</li></ul>'
+      + '<div class="posit"><textarea id="positTexto" rows="5" maxlength="600" placeholder="Hola, yo de fin de mes:…"></textarea></div><div id="positDictar"></div>'
+      + '<button type="button" class="panel-link-btn" id="positGuardar" style="background:#C9942D;border:none;width:100%;cursor:pointer;margin-top:12px">📌 Guardar en el cajón hasta fin de mes</button><p id="positMsg" style="margin:6px 0 0;font-size:14px"></p>';
+    const ta = caja.querySelector('#positTexto');
+    const dict = botonDictar(ta); if(dict) caja.querySelector('#positDictar').appendChild(dict);
+    caja.querySelector('#positGuardar').onclick = async ev => {
+      const b = ev.currentTarget, msg = caja.querySelector('#positMsg');
+      if(ta.value.trim().length < 15){ msg.textContent = 'Escribe un poquito más: es para ti 🙂'; return; }
+      b.disabled = true; b.textContent = 'Guardando…';
+      try {
+        const r = await api('/carta', { tipo: 'mensual', texto: ta.value, trimestre: mesClave() });
+        if(state.gamifica && r.datosFormulario){ state.gamifica.datosFormulario = r.datosFormulario; }
+        sonidoTing(); renderVista();
+      } catch(err){ b.disabled = false; b.textContent = '📌 Guardar en el cajón hasta fin de mes'; msg.textContent = (err && err.message) || 'No se pudo guardar. Prueba de nuevo.'; }
     };
   }
   // ===== Carta a mi yo del futuro =====
@@ -6893,4 +6971,4 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V11.02 · App Metas Amables · 2026-10-04 22:45 ==== -->
+<!-- ==== Fin del index V11.03 · App Metas Amables · 2026-10-04 23:22 ==== -->
