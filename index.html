@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V11.15 · App Metas Amables · 2026-10-05 00:53 ==== -->
+<!-- ==== index V11.16 · App Metas Amables · 2026-10-05 15:45 ==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -903,6 +903,13 @@ body.con-fondo-nivel::before{content:"";position:fixed;inset:0;z-index:-1;backgr
 .carta-guia{margin:0 0 10px;padding-left:20px;font-size:14px}.carta-guia li{margin:3px 0}
 .carta-ver summary,.carta-aviso summary{cursor:pointer;font-weight:700;color:#4E7446}
 .carta-btn-sec{width:100%;margin-top:8px;padding:10px 14px;border-radius:10px;background:#fff;border:2px solid #6B9362;color:#4E7446;font-weight:700;font-size:14px;cursor:pointer}
+.historial-intro{margin:4px 0 12px;font-size:15px}
+.historial-item{position:relative;border:2px solid #E39A9A;margin:0 0 12px}
+.historial-item.actual{border-color:#C0392B;box-shadow:0 4px 12px rgba(192,57,43,.15)}
+.historial-etiqueta{position:absolute;top:-10px;right:12px;background:#C0392B;color:#fff;font-size:12px;font-weight:700;padding:2px 10px;border-radius:99px}
+.historial-practica{font-weight:700;font-size:16px;margin:0 0 6px}
+.historial-meta,.historial-fechas{font-size:14px;color:var(--ink-soft);margin:0 0 4px}
+.historial-dias{margin:6px 0 0;font-size:15px}
 .posit-escena{padding:4px 0 30px}
 .posit-intro{margin:8px 4px;font-size:15px}
 .posit{position:relative;margin:12px auto;max-width:440px;padding:22px 20px 18px;background:linear-gradient(170deg,#FFF59D 0%,#FFEE70 70%,#F9E15A 100%);box-shadow:0 10px 18px rgba(80,60,0,.22);transform:rotate(-1.5deg);border-radius:2px 2px 18px 2px;font-family:"Caveat","Lora",cursive;font-size:20px;line-height:1.45;color:#4A3B00}
@@ -1697,7 +1704,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V11.15';
+  const APP_VERSION = 'V11.16';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -4512,7 +4519,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       if(!fondo && state.me){
         const paso = state.view === 'panel' && state.panelSub === 's4' ? '0'   // pantalla de la pizarra (meta), no el formulario
           : state.view === 'practicas' || (state.view === 'panel' && state.panelSub === 's3') ? 'a'
-          : (state.view === 'practicaSemanal' || state.view === 'carta') ? 'b'
+          : (state.view === 'practicaSemanal' || state.view === 'carta' || state.view === 'historial') ? 'b'
           : state.view === 'contrato' ? 'neutro'
           : state.view === 'posit' ? '0'
           : state.view === 'panel' && state.panelSub === 's1' ? 'c'
@@ -4559,6 +4566,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     if(state.view === 'frases'){ renderFrases(); if(state.menuOpen) renderMenuOverlay(); return; }
     if(state.view === 'habla'){ renderHabla(); if(state.menuOpen) renderMenuOverlay(); return; }
     if(state.view === 'musica'){ renderMusica(); if(state.menuOpen) renderMenuOverlay(); return; }
+    if(state.view === 'historial'){ renderHistorial(); if(state.menuOpen) renderMenuOverlay(); return; }
     if(state.view === 'posit'){ renderPosit(); if(state.menuOpen) renderMenuOverlay(); return; }
     if(state.view === 'contrato'){ renderContrato(); if(state.menuOpen) renderMenuOverlay(); return; }
     if(state.view === 'carta'){ renderCarta(); if(state.menuOpen) renderMenuOverlay(); return; }
@@ -5678,6 +5686,9 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       // Calendario completo con todos los días guardados, dentro del registro (solo para mirar)
       const verCal = el('<button type="button" class="panel-link-btn" style="width:100%;border:2px solid #C0392B;background:#fff;color:#A93226;cursor:pointer;margin:12px 0 0">Ver mi calendario de registro</button>').firstElementChild;
       tDias.appendChild(verCal);
+      const verHist = el('<button type="button" class="panel-link-btn" style="width:100%;border:2px solid #C0392B;background:#fff;color:#A93226;cursor:pointer;margin:8px 0 0">Mi historial de prácticas</button>').firstElementChild;
+      tDias.appendChild(verHist);
+      verHist.onclick = () => { state.view = 'historial'; window.scrollTo(0,0); render(); };
       verCal.onclick = () => { const c = calendarioDiario(true); verCal.replaceWith(c); c.scrollIntoView({ behavior: 'smooth', block: 'start' }); };
       // Viene de «Calendario diario» (en el calendario de semanas): se abre ya desplegado
       if(state.abrirCalDiario){ state.abrirCalDiario = false; setTimeout(() => verCal.click(), 0); }
@@ -5856,6 +5867,50 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   // Registro diario opcional: L M X J V S D de la semana en curso. Se guarda en la
   // fila de esa semana, en una sola columna («Días hechos», p. ej. «L,X,J»). No da
   // puntos: solo sirve para que el cierre del lunes salga ya rellenado.
+  // ===== Mi historial de prácticas =====
+  // Agrupa las semanas seguidas con la misma práctica: de qué semana a cuál, días hechos y veces
+  function lunesDeSemanaTexto(w){
+    const m = String(w || '').match(/^(\d{1,2})-\d{1,2}\s+([a-zñ]+)\.?\s+(\d{4})$/i);
+    if(!m) return null;
+    const meses = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
+    const i = meses.findIndex(x => m[2].toLowerCase().startsWith(x));
+    return i < 0 ? null : new Date(Number(m[3]), i, Number(m[1]));
+  }
+  function historialPracticas(){
+    const semanas = ((state.checkins && state.checkins[state.me]) || [])
+      .map(c => ({ c, lun: lunesDeSemanaTexto(c.week) }))
+      .filter(x => x.lun).sort((a, b) => a.lun - b.lun);
+    const grupos = []; let ultima = '';
+    semanas.forEach(({ c, lun }) => {
+      const propia = String(c.metaSem || '').trim();
+      if(propia) ultima = propia;
+      const practica = propia || ultima;
+      const dias = leerDias(c.diasHechos), nDias = Object.keys(dias).length, nVeces = Object.values(dias).reduce((s, v) => s + v, 0);
+      if(!practica && !nDias) return;
+      const clave = (practica || '').toLowerCase();
+      let g = grupos[grupos.length - 1];
+      if(!g || g.clave !== clave){ g = { clave, practica, meta: '', desde: lun, hasta: lun, semanas: 0, dias: 0, veces: 0 }; grupos.push(g); }
+      g.hasta = lun; g.semanas++; g.dias += nDias; g.veces += nVeces;
+      if(c.metaTrim && c.metaTrim.trim()) g.meta = c.metaTrim.trim();
+    });
+    return grupos.reverse();
+  }
+  function renderHistorial(){
+    renderBackTopbar('Mi historial de prácticas');
+    app.querySelector('#btnVolver').onclick = () => { state.view = 'practicaSemanal'; window.scrollTo(0,0); render(); };
+    const g = historialPracticas();
+    const corta = d => d.getDate() + ' ' + d.toLocaleDateString('es-ES', { month: 'short' }).replace('.', '') + ' ' + d.getFullYear();
+    const caja = el('<div class="historial"></div>').firstElementChild;
+    caja.innerHTML = '<p class="historial-intro">Todas las prácticas que has trabajado, de la más reciente a la más antigua.</p>'
+      + (g.length ? g.map((x, i) => '<div class="card historial-item' + (i === 0 ? ' actual' : '') + '">'
+          + (i === 0 ? '<span class="historial-etiqueta">Ahora</span>' : '')
+          + '<p class="historial-practica">' + (x.practica ? escapeAttr(x.practica) : 'La práctica de tu guía') + '</p>'
+          + (x.meta ? '<p class="historial-meta">🎯 Meta: ' + escapeAttr(x.meta) + '</p>' : '')
+          + '<p class="historial-fechas">' + (x.semanas === 1 ? 'Semana del ' + corta(x.desde) : 'Del ' + corta(x.desde) + ' al ' + corta(new Date(x.hasta.getFullYear(), x.hasta.getMonth(), x.hasta.getDate() + 6))) + ' · ' + x.semanas + (x.semanas === 1 ? ' semana' : ' semanas') + '</p>'
+          + '<p class="historial-dias">✅ <b>' + x.dias + (x.dias === 1 ? ' día' : ' días') + '</b> practicados' + (x.veces > x.dias ? ' · ' + x.veces + ' veces' : '') + '</p></div>').join('')
+        : '<p class="historial-intro">Aún no hay prácticas guardadas. Cuando marques los días en «Registra tu práctica», irán apareciendo aquí.</p>');
+    app.appendChild(caja);
+  }
   const DIAS_SEMANA = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
   // «Días hechos» guarda cada día y cuántas veces: «L,M:3,X» (sin número = 1 vez, como antes)
   function leerDias(texto){
@@ -7189,4 +7244,4 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V11.15 · App Metas Amables · 2026-10-05 00:53 ==== -->
+<!-- ==== Fin del index V11.16 · App Metas Amables · 2026-10-05 15:45 ==== -->
