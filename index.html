@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V11.35 · App Metas Amables · 2026-10-05 19:50 ==== -->
+<!-- ==== index V11.36 · App Metas Amables · 2026-10-05 19:53 ==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1847,7 +1847,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V11.35';
+  const APP_VERSION = 'V11.36';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -4542,9 +4542,12 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       barra.innerHTML = '<i></i><span></span>';
       const textoGuia = caja.querySelector('.guia-texto'); textoGuia.parentNode.insertBefore(barra, textoGuia);
       let i = 0;
+      const clave = textoGuia.dataset.sem || '';
       const ir = (n, sinSubir) => {
         i = Math.max(0, Math.min(total - 1, n));
+        (window._capGuia = window._capGuia || {})[clave] = i;
         caps.forEach((c, k) => c.classList.toggle('activo', k === i));
+        caja.querySelectorAll('.guia-final').forEach(x => { x.hidden = i < total - 1; });
         pos.textContent = (i + 1) + ' / ' + total;
         barra.querySelector('i').style.width = Math.round((i + 1) * 100 / total) + '%';
         barra.querySelector('span').textContent = caps[i].dataset.nombre + ' · ' + (i + 1) + ' de ' + total;
@@ -4561,7 +4564,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
         try { sonidoTing(); } catch(e){}
         avisoBreve('📖 ¡Guía leída! Ahora, a practicar.');
       };
-      ir(0, true);
+      ir((window._capGuia || {})[clave] || 0, true);
     });
   }
   function cuerpoPracticasHTML(){
@@ -4591,7 +4594,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
           if(esActual){
             const yaValorado = state.miValoracion !== null && state.miValoracion !== undefined;
             extra = `
-              <div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--border)">
+              <div class="guia-final" style="margin-top:14px;padding-top:12px;border-top:1px solid var(--border)">
                 <p style="font-size:13px;font-weight:700;margin:0 0 8px">¿Qué te ha parecido esta guía de la semana? (0-10)</p>
                 <div class="duo-rate-row">
                   ${[0,1,2,3,4,5,6,7,8,9,10].map(n => `<button type="button" class="duo-rate-btn ${yaValorado && state.miValoracion===n ? 'duo-rate-selected':''}" data-n="${n}">${n}</button>`).join('')}
@@ -7862,4 +7865,4 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V11.35 · App Metas Amables · 2026-10-05 19:50 ==== -->
+<!-- ==== Fin del index V11.36 · App Metas Amables · 2026-10-05 19:53 ==== -->
