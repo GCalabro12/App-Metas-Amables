@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V11.36 · App Metas Amables · 2026-10-05 19:53 ==== -->
+<!-- ==== index V11.39 · App Metas Amables · 2026-10-05 21:16 ==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -847,7 +847,6 @@
 .habla-medio{position:relative;width:100%;display:flex;justify-content:center;margin-top:14px}
 .habla-practi{width:min(62vw,240px);height:min(66vw,254px);padding:0;border:0;background:none;cursor:pointer;-webkit-tap-highlight-color:transparent}
 .habla-voz{position:absolute;right:0;top:4px;width:46px;height:46px;display:flex;align-items:center;justify-content:center;padding:0;border-radius:50%;border:2px solid #7B5FB8;background:#fff;color:#7B5FB8;cursor:pointer}
-.habla-tipo-voz{position:absolute;right:0;top:56px;padding:5px 10px;border-radius:99px;border:2px solid #7B5FB8;background:#fff;color:#7B5FB8;font:inherit;font-size:12.5px;font-weight:700;cursor:pointer}
 .habla-voz.apagada{border-color:#999;color:#999}
 .habla-quedan{margin:4px 0 2px;font-size:14px;font-weight:700;color:#7B5FB8;text-align:center}
 .habla-ver{margin:4px 0 10px;padding:6px 14px;border-radius:99px;border:2px solid #7B5FB8;background:#fff;color:#7B5FB8;font-weight:700;font-size:14px;cursor:pointer}
@@ -1034,7 +1033,8 @@ body.theme-dark .guia-ancha{background:var(--surface)}
 .guia-sig{flex:1;max-width:66%;padding:13px 14px;border:0;border-radius:14px;background:#4F7FB5;color:#fff;font:700 15.5px Karla,sans-serif;cursor:pointer;text-align:center}
 .guia-sig.fin{background:#2E9E4F}
 .guia-ancha details.duo-item[open] .guia-lector{position:fixed;left:0;right:0;bottom:calc(62px + env(safe-area-inset-bottom));z-index:870;margin:0;padding:8px 10px;justify-content:center;gap:10px;background:#fff;border-top:1px solid rgba(0,0,0,.08);box-shadow:0 -3px 10px rgba(0,0,0,.06)}
-.guia-ancha details.duo-item[open] .guia-lector .lector-btn{padding:10px 16px;font-size:15px}
+.guia-ancha details.duo-item[open] .guia-lector{flex-wrap:nowrap;gap:6px;padding:8px}
+.guia-ancha details.duo-item[open] .guia-lector .lector-btn{padding:9px 12px;font-size:14.5px;white-space:nowrap;flex:0 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis}
 body:not(.con-tabbar) .guia-ancha details.duo-item[open] .guia-lector{bottom:env(safe-area-inset-bottom)}
 body.con-tabbar .guia-ancha{padding-bottom:84px}
 body.theme-dark .guia-ancha details.duo-item[open] .guia-lector{background:#1E1E24;border-top-color:rgba(255,255,255,.1)}
@@ -1847,7 +1847,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V11.36';
+  const APP_VERSION = 'V11.39';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -2576,7 +2576,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     document.querySelectorAll('.frase.leyendo').forEach(x => x.classList.remove('leyendo'));
     if(lector.caja){
       const play = lector.caja.querySelector('[data-acc="play"]'), stop = lector.caja.querySelector('[data-acc="stop"]');
-      if(play) play.textContent = '🔊 Escuchar';
+      if(play) play.textContent = '🔊 Oír';
       if(stop) stop.hidden = true;
     }
     lector.activo = false; lector.pausado = false;
@@ -3771,27 +3771,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
         window.speechSynthesis.speak(u);
       } catch(e){ hablado = true; fin(); } };
     if(!habla.voz){ escribir(); return; }
-    if(!vozNaturalActiva()){ escribir(); vozMovil(); return; }
-    // Voz natural: la primera frase se pide sola (sale antes) y el resto a la vez, en paralelo.
-    // Mientras llega la primera, Prácti sigue pensando; texto y voz empiezan juntos.
-    const frases = texto.match(/[^.!?…]+[.!?…]+["»”)]*\s*|[^.!?…]+$/g) || [texto];
-    const primera = frases[0].trim(), resto = frases.slice(1).join('').trim();
-    caja.textContent = 'Déjame pensar…'; hablaPensando(true);
-    const pAudio1 = hablaVozNatural(primera), pAudio2 = resto ? hablaVozNatural(resto) : Promise.resolve(null);
-    let arrancado = false;
-    const respaldo = setTimeout(() => { if(!arrancado && habla.turno === turno){ arrancado = true; escribir(); vozMovil(); } }, 6000);
-    pAudio1.then(a1 => {
-      if(arrancado || habla.turno !== turno) return;
-      arrancado = true; clearTimeout(respaldo);
-      if(!a1){ escribir(); vozMovil(); return; }
-      escribir();
-      const tocar = (audio, despues) => { habla.audio = audio; audio.onended = audio.onerror = despues; audio.play().catch(despues); };
-      tocar(a1, () => {
-        if(habla.turno !== turno) return;
-        if(!resto){ hablado = true; fin(); return; }
-        pAudio2.then(a2 => { if(habla.turno !== turno) return; if(a2) tocar(a2, () => { hablado = true; fin(); }); else { hablado = true; fin(); } });
-      });
-    });
+    escribir(); vozMovil();
   }
 
   // Lo que Prácti sabe de la persona (sus propios datos de la app)
@@ -3817,16 +3797,6 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     return c;
   }
 
-  // Voz natural (Gemini). Devuelve un Audio listo para sonar, o null si no se pudo (entonces, voz del móvil)
-  function vozNaturalActiva(){ try { return localStorage.getItem('voz_natural') !== '0'; } catch(e){ return true; } }
-  async function hablaVozNatural(texto){
-    try {
-      const ses = leerSesion();
-      const r = await fetch(API_URL + '/voz', { method: 'POST', headers: { 'Content-Type': 'application/json', ...(ses ? { 'Authorization': 'Bearer ' + ses } : {}) }, body: JSON.stringify({ texto }) });
-      if(!r.ok || !/audio/.test(r.headers.get('Content-Type') || '')) return null;
-      return new Audio(URL.createObjectURL(await r.blob()));
-    } catch(e){ return null; }
-  }
   function hablaCallar(){ try { window.speechSynthesis.cancel(); } catch(e){} try { if(habla.audio){ habla.audio.pause(); habla.audio = null; } } catch(e){} }
 
   async function hablaEnviar(){
@@ -3836,6 +3806,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     if(habla.quedan <= 0){ hablaDecir('Por hoy ya hemos hablado mucho 😊. Mañana seguimos, ¿vale?'); return; }
     campo.value = ''; habla.esperando = true;
     habla.turno = (habla.turno || 0) + 1; hablaCallar();
+    if(habla.voz){ try { const u0 = new SpeechSynthesisUtterance(' '); u0.volume = 0; window.speechSynthesis.speak(u0); } catch(e){} }
     app.querySelector('#hablaTexto').textContent = 'Déjame pensar…'; hablaBoca(false); hablaPensando(true);
     let r = {};
     try { r = await api('/habla', { mensaje, historial: habla.historial.slice(-8), contexto: hablaContexto() }); }
@@ -3893,7 +3864,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
         <div class="habla-burbuja"><p id="hablaTexto"></p></div>
         <div class="habla-medio">
           <button type="button" class="habla-practi" id="hablaPracti" aria-label="Prácti: tócale para que repita la respuesta"><span class="habla-anim"></span><span class="habla-pensando" aria-label="Prácti pensando"></span></button>
-          <button type="button" class="habla-voz" id="hablaVoz"></button><button type="button" class="habla-tipo-voz" id="hablaTipoVoz"></button>
+          <button type="button" class="habla-voz" id="hablaVoz"></button>
         </div>
         <p class="habla-quedan" id="hablaQuedan"></p>
         <button type="button" class="habla-ver" id="hablaVer">📜 Ver la conversación de hoy</button>
@@ -3917,9 +3888,6 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     voz.onclick = () => { habla.voz = !habla.voz; try { localStorage.setItem('habla_voz', habla.voz ? '1' : '0'); } catch(e){} pintaVoz();
       if(!habla.voz){ hablaCallar(); hablaBoca(false); }
       else if(habla.ultima && !habla.esperando) hablaDecir(habla.ultima); };
-    const tv = caja.querySelector('#hablaTipoVoz');
-    const pintaTV = () => { tv.textContent = vozNaturalActiva() ? '✨ Voz natural' : '⚡ Voz rápida'; };
-    pintaTV(); tv.onclick = () => { try { localStorage.setItem('voz_natural', vozNaturalActiva() ? '0' : '1'); } catch(e){} pintaTV(); };
     caja.querySelector('#hablaPracti').onclick = () => { if(habla.ultima && !habla.esperando) hablaDecir(habla.ultima); };
     caja.querySelector('#hablaVer').onclick = hablaVerConversacion;
     caja.querySelector('#hablaEnviar').onclick = hablaEnviar;
@@ -4345,7 +4313,6 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
         <li>Vuelve a la app: Prácti leerá tus guías con esa voz.</li>
       </ol>
       ${android ? '<a class="btn btn-yes" style="display:block;text-align:center;text-decoration:none;margin-top:14px" href="intent:#Intent;action=com.android.settings.TTS_SETTINGS;end">⚙️ Abrir «Texto a voz» del móvil</a><p style="font-size:12px;color:var(--ink-soft);margin:6px 0 0">Si el botón no abre nada, sigue los pasos a mano: algunos móviles no lo permiten.</p>' : '<p style="font-size:13px;color:var(--ink-soft)">En iPhone puedes elegir la voz directamente en la app (Menú → Ajustes → Voz de Prácti).</p>'}
-      <p style="margin:14px 0 0;font-size:13px">✨ En «Habla con Prácti» puedes usar además la <b>voz natural</b>, que no depende del móvil.</p>
     </div>`));
   }
 
@@ -4445,9 +4412,6 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
         <div class="theme-toggle-row">${VELOCIDADES.map(v => `<button class="theme-toggle-btn ${v === vel ? 'active' : ''}" data-vel="${v}">${String(v).replace('.', ',')}x</button>`).join('')}</div>
         <button class="btn btn-yes" id="btnProbarVoz" style="text-align:center;margin-top:14px">▶ Probar voz</button>
         <div class="voz-ayuda">
-          <p style="font-weight:700;margin:0 0 6px">✨ Voz natural en «Habla con Prácti»</p>
-          <p style="font-size:13px;margin:0 0 8px">Cuando hablas con Prácti, te responde con una voz más humana (tarda un segundo más). Si falla, usa la voz del móvil.</p>
-          <button type="button" class="theme-toggle-btn" id="btnVozNatural"></button>
           <button type="button" class="btn btn-no" id="btnAyudaVoz" style="text-align:center;margin-top:14px">📱 ¿Tu voz suena igual? Cómo mejorarla</button>
         </div>
       `;
@@ -4476,9 +4440,6 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
         probar();
       });
       vozCard.querySelector('#btnProbarVoz').onclick = probar;
-      const bvn = vozCard.querySelector('#btnVozNatural');
-      const pintaVN = () => { const on = vozNaturalActiva(); bvn.textContent = on ? '✨ Voz natural' : '⚡ Voz rápida'; bvn.classList.toggle('active', on); };
-      pintaVN(); bvn.onclick = () => { try { localStorage.setItem('voz_natural', vozNaturalActiva() ? '0' : '1'); } catch(e){} pintaVN(); };
       vozCard.querySelector('#btnAyudaVoz').onclick = () => { state.view = 'ayudaVoz'; window.scrollTo(0,0); render(); };
     }
     const reponer = el('<div class="card"><p style="font-weight:700;margin:0 0 6px">Pantallas de explicación</p><p style="font-size:13px;color:var(--ink-soft);margin:0 0 10px">Si marcaste «No volver a mostrar» en alguna sección del ciclo, aquí puedes recuperarlas.</p><button type="button" class="btn btn-no" id="btnReponerIntros" style="text-align:center">Volver a mostrarlas</button><div class="saved-msg" id="msgReponer"></div></div>');
@@ -4600,18 +4561,14 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
                   ${[0,1,2,3,4,5,6,7,8,9,10].map(n => `<button type="button" class="duo-rate-btn ${yaValorado && state.miValoracion===n ? 'duo-rate-selected':''}" data-n="${n}">${n}</button>`).join('')}
                 </div>
                 <div class="saved-msg">${state.valoracionMsg}</div>
-                ${registraLunes() ? `<div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--border);text-align:center">
-                  <p style="font-size:14px;color:var(--ink);margin:0 0 10px">${avisoLunesHTML()}</p>
-                  <button type="button" class="panel-link-btn irARegistroBtn" style="background:var(--honey);border:none;cursor:pointer;width:100%">Ir al registro de los lunes →</button>
-                </div>` : ''}
               </div>`;
           }
           cuerpo += `<details class="duo-item" ${esActual ? 'open' : ''}>
             <summary class="${nodoClase}"><span class="duo-icono">${icono}</span><span class="duo-texto">${b.monthName} · Semana ${b.weekNum}</span></summary>
             <div class="duo-contenido">
               <div class="guia-lector">
-                <button type="button" class="lector-btn" data-acc="play">🔊 Escuchar</button>
-                <button type="button" class="lector-btn lector-stop" data-acc="stop" hidden>⏹ Parar</button>
+                <button type="button" class="lector-btn" data-acc="play">🔊 Oír</button>
+                <button type="button" class="lector-btn lector-stop" data-acc="stop" aria-label="Parar" title="Parar" hidden>⏹</button>
                 <button type="button" class="lector-btn lector-vel" data-acc="vel">⏩ 1x</button>
                 <button type="button" class="lector-btn lector-sub" data-acc="sub">🖍 Subrayar</button>
               </div>
@@ -7865,4 +7822,4 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V11.36 · App Metas Amables · 2026-10-05 19:53 ==== -->
+<!-- ==== Fin del index V11.39 · App Metas Amables · 2026-10-05 21:16 ==== -->
