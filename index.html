@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V11.33 · App Metas Amables · 2026-10-05 19:48 ==== -->
+<!-- ==== index V11.35 · App Metas Amables · 2026-10-05 19:50 ==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1033,6 +1033,16 @@ body.theme-dark .guia-ancha{background:var(--surface)}
 .guia-pos{font-size:13px;color:var(--ink-soft);white-space:nowrap}
 .guia-sig{flex:1;max-width:66%;padding:13px 14px;border:0;border-radius:14px;background:#4F7FB5;color:#fff;font:700 15.5px Karla,sans-serif;cursor:pointer;text-align:center}
 .guia-sig.fin{background:#2E9E4F}
+.guia-ancha details.duo-item[open] .guia-lector{position:fixed;left:0;right:0;bottom:calc(62px + env(safe-area-inset-bottom));z-index:870;margin:0;padding:8px 10px;justify-content:center;gap:10px;background:#fff;border-top:1px solid rgba(0,0,0,.08);box-shadow:0 -3px 10px rgba(0,0,0,.06)}
+.guia-ancha details.duo-item[open] .guia-lector .lector-btn{padding:10px 16px;font-size:15px}
+body:not(.con-tabbar) .guia-ancha details.duo-item[open] .guia-lector{bottom:env(safe-area-inset-bottom)}
+body.con-tabbar .guia-ancha{padding-bottom:84px}
+body.theme-dark .guia-ancha details.duo-item[open] .guia-lector{background:#1E1E24;border-top-color:rgba(255,255,255,.1)}
+.guia-progreso{position:sticky;top:0;z-index:5;margin:0 -18px 12px;padding:8px 18px 6px;background:#fff;border-bottom:1px solid rgba(0,0,0,.06)}
+.guia-progreso::before{content:"";display:block;height:6px;border-radius:99px;background:#E3ECF7}
+.guia-progreso i{position:absolute;left:18px;top:8px;height:6px;border-radius:99px;background:#4F7FB5;transition:width .35s ease;max-width:calc(100% - 36px)}
+.guia-progreso span{display:block;margin-top:5px;font-size:12.5px;font-weight:700;color:#2F5F93}
+body.theme-dark .guia-progreso{background:var(--surface)}
 .aviso-breve{position:fixed;left:50%;bottom:calc(90px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:9500;max-width:86vw;padding:10px 16px;border-radius:14px;background:rgba(30,30,40,.9);color:#fff;font-size:15px;text-align:center;box-shadow:0 6px 18px rgba(0,0,0,.25)}
 .historial-intro{margin:4px 0 12px;font-size:15px}
 .historial-item{position:relative;border:2px solid #E39A9A;margin:0 0 12px}
@@ -1837,7 +1847,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V11.33';
+  const APP_VERSION = 'V11.35';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -4528,11 +4538,16 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       caja.dataset.caps = '1';
       const caps = Array.from(caja.querySelectorAll('.guia-cap')), total = caps.length;
       const ant = nav.querySelector('.guia-ant'), sig = nav.querySelector('.guia-sig'), pos = nav.querySelector('.guia-pos');
+      const barra = document.createElement('div'); barra.className = 'guia-progreso';
+      barra.innerHTML = '<i></i><span></span>';
+      const textoGuia = caja.querySelector('.guia-texto'); textoGuia.parentNode.insertBefore(barra, textoGuia);
       let i = 0;
       const ir = (n, sinSubir) => {
         i = Math.max(0, Math.min(total - 1, n));
         caps.forEach((c, k) => c.classList.toggle('activo', k === i));
         pos.textContent = (i + 1) + ' / ' + total;
+        barra.querySelector('i').style.width = Math.round((i + 1) * 100 / total) + '%';
+        barra.querySelector('span').textContent = caps[i].dataset.nombre + ' · ' + (i + 1) + ' de ' + total;
         ant.style.visibility = i === 0 ? 'hidden' : 'visible';
         if(i < total - 1){ sig.textContent = 'Siguiente: ' + caps[i + 1].dataset.nombre + ' →'; sig.classList.remove('fin'); }
         else { sig.textContent = '✓ He terminado la guía'; sig.classList.add('fin'); }
@@ -4624,6 +4639,11 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     card.innerHTML = `<p style="margin:0 0 12px;color:var(--ink-soft);font-size:15px">Tu guía de prácticas personalizada de este mes.</p>${cuerpoPracticasHTML()}`;
     app.appendChild(card);
     activarCapitulos(card);
+    const semanasAbiertas = card.querySelectorAll('details.duo-item');
+    semanasAbiertas.forEach(dt => dt.addEventListener('toggle', () => {
+      if(dt.open){ semanasAbiertas.forEach(o => { if(o !== dt && o.open) o.open = false; }); }
+      else { try { lectorParar(); } catch(e){} }
+    }));
     card.querySelectorAll('.duo-rate-btn').forEach(btn => {
       btn.onclick = (e) => {
         e.preventDefault();
@@ -7842,4 +7862,4 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V11.33 · App Metas Amables · 2026-10-05 19:48 ==== -->
+<!-- ==== Fin del index V11.35 · App Metas Amables · 2026-10-05 19:50 ==== -->
