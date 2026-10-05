@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V11.16 · App Metas Amables · 2026-10-05 15:45 ==== -->
+<!-- ==== index V11.17 · App Metas Amables · 2026-10-05 16:28 ==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1704,7 +1704,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V11.16';
+  const APP_VERSION = 'V11.17';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -4137,6 +4137,12 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     </div>`));
   }
 
+  // Cambio de idioma: por ahora, a través del traductor de Google (la app está escrita en español)
+  function cambiarIdioma(lang){
+    const enTraductor = /translate\.goog$/.test(location.hostname);
+    if(lang === 'es'){ if(enTraductor) location.href = 'https://app.practicaintegral.club/'; else alert('La app ya está en español.'); return; }
+    location.href = 'https://app-practicaintegral-club.translate.goog/?_x_tr_sl=es&_x_tr_tl=' + lang + '&_x_tr_hl=' + lang;
+  }
   function renderAjustesView(){
     renderBackTopbar('Ajustes');
     const card = document.createElement('div');
@@ -4153,12 +4159,14 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
         <option value="en" ${state.lang==='en'?'selected':''}>English</option>
         <option value="ca" ${state.lang==='ca'?'selected':''}>Català</option>
       </select>
-      <p style="font-size:12px;color:var(--ink-soft);margin-top:8px"><em>El cambio de idioma completo de la app estará disponible próximamente.</em></p>
+      <button type="button" class="panel-link-btn" id="langCambiar" style="width:100%;border:none;cursor:pointer;margin-top:10px">Cambiar al idioma seleccionado</button>
+      <p style="font-size:12px;color:var(--ink-soft);margin-top:8px"><em>Inglés y catalán: la app se abre traducida automáticamente por Google (tendrás que volver a entrar con tu nombre y contraseña). La versión completa en otros idiomas llegará más adelante.</em></p>
     `;
     app.appendChild(card);
     card.querySelector('#themeLight').onclick = () => { state.theme='light'; localStorage.setItem('mac_theme','light'); render(); };
     card.querySelector('#themeDark').onclick = () => { state.theme='dark'; localStorage.setItem('mac_theme','dark'); render(); };
     card.querySelector('#langSelect').onchange = (e) => { state.lang = e.target.value; localStorage.setItem('mac_lang', state.lang); };
+    card.querySelector('#langCambiar').onclick = () => cambiarIdioma(card.querySelector('#langSelect').value);
 
     // Instalar la app (siempre disponible aquí, también para volver a instalarla si falla)
     if(!MODO_PLAY){
@@ -7244,4 +7252,4 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V11.16 · App Metas Amables · 2026-10-05 15:45 ==== -->
+<!-- ==== Fin del index V11.17 · App Metas Amables · 2026-10-05 16:28 ==== -->
