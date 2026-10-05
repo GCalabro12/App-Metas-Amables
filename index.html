@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V11.39 · App Metas Amables · 2026-10-05 21:16 ==== -->
+<!-- ==== index V11.41 · App Metas Amables · 2026-10-05 22:22 ==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1043,6 +1043,49 @@ body.theme-dark .guia-ancha details.duo-item[open] .guia-lector{background:#1E1E
 .guia-progreso i{position:absolute;left:18px;top:8px;height:6px;border-radius:99px;background:#4F7FB5;transition:width .35s ease;max-width:calc(100% - 36px)}
 .guia-progreso span{display:block;margin-top:5px;font-size:12.5px;font-weight:700;color:#2F5F93}
 body.theme-dark .guia-progreso{background:var(--surface)}
+.historia-capa{position:fixed;inset:0;z-index:9400;display:flex;flex-direction:column;background:#fff;color:#2E2E2E;font-family:Karla,sans-serif;padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom)}
+.historia-capa.hs-degradado{background:linear-gradient(170deg,#3B2A8C 0%,#6A2C91 45%,#B0306A 100%);color:#fff}
+.hs-cab{display:flex;justify-content:space-between;align-items:center;padding:10px 14px 8px}
+.hs-x,.hs-compartir{background:none;border:0;cursor:pointer;color:#5B7083;font-size:28px;line-height:1;padding:6px;display:flex}
+.hs-degradado .hs-x,.hs-degradado .hs-compartir{color:#fff}
+.hs-prog{height:5px;background:#E6E9EF;position:relative;flex:none}
+.hs-degradado .hs-prog{background:rgba(255,255,255,.25)}
+.hs-prog i{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(90deg,#2D2A8C,#7B5FB8 60%,#8FD3DA);border-radius:0 3px 3px 0;transition:width .45s ease}
+.hs-cuerpo{flex:1;overflow-y:auto;display:flex;padding:22px 28px}
+.hs-centro{margin:auto;width:100%;max-width:560px}
+.hs-tx{font-family:Lora,serif;font-size:24px;line-height:1.5;color:#333}
+.hs-tx b{color:#4A3A8C;font-weight:600}
+.hs-receta{display:block;margin:16px 0;padding:14px 16px;border-left:4px solid #7B5FB8;background:#F4F0FB;border-radius:0 12px 12px 0;font-style:italic;font-size:21px}
+.hs-dibujo{display:flex;flex-direction:column;align-items:center;margin:0 0 18px}
+.hs-foto{width:min(62vw,250px);height:auto;filter:drop-shadow(0 4px 8px rgba(0,0,0,.12))}
+.hs-foto+.hs-foto{margin-top:-12px}
+.hs-pie{display:flex;gap:12px;padding:12px 22px 18px;flex:none}
+.hs-atras{flex:0 0 34%;padding:16px 8px;border:0;border-radius:18px;background:#EEF1F6;color:#5B7083;font:700 19px Karla,sans-serif;cursor:pointer}
+.hs-sig{flex:1;padding:16px;border:0;border-radius:18px;background:#7B5FB8;color:#fff;font:700 19px Karla,sans-serif;cursor:pointer}
+.hs-degradado .hs-sig{background:#fff;color:#5B2A86}
+.hs-degradado .hs-atras{background:rgba(255,255,255,.18);color:#fff}
+.hs-portada,.hs-fin{text-align:center}
+.hs-et{text-transform:uppercase;letter-spacing:.12em;font-size:13px;font-weight:800;opacity:.85;margin:8px 0 6px}
+.hs-portada h2,.hs-fin h2,.hs-accion h2{font-family:Lora,serif;font-size:32px;line-height:1.2;margin:0 0 12px}
+.hs-sub{font-size:18px;line-height:1.45;margin:0 0 14px;opacity:.95}
+.hs-min{font-size:15px;font-weight:700;opacity:.85;margin:0}
+.hs-accion h2{color:#4A3A8C}
+.hs-accion>p{font-size:17px;line-height:1.5;margin:0 0 14px}
+.hs-accion .hs-pista{background:#F4F0FB;border-radius:12px;padding:10px 12px;font-size:15px}
+.hs-campo{display:block;margin:0 0 14px}
+.hs-campo span{display:block;font-family:Lora,serif;font-size:21px;font-weight:600;color:#4A3A8C;margin:0 0 4px}
+.hs-campo small{font-family:Karla,sans-serif;font-size:13px;font-weight:400;color:#777}
+.hs-campo input{width:100%;box-sizing:border-box;padding:13px 14px;border:2px solid #D9D0EE;border-radius:14px;font:18px Karla,sans-serif;color:#222;background:#fff}
+.hs-campo input:focus{outline:none;border-color:#7B5FB8}
+.hs-accion .hs-consejo{font-size:15px;color:#666}
+.hs-fin-icono{font-size:54px;margin-bottom:6px}
+.hs-receta-fin{font-family:Lora,serif;font-style:italic;font-size:23px;line-height:1.45;background:rgba(255,255,255,.14);border-radius:16px;padding:14px 16px;margin:0 0 16px}
+.hs-fin p{font-size:17px;line-height:1.5}
+.hs-entrada{display:block;width:100%;text-align:left;border:0;border-radius:18px;padding:16px 18px;margin:0 0 14px;cursor:pointer;color:#fff;background:linear-gradient(135deg,#3B2A8C,#6A2C91 55%,#B0306A);box-shadow:0 6px 16px rgba(90,40,140,.25);font-family:Karla,sans-serif}
+.hs-ent-et{display:block;font-size:12.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;opacity:.85}
+.hs-ent-tit{display:block;font-family:Lora,serif;font-size:23px;margin:4px 0}
+.hs-ent-sub{display:block;font-size:15px;line-height:1.4;opacity:.95}
+.hs-ent-ir{display:inline-block;margin-top:10px;background:#fff;color:#5B2A86;font-weight:800;font-size:15px;border-radius:99px;padding:7px 14px}
 .aviso-breve{position:fixed;left:50%;bottom:calc(90px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:9500;max-width:86vw;padding:10px 16px;border-radius:14px;background:rgba(30,30,40,.9);color:#fff;font-size:15px;text-align:center;box-shadow:0 6px 18px rgba(0,0,0,.25)}
 .historial-intro{margin:4px 0 12px;font-size:15px}
 .historial-item{position:relative;border:2px solid #E39A9A;margin:0 0 12px}
@@ -1156,6 +1199,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   [data-sub="s5"] #s5.panel-section{margin-left:-20px;margin-right:-20px;border-radius:0;border-left:none !important;border-right:none !important;padding:16px 0}
   [data-sub="s5"] #s5 .panel-badge,[data-sub="s5"] #s5 .formacion-intro{margin-left:16px;margin-right:16px}
   [data-sub="s5"] #s5 .acc-grid-2col{gap:0}
+  [data-sub="s5"] #s5 .hs-entrada{margin-left:16px;margin-right:16px;width:calc(100% - 32px)}
   [data-sub="s5"] #s5 details.acc{border-radius:0;border-left:none;border-right:none;border-top:none;margin:0;padding:0}
   [data-sub="s5"] #s5 details.acc > summary{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:16px;font-size:16px;font-weight:700}
   [data-sub="s5"] #s5 details.acc > summary::before{content:none}
@@ -1847,7 +1891,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V11.39';
+  const APP_VERSION = 'V11.41';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -5311,6 +5355,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       s1.innerHTML = `
         ${badgeSeccion('gorro', 'Formación')}
         <p class="formacion-intro">Metas Amables se apoya en lo que la investigación sabe sobre cómo cambiamos la conducta.</p>
+        ${historiaEntradaHTML()}
         <div class="acc-grid-2col">
         <details class="acc">
           <summary>La visión integral de Ken Wilber</summary>
@@ -7252,6 +7297,131 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   function fmGuardar(){ try { localStorage.setItem(fmClave(), JSON.stringify(state.fm)); } catch(e){} }
   // Sello «basado en la ciencia»: al tocarlo se ven las fuentes del programa
   // Cada fuente se despliega al tocarla: sus ideas clave y qué hace la app con ellas
+  // ===== Historias de ciencia: una idea por pantalla, con la línea de progreso arriba =====
+  // Textos propios de Metas Amables (fuentes: Sheeran, Gollwitzer, BJ Fogg). La última tarjeta es una acción:
+  // escribir tu receta «Cuando…, haré…», que se guarda en este móvil y se ve en Formación.
+  function nombrePila(){ return String(state.me || '').replace(/\(.*?\)/g, '').trim().split(/\s+/)[0] || ''; }
+  function historias(){
+    const n = nombrePila();
+    return {
+      brecha: {
+        num: 1, titulo: 'Del querer al hacer', min: 3,
+        sub: 'Por qué las buenas intenciones se quedan por el camino, y cómo evitarlo',
+        tarjetas: [
+          { tx: (n ? escapeAttr(n) + ', seguro' : 'Seguro') + ' que te ha pasado: decides empezar algo que de verdad te importa…<br><br><b>y pasan los días sin que llegue el momento.</b>' },
+          { tx: 'No es pereza ni falta de voluntad. La psicología lo llama <b>la brecha entre la intención y la acción</b>.<br><br>El psicólogo Paschal Sheeran la estudió a fondo y vio que <b>casi la mitad</b> de las buenas intenciones nunca llegan a hacerse realidad. Y lo que falla…' },
+          { dibujo: true, tx: '…casi nunca es el querer. <b>Falla el momento.</b> Planeamos en línea recta, pero la vida viene con curvas: cansancio, prisas, imprevistos.' },
+          { tx: 'El psicólogo Peter Gollwitzer encontró una solución sencilla: <b>decidir de antemano cuándo, dónde y qué</b> vas a hacer. Lo llamó <i>intención de implementación</i>.<br><br>Al revisar casi 100 estudios, se vio que quien lo planifica así cumple bastante más. Y hay una forma de hacerlo todavía más fácil…' },
+          { tx: 'BJ Fogg, de la Universidad de Stanford, propone <b>enganchar tu práctica a algo que ya haces cada día</b>. Es tu receta:<span class="hs-receta">«Cuando termine de desayunar, haré 10 sentadillas.»</span>Así no dependes de acordarte ni de tener ganas: <b>el momento llega solo.</b>' },
+          { accion: 'receta' }
+        ]
+      }
+    };
+  }
+  function claveHistoria(id){ return 'historia_' + id + '_' + (state.me || ''); }
+  // La receta se guarda en Airtable (Datos formulario → historias); en el móvil queda una copia por si falla la conexión
+  function historiaGuardada(id){
+    const d = (state.gamifica && state.gamifica.datosFormulario) || {};
+    if(d.historias && d.historias[id]) return d.historias[id];
+    try { return JSON.parse(localStorage.getItem(claveHistoria(id)) || 'null'); } catch(e){ return null; }
+  }
+  function recetaTexto(r){ return r && r.cuando ? 'Cuando ' + r.cuando + ', haré ' + r.hare + (r.donde ? ' (' + r.donde + ')' : '') + '.' : ''; }
+  function historiaEntradaHTML(){
+    const h = historias().brecha, g = historiaGuardada('brecha');
+    return '<button type="button" class="hs-entrada" data-historia="brecha">'
+      + '<span class="hs-ent-et">✨ Historia de ciencia ' + h.num + ' · ' + h.min + ' min</span>'
+      + '<b class="hs-ent-tit">' + h.titulo + '</b>'
+      + '<span class="hs-ent-sub">' + (g && g.cuando ? '✓ Tu receta: ' + escapeAttr(recetaTexto(g)) : h.sub) + '</span>'
+      + '<span class="hs-ent-ir">' + (g ? 'Volver a verla' : 'Empezar') + ' →</span></button>';
+  }
+  document.addEventListener('click', ev => { const b = ev.target.closest && ev.target.closest('.hs-entrada'); if(b) abrirHistoria(b.getAttribute('data-historia')); });
+
+  // Dibujo «Tu plan / La realidad»: dos fotos, una con el camino recto y otra con el camino de verdad
+  function dibujoPlanRealidad(){
+    const foto = (giro, titulo, camino, extra) => '<svg class="hs-foto" style="transform:rotate(' + giro + 'deg)" viewBox="0 0 300 190" aria-hidden="true">'
+      + '<rect x="4" y="4" width="292" height="182" rx="6" fill="#fff" stroke="#2B2B2B" stroke-width="2.5"/>'
+      + '<rect x="16" y="14" width="268" height="130" fill="#F6F3FB" stroke="#2B2B2B" stroke-width="1.5"/>' + extra
+      + '<path d="' + camino + '" fill="none" stroke="#2B2B2B" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>'
+      + '<circle cx="40" cy="126" r="6" fill="#2B2B2B"/>'
+      + '<path d="M252 46 V18" stroke="#2B2B2B" stroke-width="2.6" stroke-linecap="round"/><path d="M252 18 L276 25 L252 32 Z" fill="#7B5FB8" stroke="#2B2B2B" stroke-width="1.6" stroke-linejoin="round"/>'
+      + '<text x="150" y="173" text-anchor="middle" font-family="Karla,sans-serif" font-size="20" font-weight="800" fill="#2B2B2B">' + titulo + '</text></svg>';
+    const sol = '<circle cx="70" cy="44" r="13" fill="#FCE7A2" stroke="#E0B341" stroke-width="2"/>';
+    const nube = '<g transform="translate(-90 -12)"><path d="M150 46 a12 12 0 0 1 22 -8 a14 14 0 0 1 26 6 a10 10 0 0 1 -2 20 h-44 a10 10 0 0 1 -2 -18 Z" fill="#E6E9F0" stroke="#2B2B2B" stroke-width="1.8"/>'
+      + '<path d="M160 72 l-4 9 M172 72 l-4 9 M184 72 l-4 9" stroke="#6C8EBF" stroke-width="2" stroke-linecap="round"/></g>';
+    return '<div class="hs-dibujo">' + foto(-3, 'Tu plan', 'M40 126 L250 48', sol)
+      + foto(2.5, 'La realidad', 'M40 126 C70 70 95 140 112 104 S150 60 128 84 S108 128 150 118 S205 50 186 76 S232 104 250 48', nube) + '</div>';
+  }
+
+  function abrirHistoria(id){
+    const h = historias()[id]; if(!h) return;
+    document.querySelectorAll('.historia-capa').forEach(x => x.remove());
+    const capa = document.createElement('div'); capa.className = 'historia-capa';
+    const total = h.tarjetas.length, practica = textosCiclo().practica;
+    const guardada = historiaGuardada(id) || {};
+    const borrador = { cuando: guardada.cuando || '', hare: guardada.hare || '', donde: guardada.donde || '' };
+    let i = 0, avance = 0, fin = false;
+    const ICONO_COMP = '<svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><circle cx="18" cy="5" r="3" fill="currentColor"/><circle cx="6" cy="12" r="3" fill="currentColor"/><circle cx="18" cy="19" r="3" fill="currentColor"/><path d="M8.6 10.5l6.8-4M8.6 13.5l6.8 4" stroke="currentColor" stroke-width="2"/></svg>';
+    const teclas = ev => { if(ev.key === 'Escape') cerrar(); else if(!fin && ev.key === 'ArrowRight' && i < total && !/INPUT/.test(ev.target.tagName)) ir(i + 1); else if(!fin && ev.key === 'ArrowLeft' && i > 0 && !/INPUT/.test(ev.target.tagName)) ir(i - 1); };
+    const cerrar = () => { capa.remove(); document.removeEventListener('keydown', teclas); if(state.view === 'panel') render(); };
+    const sinEtiquetas = t => String(t).replace(/<br\s*\/?>/g, '\n').replace(/<[^>]+>/g, '').replace(/\n{3,}/g, '\n\n').trim();
+    const compartir = texto => {
+      const t = texto + '\n\n— Metas Amables · ' + WEB_METAS;
+      if(navigator.share){ navigator.share({ text: t }).catch(() => {}); return; }
+      try { navigator.clipboard.writeText(t).then(() => avisoBreve('Copiado: ya puedes pegarlo donde quieras')); } catch(e){}
+    };
+    const marco = (cuerpo, pie) => '<div class="hs-cab"><button type="button" class="hs-x" aria-label="Cerrar">✕</button><button type="button" class="hs-compartir" aria-label="Compartir">' + ICONO_COMP + '</button></div>'
+      + '<div class="hs-prog"><i style="width:' + avance + '%"></i></div><div class="hs-cuerpo"><div class="hs-centro">' + cuerpo + '</div></div><div class="hs-pie">' + pie + '</div>';
+    const barra = pct => { const b = capa.querySelector('.hs-prog i'); avance = pct; void b.offsetWidth; b.style.width = pct + '%'; };
+    const ir = n => { i = Math.max(0, Math.min(total, n)); pintar(); };
+    const pintar = () => {
+      const t = h.tarjetas[i - 1], portada = i === 0;
+      capa.classList.toggle('hs-degradado', portada);
+      let cuerpo, textoCompartir = h.titulo + ': ' + h.sub;
+      if(portada) cuerpo = '<div class="hs-portada">' + practiHTML('formacion', '🦉', 130) + '<p class="hs-et">Historia de ciencia ' + h.num + '</p><h2>' + h.titulo + '</h2><p class="hs-sub">' + h.sub + '</p><p class="hs-min">⏱ ' + h.min + ' minutos</p></div>';
+      else if(t.accion === 'receta'){
+        cuerpo = '<div class="hs-accion"><h2>Ahora te toca a ti</h2><p>Escribe tu receta: elige algo que ya haces cada día y engancha ahí tu práctica.</p>'
+          + (practica ? '<p class="hs-pista">Tu práctica de esta semana: <b>«' + escapeAttr(practica) + '»</b></p>' : '')
+          + '<label class="hs-campo"><span>Cuando…</span><input id="hsCuando" maxlength="120" autocomplete="off" placeholder="termine de desayunar" value="' + escapeAttr(borrador.cuando) + '"></label>'
+          + '<label class="hs-campo"><span>haré…</span><input id="hsHare" maxlength="120" autocomplete="off" placeholder="10 sentadillas" value="' + escapeAttr(borrador.hare) + '"></label>'
+          + '<label class="hs-campo"><span>¿Dónde? <small>(si quieres)</small></span><input id="hsDonde" maxlength="80" autocomplete="off" placeholder="en el salón" value="' + escapeAttr(borrador.donde) + '"></label>'
+          + '<p class="hs-consejo">💡 Que sea pequeño: algo que puedas hacer incluso en un mal día.</p></div>';
+        textoCompartir = 'Mi receta para no dejarlo para mañana: «Cuando…, haré…»';
+      } else { cuerpo = (t.dibujo ? dibujoPlanRealidad() : '') + '<div class="hs-tx">' + t.tx + '</div>'; textoCompartir = sinEtiquetas(t.tx); }
+      capa.innerHTML = marco(cuerpo, (i > 0 ? '<button type="button" class="hs-atras">Atrás</button>' : '')
+        + '<button type="button" class="hs-sig">' + (portada ? 'Empezar →' : i === total ? '✓ Guardar receta' : 'Siguiente →') + '</button>');
+      barra(Math.round(i * 100 / total));
+      capa.querySelector('.hs-x').onclick = cerrar;
+      capa.querySelector('.hs-compartir').onclick = () => compartir(textoCompartir);
+      if(i > 0) capa.querySelector('.hs-atras').onclick = () => ir(i - 1);
+      capa.querySelector('.hs-sig').onclick = () => i === total ? guardar() : ir(i + 1);
+      capa.querySelectorAll('.hs-campo input').forEach(inp => inp.oninput = () => { borrador[{ hsCuando: 'cuando', hsHare: 'hare', hsDonde: 'donde' }[inp.id]] = inp.value; });
+      capa.querySelector('.hs-cuerpo').scrollTop = 0;
+      if(portada){ try { activarPracti(capa); } catch(e){} }
+    };
+    const limpiar = (s, quitar) => String(s || '').trim().replace(quitar, '').replace(/[.…]+$/, '').trim();
+    const guardar = () => {
+      const r = { cuando: limpiar(borrador.cuando, /^cuando\s+/i), hare: limpiar(borrador.hare, /^har[eé]\s+/i), donde: limpiar(borrador.donde, /^$/), fecha: hoyISO() };
+      if(!r.cuando || !r.hare){ avisoBreve('Escribe el «Cuando…» y el «haré…»'); const v = capa.querySelector(!r.cuando ? '#hsCuando' : '#hsHare'); if(v) v.focus(); return; }
+      try { localStorage.setItem(claveHistoria(id), JSON.stringify(r)); } catch(e){}
+      api('/historia', { id, cuando: r.cuando, hare: r.hare, donde: r.donde })
+        .then(res => { if(state.gamifica && res && res.datosFormulario) state.gamifica.datosFormulario = res.datosFormulario; })
+        .catch(e => console.error('Error guardando la receta:', e));
+      try { sonidoTing(); } catch(e){} try { launchConfetti(); } catch(e){}
+      fin = true; capa.classList.add('hs-degradado');
+      capa.innerHTML = marco('<div class="hs-fin"><div class="hs-fin-icono">🎉</div><h2>¡Ya tienes tu receta!</h2><p class="hs-receta-fin">«' + escapeAttr(recetaTexto(r)) + '»</p><p>Mañana, cuando llegue ese momento, tu práctica ya tendrá su sitio.</p><p>La tienes guardada en <b>Formación</b>.</p></div>',
+        '<button type="button" class="hs-atras">Compartir</button><button type="button" class="hs-sig">Terminar</button>');
+      capa.querySelector('.hs-prog i').style.width = '100%';
+      capa.querySelector('.hs-x').onclick = cerrar; capa.querySelector('.hs-sig').onclick = cerrar;
+      capa.querySelector('.hs-compartir').onclick = capa.querySelector('.hs-atras').onclick = () => compartir('Mi receta: «' + recetaTexto(r) + '»');
+    };
+    // Deslizar el dedo a la izquierda / derecha también pasa de tarjeta
+    let x0 = null;
+    capa.addEventListener('touchstart', ev => { x0 = ev.touches[0].clientX; }, { passive: true });
+    capa.addEventListener('touchend', ev => { if(x0 === null || fin) return; const dx = ev.changedTouches[0].clientX - x0; x0 = null; if(Math.abs(dx) < 70) return; if(dx < 0 && i < total) ir(i + 1); else if(dx > 0 && i > 0) ir(i - 1); });
+    document.addEventListener('keydown', teclas);
+    document.body.appendChild(capa);
+    pintar();
+  }
   function cienciaHTML(enFormacion){
     const fuente = (titulo, autor, ideas, enLaApp, largo) => enFormacion
       ? (titulo === 'Práctica Integral de Vida' ? '' : '<details class="acc"><summary>' + titulo + ' (' + autor + ')</summary><div class="acc-body"><ul>'
@@ -7822,4 +7992,4 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V11.39 · App Metas Amables · 2026-10-05 21:16 ==== -->
+<!-- ==== Fin del index V11.41 · App Metas Amables · 2026-10-05 22:22 ==== -->
