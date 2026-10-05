@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V11.29 · App Metas Amables · 2026-10-05 19:30 ==== -->
+<!-- ==== index V11.33 · App Metas Amables · 2026-10-05 19:48 ==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -979,6 +979,9 @@ body.con-tabbar:has(.musica-barra) #app{padding-bottom:170px}
 .mp-viaje::before{content:"";position:absolute;inset:0;background:rgba(30,20,70,.35)}
 .mp-viaje>*{position:relative}
 .mp-viaje-tx{font:700 16px Karla,sans-serif;text-shadow:0 1px 4px rgba(0,0,0,.5)}
+.mp-viaje-tx small{display:block;font-weight:600;font-size:13.5px;margin-top:3px}
+.mp-viaje b.mp-pend{grid-row:1;width:42px;height:42px;border-radius:50%;background:#E8343F;color:#fff;display:flex;align-items:center;justify-content:center;font:800 20px Karla,sans-serif;text-shadow:none;box-shadow:0 2px 6px rgba(0,0,0,.3)}
+.mp-viaje b.mp-pend.cero{background:#2E9E4F}
 .mp-viaje b{grid-row:1 / span 2;grid-column:2;font:800 22px Karla,sans-serif;text-shadow:0 1px 4px rgba(0,0,0,.5)}
 .mp-barra{height:6px;border-radius:99px;background:rgba(255,255,255,.4);overflow:hidden}
 .mp-barra i{display:block;height:100%;background:#fff;border-radius:99px}
@@ -1016,6 +1019,20 @@ body.theme-dark .ayuda-preg{background:#26262c}
 .rf-botones{width:100%;max-width:440px;display:flex;flex-direction:column;gap:10px;margin-top:auto}
 .rf-boton{width:100%;padding:16px;border:0;border-radius:18px;background:#FFD60A;color:#111;font:700 19px Karla,sans-serif;cursor:pointer}
 .rf-boton.rf-sec{background:rgba(255,255,255,.15);color:#fff;border:2px solid rgba(255,255,255,.6)}
+.guia-ancha{background:#fff;margin:0 -20px;padding:14px 18px 24px;border-top:1px solid rgba(0,0,0,.06);border-bottom:1px solid rgba(0,0,0,.06)}
+@media (min-width: 900px){.guia-ancha{margin:0 -32px;padding:18px 32px 28px}}
+body.theme-dark .guia-ancha{background:var(--surface)}
+.guia-ancha details.duo-item .duo-contenido{border:none;background:transparent;padding:6px 0 0;margin-top:10px;font-size:18px;line-height:1.7}
+.guia-ancha .guia-texto p{margin:0 0 14px !important}
+.guia-cap{display:none}
+.guia-cap.activo{display:block;animation:capEntra .25s ease-out}
+@keyframes capEntra{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.guia-cap>p:first-child b:only-child{display:block;font-family:Lora,serif;font-size:22px;color:#2F5F93;margin:4px 0 2px}
+.guia-nav{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:18px 0 6px;padding-top:12px;border-top:1px solid rgba(0,0,0,.08)}
+.guia-ant{background:none;border:0;color:#2F5F93;font:700 15px Karla,sans-serif;cursor:pointer;padding:10px 4px}
+.guia-pos{font-size:13px;color:var(--ink-soft);white-space:nowrap}
+.guia-sig{flex:1;max-width:66%;padding:13px 14px;border:0;border-radius:14px;background:#4F7FB5;color:#fff;font:700 15.5px Karla,sans-serif;cursor:pointer;text-align:center}
+.guia-sig.fin{background:#2E9E4F}
 .aviso-breve{position:fixed;left:50%;bottom:calc(90px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:9500;max-width:86vw;padding:10px 16px;border-radius:14px;background:rgba(30,30,40,.9);color:#fff;font-size:15px;text-align:center;box-shadow:0 6px 18px rgba(0,0,0,.25)}
 .historial-intro{margin:4px 0 12px;font-size:15px}
 .historial-item{position:relative;border:2px solid #E39A9A;margin:0 0 12px}
@@ -1820,7 +1837,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V11.29';
+  const APP_VERSION = 'V11.33';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -2000,7 +2017,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
         const r = await api('/login-google', { credential: resp.credential });
         if(r.nuevo){
           // Aún no tiene cuenta: se rellena «Crear cuenta» con su nombre y su correo de Google
-          state.altaDraft = Object.assign({}, state.altaDraft || {}, { nombre: r.nombre, email: r.email });
+          state.altaDraft = Object.assign({}, state.altaDraft || {}, { nombre: r.nombre, email: r.email, fotoGoogle: r.fotoGoogle || '' });
           state.loginView = 'signup'; state.loginError = 'No hay ninguna cuenta con ' + r.email + '. Completa tus datos para crearla.'; render(); return;
         }
         guardarSesion(r.token); state.loginError = '';
@@ -2050,7 +2067,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     state.loginError = 'Creando tu cuenta…'; render();
     // El Worker comprueba que el nombre no esté ya en uso
     try {
-      const r = await api('/alta', { nombre, telefono, email, password: pass, aceptaWhatsApp: !!aceptaWhatsApp, aceptaEmails: !!aceptaEmails });
+      const r = await api('/alta', { nombre, telefono, email, password: pass, aceptaWhatsApp: !!aceptaWhatsApp, aceptaEmails: !!aceptaEmails, fotoGoogle: (state.altaDraft && state.altaDraft.fotoGoogle) || '' });
       guardarSesion(r.token);
       state.loginError = '';
       state.loginView = 'login';
@@ -2560,6 +2577,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     const u = lector.unidades[lector.i];
     if(!u){ lector.i = 0; lectorParar(); return; }
     u.spans.forEach(x => x.classList.add('leyendo'));
+    try { const cap = u.spans[0] && u.spans[0].closest('.guia-cap'); if(cap && !cap.classList.contains('activo')){ const cj = cap.closest('.duo-contenido'); if(cj && cj._irCap) cj._irCap(Number(cap.dataset.cap), true); } } catch(e){}
     if(u.spans[0] && u.spans[0].scrollIntoView) u.spans[0].scrollIntoView({ block: 'center', behavior: 'smooth' });
     const texto = sinEmojis(u.spans.map(x => x.textContent).join('')).trim();
     const siguiente = () => {
@@ -3288,8 +3306,9 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     let fondoMenu = '';
     try { const n = state.gamifica ? BADGE_SCALE.indexOf(insigniaActual(state.gamifica.cumplidas || 0)) : -1; fondoMenu = (n >= 0 && !insigniasBloqueadas()) ? FONDOS_NIVEL[n] : FONDO_NEUTRO; } catch(e){}
     let rv = { pct: 0, hechos: 0, total: 0 }; try { rv = resumenViaje(); } catch(e){}
-    const fotoMenu = ((state.gamifica && state.gamifica.datosFormulario) || {}).foto || '';
-    const avMenu = fotoMenu ? '<img src="' + escapeAttr(fotoMenu) + '" alt="">' : (avatarDe(state.me) || escapeAttr(inicialesDe(state.me)));
+    const pend = Math.max(0, (rv.total || 0) - (rv.hechos || 0));
+    const fotoMenu = fotoDePerfil();
+    const avMenu = fotoMenu ? '<img src="' + escapeAttr(fotoMenu) + '" alt="" referrerpolicy="no-referrer">' : (avatarDe(state.me) || escapeAttr(inicialesDe(state.me)));
     const planMenu = state.plan === 'sesiones' ? 'Plan Guías + Grupo 👑👑' : (state.plan === 'guias' ? 'Plan Guías 👑' : 'Plan Libre');
     panel.innerHTML = `
       <div class="mp-cabecera" style="background-image:url(${fondoMenu})">
@@ -3298,7 +3317,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       </div>
       <div class="mp-cuerpo">
       <button type="button" class="mp-viaje" id="mpViaje" style="background-image:url(${typeof VIAJE_BANNER === 'string' ? VIAJE_BANNER : ''})">
-        <span class="mp-viaje-tx">🧭 Tu viaje del trimestre</span><span class="mp-barra"><i style="width:${rv.pct}%"></i></span><b>${rv.pct} %</b>
+        <span class="mp-viaje-tx">🧭 Pendientes de tu viaje<small>${pend ? (pend === 1 ? 'Te queda 1 paso por hacer' : 'Te quedan ' + pend + ' pasos por hacer') : '¡Lo tienes todo al día!'}</small></span><b class="mp-pend${pend ? '' : ' cero'}">${pend ? pend : '✓'}</b>
       </button>
       <button class="menu-item" id="mpInvitar">💌 Invita a tus amigos</button>
       <div class="menu-divider"></div>
@@ -3306,8 +3325,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       <div class="menu-divider"></div>
       <button class="menu-item" id="miPlanBtn">⭐ Tu plan: ${state.plan === 'sesiones' ? 'Guías + Grupo' : (state.plan === 'guias' ? 'Guías' : 'Libre')}</button>
       ${MODO_PLAY ? '' : '<button class="menu-item" id="facturacionBtn">💳 Facturación</button>'}
-      <button class="menu-item" id="mpAyuda">❓ Centro de ayuda</button>
       <button class="menu-item" id="ajustesBtn">⚙️ Ajustes</button>
+      <button class="menu-item" id="mpAyuda">❓ Centro de ayuda</button>
       ${soyModerador() ? '<button class="menu-item" id="miSituacionBtn">👥 Situación de tu grupo</button>' : ''}
       ${esCuentaPruebas() ? `<div class="menu-divider"></div>
       <p style="font-size:13px;font-weight:700;margin:6px 14px 4px">🛠️ Moderador · entrar como:</p>
@@ -4041,12 +4060,12 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     card.className = 'card';
     card.innerHTML = `
       <div class="perfil-cabecera">
-        <span class="avatar-grande">${datosForm().foto ? '<img class="foto-perfil" src="' + datosForm().foto + '" alt="Tu foto">' : (avatarDe(state.me) || '🙂')}</span>
+        <span class="avatar-grande">${fotoDePerfil() ? '<img class="foto-perfil" src="' + escapeAttr(fotoDePerfil()) + '" alt="Tu foto" referrerpolicy="no-referrer">' : (avatarDe(state.me) || '🙂')}</span>
         <p style="margin:0;font-size:20px;font-family:'Lora',serif;font-weight:600">${escapeAttr(state.me)}</p>
       </div>
       <div style="display:flex;gap:16px;flex-wrap:wrap;margin:0 0 10px">
-        <button class="link-quiet" id="btnSubirFoto" style="padding:0">📷 ${datosForm().foto ? 'Cambiar mi foto' : 'Subir mi foto'}</button>
-        ${datosForm().foto ? '<button class="link-quiet" id="btnQuitarFoto" style="padding:0;color:#B94A3A">Quitar foto</button>' : ''}
+        <button class="link-quiet" id="btnSubirFoto" style="padding:0">📷 ${fotoDePerfil() ? 'Cambiar mi foto' : 'Subir mi foto'}</button>
+        ${fotoDePerfil() ? '<button class="link-quiet" id="btnQuitarFoto" style="padding:0;color:#B94A3A">Quitar foto</button>' : ''}
         <input type="file" id="inputFoto" accept="image/*" style="display:none">
       </div>
       <div id="fotoMsg" style="font-size:13px;margin:-4px 0 8px"></div>
@@ -4091,7 +4110,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     const guardarFoto = async (foto) => {
       fotoMsg.style.color = 'var(--ink-soft)'; fotoMsg.textContent = 'Guardando…';
       try {
-        const r = await api('/foto', { foto });
+        const r = await api('/foto', foto ? { foto } : { foto: '', quitarGoogle: true });
         if(state.gamifica && r.datosFormulario) state.gamifica.datosFormulario = r.datosFormulario;
         render();
       } catch(e){ fotoMsg.style.color = '#B94A3A'; fotoMsg.textContent = mensajeError(e, 'No se pudo guardar la foto (revisa tu conexión)'); }
@@ -4486,6 +4505,50 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     pruebas.querySelector('#pruebaSinOp').onclick = () => verPrueba('sinoportunidades', FRASES_PRACTI.sinOportunidades, 'pajaro');
   }
 
+  // ===== La guía por capítulos («Hola…», Objetivo, Tu práctica de la semana, Cierre y reflexión) =====
+  // Cada título de Markdown (#, ##, ###) empieza un capítulo; se ve uno cada vez con «Anterior / Siguiente».
+  function guiaPorCapitulos(texto){
+    const lineas = String(texto || '').split('\n'), caps = [];
+    let actual = { titulo: '', lineas: [] };
+    lineas.forEach(l => {
+      const m = l.match(/^[ \t]*#{1,6}[ \t]+(.+?)[ \t]*#*[ \t]*$/);
+      if(m){ if(actual.lineas.join('').trim() || actual.titulo) caps.push(actual); actual = { titulo: m[1].replace(/\*\*/g, '').trim(), lineas: [l] }; }
+      else actual.lineas.push(l);
+    });
+    if(actual.lineas.join('').trim()) caps.push(actual);
+    if(caps.length < 2) return { html: miniMarkdown(texto), nav: '' };
+    const nombre = (c, i) => { const t = c.titulo || (i === 0 ? 'Introducción' : 'Capítulo ' + (i + 1)); return t.length > 34 ? t.slice(0, 33).trim() + '…' : t; };
+    const html = caps.map((c, i) => '<section class="guia-cap' + (i === 0 ? ' activo' : '') + '" data-cap="' + i + '" data-nombre="' + escapeAttr(nombre(c, i)) + '">' + miniMarkdown(c.lineas.join('\n')) + '</section>').join('');
+    const nav = '<div class="guia-nav" data-total="' + caps.length + '"><button type="button" class="guia-ant">← Anterior</button><span class="guia-pos">1 / ' + caps.length + '</span><button type="button" class="guia-sig"></button></div>';
+    return { html, nav };
+  }
+  function activarCapitulos(raiz){
+    raiz.querySelectorAll('.duo-contenido').forEach(caja => {
+      const nav = caja.querySelector('.guia-nav'); if(!nav || caja.dataset.caps) return;
+      caja.dataset.caps = '1';
+      const caps = Array.from(caja.querySelectorAll('.guia-cap')), total = caps.length;
+      const ant = nav.querySelector('.guia-ant'), sig = nav.querySelector('.guia-sig'), pos = nav.querySelector('.guia-pos');
+      let i = 0;
+      const ir = (n, sinSubir) => {
+        i = Math.max(0, Math.min(total - 1, n));
+        caps.forEach((c, k) => c.classList.toggle('activo', k === i));
+        pos.textContent = (i + 1) + ' / ' + total;
+        ant.style.visibility = i === 0 ? 'hidden' : 'visible';
+        if(i < total - 1){ sig.textContent = 'Siguiente: ' + caps[i + 1].dataset.nombre + ' →'; sig.classList.remove('fin'); }
+        else { sig.textContent = '✓ He terminado la guía'; sig.classList.add('fin'); }
+        if(!sinSubir){ const r = caja.getBoundingClientRect(); window.scrollTo({ top: window.scrollY + r.top - 70, behavior: 'smooth' }); }
+      };
+      caja._irCap = ir;
+      ant.onclick = () => ir(i - 1);
+      sig.onclick = () => {
+        if(i < total - 1) return ir(i + 1);
+        try { marcarGuiaVista(); } catch(e){}
+        try { sonidoTing(); } catch(e){}
+        avisoBreve('📖 ¡Guía leída! Ahora, a practicar.');
+      };
+      ir(0, true);
+    });
+  }
   function cuerpoPracticasHTML(){
     const guiaHref = state.guiaUrl || '#';
     const semanas = parseGuiaSemanas(state.guiaTexto);
@@ -4535,7 +4598,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
                 <button type="button" class="lector-btn lector-sub" data-acc="sub">🖍 Subrayar</button>
               </div>
               <p class="lector-ayuda" hidden>Toca una frase para marcarla en amarillo. Tócala otra vez para quitarla.</p>
-              <div class="guia-texto" data-sem="${b.year}-${b.monthIdx + 1}-s${b.weekNum}">${miniMarkdown(b.text)}</div>${extra}</div>
+              ${(() => { const g = guiaPorCapitulos(b.text); return '<div class="guia-texto" data-sem="' + b.year + '-' + (b.monthIdx + 1) + '-s' + b.weekNum + '">' + g.html + '</div>' + g.nav; })()}${extra}</div>
           </details>`;
         } else {
           cuerpo += `<div class="${nodoClase}"><span class="duo-icono">${icono}</span><span class="duo-texto">${b.monthName} · Semana ${b.weekNum}</span></div>`;
@@ -4557,9 +4620,10 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     // Prácti leyendo (y la hoja que se le cae al tocarlo) está en la pantalla anterior, «a · Lee tu guía semanal»:
     // aquí se va directo a la guía
     const card = document.createElement('div');
-    card.className = 'card panel-section s3';
-    card.innerHTML = `<p style="margin:0 0 12px;color:var(--ink-soft);font-size:14px">Tu guía de prácticas personalizada de este mes.</p>${cuerpoPracticasHTML()}`;
+    card.className = 'guia-ancha';
+    card.innerHTML = `<p style="margin:0 0 12px;color:var(--ink-soft);font-size:15px">Tu guía de prácticas personalizada de este mes.</p>${cuerpoPracticasHTML()}`;
     app.appendChild(card);
+    activarCapitulos(card);
     card.querySelectorAll('.duo-rate-btn').forEach(btn => {
       btn.onclick = (e) => {
         e.preventDefault();
@@ -6840,7 +6904,11 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     const plan1 = tienePlan('guias'), plan2 = tienePlan('sesiones');
     const meta = metaHechaYa();
     if(reflexionPendiente()) pasos.push({ id: 'reflexion', titulo: '¿Tu meta sigue siendo importante?', hecho: false, opcional: true, sub: 'Una pausa para reflexionar' });
-    pasos.push({ id: 'meta', titulo: 'Define tu meta del trimestre', hecho: meta, sub: meta ? 'Hecho' : 'Rellena tu formulario de meta' });
+    // Fecha en que definió la meta: la del formulario (app o Worker)
+    const dfm = (state.gamifica && state.gamifica.datosFormulario) || {};
+    const fMetaTxt = dfm.fechaMeta || (state.gamifica && state.gamifica.formulario) || '';
+    const fMeta = /^\d{4}-\d{2}-\d{2}/.test(fMetaTxt) ? new Date(fMetaTxt.slice(0, 10) + 'T12:00:00') : null;
+    pasos.push({ id: 'meta', titulo: 'Define tu meta del trimestre', hecho: meta, sub: meta ? (fMeta ? 'Definida el ' + fechaCorta(fMeta) + ' ' + fMeta.getFullYear() : 'Definida') : 'Rellena tu formulario de meta' });
     // Guía: 3 h y media después del formulario (no a la media hora) y cuando ya ha llegado
     let ts = 0; try { ts = Number(localStorage.getItem('ma_form_ts_' + state.me) || 0); } catch(e){}
     const libre = ts ? ts + 3.5 * 3600000 : 0;
@@ -6853,7 +6921,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     pasos.push({ id: 'guia', titulo: vistaAlguna ? 'Lee tu guía de esta semana' : 'Lee tu guía', hecho: guiaHecha, bloqueo: guiaHecha ? '' : gBloq, sub: guiaHecha ? 'Leída' : 'Tu guía personalizada te espera' });
     const contrato = !!contratoGuardado();
     const finTrim = new Date(new Date().getFullYear(), Math.floor(new Date().getMonth() / 3) * 3 + 3, 0);
-    pasos.push({ id: 'contrato', titulo: 'Compromiso trimestral', hecho: contrato, plan: plan1 ? '' : '👑 Plan Guías', bloqueo: (contrato || vistaAlguna) ? '' : 'Aún no desbloqueado', sub: contrato ? 'Sellado hasta el ' + fechaCorta(finTrim) : 'Comprométete contigo con tu sello' });
+    pasos.push({ id: 'contrato', titulo: 'Compromiso trimestral', hecho: contrato, plan: plan1 ? '' : '👑 Plan Guías', bloqueo: (contrato || vistaAlguna) ? '' : 'Aún no desbloqueado', sub: contrato ? 'Sellado hasta el ' + fechaCorta(finTrim) + ' ' + finTrim.getFullYear() : 'Comprométete contigo con tu sello' });
     const ep = estadoPosit(), pg = positGuardado();
     const nota = !!(pg && (pg.mes || pg.trimestre) === mesClave()) || ep.estado === 'guardado';
     pasos.push({ id: 'nota', titulo: ep.estado === 'abrir' && !nota ? 'Abre la nota que te dejaste' : 'Nota a Yo del ' + fechaCorta(ep.estado === 'guardado' && ep.abre ? ep.abre : ultimoLunes(mesClave())), hecho: nota, plan: plan1 ? '' : '👑 Plan Guías', bloqueo: (nota || contrato || ep.estado === 'abrir') ? '' : 'Aún no desbloqueado', sub: nota ? 'Guardada en la caja hasta ese lunes' : ep.estado === 'abrir' ? '¡Ya puedes abrirla!' : 'Se abrirá el primer lunes del mes que viene' });
@@ -6993,6 +7061,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
   // ===== Barra de abajo: Inicio · Viaje · Progreso · Descubre =====
   // En lugar de «☰ Menú»: un círculo con la persona (su avatar o sus iniciales, p. ej. «GC»)
+  function fotoDePerfil(){ const d = (state.gamifica && state.gamifica.datosFormulario) || {}; return d.foto || d.fotoGoogle || ''; }
   function inicialesDe(nombre){
     const p = String(nombre || '').trim().split(/\s+/).filter(Boolean);
     if(!p.length) return '?';
@@ -7000,13 +7069,13 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
   function botonesMenuConAvatar(){
     if(!state.me) return;
-    const foto = ((state.gamifica && state.gamifica.datosFormulario) || {}).foto || '';
+    const foto = fotoDePerfil();
     const av = foto || avatarDe(state.me);
     const esImg = /^(data:image|https?:)/.test(av || '');
     document.querySelectorAll('.hamburger-btn-text').forEach(b => {
       if(b.dataset.avatar) return;
       b.dataset.avatar = '1'; b.classList.add('menu-avatar'); b.setAttribute('aria-label', 'Perfil y ajustes de ' + state.me);
-      b.innerHTML = esImg ? '<img src="' + escapeAttr(av) + '" alt="">' : '<span>' + (av ? av : escapeAttr(inicialesDe(state.me))) + '</span>';
+      b.innerHTML = esImg ? '<img src="' + escapeAttr(av) + '" alt="" referrerpolicy="no-referrer">' : '<span>' + (av ? av : escapeAttr(inicialesDe(state.me))) + '</span>';
     });
   }
   function barraInferior(){
@@ -7773,4 +7842,4 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V11.29 · App Metas Amables · 2026-10-05 19:30 ==== -->
+<!-- ==== Fin del index V11.33 · App Metas Amables · 2026-10-05 19:48 ==== -->
