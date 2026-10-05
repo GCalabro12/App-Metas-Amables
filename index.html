@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V11.19 · App Metas Amables · 2026-10-05 18:46 ==== -->
+<!-- ==== index V11.23 · App Metas Amables · 2026-10-05 19:11 ==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -931,7 +931,7 @@ body.con-tabbar:has(.banda-fin-plan) #app{padding-bottom:calc(28vh + 80px)}
 .viaje-paso.bloq b{color:#8a8a8a}
 .viaje-paso.pendiente .viaje-punto{opacity:.55}
 .viaje-paso.hecho small{color:var(--c);font-weight:700}
-.viaje-paso.hecho .viaje-punto::after{content:"✓";position:absolute;right:-3px;bottom:-3px;width:20px;height:20px;border-radius:50%;background:#fff;color:var(--c);font:800 13px/20px Karla,sans-serif;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,.25)}
+.viaje-paso.hecho .viaje-punto::after{content:"✓";position:absolute;right:-3px;bottom:-3px;width:20px;height:20px;border-radius:50%;background:#2E9E4F;color:#fff;font:800 13px/20px Karla,sans-serif;text-align:center;box-shadow:0 0 0 2px #fff,0 1px 3px rgba(0,0,0,.25)}
 .viaje-paso.ahora .viaje-punto{animation:viajeLatido 1.4s ease-in-out infinite}
 .viaje-paso.ahora small{color:var(--c);font-weight:700}
 @keyframes viajeLatido{0%,100%{transform:scale(1)}50%{transform:scale(1.15)}}
@@ -955,6 +955,20 @@ body.con-tabbar:has(.banda-fin-plan) #app{padding-bottom:calc(28vh + 80px)}
 .progreso-dato b{display:block;font-size:28px;font-family:Lora,serif;color:#4B3BC9;line-height:1.1}
 .progreso-dato span{font-size:13.5px;color:var(--ink-soft)}
 .progreso-fila{display:flex;justify-content:space-between;align-items:center;gap:8px;width:100%;text-align:left;font:inherit;font-size:15px;color:var(--ink);cursor:pointer;margin:0 0 10px}
+body.theme-dark .tabbar{background:#1E1E24;border-top-color:rgba(255,255,255,.1)}
+body.theme-dark .tabbar button{color:#9AA0A6}
+body.theme-dark .tabbar button.activa{color:#B3A8FF}
+body.theme-dark .sp-ver{color:#B3A8FF;border-top-color:rgba(255,255,255,.12)}
+body.theme-dark .viaje-paso.ahora small,body.theme-dark .viaje-paso.hecho small{filter:brightness(1.7)}
+body.theme-dark .viaje-final small{color:#F2C14E}
+body.theme-dark .progreso-dato{background:#26262c;border-color:rgba(255,255,255,.1)}
+body.theme-dark .progreso-dato b{color:#B3A8FF}
+@media (max-width: 380px){.cab-insta{width:30px;height:30px;margin-right:0}.cab-insta svg{width:20px;height:20px}}
+body.con-tabbar:has(.musica-barra) #app{padding-bottom:170px}
+.hamburger-btn-text.menu-avatar{width:42px;height:42px;padding:0;border-radius:50%;background:#4B3BC9;border:2px solid #fff;box-shadow:0 0 0 2px #4B3BC9;color:#fff;display:inline-flex;align-items:center;justify-content:center;overflow:hidden;font:800 16px/1 Karla,sans-serif;letter-spacing:.5px;cursor:pointer}
+.hamburger-btn-text.menu-avatar img{width:100%;height:100%;object-fit:cover}
+.hamburger-btn-text.menu-avatar span{font-size:16px}
+.avatar-grande img.foto-perfil{width:64px;height:64px;border-radius:50%;object-fit:cover;display:block}
 .aviso-breve{position:fixed;left:50%;bottom:calc(90px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:9500;max-width:86vw;padding:10px 16px;border-radius:14px;background:rgba(30,30,40,.9);color:#fff;font-size:15px;text-align:center;box-shadow:0 6px 18px rgba(0,0,0,.25)}
 .historial-intro{margin:4px 0 12px;font-size:15px}
 .historial-item{position:relative;border:2px solid #E39A9A;margin:0 0 12px}
@@ -1757,7 +1771,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V11.19';
+  const APP_VERSION = 'V11.23';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -3226,7 +3240,6 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
         <span style="font-family:'Lora',serif;font-size:18px;font-weight:600">Menú</span>
         <button class="hamburger-btn" id="btnMenuClose">✕</button>
       </div>
-      <button class="menu-item" id="miPanelBtn">🔄 Tu ciclo de aprendizaje</button>
       <button class="menu-item" id="miPerfilBtn">👤 Perfil</button>
       <button class="menu-item" id="miPlanBtn">⭐ Tu plan: ${state.plan === 'sesiones' ? 'Guías + Grupo' : (state.plan === 'guias' ? 'Guías' : 'Libre')}</button>
       ${MODO_PLAY ? '' : '<button class="menu-item" id="facturacionBtn">💳 Facturación</button>'}
@@ -3251,7 +3264,6 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     };
     
     // Handlers con referencias correctas al panel
-    panel.querySelector('#miPanelBtn').onclick = () => { state.menuOpen = false; state.view = 'panel'; state.panelSub = null; state.prevView = 'panel'; window.scrollTo(0,0); render(); };
     panel.querySelector('#btnMenuClose').onclick = () => { state.menuOpen = false; render(); };
     panel.querySelector('#miPerfilBtn').onclick = () => { state.menuOpen = false; state.view = 'perfil'; state.prevView = 'panel'; window.scrollTo(0,0); render(); };
     if(!MODO_PLAY) panel.querySelector('#facturacionBtn').onclick = () => { state.menuOpen = false; state.view = 'facturacion'; state.prevView = 'panel'; window.scrollTo(0,0); render(); };
@@ -3947,9 +3959,15 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     card.className = 'card';
     card.innerHTML = `
       <div class="perfil-cabecera">
-        <span class="avatar-grande">${avatarDe(state.me) || '🙂'}</span>
+        <span class="avatar-grande">${datosForm().foto ? '<img class="foto-perfil" src="' + datosForm().foto + '" alt="Tu foto">' : (avatarDe(state.me) || '🙂')}</span>
         <p style="margin:0;font-size:20px;font-family:'Lora',serif;font-weight:600">${escapeAttr(state.me)}</p>
       </div>
+      <div style="display:flex;gap:16px;flex-wrap:wrap;margin:0 0 10px">
+        <button class="link-quiet" id="btnSubirFoto" style="padding:0">📷 ${datosForm().foto ? 'Cambiar mi foto' : 'Subir mi foto'}</button>
+        ${datosForm().foto ? '<button class="link-quiet" id="btnQuitarFoto" style="padding:0;color:#B94A3A">Quitar foto</button>' : ''}
+        <input type="file" id="inputFoto" accept="image/*" style="display:none">
+      </div>
+      <div id="fotoMsg" style="font-size:13px;margin:-4px 0 8px"></div>
       <button class="link-quiet" id="btnElegirAvatar" style="padding:0;margin:0 0 10px">🎨 ${avatarDe(state.me) ? 'Cambiar mi avatar' : 'Elegir mi avatar'}</button>
       <div id="avatarBox" style="display:none;margin-bottom:12px">
         <div class="avatar-grid">${AVATARES.map(a => `<button type="button" class="avatar-opcion${a === avatarDe(state.me) ? ' elegido' : ''}" data-avatar="${a}">${a}</button>`).join('')}</div>
@@ -3985,6 +4003,36 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     card.querySelector('#btnComoCuentaPerfil').onclick = () => {
       state.prevView = 'perfil'; state.view = 'comoCuenta'; window.scrollTo(0,0); render();
     };
+
+    // Foto de perfil: se recorta en cuadrado de 200×200 y se guarda en «Datos formulario»
+    const inputFoto = card.querySelector('#inputFoto'), fotoMsg = card.querySelector('#fotoMsg');
+    const guardarFoto = async (foto) => {
+      fotoMsg.style.color = 'var(--ink-soft)'; fotoMsg.textContent = 'Guardando…';
+      try {
+        const r = await api('/foto', { foto });
+        if(state.gamifica && r.datosFormulario) state.gamifica.datosFormulario = r.datosFormulario;
+        render();
+      } catch(e){ fotoMsg.style.color = '#B94A3A'; fotoMsg.textContent = mensajeError(e, 'No se pudo guardar la foto (revisa tu conexión)'); }
+    };
+    card.querySelector('#btnSubirFoto').onclick = () => inputFoto.click();
+    inputFoto.onchange = () => {
+      const archivo = inputFoto.files && inputFoto.files[0];
+      if(!archivo) return;
+      const lector = new FileReader();
+      lector.onload = () => {
+        const img = new Image();
+        img.onload = () => {
+          const lado = Math.min(img.width, img.height), cv = document.createElement('canvas');
+          cv.width = cv.height = 200;
+          cv.getContext('2d').drawImage(img, (img.width - lado) / 2, (img.height - lado) / 2, lado, lado, 0, 0, 200, 200);
+          guardarFoto(cv.toDataURL('image/jpeg', 0.82));
+        };
+        img.onerror = () => { fotoMsg.style.color = '#B94A3A'; fotoMsg.textContent = 'No se pudo leer esa imagen. Prueba con otra.'; };
+        img.src = lector.result;
+      };
+      lector.readAsDataURL(archivo);
+    };
+    if(card.querySelector('#btnQuitarFoto')) card.querySelector('#btnQuitarFoto').onclick = () => guardarFoto('');
 
     // Avatar: se guarda en Gamifica y lo ven también sus compañeros en «Mi grupo»
     const avatarBox = card.querySelector('#avatarBox');
@@ -4515,6 +4563,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     destruirPracti();
     renderVista();
     try { barraInferior(); } catch(e){}
+    try { botonesMenuConAvatar(); } catch(e){}
     if(state.view !== 'loading') app.appendChild(el('<p class="pie-derechos">© ' + new Date().getFullYear() + ' Gustavo Calabró · Práctica Integral Club. Todos los derechos reservados. · <a href="privacidad.html" target="_blank" rel="noopener">Privacidad</a></p>'));
     activarPracti(app);
     activarBocadillos(app);
@@ -6522,7 +6571,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     const abre = ultimoLunes(p.mes || p.trimestre), cierre = new Date(abre); cierre.setDate(cierre.getDate() + 14);
     if(hoy >= cierre) return { estado: 'escribir', anterior: p };          // ya pasó: toca uno nuevo
     if(hoy >= abre) return { estado: 'abrir', p, abre };
-    return (p.mes || p.trimestre) === mesClave() ? { estado: 'guardado', p, abre } : { estado: 'escribir', anterior: p };
+    return { estado: 'guardado', p, abre };   // aún no toca abrirla (aunque sea del mes pasado)
   }
   function fechaLarga(d){ return d.toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' }); }
   function renderPosit(){
@@ -6599,6 +6648,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     const fila = lista.find(c => c.week === weekShort(lunesDe(d)));
     return fila ? (leerDias(fila.diasHechos)[['L', 'M', 'X', 'J', 'V', 'S', 'D'][(d.getDay() + 6) % 7]] || 0) : 0;
   }
+  function fechaCorta(x){ return x.getDate() + ' ' + ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sept', 'oct', 'nov', 'dic'][x.getMonth()]; }
   function guiaVistaAlgunaVez(){ try { return !!localStorage.getItem(claveGuiaVista()); } catch(e){ return false; } }
   function hoyISO(){ const t = new Date(); return t.getFullYear() + '-' + String(t.getMonth() + 1).padStart(2, '0') + '-' + String(t.getDate()).padStart(2, '0'); }
   function extrasViaje(){ return [
@@ -6623,29 +6673,30 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     else if(!state.guiaTexto) gBloq = 'Tu guía está en camino';
     pasos.push({ id: 'guia', titulo: vistaAlguna ? 'Lee tu guía de esta semana' : 'Lee tu guía', hecho: guiaHecha, bloqueo: guiaHecha ? '' : gBloq, sub: guiaHecha ? 'Leída' : 'Tu guía personalizada te espera' });
     const contrato = !!contratoGuardado();
-    pasos.push({ id: 'contrato', titulo: 'Sella tu compromiso trimestral', hecho: contrato, plan: plan1 ? '' : '👑 Plan Guías', bloqueo: (contrato || vistaAlguna) ? '' : 'Aún no desbloqueado', sub: contrato ? 'Sellado' : 'Comprométete contigo con tu sello' });
+    const finTrim = new Date(new Date().getFullYear(), Math.floor(new Date().getMonth() / 3) * 3 + 3, 0);
+    pasos.push({ id: 'contrato', titulo: 'Compromiso trimestral', hecho: contrato, plan: plan1 ? '' : '👑 Plan Guías', bloqueo: (contrato || vistaAlguna) ? '' : 'Aún no desbloqueado', sub: contrato ? 'Sellado hasta el ' + fechaCorta(finTrim) : 'Comprométete contigo con tu sello' });
     const ep = estadoPosit(), pg = positGuardado();
-    const nota = !!(pg && (pg.mes || pg.trimestre) === mesClave());
-    pasos.push({ id: 'nota', titulo: ep.estado === 'abrir' && !nota ? 'Abre la nota que te dejaste' : 'Nota para tu yo del ' + diaUnoTexto(ultimoLunes(mesClave())), hecho: nota, plan: plan1 ? '' : '👑 Plan Guías', bloqueo: (nota || contrato) ? '' : 'Aún no desbloqueado', sub: nota ? 'Guardada en la caja' : 'Se abrirá el primer lunes del mes que viene' });
+    const nota = !!(pg && (pg.mes || pg.trimestre) === mesClave()) || ep.estado === 'guardado';
+    pasos.push({ id: 'nota', titulo: ep.estado === 'abrir' && !nota ? 'Abre la nota que te dejaste' : 'Nota a Yo del ' + fechaCorta(ep.estado === 'guardado' && ep.abre ? ep.abre : ultimoLunes(mesClave())), hecho: nota, plan: plan1 ? '' : '👑 Plan Guías', bloqueo: (nota || contrato || ep.estado === 'abrir') ? '' : 'Aún no desbloqueado', sub: nota ? 'Guardada en la caja hasta ese lunes' : ep.estado === 'abrir' ? '¡Ya puedes abrirla!' : 'Se abrirá el primer lunes del mes que viene' });
     const c = cartaGuardada(), ab = aperturaCarta(c);
     const carta = !!(ab && ab > new Date());
-    pasos.push({ id: 'carta', titulo: 'Carta a tu yo del lunes ' + diaUnoTexto(ab && carta ? ab : lunesProximoTrimestre()), hecho: carta, plan: plan2 ? '' : '👑👑 Plan Guías + Grupo', bloqueo: (carta || nota) ? '' : 'Aún no desbloqueado', sub: carta ? 'Carta cerrada' : 'Se abrirá al empezar el próximo trimestre' });
-    if(registraLunes()){
-      const lunes = !registroPendienteEstaSemana();
-      pasos.push({ id: 'lunes', titulo: 'Lunes de compromiso con el grupo', hecho: lunes, sub: lunes ? 'Hecho esta semana' : 'Tu compromiso de esta semana' });
-    }
+    pasos.push({ id: 'carta', titulo: 'Carta a Yo del ' + fechaCorta(ab && carta ? ab : lunesProximoTrimestre()), hecho: carta, plan: plan2 ? '' : '👑👑 Plan Guías + Grupo', bloqueo: (carta || nota) ? '' : 'Aún no desbloqueado', sub: carta ? 'Cerrada hasta ese lunes' : 'Se abrirá el primer lunes del próximo trimestre' });
     const diario = meta && diaHechoFecha(new Date()) > 0;
     pasos.push({ id: 'diario', titulo: 'Marca tu práctica de hoy', hecho: diario, bloqueo: meta ? '' : 'Aún no desbloqueado', sub: diario ? 'Hecho hoy' : 'Toca el día cuando la hagas' });
+    if(registraLunes()){
+      const lunes = !registroPendienteEstaSemana();
+      pasos.push({ id: 'lunes', titulo: 'Lunes de compromiso con el grupo', hecho: lunes, sub: lunes ? 'Hecho esta semana' : (new Date().getDay() === 1 ? 'Hoy es lunes: tu compromiso de esta semana' : 'Tu compromiso de esta semana') });
+    }
     // Opcional: cuando lo tiene todo al día, una propuesta distinta cada día
     const base = pasos.filter(p => !p.plan && !p.bloqueo);
     const alDia = base.length > 0 && base.every(p => p.hecho);
-    const extras = extrasViaje(), ex = extras[Math.floor(ahora / 86400000) % extras.length];
+    const hd = new Date(), extras = extrasViaje(), ex = extras[(hd.getFullYear() * 400 + hd.getMonth() * 31 + hd.getDate()) % extras.length];
     let extraHecho = false; try { extraHecho = localStorage.getItem('viaje_extra_' + state.me) === hoyISO(); } catch(e){}
     pasos.push({ id: 'extra', titulo: ex.titulo, ir: ex.ir, opcional: true, hecho: extraHecho, bloqueo: alDia ? '' : 'Cuando lo tengas todo al día', sub: extraHecho ? 'Hecho hoy' : ex.sub });
     return pasos;
   }
   function pasoAhora(pasos){
-    const orden = ['meta', 'guia', 'lunes', 'contrato', 'nota', 'carta', 'diario', 'extra'];
+    const orden = ['meta', 'guia', 'diario', 'lunes', 'contrato', 'nota', 'carta', 'extra'];
     for(const id of orden){ const p = pasos.find(x => x.id === id); if(p && !p.hecho && !p.bloqueo && !p.plan) return p; }
     return null;
   }
@@ -6666,7 +6717,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     else if(p.id === 'meta'){ state.view = 'panel'; state.panelSub = 's4'; }
     else if(p.id === 'guia') state.view = 'practicas';
     else if(p.id === 'contrato') state.view = 'contrato';
-    else if(p.id === 'nota') state.view = 'posit';
+    else if(p.id === 'nota'){ const e = estadoPosit(); if(e.estado === 'abrir' && e.p){ try { localStorage.setItem('posit_visto_' + state.me + '_' + (e.p.mes || e.p.trimestre), '1'); } catch(er){} } state.view = 'posit'; }
     else if(p.id === 'carta') state.view = 'carta';
     else if(p.id === 'lunes'){ state.view = 'checkin'; state.regPaso = null; }
     else if(p.id === 'diario') state.view = 'practicaSemanal';
@@ -6703,9 +6754,12 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
   function renderViaje(){
     const r = resumenViaje();
+    const cab = el('<div class="topbar"><span></span><button class="hamburger-btn-text" aria-label="Menú">☰ Menú</button></div>').firstElementChild;
+    cab.querySelector('button').onclick = () => { state.prevView = state.view; state.menuOpen = true; render(); };
+    app.appendChild(cab);
     const caja = el('<div class="viaje"><h1 class="viaje-titulo">Viaje</h1>'
       + '<div class="viaje-banner" style="background-image:url(' + VIAJE_BANNER + ')"><span class="viaje-trim">' + escapeAttr(trimestreClave()) + '</span><div class="viaje-banner-tx"><b>' + r.hechos + '/' + r.total + '</b> pasos logrados<br><b>' + r.pct + ' %</b> completado</div></div>'
-      + '<div class="viaje-lista">' + r.pasos.map((p, i) => pasoViajeHTML(p, p.hecho ? 'hecho' : p === r.ahora ? 'ahora' : (p.plan || p.bloqueo) ? 'bloq' : 'pendiente', false)).join('') + metaFinalHTML() + '</div></div>').firstElementChild;
+      + '<div class="viaje-lista">' + r.pasos.filter(p => p.hecho).concat(r.pasos.filter(p => !p.hecho)).map((p, i) => pasoViajeHTML(p, p.hecho ? 'hecho' : p === r.ahora ? 'ahora' : (p.plan || p.bloqueo) ? 'bloq' : 'pendiente', false)).join('') + metaFinalHTML() + '</div></div>').firstElementChild;
     const fin = caja.querySelector('.viaje-final'); if(fin) fin.onclick = () => { state.prevView = 'viaje'; state.view = 'panel'; state.panelSub = 's4'; window.scrollTo(0,0); render(); };
     caja.querySelectorAll('.viaje-paso[data-id]').forEach(b => b.onclick = () => { const p = r.pasos.find(x => x.id === b.dataset.id); if(p) irAPaso(p); });
     app.appendChild(caja);
@@ -6728,12 +6782,15 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     const hoy = new Date(); hoy.setHours(0, 0, 0, 0);
     let semana = 0, mes = 0, trimestre = 0, racha = 0;
     const lunes = lunesDe(hoy), iniTrim = new Date(hoy.getFullYear(), Math.floor(hoy.getMonth() / 3) * 3, 1);
-    for(let dd = new Date(iniTrim); dd <= hoy; dd.setDate(dd.getDate() + 1)){
-      if(diaHechoFecha(dd) > 0){ trimestre++; if(dd.getMonth() === hoy.getMonth()) mes++; if(dd >= lunes) semana++; }
+    for(let dd = new Date(Math.min(iniTrim, lunes)); dd <= hoy; dd.setDate(dd.getDate() + 1)){
+      if(diaHechoFecha(dd) > 0){ if(dd >= iniTrim){ trimestre++; if(dd.getMonth() === hoy.getMonth()) mes++; } if(dd >= lunes) semana++; }
     }
     const r0 = new Date(hoy); if(!diaHechoFecha(r0)) r0.setDate(r0.getDate() - 1);
     while(diaHechoFecha(r0) > 0 && racha < 400){ racha++; r0.setDate(r0.getDate() - 1); }
     const rv = resumenViaje(), nv = state.nivel;
+    const cab = el('<div class="topbar"><span></span><button class="hamburger-btn-text" aria-label="Menú">☰ Menú</button></div>').firstElementChild;
+    cab.querySelector('button').onclick = () => { state.prevView = state.view; state.menuOpen = true; render(); };
+    app.appendChild(cab);
     const caja = el('<div class="progreso"><h1 class="viaje-titulo">Progreso</h1>'
       + '<div class="progreso-grid">'
       + '<div class="progreso-dato"><b>' + racha + '</b><span>' + (racha === 1 ? 'día seguido' : 'días seguidos') + ' practicando</span></div>'
@@ -6754,6 +6811,23 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     app.appendChild(caja);
   }
   // ===== Barra de abajo: Inicio · Viaje · Progreso · Descubre =====
+  // En lugar de «☰ Menú»: un círculo con la persona (su avatar o sus iniciales, p. ej. «GC»)
+  function inicialesDe(nombre){
+    const p = String(nombre || '').trim().split(/\s+/).filter(Boolean);
+    if(!p.length) return '?';
+    return ((p[0][0] || '') + (p.length > 1 ? p[p.length - 1][0] : '')).toUpperCase();
+  }
+  function botonesMenuConAvatar(){
+    if(!state.me) return;
+    const foto = ((state.gamifica && state.gamifica.datosFormulario) || {}).foto || '';
+    const av = foto || avatarDe(state.me);
+    const esImg = /^(data:image|https?:)/.test(av || '');
+    document.querySelectorAll('.hamburger-btn-text').forEach(b => {
+      if(b.dataset.avatar) return;
+      b.dataset.avatar = '1'; b.classList.add('menu-avatar'); b.setAttribute('aria-label', 'Menú de ' + state.me);
+      b.innerHTML = esImg ? '<img src="' + escapeAttr(av) + '" alt="">' : '<span>' + (av ? av : escapeAttr(inicialesDe(state.me))) + '</span>';
+    });
+  }
   function barraInferior(){
     document.querySelectorAll('.tabbar').forEach(b => b.remove());
     const tab = (state.view === 'panel' && !state.panelSub) ? 'inicio' : state.view === 'viaje' ? 'viaje' : state.view === 'progreso' ? 'progreso' : state.view === 'utilidades' ? 'descubre' : '';
@@ -6766,7 +6840,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       progreso: '<path d="M4.5 17a8 8 0 1 1 15 0"/><path d="m12 13 3.5-4"/><circle cx="12" cy="13" r="1.2"/>',
       descubre: '<circle cx="12" cy="12" r="8.5"/><path d="m15.5 8.5-2 5-5 2 2-5z"/>'
     };
-    const nombres = { inicio: 'Inicio', viaje: 'Viaje', progreso: 'Progreso', descubre: 'Descubre' };
+    const nombres = { inicio: 'Inicio', viaje: 'Viaje', progreso: 'Progreso', descubre: 'Utilidades' };
     const nav = document.createElement('nav'); nav.className = 'tabbar'; nav.setAttribute('aria-label', 'Secciones');
     nav.innerHTML = Object.keys(nombres).map(k => '<button type="button" data-tab="' + k + '" class="' + (k === tab ? 'activa' : '') + '"' + (k === tab ? ' aria-current="page"' : '') + '><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + ic[k] + '</svg><span>' + nombres[k] + '</span></button>').join('');
     nav.querySelectorAll('button').forEach(b => b.onclick = () => {
@@ -7511,4 +7585,4 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V11.19 · App Metas Amables · 2026-10-05 18:46 ==== -->
+<!-- ==== Fin del index V11.23 · App Metas Amables · 2026-10-05 19:11 ==== -->
