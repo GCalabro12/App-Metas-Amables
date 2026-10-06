@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V11.56 · App Metas Amables · 2026-10-06 23:34 ==== -->
+<!-- ==== index V11.58 · App Metas Amables · 2026-10-07 00:36 ==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1115,6 +1115,12 @@ body.theme-dark .guia-progreso{background:var(--surface)}
 .alta-tx p{font-size:17px;line-height:1.5;text-align:center;margin:0 0 12px;color:#333}
 .alta-colinas{display:block;flex:none;width:calc(100% + 40px);margin:0 -20px;height:130px;pointer-events:none}
 .planta-avisar{display:block;margin:8px 0 0;background:none;border:0;padding:4px 0;color:#7B5FB8;font:700 13.5px Karla,sans-serif;text-decoration:underline;cursor:pointer;text-align:left}
+.card-plegable{padding:0 !important;overflow:hidden}
+.ajuste-acc>summary{list-style:none;display:flex;justify-content:space-between;align-items:center;padding:16px 18px;font-weight:700;font-size:16px;cursor:pointer}
+.ajuste-acc>summary::-webkit-details-marker{display:none}
+.ajuste-acc>summary::after{content:"›";font-size:22px;line-height:1;transition:transform .2s;color:var(--ink-soft)}
+.ajuste-acc[open]>summary::after{transform:rotate(90deg)}
+.ajuste-cuerpo{padding:0 18px 18px}
 .aviso-breve{position:fixed;left:50%;bottom:calc(90px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:9500;max-width:86vw;padding:10px 16px;border-radius:14px;background:rgba(30,30,40,.9);color:#fff;font-size:15px;text-align:center;box-shadow:0 6px 18px rgba(0,0,0,.25)}
 .historial-intro{margin:4px 0 12px;font-size:15px}
 .historial-item{position:relative;border:2px solid #E39A9A;margin:0 0 12px}
@@ -1920,7 +1926,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V11.56';
+  const APP_VERSION = 'V11.58';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -4031,23 +4037,28 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   function musicaVolumen(){ let v = 60; try { const g = localStorage.getItem('musica_vol'); if(g !== null) v = Number(g); } catch(e){} return isNaN(v) ? 60 : Math.max(0, Math.min(100, v)); }
   function musicaPausar(){
     musica.pausada = !musica.pausada;
-    musicaOrden(musica.pausada ? 'pauseVideo' : 'playVideo');
+    if(musica.id === 'oficial'){ try { if(musica.pausada) sintonia.pause(); else sintonia.play(); } catch(e){} }
+    else musicaOrden(musica.pausada ? 'pauseVideo' : 'playVideo');
     const b = document.querySelector('#musicaBarra .musica-pausa');
     if(b){ b.textContent = musica.pausada ? '▶' : '⏸'; b.setAttribute('aria-label', musica.pausada ? 'Seguir con la música' : 'Pausar la música'); }
     const o = document.querySelector('#musicaBarra .musica-onda'); if(o) o.classList.toggle('quieta', musica.pausada);
   }
 
   function musicaPoner(id){
-    if(id && typeof pararSintonia === 'function') pararSintonia();
-    musica.id = id; musica.pausada = false;
+    const antes = musica.id;
+    if(typeof pararSintonia === 'function' && (id || antes === 'oficial')) pararSintonia();
+    musica.id = null; musica.pausada = false;
     let barra = document.getElementById('musicaBarra');
     if(!id){ if(barra) barra.remove(); if(state.view === 'musica') render(); return; }
-    const c = CANCIONES.find(x => x.id === id) || { titulo: 'Música' };
+    // La música oficial de la app suena con el reproductor propio (en bucle), pero con la misma barra
+    if(id === 'oficial'){ if(barra) barra.innerHTML = ''; sonarSintonia(0); }
+    musica.id = id;
+    const c = id === 'oficial' ? { titulo: 'Música oficial de Metas Amables' } : (CANCIONES.find(x => x.id === id) || { titulo: 'Música' });
     if(!barra){
       barra = document.createElement('div'); barra.id = 'musicaBarra'; barra.className = 'musica-barra';
       document.body.appendChild(barra);
     }
-    barra.innerHTML = '<div class="musica-video"><iframe src="https://www.youtube.com/embed/' + id + '?autoplay=1&loop=1&playlist=' + id + '&playsinline=1&rel=0&enablejsapi=1" allow="autoplay; encrypted-media" title="' + escapeAttr(c.titulo) + '"></iframe></div>'
+    barra.innerHTML = (id === 'oficial' ? '' : '<div class="musica-video"><iframe src="https://www.youtube.com/embed/' + id + '?autoplay=1&loop=1&playlist=' + id + '&playsinline=1&rel=0&enablejsapi=1" allow="autoplay; encrypted-media" title="' + escapeAttr(c.titulo) + '"></iframe></div>')
       + '<span class="musica-onda" aria-hidden="true"><i></i><i></i><i></i></span>'
       + (musica.porFormulario
         ? '<label class="musica-vol"><span aria-hidden="true">🔈</span><input type="range" min="0" max="100" step="5" value="' + musicaVolumen() + '" aria-label="Volumen de la música"><span aria-hidden="true">🔊</span></label>'
@@ -4057,7 +4068,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     barra.querySelector('.musica-pausa').onclick = musicaPausar;
     // Volumen: se aplica al cargar el vídeo y al mover la barra (se recuerda para la próxima vez)
     const fr = barra.querySelector('iframe');
-    fr.addEventListener('load', () => { [800, 2000, 4000].forEach(t => setTimeout(() => musicaOrden('setVolume', [musicaVolumen()]), t)); });
+    if(fr) fr.addEventListener('load', () => { [800, 2000, 4000].forEach(t => setTimeout(() => musicaOrden('setVolume', [musicaVolumen()]), t)); });
     const vol = barra.querySelector('.musica-vol input');
     if(vol) vol.oninput = () => { try { localStorage.setItem('musica_vol', vol.value); } catch(e){} musicaOrden('setVolume', [Number(vol.value)]); };
     barra.querySelector('.musica-parar:not(.musica-pausa)').onclick = () => musicaPoner(null);
@@ -4080,9 +4091,9 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       </div>`).firstElementChild;
     app.appendChild(caja);
     const bSint = caja.querySelector('#btnSintonia');
-    const pintarSint = () => { bSint.querySelector('.musica-oficial-play').textContent = sintoniaSonando() ? '⏸' : '▶'; };
+    const pintarSint = () => { bSint.querySelector('.musica-oficial-play').textContent = musica.id === 'oficial' ? '⏹' : '▶'; };
     pintarSint();
-    bSint.onclick = () => { if(sintoniaSonando()) pararSintonia(); else sonarSintonia(0); pintarSint(); };
+    bSint.onclick = () => { musicaPoner(musica.id === 'oficial' ? null : 'oficial'); pintarSint(); };
     caja.querySelectorAll('.musica-cancion').forEach(b => b.onclick = () => {
       if(b.classList.contains('con-corona')){ avisoCorona('Esta música es del Plan Guías. Tienes una libre en cada módulo.'); return; }
       musicaPoner(b.getAttribute('data-id') || null);
@@ -4529,14 +4540,20 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     const btnRep = reponer.querySelector('#btnReponerIntros'), msgRep = reponer.querySelector('#msgReponer');
     app.appendChild(reponer);
     btnRep.onclick = () => { ['s1','s2','s3'].forEach(x => marcarSaltarIntro(x, false)); msgRep.textContent = 'Listo ✓'; };
-    // Avisos en el móvil (la planta con sed)
-    const avisosCard = el('<div class="card"><p style="font-weight:700;margin:0 0 6px">🔔 Avisos en el móvil</p><p style="font-size:13px;color:var(--ink-soft);margin:0 0 10px">Si a las 8 de la tarde aún no has marcado tu práctica, te llega un aviso: «Tu planta tiene sed». Llega aunque la app esté cerrada.</p><button type="button" class="btn btn-yes" id="btnAvisosPush" style="text-align:center"></button><button type="button" class="btn btn-no" id="btnPushPrueba" style="text-align:center;margin-top:8px">Enviarme un aviso de prueba</button><div class="saved-msg" id="msgPush"></div></div>').firstElementChild;
-    app.appendChild(avisosCard);
-    const bAv = avisosCard.querySelector('#btnAvisosPush'), mPush = avisosCard.querySelector('#msgPush');
-    const pintaAv = () => { bAv.textContent = pushActivo() ? '🔕 Desactivar avisos' : '🔔 Activar avisos'; };
-    pintaAv();
-    bAv.onclick = async () => { if(pushActivo()) await desactivarAvisosPlanta(); else await activarAvisosPlanta(); pintaAv(); };
-    avisosCard.querySelector('#btnPushPrueba').onclick = async () => { mPush.textContent = 'Enviando…'; try { await api('/push-prueba', {}); mPush.textContent = '✓ Enviado: debería llegarte en unos segundos.'; } catch(e){ mPush.textContent = mensajeError(e, 'No se pudo enviar el aviso de prueba.'); } };
+    // Cada apartado, en un recuadro que se abre al tocarlo (el título queda en la cabecera)
+    const plegar = (cardP, titulo) => {
+      if(!cardP) return;
+      const d = document.createElement('details'); d.className = 'ajuste-acc';
+      const s = document.createElement('summary'); s.innerHTML = titulo; d.appendChild(s);
+      const cuerpo = document.createElement('div'); cuerpo.className = 'ajuste-cuerpo';
+      while(cardP.firstChild) cuerpo.appendChild(cardP.firstChild);
+      const t = cuerpo.querySelector('p'); if(t && /font-weight:700/.test(t.getAttribute('style') || '') && t === cuerpo.firstElementChild) t.remove();
+      d.appendChild(cuerpo); cardP.appendChild(d); cardP.classList.add('card-plegable');
+    };
+    plegar(card, '🎨 Tema e idioma');
+    plegar(app.querySelector('#btnInstalarAjustes') && app.querySelector('#btnInstalarAjustes').closest('.card'), '📲 Instalar la app en el móvil');
+    plegar(vozCard, '🗣️ Voz de Prácti');
+    plegar(app.querySelector('#btnReponerIntros') && app.querySelector('#btnReponerIntros').closest('.card'), '🔁 Pantallas de explicación');
 
     // Banco de pruebas, solo para quien tenga "Moderador" en su grupo.
     // Enseña cada pantalla de resultado sin guardar nada en Airtable.
@@ -6064,6 +6081,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       // Se pueden marcar los días desde el primer momento, aunque aún no haya registro
       const tDias = tarjetaDias(estaSemana);
       app.appendChild(tDias);
+      try { app.appendChild(tarjetaAvisosMovil()); } catch(e){ console.error('Avisos:', e); }
       // El calendario y el historial, en un recuadro aparte (debajo del recordatorio); cada uno abre su pantalla
       const calHist = el('<div class="card ps-recuadro"><p style="font-weight:700;margin:0 0 8px">📅 Mi calendario y mi historial</p>'
         + '<button type="button" class="panel-link-btn ps-vercal" style="width:100%;border:2px solid #C0392B;background:#fff;color:#A93226;cursor:pointer;margin:0">Ver mi calendario</button>'
@@ -7210,6 +7228,15 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     avisoBreve('🔕 Avisos desactivados.');
   }
 
+  function tarjetaAvisosMovil(){
+    const c = el('<div class="card ps-recuadro"><p style="font-weight:700;margin:0 0 6px">🔔 Avisos en el móvil</p><p style="font-size:14px;margin:0 0 10px">Si a las 8 de la tarde aún no has marcado tu práctica, te llega un aviso: «🥀 Tu planta tiene sed». Llega aunque la app esté cerrada.</p><button type="button" class="panel-link-btn av-onoff" style="width:100%;border:none;cursor:pointer;background:#7B5FB8"></button><button type="button" class="panel-link-btn av-prueba" style="width:100%;border:2px solid #7B5FB8;background:#fff;color:#5B3F98;cursor:pointer;margin:8px 0 0">Enviarme un aviso de prueba</button><div class="saved-msg av-msg"></div></div>').firstElementChild;
+    const bAv = c.querySelector('.av-onoff'), bPr = c.querySelector('.av-prueba'), msg = c.querySelector('.av-msg');
+    const pintar = () => { const on = pushActivo(); bAv.textContent = on ? '🔕 Desactivar avisos' : '🔔 Activar avisos'; bPr.style.display = on ? '' : 'none'; };
+    pintar();
+    bAv.onclick = async () => { if(pushActivo()) await desactivarAvisosPlanta(); else await activarAvisosPlanta(); pintar(); };
+    bPr.onclick = async () => { msg.textContent = 'Enviando…'; try { const r = await api('/push-prueba', {}); const est = (r && r.estados) || []; msg.textContent = est.length && est.every(s => s >= 200 && s < 300) ? '✓ Enviado (' + est.join(', ') + '): debería llegarte en unos segundos.' : '⚠️ El servicio de avisos respondió ' + (est.join(', ') || 'sin datos') + '. Desactiva y vuelve a activar los avisos.'; } catch(e){ msg.textContent = mensajeError(e, 'No se pudo enviar el aviso de prueba.'); } };
+    return c;
+  }
   // ===== Mensaje de voz semanal (Plan Guías + Grupo): lo grabas esta semana y lo escuchas el lunes siguiente =====
   function isoLocal(d){ return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
   async function vozDescargar(lunesISO){
@@ -8335,4 +8362,4 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V11.56 · App Metas Amables · 2026-10-06 23:34 ==== -->
+<!-- ==== Fin del index V11.58 · App Metas Amables · 2026-10-07 00:36 ==== -->
