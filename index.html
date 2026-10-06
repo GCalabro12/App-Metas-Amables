@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V11.58 · App Metas Amables · 2026-10-07 00:36 ==== -->
+<!-- ==== index V11.60 · App Metas Amables · 2026-10-07 01:15 ==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1121,6 +1121,12 @@ body.theme-dark .guia-progreso{background:var(--surface)}
 .ajuste-acc>summary::after{content:"›";font-size:22px;line-height:1;transition:transform .2s;color:var(--ink-soft)}
 .ajuste-acc[open]>summary::after{transform:rotate(90deg)}
 .ajuste-cuerpo{padding:0 18px 18px}
+.voz-cerrado{display:flex;gap:12px;align-items:center;background:#F4F0FB;border:2px dashed #B9A6E0;border-radius:14px;padding:12px 14px;margin:6px 0 4px}
+.voz-cerrado svg{width:34px;height:34px;flex:none}.voz-cerrado b{display:block;color:#4A3A8C}.voz-cerrado span{font-size:14px;color:#555}
+.voz-regrabar{background:none;border:0;padding:6px 0;color:#7B5FB8;font:700 14px Karla,sans-serif;text-decoration:underline;cursor:pointer}
+.voz-abierto{background:#FFF7E0;border:2px solid #E0B341;border-radius:14px;padding:12px;margin:0 0 12px}
+.voz-aviso{display:flex;gap:12px;align-items:center;border:2px solid #E0B341;background:#FFF7E0}.voz-aviso-ico{font-size:34px}.voz-aviso b{display:block;margin:0 0 8px}
+.voz-aviso .panel-link-btn{border:none;cursor:pointer;background:#C9942D;width:100%}
 .aviso-breve{position:fixed;left:50%;bottom:calc(90px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:9500;max-width:86vw;padding:10px 16px;border-radius:14px;background:rgba(30,30,40,.9);color:#fff;font-size:15px;text-align:center;box-shadow:0 6px 18px rgba(0,0,0,.25)}
 .historial-intro{margin:4px 0 12px;font-size:15px}
 .historial-item{position:relative;border:2px solid #E39A9A;margin:0 0 12px}
@@ -1926,7 +1932,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V11.58';
+  const APP_VERSION = 'V11.60';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -5352,6 +5358,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
         if(avisos){ const a = el('<div class="avisos-plan">' + avisos + '</div>').firstElementChild; app.appendChild(a); activarTarjetasPlan(a); }
         try { const sp = tarjetaSiguientePaso(); if(sp) app.appendChild(sp); } catch(e){}
         try { const tp = tarjetaPlanta(); if(tp) app.appendChild(tp); } catch(e){}
+        try { const zv = document.createElement('div'); app.appendChild(zv); tarjetaVozPendiente(zv); } catch(e){}
         const opciones = document.createElement('div');
         opciones.className = 'ciclo';
         const tx = textosCiclo();
@@ -7234,7 +7241,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     const pintar = () => { const on = pushActivo(); bAv.textContent = on ? '🔕 Desactivar avisos' : '🔔 Activar avisos'; bPr.style.display = on ? '' : 'none'; };
     pintar();
     bAv.onclick = async () => { if(pushActivo()) await desactivarAvisosPlanta(); else await activarAvisosPlanta(); pintar(); };
-    bPr.onclick = async () => { msg.textContent = 'Enviando…'; try { const r = await api('/push-prueba', {}); const est = (r && r.estados) || []; msg.textContent = est.length && est.every(s => s >= 200 && s < 300) ? '✓ Enviado (' + est.join(', ') + '): debería llegarte en unos segundos.' : '⚠️ El servicio de avisos respondió ' + (est.join(', ') || 'sin datos') + '. Desactiva y vuelve a activar los avisos.'; } catch(e){ msg.textContent = mensajeError(e, 'No se pudo enviar el aviso de prueba.'); } };
+    bPr.onclick = async () => { msg.textContent = 'Enviando…'; try { const r = await api('/push-prueba', {}); const est = (r && r.estados) || []; msg.textContent = est.some(s => s >= 200 && s < 300) ? '✓ Enviado: debería llegarte en unos segundos.' : '⚠️ No se pudo entregar (' + (est.join(', ') || 'sin datos') + '). Desactiva y vuelve a activar los avisos.'; } catch(e){ msg.textContent = mensajeError(e, 'No se pudo enviar el aviso de prueba.'); } };
     return c;
   }
   // ===== Mensaje de voz semanal (Plan Guías + Grupo): lo grabas esta semana y lo escuchas el lunes siguiente =====
@@ -7244,6 +7251,20 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     const r = await fetch(API_URL + '/voz-semana?lunes=' + lunesISO, { headers: ses ? { 'Authorization': 'Bearer ' + ses } : {} });
     if(!r.ok || !/^audio\//.test(r.headers.get('Content-Type') || '')) return null;
     return URL.createObjectURL(await r.blob());
+  }
+  var vozPendienteCache = null;   // { clave, hay } para no descargarlo en cada vuelta a Inicio
+  function tarjetaVozPendiente(destino){
+    if(!state.me || !tienePlan('sesiones')) return;
+    const pasado = lunesDe(new Date()); pasado.setDate(pasado.getDate() - 7);
+    const clave = state.me + '_' + isoLocal(pasado);
+    try { if(localStorage.getItem('voz_oida_' + clave)) return; } catch(e){}
+    const pintar = () => {
+      const c = el('<div class="card voz-aviso"><span class="voz-aviso-ico">🎧</span><div><b>Tienes un mensaje de voz de tu yo del lunes ' + pasado.getDate() + '</b><button type="button" class="panel-link-btn">Escucharlo →</button></div></div>').firstElementChild;
+      c.querySelector('button').onclick = () => { state.irVoz = true; state.view = 'practicaSemanal'; window.scrollTo(0,0); render(); };
+      destino.appendChild(c);
+    };
+    if(vozPendienteCache && vozPendienteCache.clave === clave){ if(vozPendienteCache.hay) pintar(); return; }
+    vozDescargar(isoLocal(pasado)).then(url => { vozPendienteCache = { clave, hay: !!url }; if(url && state.view === 'panel' && document.body.contains(destino)) pintar(); }).catch(() => {});
   }
   function tarjetaVozSemanal(){
     const lunes = lunesDe(new Date()), pasado = new Date(lunes), proximo = new Date(lunes);
@@ -7258,14 +7279,20 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       return card;
     }
     // El que te dejaste el lunes pasado
-    vozDescargar(isoLocal(pasado)).then(url => { if(url) card.querySelector('.voz-escuchar').innerHTML = '<p style="margin:0 0 6px;font-size:14px"><b>🎧 Tu mensaje del lunes ' + pasado.getDate() + ':</b></p><audio controls src="' + url + '" style="width:100%;margin:0 0 12px"></audio>'; }).catch(() => {});
+    vozDescargar(isoLocal(pasado)).then(url => {
+      if(!url) return;
+      const z = card.querySelector('.voz-escuchar');
+      z.innerHTML = '<div class="voz-abierto"><p style="margin:0 0 6px;font-size:15px"><b>🎧 ¡Ya puedes escuchar el mensaje que te dejaste el lunes ' + pasado.getDate() + '!</b></p><audio controls src="' + url + '" style="width:100%"></audio></div>';
+      z.querySelector('audio').addEventListener('play', () => { try { localStorage.setItem('voz_oida_' + state.me + '_' + isoLocal(pasado), '1'); } catch(e){} });
+      if(state.irVoz){ state.irVoz = false; setTimeout(() => card.scrollIntoView({ behavior: 'smooth', block: 'center' }), 80); }
+    }).catch(() => {});
     let rec = null, trozos = [], reloj = null, inicio = 0, grabado = null, flujo = null;
     const boton = (txt, cls, color) => '<button type="button" class="panel-link-btn ' + cls + '" style="width:100%;border:none;cursor:pointer;background:' + color + ';margin:6px 0 0">' + txt + '</button>';
     const pintar = (estado, url) => {
       if(estado === 'inicio') zona.innerHTML = boton('🎙 Grabar mi mensaje', 'voz-rec', '#C0392B');
       else if(estado === 'grabando') zona.innerHTML = '<p class="voz-tiempo" style="text-align:center;font-weight:700;color:#C0392B;margin:0">● Grabando… 0:00</p>' + boton('⏹ Parar', 'voz-parar', '#555');
       else if(estado === 'listo') zona.innerHTML = '<audio controls src="' + url + '" style="width:100%"></audio>' + boton('✓ Guardar mi mensaje', 'voz-guardar', '#6B9362') + boton('↺ Volver a grabar', 'voz-rec', '#9A9A9A');
-      else if(estado === 'guardado') zona.innerHTML = '<p style="margin:0 0 6px;font-size:14px;color:#3E7A2E"><b>✓ Mensaje guardado.</b> Lo escucharás el lunes ' + proximo.getDate() + '.</p>' + (url ? '<audio controls src="' + url + '" style="width:100%"></audio>' : '') + boton('↺ Grabar otro', 'voz-rec', '#9A9A9A');
+      else if(estado === 'guardado') zona.innerHTML = '<div class="voz-cerrado">' + candadoSVG() + '<div><b>Mensaje guardado y cerrado</b><span>Se abrirá el lunes ' + proximo.getDate() + ' de ' + monthNamesEs[proximo.getMonth()] + '.</span></div></div>' + '<button type="button" class="voz-rec voz-regrabar">↺ Volver a grabarlo</button>';
       const r = zona.querySelector('.voz-rec'); if(r) r.onclick = grabar;
       const p = zona.querySelector('.voz-parar'); if(p) p.onclick = parar;
       const g = zona.querySelector('.voz-guardar'); if(g) g.onclick = guardar;
@@ -7289,12 +7316,12 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
         const audio = await new Promise((ok, mal) => { const fr = new FileReader(); fr.onload = () => ok(String(fr.result).split(',')[1] || ''); fr.onerror = mal; fr.readAsDataURL(grabado); });
         await api('/voz-semana', { lunes: isoLocal(lunes), tipo: grabado.type, audio });
         try { sonidoTing(); } catch(e){}
-        pintar('guardado', URL.createObjectURL(grabado));
+        pintar('guardado');
       } catch(e){ avisoBreve(mensajeError(e, 'No se pudo guardar el mensaje. Revisa tu conexión.')); if(g){ g.disabled = false; g.textContent = '✓ Guardar mi mensaje'; } }
     };
     pintar('inicio');
     // ¿Ya grabaste el de esta semana?
-    vozDescargar(isoLocal(lunes)).then(url => { if(url && !rec) pintar('guardado', url); }).catch(() => {});
+    vozDescargar(isoLocal(lunes)).then(url => { if(url && !rec) pintar('guardado'); }).catch(() => {});
     return card;
   }
   // ===== La planta de Prácti en Inicio: se riega marcando la práctica; si no se riega, se va marchitando =====
@@ -8362,4 +8389,4 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V11.58 · App Metas Amables · 2026-10-07 00:36 ==== -->
+<!-- ==== Fin del index V11.60 · App Metas Amables · 2026-10-07 01:15 ==== -->
