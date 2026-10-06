@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V11.52 · App Metas Amables · 2026-10-06 23:17 ==== -->
+<!-- ==== index V11.55 · App Metas Amables · 2026-10-06 23:29 ==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1094,9 +1094,9 @@ body.theme-dark .guia-progreso{background:var(--surface)}
 .hs-montana{width:min(36vw,165px);margin:0 auto 10px}.hs-img{display:block;width:min(48vw,200px);height:auto;margin:0 auto 10px}.hs-img-portada{width:min(62vw,240px);border-radius:24px;background:#fff;padding:6px}
 .planta-card{display:flex;gap:12px;align-items:center;padding:12px 14px}.planta-card img{width:112px;height:auto;flex:none;border-radius:14px;background:#fff}
 .planta-tx{flex:1;min-width:0}.planta-tx b{display:block;font:700 18px Lora,serif;color:#2F5A23}.planta-tx p{margin:4px 0 10px;font-size:14.5px;line-height:1.4}
-.alta-marchita{position:relative;width:200px;height:213px;margin:0 auto}.alta-marchita img{position:absolute;left:0;top:0;width:200px;height:auto;opacity:0;animation:marchita 3.6s ease forwards}
+.alta-marchita{position:relative;width:200px;height:213px;margin:0 auto}.alta-marchita img{position:absolute;left:0;top:0;width:200px;height:auto;opacity:0;animation-duration:6s;animation-timing-function:ease;animation-iteration-count:infinite}
 .alta-marchita img:nth-child(1){animation-name:marchita1}.alta-marchita img:nth-child(2){animation-name:marchita2}.alta-marchita img:nth-child(3){animation-name:marchita3}
-@keyframes marchita1{0%{opacity:1}30%{opacity:1}40%{opacity:0}100%{opacity:0}}@keyframes marchita2{0%,30%{opacity:0}40%{opacity:1}65%{opacity:1}75%{opacity:0}100%{opacity:0}}@keyframes marchita3{0%,65%{opacity:0}75%{opacity:1}100%{opacity:1}}
+@keyframes marchita1{0%,27%{opacity:1}33%,94%{opacity:0}100%{opacity:1}}@keyframes marchita2{0%,27%{opacity:0}33%,60%{opacity:1}66%,100%{opacity:0}}@keyframes marchita3{0%,60%{opacity:0}66%,94%{opacity:1}100%{opacity:0}}
 .alta-crece{width:200px;margin:0 auto}.alta-crece img,.alta-crece .planta-anim{width:200px;height:auto;display:block}
 .planta-anim{display:block;flex:none;border-radius:14px;background:#fff;overflow:hidden}
 .planta-regar{border:none;cursor:pointer;width:100%;background:#4F9A5A !important;color:#fff !important;font-weight:800}
@@ -1106,6 +1106,14 @@ body.theme-dark .guia-progreso{background:var(--surface)}
 .cv-mes .cd-dia{aspect-ratio:1;border:1px solid var(--border);border-radius:8px;background:var(--card,#fff);font-size:13px;color:var(--ink);display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1}
 .cv-mes .cd-dia i{font-style:normal;font-weight:700;font-size:14px;height:14px;color:#fff}.cv-mes .cd-dia.hecho{background:#6B9362;border-color:#6B9362;color:#fff}
 .cv-mes .cd-dia.hoy{border:2px solid var(--honey)}.cv-mes .cd-dia.futuro{opacity:.35}
+.pass-caja{position:relative;display:block}.pass-caja input{display:block}
+.pass-ojo{position:absolute;right:6px;top:50%;transform:translateY(-50%);background:none;border:0;padding:8px;cursor:pointer;color:#6B6B6B;display:flex;align-items:center}
+.alta-onb{position:fixed;inset:0;z-index:60;overflow-y:auto;background:#fff;color:#2B2B2B;padding:calc(18px + env(safe-area-inset-top)) 20px 0;display:flex;flex-direction:column}
+.alta-dentro{flex:1 0 auto;width:100%;max-width:520px;margin:0 auto;padding-bottom:24px}
+.alta-onb h1{color:#2B2B2B;text-align:center}
+.alta-grande{font-family:Lora,serif;font-size:24px;font-weight:600;text-align:center;color:#3E7A2E;margin:6px 0 14px}
+.alta-tx p{font-size:17px;line-height:1.5;text-align:center;margin:0 0 12px;color:#333}
+.alta-colinas{display:block;flex:none;width:calc(100% + 40px);margin:0 -20px;height:130px;pointer-events:none}
 .aviso-breve{position:fixed;left:50%;bottom:calc(90px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:9500;max-width:86vw;padding:10px 16px;border-radius:14px;background:rgba(30,30,40,.9);color:#fff;font-size:15px;text-align:center;box-shadow:0 6px 18px rgba(0,0,0,.25)}
 .historial-intro{margin:4px 0 12px;font-size:15px}
 .historial-item{position:relative;border:2px solid #E39A9A;margin:0 0 12px}
@@ -1911,7 +1919,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V11.52';
+  const APP_VERSION = 'V11.55';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -2164,47 +2172,44 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     if(paso === 3 && !state.sintoniaAlta){ state.sintoniaAlta = true; sonarSintonia(4); }
     // Cada pantalla con su muñeco: saludo, escribiendo (registro de los lunes) y pizarra (formulario)
     const figura = { 1: ['saludo', 130], 4: ['pizarra', 190] }[paso];
-    let html = '<div class="alta-onb"><div style="text-align:center;margin-bottom:6px">'
+    // Pantallas en blanco, a pantalla completa, con las colinas moradas abajo; textos sin recuadro
+    const colinas = '<svg class="alta-colinas" viewBox="0 0 1024 220" preserveAspectRatio="none" aria-hidden="true"><defs>'
+      + '<linearGradient id="altaK1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#C04A8E"/><stop offset="1" stop-color="#7A1C6A"/></linearGradient>'
+      + '<linearGradient id="altaK2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6B2A9E"/><stop offset="1" stop-color="#3A1460"/></linearGradient></defs>'
+      + '<path d="M0 90 C 200 20, 420 50, 600 75 S 880 20, 1024 50 V220 H0 Z" fill="url(#altaK1)" opacity=".9"/>'
+      + '<path d="M0 150 C 240 95, 470 130, 660 115 S 920 100, 1024 120 V220 H0 Z" fill="url(#altaK2)"/></svg>';
+    let html = '<div class="alta-onb"><div class="alta-dentro"><div style="text-align:center;margin-bottom:6px">'
       + (paso === 2 ? '<div class="alta-marchita"><img src="' + imgPlanta('sed') + '" alt=""><img src="' + imgPlanta('mustia') + '" alt=""><img src="' + imgPlanta('seca') + '" alt=""></div>'
         : paso === 3 ? '<div class="alta-crece"><img src="' + imgRegando(1) + '" alt=""></div>'
         : practiHTML(figura[0], '', figura[1])) + '</div>'
       + '<div class="alta-puntos">' + [1, 2, 3, 4].map(n => '<span class="' + (n === paso ? 'on' : '') + '"></span>').join('') + '</div>';
+    const sigBtn = '<button type="button" class="btn btn-yes" id="btnAltaSig" style="text-align:center;margin-top:14px">Siguiente →</button>';
+    const atrasBtn = '<button type="button" class="link-quiet" id="btnAltaAtras" style="display:block;margin:10px auto 0">← Atrás</button>';
     if(paso === 1){
       const msg = encodeURIComponent('Hola, soy ' + state.me + ' y me acabo de registrar en la app Metas Amables 🙂');
-      html += '<h1>¡Bienvenido/a a Metas Amables, ' + escapeAttr(nombre) + '!</h1>'
+      html += '<h1>¡Te damos la bienvenida a Metas Amables, ' + escapeAttr(nombre) + '!</h1>'
+        + '<p class="alta-grande">Tu cuenta está creada ✓</p>'
         + (marca === 'w'
-          ? '<div class="card alta-card"><p>Guarda este número en tus contactos como <b>Metas Amables</b>: <b>' + TEL_FACILITADOR + '</b>. Por ahí te llegarán los mensajes de ánimo.</p>'
-            + '<p>Después, mándanos un saludo: así sabemos que el número es correcto y podemos escribirte.</p>'
+          ? '<div class="alta-tx"><p>Guarda este número en tus contactos como <b>Metas Amables</b>: <b>' + TEL_FACILITADOR + '</b>. Por ahí te llegarán los mensajes de ánimo.</p>'
             + '<a class="panel-link-btn" target="_blank" rel="noopener" href="https://wa.me/34658825799?text=' + msg + '">💬 Salúdanos por WhatsApp</a></div>'
-          : '<div class="card alta-card"><p>Tu cuenta está creada. Si tienes dudas en algún momento, puedes escribir a tu facilitador por WhatsApp al <b>' + TEL_FACILITADOR + '</b>.</p></div>')
-        + '<button type="button" class="btn btn-yes" id="btnAltaSig" style="text-align:center;margin-top:6px">Siguiente →</button>';
+          : '')
+        + sigBtn;
     } else if(paso === 2){
-      html += '<h1>¿Cansado/a de plantearte metas que se marchitan?</h1>'
-        + '<div class="card alta-card">'
-        + '<p>Empiezas con mucha ilusión… y al cabo de unas semanas, sin darte cuenta, se te van secando.</p>'
-        + '<p>No es falta de voluntad: es que <b>nadie te enseñó a regarlas</b>.</p>'
-        + '</div>'
-        + '<button type="button" class="btn btn-yes" id="btnAltaSig" style="text-align:center;margin-top:6px">Siguiente →</button>'
-        + '<button type="button" class="link-quiet" id="btnAltaAtras" style="display:block;margin:10px auto 0">← Atrás</button>';
+      html += '<h1>¿Te planteas metas que acaban marchitándose?</h1>'
+        + '<div class="alta-tx"><p>Empiezas con mucha ilusión… y al cabo de unas semanas, sin darte cuenta, se te van secando.</p>'
+        + '<p>No es falta de voluntad: es que <b>nadie te enseñó a regarlas</b>.</p></div>'
+        + sigBtn + atrasBtn;
     } else if(paso === 3){
       html += '<h1>Aquí aprenderás a regar tu práctica cada día</h1>'
-        + '<div class="card alta-card">'
-        + '<p>Con Metas Amables consigues <b>una meta valiosa para ti cada trimestre</b>: un poco cada día, como quien riega una planta.</p>'
-        + '<p>📅 <b>Cada lunes</b> registras cómo te ha ido la semana y te comprometes con la siguiente. Poco a poco, la planta crece.</p>'
-        + '</div>'
-        + '<button type="button" class="btn btn-yes" id="btnAltaSig" style="text-align:center;margin-top:6px">Siguiente →</button>'
-        + '<button type="button" class="link-quiet" id="btnAltaAtras" style="display:block;margin:10px auto 0">← Atrás</button>';
+        + '<div class="alta-tx"><p>Con Metas Amables conseguirás <b>una meta valiosa para ti cada trimestre</b>, con un registro cada lunes.</p></div>'
+        + sigBtn + atrasBtn;
     } else {
       html += '<h1>Tu meta del trimestre</h1>'
-        + '<div class="card alta-card">'
-        + '<p>🎯 Para empezar, necesitamos que rellenes un formulario con <b>una meta importante para ti</b> <span style="color:var(--ink-soft)">(lleva 5 minutos)</span>.</p>'
-        + '<p>Con tus respuestas preparamos tu guía de prácticas.</p>'
-        + '<button type="button" class="panel-link-btn fm-abrir" style="background:#6B9362;width:100%;border:none;cursor:pointer">🎯 Rellenar el formulario</button>'
-        + '</div>'
-        + '<button type="button" class="btn btn-yes" id="btnAltaSig" style="text-align:center;margin-top:6px">Siguiente →</button>'
-        + '<button type="button" class="link-quiet" id="btnAltaAtras" style="display:block;margin:10px auto 0">← Atrás</button>';
+        + '<div class="alta-tx"><p>🎯 Para empezar, rellena un formulario con <b>una meta importante para ti</b> <span style="color:#777">(lleva 5 minutos)</span>. Con tus respuestas preparamos tu guía de prácticas.</p>'
+        + '<button type="button" class="panel-link-btn fm-abrir" style="background:#6B9362;width:100%;border:none;cursor:pointer">🎯 Rellenar el formulario</button></div>'
+        + sigBtn + atrasBtn;
     }
-    html += '</div>';
+    html += '</div>' + colinas;    html += '</div>';
     const nodo = el(html);
     const sig = nodo.querySelector('#btnAltaSig'), atras = nodo.querySelector('#btnAltaAtras');
     app.appendChild(nodo);
@@ -2215,7 +2220,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     };
     if(atras) atras.onclick = () => { state.altaPaso = Math.max(1, paso - 1); window.scrollTo(0,0); render(); };
     // Pantalla 3: Prácti riega y la planta crece (animación)
-    if(paso === 3){ const im = nodo.querySelector ? null : null; const img = app.querySelector('.alta-crece img'); if(img) animarPlanta(img, 'practi-crece.json'); }
+    if(paso === 3){ const img = app.querySelector('.alta-crece img'); if(img) animarPlanta(img, 'practi-crece.json', true); }
   }
 
   async function changePassword(nombre, currentPass, newPass){
@@ -4794,18 +4799,36 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     }, { passive: true });
   })();
 
+  // El ojo dentro del recuadro de cada contraseña: ojo abierto = verla; ojo tachado = ocultarla
+  function iconoOjo(tachado){
+    return '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'
+      + (tachado ? '<path d="M10.6 5.1A10.5 10.5 0 0 1 12 5c6.5 0 10 7 10 7a17 17 0 0 1-2.6 3.6M6.6 6.6C3.9 8.4 2 12 2 12s3.5 7 10 7c1.9 0 3.6-.6 5-1.4"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/><path d="M3 3l18 18"/>'
+                 : '<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>') + '</svg>';
+  }
+  function ojosEnContrasenas(raiz){
+    raiz.querySelectorAll('input[type="password"]:not([data-ojo])').forEach(inp => {
+      inp.dataset.ojo = '1';
+      const caja = document.createElement('span'); caja.className = 'pass-caja';
+      caja.style.marginBottom = inp.style.marginBottom || '0'; inp.style.marginBottom = '0'; inp.style.paddingRight = '48px';
+      inp.parentNode.insertBefore(caja, inp); caja.appendChild(inp);
+      const b = document.createElement('button'); b.type = 'button'; b.className = 'pass-ojo'; b.innerHTML = iconoOjo(false); b.setAttribute('aria-label', 'Ver contraseña');
+      b.onclick = () => { const ver = inp.type === 'password'; inp.type = ver ? 'text' : 'password'; b.innerHTML = iconoOjo(ver); b.setAttribute('aria-label', ver ? 'Ocultar contraseña' : 'Ver contraseña'); };
+      caja.appendChild(b);
+    });
+  }
   function render(){
     lectorParar(); lector.caja = null;
     if(relojFecha){ clearInterval(relojFecha); relojFecha = null; }
     destruirPracti();
     renderVista();
+    try { ojosEnContrasenas(app); } catch(e){}
     // Si se llegó desde el Viaje, todos los «← Volver» de la pantalla llevan de vuelta al Viaje
     if(state.view === 'viaje') state.desdeViaje = false;
     else if(state.desdeViaje) app.querySelectorAll('.back-btn').forEach(b => b.onclick = () => { state.desdeViaje = false; state.view = 'viaje'; state.panelSub = null; window.scrollTo(0,0); render(); });
     try { barraInferior(); } catch(e){}
     try { anotarVisita(); } catch(e){}
     try { botonesMenuConAvatar(); } catch(e){}
-    if(state.view !== 'loading') app.appendChild(el('<p class="pie-derechos">© ' + new Date().getFullYear() + ' Gustavo Calabró · Práctica Integral Club. Todos los derechos reservados. · <a href="privacidad.html" target="_blank" rel="noopener">Privacidad</a> · <a href="terminos.html" target="_blank" rel="noopener">Términos de uso</a></p>'));
+    if(state.view !== 'loading' && state.view !== 'bienvenidaAlta') app.appendChild(el('<p class="pie-derechos">© ' + new Date().getFullYear() + ' Gustavo Calabró · Práctica Integral Club. Todos los derechos reservados. · <a href="privacidad.html" target="_blank" rel="noopener">Privacidad</a> · <a href="terminos.html" target="_blank" rel="noopener">Términos de uso</a></p>'));
     activarPracti(app);
     activarBocadillos(app);
     activarBienvenida(app);
@@ -5199,19 +5222,13 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
           <input type="email" id="altaEmail" autocomplete="email" placeholder="Ej.: laura@gmail.com" value="${escapeAttr(d.email || '')}" style="${estiloCampo}">
           <label class="note-label">Elige una contraseña</label>
           <input type="password" id="altaPass" name="new-password" autocomplete="new-password" placeholder="Mínimo 4 caracteres" value="${escapeAttr(d.pass || '')}" style="${estiloCampo};margin-bottom:4px">
-          <div style="text-align:right;margin-bottom:10px"><button id="toggleAltaPass" type="button" style="background:none;border:none;font-family:'Karla';font-size:13px;color:var(--moss-deep);cursor:pointer;padding:4px 0;text-decoration:underline">👁 Ver contraseña</button></div>
+          <div style="height:10px"></div>
           <p style="font-size:12px;color:var(--ink-soft);margin:8px 0 0">Al crear tu cuenta aceptas la <a href="privacidad.html" target="_blank" rel="noopener" style="color:var(--ink-soft)">política de privacidad</a>.</p>
           <button class="btn btn-yes" id="btnAlta" style="text-align:center;margin-top:14px">Crear mi cuenta</button>
           ${state.loginError ? '<div style="color:' + (state.loginError.endsWith('…') ? 'var(--ink-soft)' : '#B94A3A') + ';font-size:13px;margin-top:8px">'+state.loginError+'</div>' : ''}
         `;
         app.appendChild(altaCard);
         if(GOOGLE_CLIENT_ID && !d.email){ const g = el('<div class="acceso-google"><p>o crea tu cuenta con</p><div id="btnGoogle"></div></div>').firstElementChild; app.appendChild(g); botonGoogle(g.querySelector('#btnGoogle')); }
-        const altaPassEl = altaCard.querySelector('#altaPass'), toggleAlta = altaCard.querySelector('#toggleAltaPass');
-        toggleAlta.onclick = () => {
-          const viendo = altaPassEl.type === 'text';
-          altaPassEl.type = viendo ? 'password' : 'text';
-          toggleAlta.textContent = viendo ? '👁 Ver contraseña' : '🙈 Ocultar contraseña';
-        };
         altaCard.querySelector('#btnAlta').onclick = () => (ofrecerInstalar(), crearCuenta(
           altaCard.querySelector('#altaNombre').value, altaCard.querySelector('#altaTel').value,
           altaCard.querySelector('#altaEmail').value, altaCard.querySelector('#altaPass').value,
@@ -5228,7 +5245,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
         formCard.innerHTML = `
           <input type="text" id="nombreInput" name="username" autocomplete="username" autocapitalize="words" placeholder="Tu nombre" value="${escapeAttr(nombreLogin())}" style="width:100%;border:1px solid var(--border);border-radius:10px;padding:14px;font-family:'Karla';font-size:16px;margin-bottom:10px;background:#FCFCF9;box-sizing:border-box">
           <input type="password" id="passInput" name="password" autocomplete="current-password" placeholder="Tu contraseña" style="width:100%;border:1px solid var(--border);border-radius:10px;padding:14px;font-family:'Karla';font-size:16px;margin-bottom:4px;background:#FCFCF9;box-sizing:border-box">
-          <div style="text-align:right;margin-bottom:12px"><button id="togglePass" type="button" style="background:none;border:none;font-family:'Karla';font-size:13px;color:var(--moss-deep);cursor:pointer;padding:4px 0;text-decoration:underline">👁 Ver contraseña</button></div>
+          <div style="height:12px"></div>
           <button type="submit" class="btn btn-yes" id="btnLogin" style="text-align:center">Entrar</button>
           ${state.loginError ? '<div style="color:#B94A3A;font-size:13px;margin-top:8px">'+state.loginError+'</div>' : ''}
           ${state.savedMsg ? '<div class="saved-msg">'+state.savedMsg+'</div>' : ''}
@@ -5236,12 +5253,6 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
         app.appendChild(formCard);
         if(GOOGLE_CLIENT_ID){ const g = el('<div class="acceso-google"><p>o bien</p><div id="btnGoogle"></div></div>').firstElementChild; app.appendChild(g); botonGoogle(g.querySelector('#btnGoogle')); }
         const passInput = formCard.querySelector('#passInput');
-        const togglePass = formCard.querySelector('#togglePass');
-        togglePass.onclick = () => {
-          const showing = passInput.type === 'text';
-          passInput.type = showing ? 'password' : 'text';
-          togglePass.textContent = showing ? 'Ver contraseña' : 'Ocultar contraseña';
-        };
         const nombreInput = formCard.querySelector('#nombreInput');
         formCard.onsubmit = (e) => { e.preventDefault(); ofrecerInstalar(); loginWithPassword(nombreInput.value, passInput.value); };
         nombreInput.addEventListener('keydown', (e) => { if(e.key==='Enter'){ e.preventDefault(); passInput.focus(); } });
@@ -8221,4 +8232,4 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V11.52 · App Metas Amables · 2026-10-06 23:17 ==== -->
+<!-- ==== Fin del index V11.55 · App Metas Amables · 2026-10-06 23:29 ==== -->
