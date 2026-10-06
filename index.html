@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V11.41 · App Metas Amables · 2026-10-05 22:22 ==== -->
+<!-- ==== index V11.42 · App Metas Amables · 2026-10-05 22:48 ==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1891,7 +1891,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V11.41';
+  const APP_VERSION = 'V11.42';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -6641,10 +6641,50 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     const m = new Date(iso);
     return m.toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' }) + ', a las ' + String(m.getHours()).padStart(2, '0') + ':' + String(m.getMinutes()).padStart(2, '0') + ' h';
   }
-  // Compartir el contrato sellado (WhatsApp, correo…); si el móvil no deja, se copia el texto
+  // La hoja del contrato sellado como imagen (pergamino con el texto, la firma, la fecha y el lacre)
+  async function imagenContrato(c){
+    try { await Promise.all([document.fonts.load('64px UnifrakturMaguntia'), document.fonts.load('34px Lora'), document.fonts.load('italic 44px Lora')]); } catch(e){}
+    const W = 1080, P = 100, cv = document.createElement('canvas'), x = cv.getContext('2d');
+    const nombre = String(state.me || '').trim(), inicial = (nombre.charAt(0) || '·').toUpperCase();
+    const partir = (t, fuente, ancho) => { x.font = fuente; const out = []; String(t || '').split('\n').forEach(par => {
+      if(!par.trim()){ out.push(''); return; }
+      let l = ''; par.split(/\s+/).forEach(w => { const p = l ? l + ' ' + w : w; if(x.measureText(p).width > ancho && l){ out.push(l); l = w; } else l = p; }); out.push(l); }); return out; };
+    const FUENTE = '34px Lora, Georgia, serif', ALTO = 54;
+    const lineas = partir(c.texto, FUENTE, W - 2 * P);
+    const H = Math.max(1350, 330 + lineas.length * ALTO + 430);
+    cv.width = W; cv.height = H;
+    // Pergamino con los bordes tostados y los rodillos arriba y abajo
+    const g = x.createRadialGradient(W / 2, H / 2, 100, W / 2, H / 2, H * 0.75); g.addColorStop(0, '#FCF3D9'); g.addColorStop(0.7, '#F1DFAE'); g.addColorStop(1, '#D9BC7C');
+    x.fillStyle = g; x.fillRect(0, 0, W, H);
+    const rodillo = y => { const r = x.createLinearGradient(0, y, 0, y + 46); r.addColorStop(0, '#B88A4A'); r.addColorStop(0.5, '#E2C58B'); r.addColorStop(1, '#9C6E33'); x.fillStyle = r; x.fillRect(0, y, W, 46); };
+    rodillo(0); rodillo(H - 46);
+    x.textAlign = 'center'; x.fillStyle = '#4A2E0E';
+    x.font = '68px UnifrakturMaguntia, Lora, serif'; x.fillText('Contrato de compromiso', W / 2, 160);
+    x.font = 'italic 32px Lora, Georgia, serif'; x.fillStyle = '#7A5A30'; x.fillText(c.trimestre || trimestreClave(), W / 2, 215);
+    x.textAlign = 'left'; x.fillStyle = '#3B2A14'; x.font = FUENTE;
+    let y = 300; lineas.forEach(l => { if(l) x.fillText(l, P, y); y += ALTO; });
+    y += 30; x.font = 'italic 46px Lora, Georgia, serif'; x.fillText(nombre, P, y);
+    x.font = '26px Lora, Georgia, serif'; x.fillStyle = '#6E5434';
+    x.fillText('Fecha y hora de compromiso:', P, y + 46); x.fillText(momentoTexto(c.momento || c.fecha + 'T12:00:00'), P, y + 82);
+    // Lacre (el mismo dibujo del sello)
+    try {
+      const svg = selloSVG(inicial).replace('<svg ', '<svg xmlns="http://www.w3.org/2000/svg" width="240" height="300" ');
+      const im = await new Promise((ok, mal) => { const i = new Image(); i.onload = () => ok(i); i.onerror = mal; i.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg); });
+      x.drawImage(im, W - P - 230, H - 46 - 330, 240, 300);
+    } catch(e){}
+    x.textAlign = 'center'; x.font = '24px Karla, sans-serif'; x.fillStyle = '#8A6A3A'; x.fillText('Metas Amables', W / 2, H - 80);
+    return await new Promise(ok => cv.toBlob(ok, 'image/png'));
+  }
+  // Compartir el contrato sellado como imagen (el móvil abre su menú: WhatsApp y se elige con quién).
+  // Si el móvil no deja compartir imágenes, se comparte el texto; si tampoco, se copia.
   async function compartirContrato(c){
     const texto = '📜 Contrato de compromiso · ' + (c.trimestre || trimestreClave()) + '\n\n' + c.texto + '\n\n— ' + String(state.me || '').trim() + '\nSellado el ' + momentoTexto(c.momento || c.fecha + 'T12:00:00') + '\n\nMetas Amables · https://play.google.com/store/apps/details?id=club.practicaintegral.metasamables';
-    try { if(navigator.share){ await navigator.share({ title: 'Mi contrato de compromiso', text: texto }); return; } } catch(e){ if(e && e.name === 'AbortError') return; }
+    let archivo = null;
+    try { const b = await imagenContrato(c); if(b) archivo = new File([b], 'mi-compromiso.png', { type: 'image/png' }); } catch(e){}
+    try {
+      if(archivo && navigator.canShare && navigator.canShare({ files: [archivo] })){ await navigator.share({ files: [archivo], text: '📜 Mi compromiso para este trimestre · Metas Amables' }); return; }
+      if(navigator.share){ await navigator.share({ title: 'Mi contrato de compromiso', text: texto }); return; }
+    } catch(e){ if(e && (e.name === 'AbortError' || e.name === 'NotAllowedError')) return; }
     try { await navigator.clipboard.writeText(texto); alert('Texto copiado. Pégalo donde quieras compartirlo.'); } catch(e){}
   }
   function selloSVG(inicial){
@@ -6748,8 +6788,12 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       const momento = new Date().toISOString();
       const firma = caja.querySelector('.perg-firma small'); if(firma) firma.innerHTML = 'Fecha y hora de compromiso:<br>' + momentoTexto(momento);
       const comp = el('<button type="button" class="panel-link-btn contrato-compartir">Compartir mi contrato</button>').firstElementChild;
-      comp.onclick = () => compartirContrato({ texto, momento, trimestre: trimestreClave(), fecha: momento.slice(0, 10) });
+      const sellado = { texto, momento, trimestre: trimestreClave(), fecha: momento.slice(0, 10) };
+      comp.onclick = () => compartirContrato(sellado);
       caja.appendChild(comp);
+      // Al terminar de sellar se abre el menú de compartir con la hoja del contrato como imagen
+      // (tiene que ser enseguida: el móvil solo deja abrirlo justo después de tocar la pantalla)
+      setTimeout(() => compartirContrato(sellado), 700);
       aviso('Guardando tu compromiso…');
       try {
         const r = await api('/carta', { tipo: 'contrato', texto, trimestre: trimestreClave(), momento });
@@ -7992,4 +8036,4 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V11.41 · App Metas Amables · 2026-10-05 22:22 ==== -->
+<!-- ==== Fin del index V11.42 · App Metas Amables · 2026-10-05 22:48 ==== -->
