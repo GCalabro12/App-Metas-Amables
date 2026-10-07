@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V11.60 · App Metas Amables · 2026-10-07 01:15 ==== -->
+<!-- ==== index V11.62 · App Metas Amables · 2026-10-07 01:32 ==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1127,6 +1127,21 @@ body.theme-dark .guia-progreso{background:var(--surface)}
 .voz-abierto{background:#FFF7E0;border:2px solid #E0B341;border-radius:14px;padding:12px;margin:0 0 12px}
 .voz-aviso{display:flex;gap:12px;align-items:center;border:2px solid #E0B341;background:#FFF7E0}.voz-aviso-ico{font-size:34px}.voz-aviso b{display:block;margin:0 0 8px}
 .voz-aviso .panel-link-btn{border:none;cursor:pointer;background:#C9942D;width:100%}
+.avisos-capa{position:fixed;inset:0;z-index:9300;background:linear-gradient(180deg,#fff 0%,#fff 62%,#F4EEFB 100%);overflow-y:auto;color:#2B2B2B;padding:calc(18px + env(safe-area-inset-top)) 22px calc(28px + env(safe-area-inset-bottom))}
+.av-x{position:absolute;top:calc(12px + env(safe-area-inset-top));right:14px;background:none;border:0;font-size:26px;color:#777;cursor:pointer}
+.av-dentro{max-width:460px;margin:0 auto;text-align:center;padding-top:16px}
+.av-dentro h2{font-family:Lora,serif;font-size:26px;line-height:1.2;margin:10px 0 12px;color:#4A3A8C}
+.av-dentro p{font-size:16.5px;line-height:1.5;margin:0 0 12px}
+.av-img{width:190px;height:auto;display:block;margin:4px auto 0}
+.av-puntos{display:flex;justify-content:center;gap:8px;margin:0 0 6px}.av-puntos span{width:9px;height:9px;border-radius:50%;background:#DDD}.av-puntos span.on{background:#7B5FB8}
+.av-btn{display:block;width:100%;margin:12px 0 0;padding:15px;border:0;border-radius:16px;background:#7B5FB8;color:#fff;font:800 17px Karla,sans-serif;cursor:pointer;text-decoration:none;text-align:center;box-sizing:border-box}
+.av-btn.av-otra{background:#fff;color:#5B3F98;border:2px solid #7B5FB8}
+.av-desliza{font-size:14px !important;color:#888;margin-top:10px !important}
+.av-dialogo{background:#2B2B2F;color:#fff;border-radius:18px;padding:16px 16px 12px;text-align:left;margin:6px 0 10px}.av-dialogo p{font-size:15px !important;margin:0 0 12px !important}
+.av-dialogo div{display:flex;justify-content:flex-end;gap:18px;font-weight:700;font-size:15px}.av-dialogo .si{color:#9DD3FF;outline:3px solid #FFD54A;outline-offset:4px;border-radius:6px}
+.av-pasos{text-align:left;font-size:16px;line-height:1.5;padding-left:22px;margin:0 0 6px}.av-pasos li{margin:0 0 8px}
+.av-nota{background:#FFF7E0;border-radius:12px;padding:10px 12px;font-size:14.5px !important}
+.av-msg{color:#B3261E;font-weight:700;font-size:15px !important;margin-top:12px !important}
 .aviso-breve{position:fixed;left:50%;bottom:calc(90px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:9500;max-width:86vw;padding:10px 16px;border-radius:14px;background:rgba(30,30,40,.9);color:#fff;font-size:15px;text-align:center;box-shadow:0 6px 18px rgba(0,0,0,.25)}
 .historial-intro{margin:4px 0 12px;font-size:15px}
 .historial-item{position:relative;border:2px solid #E39A9A;margin:0 0 12px}
@@ -1932,7 +1947,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V11.60';
+  const APP_VERSION = 'V11.62';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -6535,8 +6550,11 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       const [hh, mm] = (caja.querySelector('.rec-hora').value || '08:00').split(':').map(Number);
       const lista = state.checkins[state.me] || [];
       const ultima = lista.slice().reverse().find(c => c.metaSem && c.metaSem.trim());
-      const titulo = '🌿 Mi práctica de Metas Amables';
-      const detalle = (ultima ? 'Tu práctica: ' + ultima.metaSem + '\n\n' : '') + 'Cuando la hagas, márcala en la app: https://app.practicaintegral.club';
+      // El título empieza por tu práctica (o tu meta), con el brote 🌱 de Metas Amables
+      const meta = String(((state.gamifica && state.gamifica.datosFormulario) || {}).metaTexto || textosCiclo().meta || '').trim();
+      const textoRec = (meta || (ultima ? ultima.metaSem : '') || 'Mi práctica de Metas Amables').trim().replace(/[.。]+$/, '');
+      const titulo = '🌱 ' + (textoRec.length > 70 ? textoRec.slice(0, 69).trim() + '…' : textoRec);
+      const detalle = (ultima ? 'Tu práctica: ' + ultima.metaSem + '\n\n' : '') + 'Metas Amables · cuando la hagas, márcala en la app: https://app.practicaintegral.club';
       const ini = new Date(); ini.setHours(hh, mm, 0, 0);
       if(ini < new Date()) ini.setDate(ini.getDate() + 1);
       const fin = new Date(ini.getTime() + 10 * 60000);
@@ -7240,9 +7258,82 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     const bAv = c.querySelector('.av-onoff'), bPr = c.querySelector('.av-prueba'), msg = c.querySelector('.av-msg');
     const pintar = () => { const on = pushActivo(); bAv.textContent = on ? '🔕 Desactivar avisos' : '🔔 Activar avisos'; bPr.style.display = on ? '' : 'none'; };
     pintar();
-    bAv.onclick = async () => { if(pushActivo()) await desactivarAvisosPlanta(); else await activarAvisosPlanta(); pintar(); };
+    bAv.onclick = async () => { if(pushActivo()){ await desactivarAvisosPlanta(); pintar(); } else abrirGuiaAvisos(pintar); };
     bPr.onclick = async () => { msg.textContent = 'Enviando…'; try { const r = await api('/push-prueba', {}); const est = (r && r.estados) || []; msg.textContent = est.some(s => s >= 200 && s < 300) ? '✓ Enviado: debería llegarte en unos segundos.' : '⚠️ No se pudo entregar (' + (est.join(', ') || 'sin datos') + '). Desactiva y vuelve a activar los avisos.'; } catch(e){ msg.textContent = mensajeError(e, 'No se pudo enviar el aviso de prueba.'); } };
     return c;
+  }
+  // ===== Guía para activar los avisos: pantallas que se pasan deslizando; comprueba el permiso y explica qué hacer =====
+  function abrirGuiaAvisos(alTerminar){
+    document.querySelectorAll('.avisos-capa').forEach(x => x.remove());
+    const capa = document.createElement('div'); capa.className = 'avisos-capa';
+    const ios = esIOS(), android = /android/i.test(navigator.userAgent);
+    const permiso = () => ('Notification' in window) ? Notification.permission : 'no';
+    let paso = 0;
+    const alVolver = async () => {   // al volver de los ajustes del móvil, se comprueba solo
+      if(document.visibilityState !== 'visible' || paso !== 2) return;
+      if(permiso() === 'granted'){ if(await activarAvisosPlanta()) ir(3); }
+    };
+    const cerrar = () => { capa.remove(); document.removeEventListener('visibilitychange', alVolver); if(alTerminar) alTerminar(); };
+    const puntos = () => '<div class="av-puntos">' + [0, 1, 2, 3].map(n => '<span class="' + (n === Math.min(paso, 3) ? 'on' : '') + '"></span>').join('') + '</div>';
+    const pantallas = {
+      0: () => '<img class="av-img" src="' + imgPlanta('sed') + '" alt=""><h2>Que no se te seque la planta</h2>'
+        + '<p>Si a las <b>8 de la tarde</b> aún no has marcado tu práctica, te llegará un aviso al móvil, <b>aunque la app esté cerrada</b>.</p><p>Solo uno al día, y solo si te hace falta.</p>'
+        + '<button type="button" class="av-btn av-sig">Siguiente →</button><p class="av-desliza">o desliza hacia la izquierda ←</p>',
+      1: () => '<h2>Dale permiso a la app</h2><p>Al pulsar el botón, tu móvil te preguntará si dejas que Metas Amables te envíe notificaciones. Pulsa <b>«Permitir»</b>:</p>'
+        + '<div class="av-dialogo"><p>¿Permitir que <b>Metas Amables</b> te envíe notificaciones?</p><div><span>No permitir</span><span class="si">Permitir</span></div></div>'
+        + (ios && !appInstalada() ? '<p class="av-nota">En iPhone, primero añade la app a la pantalla de inicio (Compartir → «Añadir a pantalla de inicio») y ábrela desde ahí.</p>' : '')
+        + '<button type="button" class="av-btn av-activar">🔔 Activar avisos</button><p class="av-msg"></p>',
+      2: () => '<h2>El permiso está bloqueado</h2><p>Parece que el móvil no deja a la app enviar avisos. Se arregla en un momento:</p>'
+        + (MODO_PLAY || android
+          ? '<ol class="av-pasos"><li>Abre los <b>Ajustes</b> del móvil → <b>Aplicaciones</b> → <b>' + (MODO_PLAY ? 'Metas Amables' : 'Chrome') + '</b> → <b>Notificaciones</b>.</li><li>Activa <b>«Permitir notificaciones»</b>.</li>'
+            + (MODO_PLAY ? '' : '<li>En Chrome: toca el candado 🔒 junto a la dirección → <b>Permisos → Notificaciones → Permitir</b>.</li>') + '<li>Vuelve aquí: lo compruebo yo solo.</li></ol>'
+            + (MODO_PLAY ? '<a class="av-btn" href="intent:#Intent;action=android.settings.APP_NOTIFICATION_SETTINGS;S.android.provider.extra.APP_PACKAGE=club.practicaintegral.metasamables;end">⚙️ Ir a los avisos de Metas Amables</a><p class="av-desliza">Se abre la pantalla de avisos de la app: solo tienes que activar el interruptor «Permitir notificaciones» y volver.</p>' : '')
+          : '<ol class="av-pasos"><li>Abre los <b>Ajustes</b> del móvil → <b>Notificaciones</b> → <b>Metas Amables</b>.</li><li>Activa <b>«Permitir notificaciones»</b>.</li><li>Vuelve aquí.</li></ol>')
+        + '<button type="button" class="av-btn av-otra av-comprobar">Ya lo he hecho: comprobar</button><p class="av-msg"></p>',
+      3: () => '<img class="av-img" src="' + imgRegando(3) + '" alt=""><h2>¡Avisos activados! 🎉</h2><p>Vamos a probarlo: te mando un aviso ahora mismo.</p>'
+        + '<button type="button" class="av-btn av-prueba">Enviarme un aviso de prueba</button><div class="av-llego" hidden><p><b>¿Te ha llegado?</b></p><button type="button" class="av-btn av-si">Sí, ¡perfecto!</button><button type="button" class="av-btn av-otra av-no">No me ha llegado</button></div><p class="av-msg"></p>',
+      4: () => '<h2>Si no te llega</h2><p>Algunos móviles cortan los avisos para ahorrar batería. Revisa esto:</p>'
+        + '<ol class="av-pasos"><li><b>Batería:</b> Ajustes → Batería → <b>Inicio de aplicaciones</b> → ' + (MODO_PLAY ? 'Metas Amables' : 'Chrome') + ' → <b>gestión manual</b> y activa las tres opciones (en HONOR, Huawei y Xiaomi es lo más habitual).</li>'
+        + '<li><b>No molestar:</b> que no esté activado.</li><li><b>Notificaciones</b> de ' + (MODO_PLAY ? 'Metas Amables' : 'Chrome') + ' activadas en los ajustes del móvil.</li></ol>'
+        + (MODO_PLAY ? '<a class="av-btn av-otra" href="intent:#Intent;action=android.settings.APP_NOTIFICATION_SETTINGS;S.android.provider.extra.APP_PACKAGE=club.practicaintegral.metasamables;end">⚙️ Ir a los avisos de Metas Amables</a>' : '')
+        + '<button type="button" class="av-btn av-reprobar">Probar otra vez</button><button type="button" class="av-btn av-otra av-cerrar2">Cerrar</button>'
+    };
+    const ir = n => { paso = n; pintar(); };
+    const pintar = () => {
+      capa.innerHTML = '<button type="button" class="av-x" aria-label="Cerrar">✕</button><div class="av-dentro">' + puntos() + pantallas[paso]() + '</div>';
+      const q = s => capa.querySelector(s), msg = q('.av-msg');
+      q('.av-x').onclick = cerrar;
+      if(q('.av-sig')) q('.av-sig').onclick = () => ir(1);
+      if(q('.av-activar')) q('.av-activar').onclick = async () => {
+        if(permiso() === 'denied'){ ir(2); return; }
+        if(await activarAvisosPlanta()) ir(3);
+        else if(permiso() === 'denied') ir(2);
+        else if(msg) msg.textContent = 'No se ha dado el permiso. Vuelve a pulsar el botón y elige «Permitir».';
+      };
+      if(q('.av-comprobar')) q('.av-comprobar').onclick = async () => {
+        if(permiso() === 'granted'){ if(await activarAvisosPlanta()) ir(3); }
+        else if(msg) msg.textContent = 'Todavía está bloqueado. Revisa los pasos de arriba y vuelve a comprobar.';
+      };
+      if(q('.av-prueba')) q('.av-prueba').onclick = async () => {
+        msg.textContent = 'Enviando…';
+        try { const r = await api('/push-prueba', {}); const est = (r && r.estados) || [];
+          if(est.some(s => s >= 200 && s < 300)){ msg.textContent = '✓ Enviado. Mira las notificaciones de tu móvil.'; q('.av-llego').hidden = false; }
+          else msg.textContent = '⚠️ No se pudo entregar. Pulsa ✕ y vuelve a activar los avisos.';
+        } catch(e){ msg.textContent = mensajeError(e, 'No se pudo enviar el aviso de prueba.'); }
+      };
+      if(q('.av-si')) q('.av-si').onclick = () => { try { sonidoTing(); launchConfetti(); } catch(e){} cerrar(); };
+      if(q('.av-no')) q('.av-no').onclick = () => ir(4);
+      if(q('.av-reprobar')) q('.av-reprobar').onclick = () => ir(3);
+      if(q('.av-cerrar2')) q('.av-cerrar2').onclick = cerrar;
+    };
+    // Deslizar: a la izquierda avanza (solo de la primera a la segunda); a la derecha, vuelve
+    let x0 = null;
+    capa.addEventListener('touchstart', e => { x0 = e.touches[0].clientX; }, { passive: true });
+    capa.addEventListener('touchend', e => { if(x0 === null) return; const dx = e.changedTouches[0].clientX - x0; x0 = null; if(Math.abs(dx) < 60) return; if(dx < 0 && paso === 0) ir(1); else if(dx > 0 && paso > 0 && paso !== 3) ir(paso === 4 ? 3 : paso - 1); });
+    document.addEventListener('visibilitychange', alVolver);
+    document.body.appendChild(capa);
+    // Si ya tiene el permiso bloqueado, se lo decimos desde el principio de la segunda pantalla
+    ir(0);
   }
   // ===== Mensaje de voz semanal (Plan Guías + Grupo): lo grabas esta semana y lo escuchas el lunes siguiente =====
   function isoLocal(d){ return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
@@ -7374,7 +7465,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     const b = t.querySelector('.planta-regar'); if(b) b.onclick = irCalendario;
     if(pushPosible() && !pushActivo()){
       const av = el('<button type="button" class="planta-avisar">🔔 Avísame si se me olvida regarla</button>').firstElementChild;
-      av.onclick = async () => { if(await activarAvisosPlanta()) av.remove(); };
+      av.onclick = () => abrirGuiaAvisos(() => { if(pushActivo()) av.remove(); });
       t.querySelector('.planta-tx').appendChild(av);
     }
     // El primer momento del día en que ya está regada: «crece»; si venía de varios días sin agua, «revive»
@@ -8389,4 +8480,4 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V11.60 · App Metas Amables · 2026-10-07 01:15 ==== -->
+<!-- ==== Fin del index V11.62 · App Metas Amables · 2026-10-07 01:32 ==== -->
