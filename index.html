@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V11.64 · App Metas Amables · 2026-10-07 19:10==== -->
+<!-- ==== index V11.65 · App Metas Amables · 2026-10-08 00:06==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1094,6 +1094,9 @@ body.theme-dark .guia-progreso{background:var(--surface)}
 .hs-montana{width:min(36vw,165px);margin:0 auto 10px}.hs-img{display:block;width:min(48vw,200px);height:auto;margin:0 auto 10px}.hs-img-portada{width:min(62vw,240px);border-radius:24px;background:#fff;padding:6px}
 .planta-card{display:flex;gap:12px;align-items:center;padding:12px 14px}.planta-card img{width:112px;height:auto;flex:none;border-radius:14px;background:#fff}
 .planta-tx{flex:1;min-width:0}.planta-tx b{display:block;font:700 18px Lora,serif;color:#2F5A23}.planta-tx p{margin:4px 0 10px;font-size:14.5px;line-height:1.4}
+.planta-meta{display:block;margin:3px 0 0;font:italic 600 14.5px/1.35 Lora,serif;color:#4F7A43}
+.util-nov{display:flex;align-items:center;gap:10px;width:100%;margin:14px 0 0;padding:12px 16px;border:2px solid #101010;border-radius:16px;background:#FFF6DC;font:inherit;color:#101010;text-align:left;cursor:pointer}.util-nov b{display:block;font-size:16px}.util-nov small{display:block;color:var(--ink-soft);font-size:13px}.util-nov .opcion-flecha{margin-left:auto;font-size:22px}
+.nov-lista{display:block}.nov-ver{margin:0 0 14px;padding:14px 16px}.nov-ver h3{margin:0 0 2px;font:700 18px Lora,serif;color:#2F5A23}.nov-ver .nov-fecha{display:block;margin:0 0 8px;font-size:13px;color:var(--ink-soft)}.nov-ver ul{margin:0;padding-left:20px}.nov-ver li{margin:0 0 6px;line-height:1.45}
 .alta-marchita{position:relative;width:200px;height:213px;margin:0 auto}.alta-marchita img{position:absolute;left:0;top:0;width:200px;height:auto;opacity:0;animation-duration:6s;animation-timing-function:ease;animation-iteration-count:infinite}
 .alta-marchita img:nth-child(1){animation-name:marchita1}.alta-marchita img:nth-child(2){animation-name:marchita2}.alta-marchita img:nth-child(3){animation-name:marchita3}
 @keyframes marchita1{0%,27%{opacity:1}33%,94%{opacity:0}100%{opacity:1}}@keyframes marchita2{0%,27%{opacity:0}33%,60%{opacity:1}66%,100%{opacity:0}}@keyframes marchita3{0%,60%{opacity:0}66%,94%{opacity:1}100%{opacity:0}}
@@ -1947,7 +1950,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V11.64';
+  const APP_VERSION = 'V11.65';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -3628,6 +3631,10 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       + tarjeta('frases', 'Frases motivadoras', 'Elige un fondo y compártela', '<span class="util-mini-frase" style="background:center/cover url(' + FONDOS_FOTOS.practi + ')"></span>')
       + tarjeta('musica', 'Música motivacional', 'Música para acompañarte mientras usas la app', practiHTML('guitarra', '🎸', 120));
     app.appendChild(caja);
+    // Al final de todo, más pequeña: las novedades de cada versión
+    const nov = el('<button type="button" class="util-nov"><span style="font-size:26px">✨</span><span><b>Novedades de la app</b><small>Lo nuevo de cada versión · ahora ' + APP_VERSION + '</small></span><span class="opcion-flecha">›</span></button>').firstElementChild;
+    nov.onclick = () => { state.view = 'novedades'; window.scrollTo(0,0); render(); };
+    app.appendChild(nov);
     try { activarPracti(caja); } catch(e){}
     caja.querySelectorAll('.util-card').forEach(b => b.onclick = () => {
       const u = b.getAttribute('data-util');
@@ -3637,6 +3644,47 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       if(u === 'musica'){ state.view = 'musica'; window.scrollTo(0,0); render(); return; }
       alert(u === 'habla' ? 'Muy pronto podrás hablar con Prácti aquí. 🦉' : 'Muy pronto tendrás aquí música para motivarte. 🎵');
     });
+  }
+
+  // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
+  const NOVEDADES = [
+    { v: 'V11.65', f: '8 de octubre de 2026', n: [
+      'Nueva sección <b>Novedades</b> en Utilidades: aquí verás lo nuevo de cada versión.',
+      'En la tarjeta de tu planta, en Inicio, aparece <b>tu meta escrita</b> debajo del título.' ] },
+    { v: 'V11.64', f: '7 de octubre de 2026', n: [
+      '<b>La cosecha</b>: cuando se cumple el plazo de tu meta llega el «tiempo de cosecha», y en el Viaje el último paso es «Cosecha tu meta».' ] },
+    { v: 'V11.63', f: '7 de octubre de 2026', n: [
+      '<b>La planta es tu meta</b>: la siembras al sellar tu compromiso, la riegas con tu práctica y la cosechas al final.',
+      'El jardinero cuida <b>tres huertos</b>: el del aprendizaje, el de la sanación y el de la atención plena.' ] },
+    { v: 'V11.57 – V11.62', f: '7 de octubre de 2026', n: [
+      '<b>Avisos en el móvil</b>: si a las 8 de la tarde aún no has marcado tu práctica, te llega «🥀 Tu meta tiene sed». Con una guía paso a paso para activarlos.',
+      '<b>Mensaje de voz semanal</b> 👑👑: grábate un mensaje y se abre el lunes siguiente.',
+      'Ajustes ordenados en secciones que se abren y se cierran.',
+      'La música oficial se controla desde la barra de abajo.',
+      'El recordatorio del calendario lleva 🌱 y el texto de tu meta.' ] },
+    { v: 'V11.50 – V11.56', f: '6 de octubre de 2026', n: [
+      '<b>Tu planta en Inicio</b>: se riega cada día que marcas tu práctica y se va marchitando si no.',
+      'Nueva <b>bienvenida</b> en cuatro pantallas.',
+      '<b>Mi calendario</b> y <b>Mi historial</b> de prácticas.',
+      'Un ojo 👁 para ver la contraseña mientras la escribes.' ] },
+    { v: 'V11.43 – V11.49', f: '6 de octubre de 2026', n: [
+      'Historia de ciencia 2: <b>El alpinista jardinero</b>, con la montaña de los cinco niveles.',
+      '<b>Icono nuevo</b>: Prácti regando su planta.',
+      'Puedes <b>compartir tu contrato sellado como imagen</b>.' ] },
+    { v: 'V11.39 – V11.42', f: '5 de octubre de 2026', n: [
+      'Historia de ciencia 1: <b>Del querer al hacer</b>, con tu receta «Cuando…, haré…».',
+      'Enlace para volver a ver la app en español si el traductor la cambia.' ] },
+    { v: 'V11.16 – V11.38', f: '5 de octubre de 2026', n: [
+      '<b>Guía semanal por capítulos</b>, con una línea de progreso.',
+      'Botón <b>🔊 Oír</b> para escuchar la guía.',
+      'La valoración de la guía, solo al final.' ] }
+  ];
+  function renderNovedades(){
+    renderBackTopbar('✨ Novedades de la app');
+    app.querySelector('#btnVolver').onclick = () => { state.view = 'utilidades'; window.scrollTo(0,0); render(); };
+    const lista = document.createElement('div'); lista.className = 'nov-lista';
+    lista.innerHTML = NOVEDADES.map(x => '<div class="card nov-ver"><h3>' + x.v + '</h3><span class="nov-fecha">' + x.f + '</span><ul>' + x.n.map(t => '<li>' + t + '</li>').join('') + '</ul></div>').join('');
+    app.appendChild(lista);
   }
 
   // --- Prácti de cuerpo entero (fotograma de la animación «pizarra», solo la parte de Prácti) ---
@@ -4988,6 +5036,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     if(state.view === 'frases'){ renderFrases(); if(state.menuOpen) renderMenuOverlay(); return; }
     if(state.view === 'habla'){ renderHabla(); if(state.menuOpen) renderMenuOverlay(); return; }
     if(state.view === 'musica'){ renderMusica(); if(state.menuOpen) renderMenuOverlay(); return; }
+    if(state.view === 'novedades'){ renderNovedades(); if(state.menuOpen) renderMenuOverlay(); return; }
     if(state.view === 'ayuda'){ renderAyuda(); if(state.menuOpen) renderMenuOverlay(); return; }
     if(state.view === 'viaje'){ renderViaje(); if(state.menuOpen) renderMenuOverlay(); return; }
     if(state.view === 'progreso'){ renderProgreso(); if(state.menuOpen) renderMenuOverlay(); return; }
@@ -7460,7 +7509,10 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   function tarjetaPlanta(){
     if(!state.me) return null;
     const e = estadoPlanta();
-    const t = el('<div class="card planta-card"><img src="' + e.img + '" alt=""><div class="planta-tx"><b>' + e.tit + '</b><p>' + e.tx + '</p>'
+    // Debajo del título, la meta de la persona con sus palabras: la planta ES su meta
+    let mt = ''; try { mt = metaFinalViaje().texto; } catch(err){}
+    if(mt.length > 80) mt = mt.slice(0, 79) + '…';
+    const t = el('<div class="card planta-card"><img src="' + e.img + '" alt=""><div class="planta-tx"><b>' + e.tit + '</b>' + (mt ? '<span class="planta-meta">🌱 «' + escapeAttr(mt) + '»</span>' : '') + '<p>' + e.tx + '</p>'
       + (e.boton ? '<button type="button" class="panel-link-btn planta-regar">' + e.boton + '</button>' : '') + '</div></div>').firstElementChild;
     const b = t.querySelector('.planta-regar'); if(b) b.onclick = irCalendario;
     if(pushPosible() && !pushActivo()){
@@ -7554,7 +7606,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     const v = state.view;
     const tab = (v === 'viaje' || state.desdeViaje) ? 'viaje'
       : (v === 'progreso' || v === 'historial' || v === 'calendar') ? 'progreso'
-      : (v === 'utilidades' || v === 'frases' || v === 'habla' || v === 'musica' || (v === 'panel' && state.panelSub === 's5')) ? 'descubre'
+      : (v === 'utilidades' || v === 'frases' || v === 'habla' || v === 'musica' || v === 'novedades' || (v === 'panel' && state.panelSub === 's5')) ? 'descubre'
       : (v === 'panel' || v === 'practicaSemanal' || v === 'calendarioPracticas' || v === 'practicas' || v === 'checkin' || v === 'contrato' || v === 'posit' || v === 'carta' || v === 'sesionesCal') ? 'inicio' : 'otra';
     const mostrar = !!(state.me && v && sinBarra.indexOf(v) < 0 && !state.menuOpen);
     document.body.classList.toggle('con-tabbar', mostrar);
@@ -8480,4 +8532,4 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V11.64 · App Metas Amables · 2026-10-07 19:10==== -->
+<!-- ==== Fin del index V11.65 · App Metas Amables · 2026-10-08 00:06==== -->
