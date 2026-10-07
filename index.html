@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V11.63 · App Metas Amables · 2026-10-07 18:56 ==== -->
+<!-- ==== index V11.64 · App Metas Amables · 2026-10-07 19:10==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1947,7 +1947,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V11.63';
+  const APP_VERSION = 'V11.64';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -7209,8 +7209,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     return '<div class="viaje-puntos" aria-hidden="true"><i></i><i></i><i></i></div>'
       + '<button type="button" class="viaje-paso viaje-final' + (m.hecho ? ' hecho' : '') + '" style="--c:#E0A21B">'
       + '<span class="viaje-col"><span class="viaje-punto">' + iconoPaso('final') + '</span></span>'
-      + '<span class="viaje-tx"><b>' + (m.hecho ? '¡Meta alcanzada!' : 'Alcanza tu meta') + '</b>'
-      + '<small>' + (m.texto ? escapeAttr(m.texto) + ' · ' : '') + (m.hecho ? 'conseguida' : 'antes del ' + cuando) + '</small></span></button>';
+      + '<span class="viaje-tx"><b>' + (m.hecho ? '¡Meta cosechada!' : 'Cosecha tu meta') + '</b>'
+      + '<small>' + (m.texto ? escapeAttr(m.texto) + ' · ' : '') + (m.hecho ? 'cosechada' : 'antes del ' + cuando) + '</small></span></button>';
   }
   function renderViaje(){
     const r = resumenViaje();
@@ -7653,7 +7653,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     if(!tienePlan('sesiones') || !c || !abre || hoy < abre || hoy - abre > 21 * 86400000) return null;
     const clave = 'carta_vista_' + state.me + '_' + c.trimestre;
     try { if(localStorage.getItem(clave)) return null; } catch(e){}
-    const t = el('<div class="card carta-aviso"><p style="font-weight:800;margin:0 0 6px">✉️ Tu yo del pasado te escribió una carta</p><p style="margin:0 0 8px">Empieza un trimestre nuevo. Léela: es de ti, para ti.</p><details><summary>Abrir la carta</summary>' + cartaLeidaHTML(c) + '</details><button type="button" class="carta-btn-sec">Ya la he leído</button></div>').firstElementChild;
+    const t = el('<div class="card carta-aviso"><p style="font-weight:800;margin:0 0 6px">✉️ Tu yo del pasado te escribió una carta</p><p style="margin:0 0 8px">Empieza un trimestre nuevo: es tiempo de cosechar lo que sembraste y de volver a sembrar. Léela: es de ti, para ti.</p><details><summary>Abrir la carta</summary>' + cartaLeidaHTML(c) + '</details><button type="button" class="carta-btn-sec">Ya la he leído</button></div>').firstElementChild;
     t.querySelector('details').addEventListener('toggle', ev => { if(ev.target.open && typeof sonarSintonia === 'function') sonarSintonia(15, 0.5); });
     t.querySelector('button').onclick = () => { try { localStorage.setItem(clave, '1'); } catch(e){} t.remove(); };
     return t;
@@ -7670,17 +7670,17 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     };
     if(!plazoPaso){
       card.innerHTML = `${practiHTML('pizarra', '', 90)}
-        <p style="font-weight:700;margin:8px 0 4px">🎯 Se cumple el plazo de tu meta (${escapeAttr(d.plazo)})</p>
-        <p style="margin:0 0 12px">${meta}<br>¿La conseguiste?</p>
-        <button type="button" class="btn btn-yes" id="plazoSi" style="text-align:center">¡Sí, lo conseguí! 🎉</button>
+        <p style="font-weight:700;margin:8px 0 4px">🧺 Tiempo de cosecha: se cumple el plazo de tu meta (${escapeAttr(d.plazo)})</p>
+        <p style="margin:0 0 12px">${meta}<br>¿Has podido cosecharla?</p>
+        <button type="button" class="btn btn-yes" id="plazoSi" style="text-align:center">¡Sí, la conseguí! 🧺🎉</button>
         <button type="button" class="btn btn-no" id="plazoNo" style="text-align:center;margin-top:8px">Todavía no</button>`;
       card.querySelector('#plazoSi').onclick = () => { plazoPaso = 'si'; try { launchConfetti(); sonidoLogro(); } catch(e){} render(); };
       card.querySelector('#plazoNo').onclick = () => { plazoPaso = 'no'; render(); };
     } else if(plazoPaso === 'si'){
       card.innerHTML = `${practiHTML('celebracion', '', 100)}
-        <p style="font-weight:700;margin:8px 0 4px">¡Enhorabuena! 🏆</p>
+        <p style="font-weight:700;margin:8px 0 4px">¡Buena cosecha! 🧺🏆</p>
         <p style="margin:0 0 12px">Te queda trimestre por delante. ¿Qué quieres hacer?</p>
-        <button type="button" class="btn btn-yes" id="plazoNueva" style="text-align:center">Ponerme una meta nueva</button>
+        <button type="button" class="btn btn-yes" id="plazoNueva" style="text-align:center">Sembrar una meta nueva</button>
         <button type="button" class="btn btn-no" id="plazoSeguir" style="text-align:center;margin-top:8px">Seguir afianzándola</button>
         <p style="font-size:12px;color:var(--ink-soft);margin:8px 0 0">La meta nueva no cuenta como cambio de meta.</p>`;
       card.querySelector('#plazoNueva').onclick = async () => {
@@ -7692,7 +7692,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     } else {
       card.innerHTML = `${practiHTML('animo', '', 90)}
         <p style="font-weight:700;margin:8px 0 4px">No pasa nada 🌱</p>
-        <p style="margin:0 0 12px">Cada uno tiene su ritmo. Sigue con tu guía o, si lo prefieres, ajusta tu meta.</p>
+        <p style="margin:0 0 12px">Cada meta tiene su ritmo: algunas tardan más en dar fruto. Sigue regándola con tu guía o, si lo prefieres, ajusta tu meta.</p>
         <button type="button" class="btn btn-yes" id="plazoGuia" style="text-align:center">Seguir con mi guía</button>
         <button type="button" class="btn btn-no" id="plazoAjustar" style="text-align:center;margin-top:8px">Ajustar mi meta</button>`;
       card.querySelector('#plazoGuia').onclick = async () => { await responder(false, 'Sigue con su guía'); plazoPaso = null; render(); };
@@ -8480,4 +8480,4 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V11.63 · App Metas Amables · 2026-10-07 18:56 ==== -->
+<!-- ==== Fin del index V11.64 · App Metas Amables · 2026-10-07 19:10==== -->
