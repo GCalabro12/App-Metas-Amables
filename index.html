@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V11.71 · App Metas Amables · 2026-10-08 17:12==== -->
+<!-- ==== index V11.72 · App Metas Amables · 2026-10-08 17:17==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1977,7 +1977,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V11.71';
+  const APP_VERSION = 'V11.72';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -3702,6 +3702,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
+    { v: 'V11.72', f: '8 de octubre de 2026', n: [
+      '<b>Tu meta se mueve</b>: Prácti siembra la semilla, te espera con la regadera y, si no la riegas, ves cómo la planta se va doblando.' ] },
     { v: 'V11.71', f: '8 de octubre de 2026', n: [
       '<b>Momento de regar</b>: al pulsar «💧 Regar» en tu meta (o al tocar el aviso de las 20:00) se abre una pantalla con tu práctica, un consejo y un solo botón para marcarla.',
       'Las tres notas a tu yo (de voz, del mes y del trimestre) van seguidas y funcionan igual: «Ver mi nota».',
@@ -7630,6 +7632,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     const son = capa.querySelector('.riego-son');
     son.onclick = () => { if(sintoniaSonando()){ apagarSintoniaSuave(800); son.textContent = '🔈'; } else { sonarSintonia(0, 0.5); son.textContent = '🔊'; } };
     const ok = capa.querySelector('.riego-ok');
+    if(!hecho && e.anim) try { animarPlanta(capa.querySelector('.riego-img'), e.anim, true); } catch(err){}
     if(hecho){ ok.disabled = true; return; }
     ok.onclick = async () => {
       ok.disabled = true; ok.textContent = 'Regando…';
@@ -7640,8 +7643,9 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       capa.querySelector('.riego-consejo').textContent = 'Hoy has cuidado tu meta. Mañana, otro pequeño riego.';
       capa.querySelector('.riego-cal').remove();
       ok.textContent = 'Volver a Inicio'; ok.disabled = false; ok.onclick = cerrar;
-      const img = capa.querySelector('.riego-img'); img.src = imgRegando(3);
-      try { animarPlanta(img, 'practi-crece.json', true); } catch(err){}
+      // Prácti riega y la planta crece: en el mismo hueco de la animación de antes, o en lugar del dibujo
+      const img = capa.querySelector('.riego-img'), caja = capa.querySelector('.riego-escena .planta-anim');
+      try { if(caja) animarPlantaEn(caja, 'practi-crece.json', true); else if(img){ img.src = imgRegando(3); animarPlanta(img, 'practi-crece.json', true); } } catch(err){}
     };
   }
   // Marca hoy como hecho (1 vez) en «Días hechos» de esta semana, igual que la fila L–D de paso b
@@ -7666,10 +7670,11 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   function estadoPlanta(){
     const sin = diasSinPractica(), hora = new Date().getHours();
     if(sin === 0) return { img: imgRegando(3), tit: '¡Tu meta está feliz!', tx: 'Hoy ya la has regado con tu práctica. Sigue creciendo 🌱', boton: '' };
-    if(sin === 99) return { img: imgRegando(1), tit: 'Siembra tu meta', tx: 'Cada día que marcas tu práctica, la riegas. ¡Empieza hoy!', boton: '💧 Marcar mi práctica de hoy' };
-    if(sin === 1 && hora < 18) return { img: imgPlanta('espera'), tit: 'Tu meta te espera', tx: 'Hoy toca regarla: haz tu práctica y márcala.', boton: '💧 Regar: marcar mi práctica' };
-    if(sin === 1) return { img: imgPlanta('sed'), tit: 'Tu meta tiene sed', tx: 'Aún estás a tiempo: un pequeño riego hoy y vuelve a ponerse bonita.', boton: '💧 Regar ahora' };
-    if(sin <= 3) return { img: imgPlanta('mustia'), tit: 'Tu meta se está mustiando', tx: 'Lleva ' + sin + ' días sin agua. Con 2 minutos de práctica hoy se recupera.', boton: '💧 Regarla hoy' };
+    // anim: animación en bucle de ese estado (archivos aparte, junto a index.html)
+    if(sin === 99) return { img: imgRegando(1), anim: 'practi-siembra.json', tit: 'Siembra tu meta', tx: 'Cada día que marcas tu práctica, la riegas. ¡Empieza hoy!', boton: '💧 Marcar mi práctica de hoy' };
+    if(sin === 1 && hora < 18) return { img: imgPlanta('espera'), anim: 'practi-espera.json', tit: 'Tu meta te espera', tx: 'Hoy toca regarla: haz tu práctica y márcala.', boton: '💧 Regar: marcar mi práctica' };
+    if(sin === 1) return { img: imgPlanta('sed'), anim: 'practi-mustia.json', tit: 'Tu meta tiene sed', tx: 'Aún estás a tiempo: un pequeño riego hoy y vuelve a ponerse bonita.', boton: '💧 Regar ahora' };
+    if(sin <= 3) return { img: imgPlanta('mustia'), anim: 'practi-mustia.json', tit: 'Tu meta se está mustiando', tx: 'Lleva ' + sin + ' días sin agua. Con 2 minutos de práctica hoy se recupera.', boton: '💧 Regarla hoy' };
     return { img: imgPlanta('seca'), tit: 'Tu meta se ha secado', tx: 'No pasa nada: las metas vuelven a brotar. Hoy puedes sembrarla de nuevo, con calma.', boton: '🌱 Volver a sembrar' };
   }
   function diasSinPracticaAntesDeHoy(){
@@ -7725,7 +7730,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
         if(primera && diasSinPracticaAntesDeHoy() >= 2){
           animarPlanta(img, 'practi-revive.json').then(an => { if(an) an.addEventListener('complete', () => { const caja = an.wrapper; animarPlantaEn(caja, 'practi-crece.json', true); }); });
         } else animarPlanta(img, 'practi-crece.json', true);
-      }
+      } else if(e.anim) animarPlanta(t.querySelector('img'), e.anim, true);   // siembra, espera o se va mustiando
     } catch(e){}
     return t;
   }
@@ -8728,4 +8733,4 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V11.71 · App Metas Amables · 2026-10-08 17:12==== -->
+<!-- ==== Fin del index V11.72 · App Metas Amables · 2026-10-08 17:17==== -->
