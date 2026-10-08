@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V11.76 · App Metas Amables · 2026-10-08 18:27==== -->
+<!-- ==== index V11.77 · App Metas Amables · 2026-10-08 18:28==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1125,6 +1125,9 @@ body.riego-abierto{overflow:hidden}
 .ciclo-btn .opcion-tx > b{text-transform:uppercase;letter-spacing:.04em;font-size:13.5px}
 .panel-badge > span:last-child{text-transform:uppercase;letter-spacing:.04em;font-weight:800}
 .viaje-paso .viaje-tx b{text-transform:uppercase;letter-spacing:.03em;font-size:15px}
+.av-card{padding:12px 16px}.av-fila{display:flex;align-items:center;gap:10px}.av-tit{flex:1;font-weight:700;cursor:pointer}.av-flecha{font-size:13px;color:var(--ink-soft)}.av-estado{font-size:13px;color:var(--ink-soft)}
+.av-switch{position:relative;flex:none;width:50px;height:28px;padding:0;border:0;border-radius:14px;background:#C9C9C9;cursor:pointer;transition:background .2s}.av-switch span{position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.3);transition:left .2s}.av-switch.on{background:#8E2B2B}.av-switch.on span{left:25px}
+.av-detalle p{margin:8px 0 6px;font-size:14px;line-height:1.45}.av-prueba{background:none;border:0;padding:0;color:#8E2B2B;text-decoration:underline;font:600 14px Karla,sans-serif;cursor:pointer}
 .planta-meta{display:block;margin:3px 0 0;font:italic 600 14.5px/1.35 Lora,serif;color:#4F7A43}
 .util-nov{display:flex;align-items:center;gap:10px;width:100%;margin:14px 0 0;padding:12px 16px;border:2px solid #101010;border-radius:16px;background:#FFF6DC;font:inherit;color:#101010;text-align:left;cursor:pointer}.util-nov b{display:block;font-size:16px}.util-nov small{display:block;color:var(--ink-soft);font-size:13px}.util-nov .opcion-flecha{margin-left:auto;font-size:22px}
 .nov-lista{display:block}.nov-ver{margin:0 0 14px;padding:14px 16px}.nov-ver h3{margin:0 0 2px;font:700 18px Lora,serif;color:#2F5A23}.nov-ver .nov-fecha{display:block;margin:0 0 8px;font-size:13px;color:var(--ink-soft)}.nov-ver ul{margin:0;padding-left:20px}.nov-ver li{margin:0 0 6px;line-height:1.45}
@@ -1981,7 +1984,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V11.76';
+  const APP_VERSION = 'V11.77';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -7449,12 +7452,15 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
   function tarjetaAvisosMovil(){
-    const c = el('<div class="card ps-recuadro"><p style="font-weight:700;margin:0 0 6px">🔔 Avisos en el móvil</p><p style="font-size:14px;margin:0 0 10px">Si a las 8 de la tarde aún no has marcado tu práctica, te llega un aviso: «🥀 Tu meta tiene sed». Llega aunque la app esté cerrada.</p><button type="button" class="panel-link-btn av-onoff" style="width:100%;border:none;cursor:pointer;background:#8E2B2B"></button><button type="button" class="panel-link-btn av-prueba" style="width:100%;border:2px solid #8E2B2B;background:#fff;color:#5B3F98;cursor:pointer;margin:8px 0 0">Enviarme un aviso de prueba</button><div class="saved-msg av-msg"></div></div>').firstElementChild;
-    const bAv = c.querySelector('.av-onoff'), bPr = c.querySelector('.av-prueba'), msg = c.querySelector('.av-msg');
-    const pintar = () => { const on = pushActivo(); bAv.textContent = on ? '🔕 Desactivar avisos' : '🔔 Activar avisos'; bPr.style.display = on ? '' : 'none'; };
+    // Compacta: título + interruptor. Al tocar el título se despliega la explicación (y el aviso de prueba, si están activados)
+    const c = el('<div class="card ps-recuadro av-card"><div class="av-fila"><span class="av-tit">🔔 Avisos en el móvil <span class="av-flecha">▾</span></span><span class="av-estado"></span><button type="button" class="av-switch" role="switch" aria-label="Avisos en el móvil"><span></span></button></div>'
+      + '<div class="av-detalle" hidden><p>Si a las 8 de la tarde aún no has marcado tu práctica, te llega un aviso: «🥀 Tu meta tiene sed». Llega aunque la app esté cerrada.</p><button type="button" class="av-prueba">Enviarme un aviso de prueba</button><div class="saved-msg av-msg"></div></div></div>').firstElementChild;
+    const sw = c.querySelector('.av-switch'), est = c.querySelector('.av-estado'), det = c.querySelector('.av-detalle'), bPr = c.querySelector('.av-prueba'), msg = c.querySelector('.av-msg');
+    const pintar = () => { const on = pushActivo(); sw.classList.toggle('on', on); sw.setAttribute('aria-checked', on); est.textContent = on ? 'Activados' : 'Desactivados'; bPr.hidden = !on; };
     pintar();
-    bAv.onclick = async () => { if(pushActivo()){ await desactivarAvisosPlanta(); pintar(); } else abrirGuiaAvisos(pintar); };
-    bPr.onclick = async () => { msg.textContent = 'Enviando…'; try { const r = await api('/push-prueba', {}); const est = (r && r.estados) || []; msg.textContent = est.some(s => s >= 200 && s < 300) ? '✓ Enviado: debería llegarte en unos segundos.' : '⚠️ No se pudo entregar (' + (est.join(', ') || 'sin datos') + '). Desactiva y vuelve a activar los avisos.'; } catch(e){ msg.textContent = mensajeError(e, 'No se pudo enviar el aviso de prueba.'); } };
+    sw.onclick = async ev => { ev.stopPropagation(); if(pushActivo()){ await desactivarAvisosPlanta(); pintar(); } else abrirGuiaAvisos(pintar); };
+    c.querySelector('.av-tit').onclick = () => { det.hidden = !det.hidden; c.querySelector('.av-flecha').textContent = det.hidden ? '▾' : '▴'; };
+    bPr.onclick = async () => { msg.textContent = 'Enviando…'; try { const r = await api('/push-prueba', {}); const st = (r && r.estados) || []; msg.textContent = st.some(s => s >= 200 && s < 300) ? '✓ Enviado: debería llegarte en unos segundos.' : '⚠️ No se pudo entregar (' + (st.join(', ') || 'sin datos') + '). Desactiva y vuelve a activar los avisos.'; } catch(e){ msg.textContent = mensajeError(e, 'No se pudo enviar el aviso de prueba.'); } };
     return c;
   }
   // ===== Guía para activar los avisos: pantallas que se pasan deslizando; comprueba el permiso y explica qué hacer =====
@@ -8750,4 +8756,4 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V11.76 · App Metas Amables · 2026-10-08 18:27==== -->
+<!-- ==== Fin del index V11.77 · App Metas Amables · 2026-10-08 18:28==== -->
