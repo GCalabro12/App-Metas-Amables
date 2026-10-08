@@ -30,13 +30,14 @@ self.addEventListener('fetch', e => {
 self.addEventListener('push', e => {
   e.waitUntil(self.registration.showNotification('🥀 Tu meta tiene sed', {
     body: 'Aún estás a tiempo: haz tu práctica de hoy y márcala en la app. Un pequeño paso basta 🌱',
-    icon: 'icon-192.png', badge: 'badge-96.png', image: 'aviso-planta-sed.jpg', tag: 'planta', renotify: true, data: { url: './' }
+    icon: 'icon-192.png', badge: 'badge-96.png', image: 'aviso-planta-sed.jpg', tag: 'planta', renotify: true, data: { url: './?regar=1' }
   }));
 });
 self.addEventListener('notificationclick', e => {
   e.notification.close();
   e.waitUntil(self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then(ventanas => {
-    for(const v of ventanas){ if('focus' in v) return v.focus(); }
-    return self.clients.openWindow('./');
+    // Con la app abierta: se le pide que abra el momento de regar; si no, se abre con ?regar=1
+    for(const v of ventanas){ if('focus' in v){ v.postMessage({ abrir: 'regar' }); return v.focus(); } }
+    return self.clients.openWindow((e.notification.data && e.notification.data.url) || './');
   }));
 });
