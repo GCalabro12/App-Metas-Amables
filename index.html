@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V11.69 · App Metas Amables · 2026-10-08 15:33==== -->
+<!-- ==== index V11.70 · App Metas Amables · 2026-10-08 15:39==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1099,6 +1099,7 @@ body.theme-dark .guia-progreso{background:var(--surface)}
 .tour-globo{position:fixed;left:50%;transform:translateX(-50%);width:min(420px,calc(100% - 32px));background:#fff;border-radius:18px;padding:14px 16px;box-shadow:0 8px 30px rgba(0,0,0,.3);font:15.5px/1.45 Karla,sans-serif;color:#101010;transition:top .3s}
 .tour-globo .tt{display:block;font:700 18px Lora,serif;color:#5B3A9E;margin-bottom:4px}
 .tour-pie{display:flex;align-items:center;gap:10px;margin-top:12px}.tour-n{font-size:13px;color:#777;margin-right:auto}.tour-saltar{margin-left:auto;background:none;border:0;color:#777;text-decoration:underline;font:inherit;cursor:pointer}.tour-sig{background:#7B5FB8;color:#fff;border:0;border-radius:12px;padding:9px 16px;font:800 15px Karla,sans-serif;cursor:pointer}
+.guia-flechas{display:flex;gap:8px;margin:0 auto 0 10px}.guia-flechas button{width:44px;height:38px;padding:0;border-radius:12px;border:2px solid #6B9362;background:#fff;color:#2F5A23;font:800 20px Karla,sans-serif;cursor:pointer}.guia-flechas button:disabled{border-color:#CFCFCF;color:#BDBDBD;background:#F2F2F2;cursor:default}
 .planta-meta{display:block;margin:3px 0 0;font:italic 600 14.5px/1.35 Lora,serif;color:#4F7A43}
 .util-nov{display:flex;align-items:center;gap:10px;width:100%;margin:14px 0 0;padding:12px 16px;border:2px solid #101010;border-radius:16px;background:#FFF6DC;font:inherit;color:#101010;text-align:left;cursor:pointer}.util-nov b{display:block;font-size:16px}.util-nov small{display:block;color:var(--ink-soft);font-size:13px}.util-nov .opcion-flecha{margin-left:auto;font-size:22px}
 .nov-lista{display:block}.nov-ver{margin:0 0 14px;padding:14px 16px}.nov-ver h3{margin:0 0 2px;font:700 18px Lora,serif;color:#2F5A23}.nov-ver .nov-fecha{display:block;margin:0 0 8px;font-size:13px;color:var(--ink-soft)}.nov-ver ul{margin:0;padding-left:20px}.nov-ver li{margin:0 0 6px;line-height:1.45}
@@ -1955,7 +1956,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V11.69';
+  const APP_VERSION = 'V11.70';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -3679,8 +3680,9 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
-    { v: 'V11.69', f: '8 de octubre de 2026', n: [
-      'Cuando llega tu guía de un mes nuevo, <b>las semanas anteriores siguen ahí</b> para releerlas.' ] },
+    { v: 'V11.70', f: '8 de octubre de 2026', n: [
+      'Cuando llega tu guía de un mes nuevo, <b>las semanas anteriores siguen ahí</b> para releerlas.',
+      'En la guía, arriba: <b>← Inicio</b> y las flechas <b>← →</b> para saltar a la guía de la semana anterior o siguiente.' ] },
     { v: 'V11.67', f: '8 de octubre de 2026', n: [
       '<b>¿Cómo se usa la app?</b>: un recorrido guiado por Inicio la primera vez, y cuando quieras desde Utilidades.',
       'Todas las notas a tu yo del futuro se llaman igual: <b>«Nota a tu yo del 12 nov»</b>, también la nota de voz.',
@@ -4852,6 +4854,12 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     if(state.prevView === 'practicas') state.prevView = 'panel';   // al volver de "Tu plan"
     contarLecturaGuia();
     renderBackTopbar('📖 Guías de práctica');
+    // Arriba: «← Inicio» y, a su lado, ← → para saltar a la guía de la semana anterior o siguiente (en gris si no hay)
+    const barra = app.querySelector('.topbar'), bInicio = barra.querySelector('#btnVolver');
+    bInicio.textContent = '← Inicio'; bInicio.setAttribute('aria-label', 'Inicio');
+    bInicio.onclick = () => { state.desdeViaje = false; state.volverUtil = false; irAlPanel(); };
+    const flechas = el('<span class="guia-flechas"><button type="button" class="gf-ant" aria-label="Guía anterior">←</button><button type="button" class="gf-sig" aria-label="Guía siguiente">→</button></span>').firstElementChild;
+    barra.replaceChild(flechas, barra.children[1]);
     // Prácti leyendo (y la hoja que se le cae al tocarlo) está en la pantalla anterior, «a · Lee tu guía semanal»:
     // aquí se va directo a la guía
     const card = document.createElement('div');
@@ -4860,10 +4868,21 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     app.appendChild(card);
     activarCapitulos(card);
     const semanasAbiertas = card.querySelectorAll('details.duo-item');
+    const items = Array.from(semanasAbiertas), bAnt = flechas.querySelector('.gf-ant'), bSig = flechas.querySelector('.gf-sig');
+    const abierta = () => items.findIndex(d => d.open);
+    const pintarFlechas = () => { const k = abierta(); bAnt.disabled = k <= 0; bSig.disabled = k < 0 || k >= items.length - 1; };
+    const abrirSemana = k => {
+      items[k].open = true;
+      setTimeout(() => { const r = items[k].getBoundingClientRect(); window.scrollTo({ top: window.scrollY + r.top - 70, behavior: 'smooth' }); }, 30);
+    };
+    bAnt.onclick = () => { const k = abierta(); if(k > 0) abrirSemana(k - 1); };
+    bSig.onclick = () => { const k = abierta(); if(k >= 0 && k < items.length - 1) abrirSemana(k + 1); };
     semanasAbiertas.forEach(dt => dt.addEventListener('toggle', () => {
       if(dt.open){ semanasAbiertas.forEach(o => { if(o !== dt && o.open) o.open = false; }); }
       else { try { lectorParar(); } catch(e){} }
+      pintarFlechas();
     }));
+    pintarFlechas();
     card.querySelectorAll('.duo-rate-btn').forEach(btn => {
       btn.onclick = (e) => {
         e.preventDefault();
@@ -8616,4 +8635,4 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V11.69 · App Metas Amables · 2026-10-08 15:33==== -->
+<!-- ==== Fin del index V11.70 · App Metas Amables · 2026-10-08 15:39==== -->
