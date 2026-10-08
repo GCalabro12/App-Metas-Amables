@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V11.74 · App Metas Amables · 2026-10-08 18:16==== -->
+<!-- ==== index V11.75 · App Metas Amables · 2026-10-08 18:19==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1122,6 +1122,8 @@ body.riego-abierto{overflow:hidden}
 .riego-cal{margin:12px 0 0;background:none;border:0;color:#2F5A23;text-decoration:underline;font:600 14.5px Karla,sans-serif;cursor:pointer}
 @media (prefers-reduced-motion: reduce){.riego-escena img,.riego-mariposa,.riego-sol{animation:none}.riego-brillo{display:none}}
 .futuro-cab{margin:24px 4px 10px}.futuro-cab h3{margin:0 0 4px;font:700 20px Lora,serif;color:#5B3A9E}.futuro-cab p{margin:0;font-size:14.5px;line-height:1.45;color:var(--ink-soft)}
+.ciclo-btn .opcion-tx > b{text-transform:uppercase;letter-spacing:.04em;font-size:13.5px}
+.panel-badge > span:last-child{text-transform:uppercase;letter-spacing:.04em}
 .planta-meta{display:block;margin:3px 0 0;font:italic 600 14.5px/1.35 Lora,serif;color:#4F7A43}
 .util-nov{display:flex;align-items:center;gap:10px;width:100%;margin:14px 0 0;padding:12px 16px;border:2px solid #101010;border-radius:16px;background:#FFF6DC;font:inherit;color:#101010;text-align:left;cursor:pointer}.util-nov b{display:block;font-size:16px}.util-nov small{display:block;color:var(--ink-soft);font-size:13px}.util-nov .opcion-flecha{margin-left:auto;font-size:22px}
 .nov-lista{display:block}.nov-ver{margin:0 0 14px;padding:14px 16px}.nov-ver h3{margin:0 0 2px;font:700 18px Lora,serif;color:#2F5A23}.nov-ver .nov-fecha{display:block;margin:0 0 8px;font-size:13px;color:var(--ink-soft)}.nov-ver ul{margin:0;padding-left:20px}.nov-ver li{margin:0 0 6px;line-height:1.45}
@@ -1978,7 +1980,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V11.74';
+  const APP_VERSION = 'V11.75';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -3703,6 +3705,9 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
+    { v: 'V11.75', f: '8 de octubre de 2026', n: [
+      'Las notas a tu yo se distinguen en violeta: 🔮 «Nota a tu yo: próximo lunes», «próximo mes» y «final de trimestre».',
+      'Los títulos de los pasos de Inicio van en MAYÚSCULAS.' ] },
     { v: 'V11.73', f: '8 de octubre de 2026', n: [
       'Nuevo apartado <b>Habla con tu yo del futuro</b>, con tus tres notas: a tu yo del próximo lunes, del próximo mes y de final de trimestre.' ] },
     { v: 'V11.72', f: '8 de octubre de 2026', n: [
@@ -4884,7 +4889,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   function renderPracticasView(){
     if(state.prevView === 'practicas') state.prevView = 'panel';   // al volver de "Tu plan"
     contarLecturaGuia();
-    renderBackTopbar('📖 Guía semanal');
+    renderBackTopbar('📖 GUÍA SEMANAL');
     // Arriba: «← Inicio» y, a su lado, ← → para saltar a la guía de la semana anterior o siguiente (en gris si no hay)
     const barra = app.querySelector('.topbar'), bInicio = barra.querySelector('#btnVolver');
     bInicio.textContent = '← Inicio'; bInicio.setAttribute('aria-label', 'Inicio');
@@ -6315,14 +6320,14 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       try { app.appendChild(tarjetaVozSemanal()); } catch(e){ console.error('Voz semanal:', e); }
       // Pósit para fin de mes (Plan Guías)
       const ep = estadoPosit();
-      const posit = el('<div class="card ps-recuadro"><p class="nota-tit" style="font-weight:700;margin:0 0 4px;color:#6B4FA8">📝 Nota a tu yo del próximo mes</p><p style="margin:0 0 8px;font-size:14px">' + (ep.estado === 'abrir' ? '¡Ya puedes abrir la nota que te dejaste! 💛' : ep.estado === 'guardado' ? 'Guardada en la caja hasta el <b>lunes ' + diaUnoTexto(ep.abre) + '</b>.' : 'Cuéntale cómo te sientes y qué esperas para el <b>lunes ' + diaUnoTexto(ultimoLunes(mesClave())) + '</b>.') + '</p><button type="button" class="panel-link-btn" style="width:100%;border:none;cursor:pointer;background:#7B5FB8">' + (!tienePlan('guias') ? '👑 Escribir mi nota' : ep.estado === 'abrir' ? 'Abrir mi nota' : ep.estado === 'guardado' ? '✓ Nota guardada' : 'Escribir mi nota') + '</button></div>');
+      const posit = el('<div class="card ps-recuadro"><p class="nota-tit" style="font-weight:700;margin:0 0 4px;color:#6B4FA8">🔮📝 Nota a tu yo: próximo mes</p><p style="margin:0 0 8px;font-size:14px">' + (ep.estado === 'abrir' ? '¡Ya puedes abrir la nota que te dejaste! 💛' : ep.estado === 'guardado' ? 'Guardada en la caja hasta el <b>lunes ' + diaUnoTexto(ep.abre) + '</b>.' : 'Cuéntale cómo te sientes y qué esperas para el <b>lunes ' + diaUnoTexto(ultimoLunes(mesClave())) + '</b>.') + '</p><button type="button" class="panel-link-btn" style="width:100%;border:none;cursor:pointer;background:#7B5FB8">' + (!tienePlan('guias') ? '👑 Escribir mi nota' : ep.estado === 'abrir' ? 'Abrir mi nota' : ep.estado === 'guardado' ? '✓ Nota guardada' : 'Escribir mi nota') + '</button></div>');
       posit.querySelector('button').onclick = () => {
         if(!tienePlan('guias')){ avisoCorona('La nota para tu yo de principio de mes es del Plan Guías'); return; }
         sonidoTing(); state.view = 'posit'; window.scrollTo(0,0); render();
       };
       app.appendChild(posit);
       // Carta a mi yo del futuro, para todos, en su recuadro
-      const carta = el('<div class="card ps-recuadro"><p class="nota-tit" style="font-weight:700;margin:0 0 4px;color:#6B4FA8">✉️ Nota a tu yo de final de trimestre</p><p style="margin:0 0 8px;font-size:14px">' + (cartaGuardada() ? 'Ya la escribiste. Se abrirá el <b>lunes ' + fechaConAnio(aperturaCarta(cartaGuardada()) || lunesProximoTrimestre()) + '</b>, pero puedes releerla cuando quieras.' : 'Cuéntale cómo te sientes y qué esperas para el <b>lunes ' + fechaConAnio(lunesProximoTrimestre()) + '</b>.') + '</p><button type="button" class="panel-link-btn" style="width:100%;border:none;cursor:pointer;background:#7B5FB8">' + (!tienePlan('sesiones') ? '👑👑 Escribir mi nota' : cartaGuardada() ? '✓ Nota guardada' : 'Escribir mi nota') + '</button></div>');
+      const carta = el('<div class="card ps-recuadro"><p class="nota-tit" style="font-weight:700;margin:0 0 4px;color:#6B4FA8">🔮✉️ Nota a tu yo: final de trimestre</p><p style="margin:0 0 8px;font-size:14px">' + (cartaGuardada() ? 'Ya la escribiste. Se abrirá el <b>lunes ' + fechaConAnio(aperturaCarta(cartaGuardada()) || lunesProximoTrimestre()) + '</b>, pero puedes releerla cuando quieras.' : 'Cuéntale cómo te sientes y qué esperas para el <b>lunes ' + fechaConAnio(lunesProximoTrimestre()) + '</b>.') + '</p><button type="button" class="panel-link-btn" style="width:100%;border:none;cursor:pointer;background:#7B5FB8">' + (!tienePlan('sesiones') ? '👑👑 Escribir mi nota' : cartaGuardada() ? '✓ Nota guardada' : 'Escribir mi nota') + '</button></div>');
       carta.querySelector('button').onclick = () => {
         if(!tienePlan('sesiones')){ avisoCorona('La nota a tu yo de dentro de tres meses es del Plan Guías + Grupo'); return; }
         state.prevView = 'practicaSemanal'; state.view = 'carta'; window.scrollTo(0,0); render();
@@ -7321,10 +7326,10 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     pasos.push({ id: 'contrato', titulo: 'Compromiso trimestral', hecho: contrato, plan: plan1 ? '' : '👑 Plan Guías', bloqueo: (contrato || vistaAlguna) ? '' : 'Aún no desbloqueado', sub: contrato ? 'Sellado hasta el ' + fechaCorta(finTrim) + ' ' + finTrim.getFullYear() : 'Siembra tu meta con tu sello' });
     const ep = estadoPosit(), pg = positGuardado();
     const nota = !!(pg && (pg.mes || pg.trimestre) === mesClave()) || ep.estado === 'guardado';
-    pasos.push({ id: 'nota', titulo: ep.estado === 'abrir' && !nota ? 'Abre la nota que te dejaste' : 'Nota a tu yo del próximo mes (' + fechaCorta(ep.estado === 'guardado' && ep.abre ? ep.abre : ultimoLunes(mesClave())) + ')', hecho: nota, plan: plan1 ? '' : '👑 Plan Guías', bloqueo: (nota || contrato || ep.estado === 'abrir') ? '' : 'Aún no desbloqueado', sub: nota ? 'Guardada en la caja hasta ese lunes' : ep.estado === 'abrir' ? '¡Ya puedes abrirla!' : 'Se abrirá el primer lunes del mes que viene' });
+    pasos.push({ id: 'nota', titulo: ep.estado === 'abrir' && !nota ? 'Abre la nota que te dejaste' : 'Nota a tu yo: próximo mes (' + fechaCorta(ep.estado === 'guardado' && ep.abre ? ep.abre : ultimoLunes(mesClave())) + ')', hecho: nota, plan: plan1 ? '' : '👑 Plan Guías', bloqueo: (nota || contrato || ep.estado === 'abrir') ? '' : 'Aún no desbloqueado', sub: nota ? 'Guardada en la caja hasta ese lunes' : ep.estado === 'abrir' ? '¡Ya puedes abrirla!' : 'Se abrirá el primer lunes del mes que viene' });
     const c = cartaGuardada(), ab = aperturaCarta(c);
     const carta = !!(ab && ab > new Date());
-    pasos.push({ id: 'carta', titulo: 'Nota a tu yo de final de trimestre (' + fechaCorta(ab && carta ? ab : lunesProximoTrimestre()) + ')', hecho: carta, plan: plan2 ? '' : '👑👑 Plan Guías + Grupo', bloqueo: (carta || nota) ? '' : 'Aún no desbloqueado', sub: carta ? 'Cerrada hasta ese lunes' : 'Se abrirá el primer lunes del próximo trimestre' });
+    pasos.push({ id: 'carta', titulo: 'Nota a tu yo: final de trimestre (' + fechaCorta(ab && carta ? ab : lunesProximoTrimestre()) + ')', hecho: carta, plan: plan2 ? '' : '👑👑 Plan Guías + Grupo', bloqueo: (carta || nota) ? '' : 'Aún no desbloqueado', sub: carta ? 'Cerrada hasta ese lunes' : 'Se abrirá el primer lunes del próximo trimestre' });
     const diario = meta && diaHechoFecha(new Date()) > 0;
     pasos.push({ id: 'diario', titulo: 'Marca tu práctica de hoy', hecho: diario, bloqueo: meta ? '' : 'Aún no desbloqueado', sub: diario ? 'Hecho hoy' : 'Toca el día cuando la hagas' });
     if(registraLunes()){
@@ -7546,7 +7551,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   function tarjetaVozSemanal(){
     const lunes = lunesDe(new Date()), pasado = new Date(lunes), proximo = new Date(lunes);
     pasado.setDate(lunes.getDate() - 7); proximo.setDate(lunes.getDate() + 7);
-    const card = el('<div class="card ps-recuadro voz-card"><p class="nota-tit" style="font-weight:700;margin:0 0 4px;color:#6B4FA8">🎙 Nota a tu yo del próximo lunes</p>'
+    const card = el('<div class="card ps-recuadro voz-card"><p class="nota-tit" style="font-weight:700;margin:0 0 4px;color:#6B4FA8">🔮🎙 Nota a tu yo: próximo lunes</p>'
       + '<p style="margin:0 0 10px;font-size:14px">Cuéntale cómo te sientes y qué esperas para el <b>lunes ' + diaUnoTexto(proximo) + '</b>.</p>'
       + '<div class="voz-escuchar"></div><div class="voz-grabar"></div></div>').firstElementChild;
     const zona = card.querySelector('.voz-grabar');
@@ -8738,4 +8743,4 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V11.74 · App Metas Amables · 2026-10-08 18:16==== -->
+<!-- ==== Fin del index V11.75 · App Metas Amables · 2026-10-08 18:19==== -->
