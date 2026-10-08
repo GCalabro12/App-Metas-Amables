@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V11.68 · App Metas Amables · 2026-10-08 15:05==== -->
+<!-- ==== index V11.69 · App Metas Amables · 2026-10-08 15:33==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1955,7 +1955,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V11.68';
+  const APP_VERSION = 'V11.69';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -2333,7 +2333,10 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       state.identidadDraft = latest.identidad || '';
       state.metaTrimDraft = latest.metaTrim || '';
       state.guiaUrl = latest.urlGuia || '';
-      state.guiaTexto = latest.guiaTexto || '';
+      const conGuia = list.slice().reverse().find(c => c.guiaTexto);
+      state.guiaTexto = (conGuia && conGuia.guiaTexto) || '';
+      // Las guías de meses anteriores, para que sus semanas sigan a mano cuando llega una guía nueva
+      state.guiasAnteriores = [...new Set(list.map(c => c.guiaTexto).filter(Boolean))].filter(t => t !== state.guiaTexto);
     }
     // Meta semanal: solo si ya hay registro de ESTA semana
     const thisWeek = list.find(c => c.week === currentWeekShort);
@@ -3676,6 +3679,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
+    { v: 'V11.69', f: '8 de octubre de 2026', n: [
+      'Cuando llega tu guía de un mes nuevo, <b>las semanas anteriores siguen ahí</b> para releerlas.' ] },
     { v: 'V11.67', f: '8 de octubre de 2026', n: [
       '<b>¿Cómo se usa la app?</b>: un recorrido guiado por Inicio la primera vez, y cuando quieras desde Utilidades.',
       'Todas las notas a tu yo del futuro se llaman igual: <b>«Nota a tu yo del 12 nov»</b>, también la nota de voz.',
@@ -4778,6 +4783,14 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   function cuerpoPracticasHTML(){
     const guiaHref = state.guiaUrl || '#';
     const semanas = parseGuiaSemanas(state.guiaTexto);
+    // Semanas ya pasadas de guías anteriores (las 8 últimas) que no están en la guía actual: siguen pudiéndose leer
+    if(semanas.length){
+      const clave = b => b.year * 1000 + b.monthIdx * 10 + b.weekNum;
+      const hay = new Set(semanas.map(clave)), primera = clave(semanas[0]), previas = [];
+      (state.guiasAnteriores || []).forEach(t => parseGuiaSemanas(t).forEach(b => { const k = clave(b); if(!hay.has(k) && k < primera && semanaDesbloqueada(b)){ hay.add(k); previas.push(b); } }));
+      previas.sort((a, b) => clave(a) - clave(b));
+      semanas.unshift(...previas.slice(-8));
+    }
     let cuerpo = '';
     if(semanas.length > 0){
       cuerpo += `<div class="duo-path">`;
@@ -8603,4 +8616,4 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V11.68 · App Metas Amables · 2026-10-08 15:05==== -->
+<!-- ==== Fin del index V11.69 · App Metas Amables · 2026-10-08 15:33==== -->
