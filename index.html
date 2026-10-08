@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V11.66 · App Metas Amables · 2026-10-08 13:39==== -->
+<!-- ==== index V11.67 · App Metas Amables · 2026-10-08 13:50==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1094,6 +1094,11 @@ body.theme-dark .guia-progreso{background:var(--surface)}
 .hs-montana{width:min(36vw,165px);margin:0 auto 10px}.hs-img{display:block;width:min(48vw,200px);height:auto;margin:0 auto 10px}.hs-img-portada{width:min(62vw,240px);border-radius:24px;background:#fff;padding:6px}
 .planta-card{display:flex;gap:12px;align-items:center;padding:12px 14px}.planta-card img{width:112px;height:auto;flex:none;border-radius:14px;background:#fff}
 .planta-tx{flex:1;min-width:0}.planta-tx b{display:block;font:700 18px Lora,serif;color:#2F5A23}.planta-tx p{margin:4px 0 10px;font-size:14.5px;line-height:1.4}
+.tour-capa{position:fixed;inset:0;z-index:9000}
+.tour-foco{position:fixed;border-radius:18px;box-shadow:0 0 0 9999px rgba(20,10,40,.62);outline:3px solid #F2C14E;transition:left .3s,top .3s,width .3s,height .3s;pointer-events:none}
+.tour-globo{position:fixed;left:50%;transform:translateX(-50%);width:min(420px,calc(100% - 32px));background:#fff;border-radius:18px;padding:14px 16px;box-shadow:0 8px 30px rgba(0,0,0,.3);font:15.5px/1.45 Karla,sans-serif;color:#101010;transition:top .3s}
+.tour-globo .tt{display:block;font:700 18px Lora,serif;color:#5B3A9E;margin-bottom:4px}
+.tour-pie{display:flex;align-items:center;gap:10px;margin-top:12px}.tour-n{font-size:13px;color:#777}.tour-saltar{margin-left:auto;background:none;border:0;color:#777;text-decoration:underline;font:inherit;cursor:pointer}.tour-sig{background:#7B5FB8;color:#fff;border:0;border-radius:12px;padding:9px 16px;font:800 15px Karla,sans-serif;cursor:pointer}
 .planta-meta{display:block;margin:3px 0 0;font:italic 600 14.5px/1.35 Lora,serif;color:#4F7A43}
 .util-nov{display:flex;align-items:center;gap:10px;width:100%;margin:14px 0 0;padding:12px 16px;border:2px solid #101010;border-radius:16px;background:#FFF6DC;font:inherit;color:#101010;text-align:left;cursor:pointer}.util-nov b{display:block;font-size:16px}.util-nov small{display:block;color:var(--ink-soft);font-size:13px}.util-nov .opcion-flecha{margin-left:auto;font-size:22px}
 .nov-lista{display:block}.nov-ver{margin:0 0 14px;padding:14px 16px}.nov-ver h3{margin:0 0 2px;font:700 18px Lora,serif;color:#2F5A23}.nov-ver .nov-fecha{display:block;margin:0 0 8px;font-size:13px;color:var(--ink-soft)}.nov-ver ul{margin:0;padding-left:20px}.nov-ver li{margin:0 0 6px;line-height:1.45}
@@ -1950,7 +1955,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V11.66';
+  const APP_VERSION = 'V11.67';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -2196,13 +2201,13 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   // Bienvenida tras crear la cuenta, en dos pantallas; con "Siguiente" se llega al panel
   function renderBienvenidaAlta(){
     let marca = '1';
-    try{ marca = localStorage.getItem('ma_alta_' + state.me) || '1'; }catch(e){}
+    try{ marca = localStorage.getItem('ma_alta_' + state.me) || '1'; if(localStorage.getItem('tour_' + state.me) !== 'visto') localStorage.setItem('tour_' + state.me, 'pendiente'); }catch(e){}
     const nombre = String(state.me || '').split(' ')[0];
-    const paso = [1, 2, 3, 4].includes(state.altaPaso) ? state.altaPaso : 1;
+    const paso = [1, 2, 3, 4, 5].includes(state.altaPaso) ? state.altaPaso : 1;
     // La música oficial suena al ver crecer la planta (pantalla 3): unos segundos y se apaga suave
     if(paso === 3 && !state.sintoniaAlta){ state.sintoniaAlta = true; sonarSintonia(4); }
     // Cada pantalla con su muñeco: saludo, escribiendo (registro de los lunes) y pizarra (formulario)
-    const figura = { 1: ['saludo', 130], 4: ['pizarra', 190] }[paso];
+    const figura = { 1: ['saludo', 130], 5: ['pizarra', 190] }[paso];
     // Pantallas en blanco, a pantalla completa, con las colinas moradas abajo; textos sin recuadro
     const colinas = '<svg class="alta-colinas" viewBox="0 0 1024 220" preserveAspectRatio="none" aria-hidden="true"><defs>'
       + '<linearGradient id="altaK1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#C04A8E"/><stop offset="1" stop-color="#7A1C6A"/></linearGradient>'
@@ -2212,8 +2217,9 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     let html = '<div class="alta-onb"><div class="alta-dentro"><div style="text-align:center;margin-bottom:6px">'
       + (paso === 2 ? '<div class="alta-marchita"><img src="' + imgPlanta('sed') + '" alt=""><img src="' + imgPlanta('mustia') + '" alt=""><img src="' + imgPlanta('seca') + '" alt=""></div>'
         : paso === 3 ? '<div class="alta-crece"><img src="' + imgRegando(1) + '" alt=""></div>'
+        : paso === 4 ? '<div class="alta-crece"><img src="' + imgPlanta('sed') + '" alt=""></div>'
         : practiHTML(figura[0], '', figura[1])) + '</div>'
-      + '<div class="alta-puntos">' + [1, 2, 3, 4].map(n => '<span class="' + (n === paso ? 'on' : '') + '"></span>').join('') + '</div>';
+      + '<div class="alta-puntos">' + [1, 2, 3, 4, 5].map(n => '<span class="' + (n === paso ? 'on' : '') + '"></span>').join('') + '</div>';
     const sigBtn = '<button type="button" class="btn btn-yes" id="btnAltaSig" style="text-align:center;margin-top:14px">Siguiente →</button>';
     const atrasBtn = '<button type="button" class="link-quiet" id="btnAltaAtras" style="display:block;margin:10px auto 0">← Atrás</button>';
     if(paso === 1){
@@ -2234,6 +2240,14 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       html += '<h1>Aquí aprenderás a regar tu meta cada día</h1>'
         + '<div class="alta-tx"><p>Con Metas Amables conseguirás <b>una meta valiosa para ti cada trimestre</b>, con un registro cada lunes.</p></div>'
         + sigBtn + atrasBtn;
+    } else if(paso === 4){
+      // Pantalla 4: pedir el permiso de avisos explicando para qué sirve
+      const yaOn = pushActivo();
+      html += '<h1>Que no se te seque tu meta</h1>'
+        + '<div class="alta-tx"><p>Si a las <b>8 de la tarde</b> aún no has marcado tu práctica, te llegará un aviso al móvil: «🥀 Tu meta tiene sed». Solo uno al día, y solo si te hace falta.</p>'
+        + (yaOn ? '<p class="alta-grande">🔔 Avisos activados ✓</p>'
+          : '<button type="button" class="panel-link-btn" id="btnAltaAvisos" style="background:#7B5FB8;width:100%;border:none;cursor:pointer">🔔 Activar los avisos</button>')
+        + '</div>' + (yaOn ? sigBtn : sigBtn.replace('Siguiente →', 'Ahora no →')) + atrasBtn;
     } else {
       html += '<h1>Siembra tu meta del trimestre</h1>'
         + '<div class="alta-tx"><p>🎯 Para empezar, rellena un formulario con <b>una meta importante para ti</b> <span style="color:#777">(lleva 5 minutos)</span>. Con tus respuestas preparamos tu guía de prácticas.</p>'
@@ -2245,11 +2259,13 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     const sig = nodo.querySelector('#btnAltaSig'), atras = nodo.querySelector('#btnAltaAtras');
     app.appendChild(nodo);
     sig.onclick = () => {
-      if(paso < 4){ state.altaPaso = paso + 1; }
+      if(paso < 5){ state.altaPaso = paso + 1; }
       else { try{ localStorage.removeItem('ma_alta_' + state.me); }catch(e){} state.altaPaso = null; state.view = 'panel'; state.panelSub = null; }
       window.scrollTo(0,0); render();
     };
     if(atras) atras.onclick = () => { state.altaPaso = Math.max(1, paso - 1); window.scrollTo(0,0); render(); };
+    const bAv = app.querySelector('#btnAltaAvisos');
+    if(bAv) bAv.onclick = async () => { bAv.disabled = true; if(await activarAvisosPlanta()){ state.altaPaso = 5; window.scrollTo(0,0); render(); } else bAv.disabled = false; };
     // Pantalla 3: Prácti riega y la planta crece (animación)
     if(paso === 3){ const img = app.querySelector('.alta-crece img'); if(img) animarPlanta(img, 'practi-crece.json', true); }
   }
@@ -2307,6 +2323,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     window.scrollTo(0,0); render();
     try { await refreshAll(); } catch(e){ console.error('Error cargando datos:', e); if(!e.status) state.plan = 'gratis'; }
     if(!state.me) return;   // la sesión había caducado: ya se muestra la pantalla de entrada
+    // Si el móvil ya da permiso de avisos (la app de Google Play en Android anterior al 13), se activan solos
+    try { if(pushPosible() && Notification.permission === 'granted' && !pushActivo() && localStorage.getItem('push_off_' + state.me) !== '1') activarAvisosPlanta(true); } catch(e){}
     const list = state.checkins[state.me] || [];
     // Identidad, meta trimestral y URL de guía: del registro más reciente (cualquier semana)
     if(list.length > 0){
@@ -3631,7 +3649,10 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       + tarjeta('frases', 'Frases motivadoras', 'Elige un fondo y compártela', '<span class="util-mini-frase" style="background:center/cover url(' + FONDOS_FOTOS.practi + ')"></span>')
       + tarjeta('musica', 'Música motivacional', 'Música para acompañarte mientras usas la app', practiHTML('guitarra', '🎸', 120));
     app.appendChild(caja);
-    // Al final de todo, más pequeña: las novedades de cada versión
+    // Al final de todo, más pequeños: el recorrido guiado y las novedades de cada versión
+    const guia = el('<button type="button" class="util-nov" style="background:#E9F4E4"><span style="font-size:26px">🧭</span><span><b>¿Cómo se usa la app?</b><small>Un recorrido rápido por Inicio, paso a paso</small></span><span class="opcion-flecha">›</span></button>').firstElementChild;
+    guia.onclick = () => { state.view = 'panel'; state.panelSub = null; window.scrollTo(0,0); render(); setTimeout(iniciarTour, 700); };
+    app.appendChild(guia);
     const nov = el('<button type="button" class="util-nov"><span style="font-size:26px">✨</span><span><b>Novedades de la app</b><small>Lo nuevo de cada versión · ahora ' + APP_VERSION + '</small></span><span class="opcion-flecha">›</span></button>').firstElementChild;
     nov.onclick = () => { state.view = 'novedades'; window.scrollTo(0,0); render(); };
     app.appendChild(nov);
@@ -3648,6 +3669,10 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
+    { v: 'V11.67', f: '8 de octubre de 2026', n: [
+      '<b>¿Cómo se usa la app?</b>: un recorrido guiado por Inicio la primera vez, y cuando quieras desde Utilidades.',
+      'Todas las notas a tu yo del futuro se llaman igual: <b>«Nota a tu yo del 12 nov»</b>, también la nota de voz.',
+      'En la bienvenida puedes <b>activar los avisos</b> con un solo toque.' ] },
     { v: 'V11.65', f: '8 de octubre de 2026', n: [
       'Nueva sección <b>Novedades</b> en Utilidades: aquí verás lo nuevo de cada versión.',
       'En la tarjeta de tu planta, en Inicio, aparece <b>tu meta escrita</b> debajo del título.' ] },
@@ -3658,7 +3683,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       'El jardinero cuida <b>tres huertos</b>: el del aprendizaje, el de la sanación y el de la atención plena.' ] },
     { v: 'V11.62', f: '7 de octubre de 2026', n: [
       '<b>Avisos en el móvil</b>: si a las 8 de la tarde aún no has marcado tu práctica, te llega «🥀 Tu meta tiene sed». Con una guía paso a paso para activarlos.',
-      '<b>Mensaje de voz semanal</b> 👑👑: grábate un mensaje y se abre el lunes siguiente.',
+      '<b>Nota de voz semanal</b> 👑👑: grábate una nota de voz y se abre el lunes siguiente.',
       'Ajustes ordenados en secciones que se abren y se cierran.',
       'La música oficial se controla desde la barra de abajo.',
       'El recordatorio del calendario lleva 🌱 y el texto de tu meta.' ] },
@@ -3685,6 +3710,47 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     const lista = document.createElement('div'); lista.className = 'nov-lista';
     lista.innerHTML = NOVEDADES.map(x => '<div class="card nov-ver"><h3>' + x.v + '</h3><span class="nov-fecha">' + x.f + '</span><ul>' + x.n.map(t => '<li>' + t + '</li>').join('') + '</ul></div>').join('');
     app.appendChild(lista);
+  }
+
+  // ===== Recorrido guiado por Inicio: la primera vez (tras la bienvenida) y desde Utilidades → «¿Cómo se usa la app?» =====
+  // Oscurece la pantalla y va iluminando cada parte, con un globo que la explica
+  function iniciarTour(){
+    const PASOS = [
+      { s: '.ciclo-meta', t: '1 · Siembra tu meta', x: 'Empieza por aquí: rellena el formulario con <b>una meta importante para ti</b> este trimestre. Con tus respuestas preparamos tu guía.' },
+      { s: '.ciclo-a', t: '2 · Lee tu guía semanal', x: 'Cada semana te llega una guía con prácticas pequeñas. Léela con calma, o escúchala con 🔊 Oír.' },
+      { s: '.ciclo-b', t: '3 · Riega tu meta', x: 'Aquí está tu práctica de la semana. <b>Marca cada día que la hagas</b>: así riegas tu meta 💧' },
+      { s: '.planta-card', t: 'Tu meta es una planta 🌱', x: 'Si la riegas cada día, crece. Si no, se va marchitando… pero siempre puede volver a brotar.' },
+      { s: '.ciclo-c', t: '4 · Grupo de apoyo', x: 'Cada lunes registras tu compromiso y cada 15 días hay sesión en grupo. Juntos se llega más lejos.' },
+      { s: '.tabbar', t: 'Y abajo, el resto', x: '<b>Viaje</b>: tus pasos del trimestre. <b>Progreso</b>: cómo vas. <b>Utilidades</b>: habla con Prácti, formación, frases y música.' }
+    ].filter(p => document.querySelector(p.s));
+    if(!PASOS.length) return;
+    document.querySelectorAll('.tour-capa').forEach(c => c.remove());
+    const capa = el('<div class="tour-capa" role="dialog" aria-label="Cómo se usa la app"><div class="tour-foco"></div><div class="tour-globo"><b class="tt"></b><div class="tour-tx"></div><div class="tour-pie"><span class="tour-n"></span><button type="button" class="tour-saltar">Saltar</button><button type="button" class="tour-sig"></button></div></div></div>').firstElementChild;
+    document.body.appendChild(capa);
+    const foco = capa.querySelector('.tour-foco'), globo = capa.querySelector('.tour-globo');
+    let i = 0;
+    const colocar = () => {
+      const obj = document.querySelector(PASOS[i].s); if(!obj) return;
+      const r = obj.getBoundingClientRect(), m = 6;
+      Object.assign(foco.style, { left: (r.left - m) + 'px', top: (r.top - m) + 'px', width: (r.width + 2 * m) + 'px', height: (r.height + 2 * m) + 'px' });
+      const alto = globo.offsetHeight, abajo = window.innerHeight - r.bottom;
+      globo.style.top = (abajo > alto + 24 ? r.bottom + 14 : Math.max(10, r.top - alto - 14)) + 'px';
+    };
+    const pintar = () => {
+      const p = PASOS[i];
+      globo.querySelector('.tt').textContent = p.t;
+      globo.querySelector('.tour-tx').innerHTML = p.x;
+      globo.querySelector('.tour-n').textContent = (i + 1) + ' de ' + PASOS.length;
+      globo.querySelector('.tour-sig').textContent = i < PASOS.length - 1 ? 'Siguiente →' : '¡Entendido!';
+      const obj = document.querySelector(p.s);
+      if(obj && p.s !== '.tabbar') obj.scrollIntoView({ block: 'center', behavior: 'smooth' });
+      colocar(); setTimeout(colocar, 450);
+    };
+    const cerrar = () => { capa.remove(); window.removeEventListener('resize', colocar); window.removeEventListener('scroll', colocar); };
+    capa.querySelector('.tour-saltar').onclick = cerrar;
+    capa.querySelector('.tour-sig').onclick = () => { if(i < PASOS.length - 1){ i++; pintar(); } else cerrar(); };
+    window.addEventListener('resize', colocar); window.addEventListener('scroll', colocar, { passive: true });
+    pintar();
   }
 
   // --- Prácti de cuerpo entero (fotograma de la animación «pizarra», solo la parte de Prácti) ---
@@ -5471,6 +5537,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
                     + (textoProximaSesion() ? '<br><span style="font-weight:700">📅 ' + textoProximaSesion() + '</span>' : ''), '', sinSesiones && '👑👑')
           + '<button type="button" class="opcion-inicio ciclo-formacion" data-ir="util"><span class="ciclo-icono">' + iconoLlave() + '</span><span class="opcion-tx"><b>Utilidades</b><small>Habla con Prácti, formación, frases y música</small></span><span class="opcion-flecha">›</span></button>';
         app.appendChild(opciones);
+        try { if(localStorage.getItem('tour_' + state.me) === 'pendiente' && state.view === 'panel'){ localStorage.setItem('tour_' + state.me, 'visto'); setTimeout(iniciarTour, 900); } } catch(e){}
         opciones.querySelector('.hablar-practi-btn').onclick = () => { state.hablaDesdeInicio = true; state.view = 'habla'; window.scrollTo(0,0); render(); };
         opciones.querySelectorAll('.opcion-inicio').forEach(btn => {
           btn.onclick = () => {
@@ -6172,14 +6239,14 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       app.appendChild(contrato);
       // Pósit para fin de mes (Plan Guías)
       const ep = estadoPosit();
-      const posit = el('<div class="card ps-recuadro"><p style="font-weight:700;margin:0 0 4px">📝 Nota para mi yo del ' + diaUnoTexto(ep.estado === 'escribir' ? ultimoLunes(mesClave()) : ep.abre) + '</p><p style="margin:0 0 8px;font-size:14px">' + (ep.estado === 'abrir' ? '¡Ya puedes abrir la nota que te dejaste! 💛' : ep.estado === 'guardado' ? 'Guardada en la caja hasta ese lunes.' : 'Se abrirá el primer lunes del siguiente mes.') + '</p><button type="button" class="panel-link-btn" style="width:100%;border:none;cursor:pointer;background:#C9942D">' + (!tienePlan('guias') ? '👑 Escribir mi nota' : ep.estado === 'abrir' ? 'Abrir mi nota' : ep.estado === 'guardado' ? 'Ver mi nota' : 'Escribir mi nota') + '</button></div>');
+      const posit = el('<div class="card ps-recuadro"><p style="font-weight:700;margin:0 0 4px">📝 Nota a tu yo del ' + fechaCorta(ep.estado === 'escribir' ? ultimoLunes(mesClave()) : ep.abre) + '</p><p style="margin:0 0 8px;font-size:14px">' + (ep.estado === 'abrir' ? '¡Ya puedes abrir la nota que te dejaste! 💛' : ep.estado === 'guardado' ? 'Guardada en la caja hasta ese lunes.' : 'Se abrirá el primer lunes del siguiente mes.') + '</p><button type="button" class="panel-link-btn" style="width:100%;border:none;cursor:pointer;background:#C9942D">' + (!tienePlan('guias') ? '👑 Escribir mi nota' : ep.estado === 'abrir' ? 'Abrir mi nota' : ep.estado === 'guardado' ? 'Ver mi nota' : 'Escribir mi nota') + '</button></div>');
       posit.querySelector('button').onclick = () => {
         if(!tienePlan('guias')){ avisoCorona('La nota para tu yo de principio de mes es del Plan Guías'); return; }
         sonidoTing(); state.view = 'posit'; window.scrollTo(0,0); render();
       };
       app.appendChild(posit);
       // Carta a mi yo del futuro, para todos, en su recuadro
-      const carta = el('<div class="card ps-recuadro"><p style="font-weight:700;margin:0 0 4px">✉️ Carta a mi yo del lunes ' + fechaConAnio(aperturaCarta(cartaGuardada()) || lunesProximoTrimestre()) + '</p><p style="margin:0 0 8px;font-size:14px">' + (cartaGuardada() ? 'Ya la escribiste. Puedes releerla cuando quieras.' : 'Escríbete a ti del primer lunes del próximo trimestre. Se abrirá ese día.') + '</p><button type="button" class="panel-link-btn" style="width:100%;border:none;cursor:pointer;background:#E39A9A">' + (!tienePlan('sesiones') ? '👑👑 Escribir mi carta' : cartaGuardada() ? 'Leer mi carta' : 'Escribir mi carta') + '</button></div>');
+      const carta = el('<div class="card ps-recuadro"><p style="font-weight:700;margin:0 0 4px">✉️ Nota a tu yo del ' + fechaCorta(aperturaCarta(cartaGuardada()) || lunesProximoTrimestre()) + '</p><p style="margin:0 0 8px;font-size:14px">' + (cartaGuardada() ? 'Ya la escribiste. Puedes releerla cuando quieras.' : 'Escríbete a ti del primer lunes del próximo trimestre. Se abrirá ese día.') + '</p><button type="button" class="panel-link-btn" style="width:100%;border:none;cursor:pointer;background:#E39A9A">' + (!tienePlan('sesiones') ? '👑👑 Escribir mi carta' : cartaGuardada() ? 'Leer mi carta' : 'Escribir mi carta') + '</button></div>');
       carta.querySelector('button').onclick = () => {
         if(!tienePlan('sesiones')){ avisoCorona('La carta a tu yo del futuro es del Plan Guías + Grupo'); return; }
         state.prevView = 'practicaSemanal'; state.view = 'carta'; window.scrollTo(0,0); render();
@@ -7018,7 +7085,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   function fechaLarga(d){ return d.toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' }); }
   function renderPosit(){
     const e = estadoPosit(), abreTitulo = (e.estado === 'escribir' || state.positNueva) ? ultimoLunes(mesClave()) : e.abre;
-    renderBackTopbar('📝 Nota para mi yo del ' + diaUnoTexto(abreTitulo));
+    renderBackTopbar('📝 Nota a tu yo del ' + fechaCorta(abreTitulo));
     app.querySelector('#btnVolver').onclick = () => { state.view = 'practicaSemanal'; window.scrollTo(0,0); render(); };
     const caja = el('<div class="posit-escena"></div>').firstElementChild;
     app.appendChild(caja);
@@ -7184,10 +7251,10 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     pasos.push({ id: 'contrato', titulo: 'Compromiso trimestral', hecho: contrato, plan: plan1 ? '' : '👑 Plan Guías', bloqueo: (contrato || vistaAlguna) ? '' : 'Aún no desbloqueado', sub: contrato ? 'Sellado hasta el ' + fechaCorta(finTrim) + ' ' + finTrim.getFullYear() : 'Siembra tu meta con tu sello' });
     const ep = estadoPosit(), pg = positGuardado();
     const nota = !!(pg && (pg.mes || pg.trimestre) === mesClave()) || ep.estado === 'guardado';
-    pasos.push({ id: 'nota', titulo: ep.estado === 'abrir' && !nota ? 'Abre la nota que te dejaste' : 'Nota a Yo del ' + fechaCorta(ep.estado === 'guardado' && ep.abre ? ep.abre : ultimoLunes(mesClave())), hecho: nota, plan: plan1 ? '' : '👑 Plan Guías', bloqueo: (nota || contrato || ep.estado === 'abrir') ? '' : 'Aún no desbloqueado', sub: nota ? 'Guardada en la caja hasta ese lunes' : ep.estado === 'abrir' ? '¡Ya puedes abrirla!' : 'Se abrirá el primer lunes del mes que viene' });
+    pasos.push({ id: 'nota', titulo: ep.estado === 'abrir' && !nota ? 'Abre la nota que te dejaste' : 'Nota a tu yo del ' + fechaCorta(ep.estado === 'guardado' && ep.abre ? ep.abre : ultimoLunes(mesClave())), hecho: nota, plan: plan1 ? '' : '👑 Plan Guías', bloqueo: (nota || contrato || ep.estado === 'abrir') ? '' : 'Aún no desbloqueado', sub: nota ? 'Guardada en la caja hasta ese lunes' : ep.estado === 'abrir' ? '¡Ya puedes abrirla!' : 'Se abrirá el primer lunes del mes que viene' });
     const c = cartaGuardada(), ab = aperturaCarta(c);
     const carta = !!(ab && ab > new Date());
-    pasos.push({ id: 'carta', titulo: 'Carta a Yo del ' + fechaCorta(ab && carta ? ab : lunesProximoTrimestre()), hecho: carta, plan: plan2 ? '' : '👑👑 Plan Guías + Grupo', bloqueo: (carta || nota) ? '' : 'Aún no desbloqueado', sub: carta ? 'Cerrada hasta ese lunes' : 'Se abrirá el primer lunes del próximo trimestre' });
+    pasos.push({ id: 'carta', titulo: 'Nota a tu yo del ' + fechaCorta(ab && carta ? ab : lunesProximoTrimestre()), hecho: carta, plan: plan2 ? '' : '👑👑 Plan Guías + Grupo', bloqueo: (carta || nota) ? '' : 'Aún no desbloqueado', sub: carta ? 'Cerrada hasta ese lunes' : 'Se abrirá el primer lunes del próximo trimestre' });
     const diario = meta && diaHechoFecha(new Date()) > 0;
     pasos.push({ id: 'diario', titulo: 'Marca tu práctica de hoy', hecho: diario, bloqueo: meta ? '' : 'Aún no desbloqueado', sub: diario ? 'Hecho hoy' : 'Toca el día cuando la hagas' });
     if(registraLunes()){
@@ -7278,7 +7345,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   function vapidPublica(){ return 'BLrN-xVzI9ViyFZSu3ff9RvFQTcxzDqOIEp6byKztnXsKIy_FKzjUF6Iyj_lh6KTOuoZZMKscaVEv_sNXj6D0wQ'; }
   function pushActivo(){ try { return localStorage.getItem('push_on_' + state.me) === '1' && 'Notification' in window && Notification.permission === 'granted'; } catch(e){ return false; } }
   function pushPosible(){ return 'serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window; }
-  async function activarAvisosPlanta(){
+  async function activarAvisosPlanta(silencio){   // silencio: activación sola al entrar, sin mensajes
     try {
       if(!pushPosible()){ alert('Este móvil o navegador no permite avisos.' + (esIOS() ? ' En iPhone, primero añade la app a la pantalla de inicio (Compartir → Añadir a pantalla de inicio) y ábrela desde ahí.' : '')); return false; }
       const permiso = await Notification.requestPermission();
@@ -7288,17 +7355,17 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       let sub = await reg.pushManager.getSubscription();
       if(!sub) sub = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: clave });
       await api('/push', { sub: sub.toJSON() });
-      try { localStorage.setItem('push_on_' + state.me, '1'); } catch(e){}
-      avisoBreve('🔔 Listo: si una tarde aún no has regado tu meta, te aviso.');
+      try { localStorage.setItem('push_on_' + state.me, '1'); localStorage.removeItem('push_off_' + state.me); } catch(e){}
+      if(!silencio) avisoBreve('🔔 Listo: si una tarde aún no has regado tu meta, te aviso.');
       return true;
-    } catch(e){ console.error('Avisos:', e); avisoBreve('No se pudieron activar los avisos. Inténtalo de nuevo.'); return false; }
+    } catch(e){ console.error('Avisos:', e); if(!silencio) avisoBreve('No se pudieron activar los avisos. Inténtalo de nuevo.'); return false; }
   }
   async function desactivarAvisosPlanta(){
     try {
       const reg = await navigator.serviceWorker.getRegistration(); const sub = reg && await reg.pushManager.getSubscription();
       if(sub){ try { await api('/push', { sub: sub.toJSON(), quitar: true }); } catch(e){} await sub.unsubscribe(); }
     } catch(e){}
-    try { localStorage.removeItem('push_on_' + state.me); } catch(e){}
+    try { localStorage.removeItem('push_on_' + state.me); localStorage.setItem('push_off_' + state.me, '1'); } catch(e){}
     avisoBreve('🔕 Avisos desactivados.');
   }
 
@@ -7399,7 +7466,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     const clave = state.me + '_' + isoLocal(pasado);
     try { if(localStorage.getItem('voz_oida_' + clave)) return; } catch(e){}
     const pintar = () => {
-      const c = el('<div class="card voz-aviso"><span class="voz-aviso-ico">🎧</span><div><b>Tienes un mensaje de voz de tu yo del lunes ' + pasado.getDate() + '</b><button type="button" class="panel-link-btn">Escucharlo →</button></div></div>').firstElementChild;
+      const c = el('<div class="card voz-aviso"><span class="voz-aviso-ico">🎧</span><div><b>Tienes una nota de voz de tu yo del ' + fechaCorta(pasado) + '</b><button type="button" class="panel-link-btn">Escucharlo →</button></div></div>').firstElementChild;
       c.querySelector('button').onclick = () => { state.irVoz = true; state.view = 'practicaSemanal'; window.scrollTo(0,0); render(); };
       destino.appendChild(c);
     };
@@ -7409,13 +7476,13 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   function tarjetaVozSemanal(){
     const lunes = lunesDe(new Date()), pasado = new Date(lunes), proximo = new Date(lunes);
     pasado.setDate(lunes.getDate() - 7); proximo.setDate(lunes.getDate() + 7);
-    const card = el('<div class="card ps-recuadro voz-card"><p style="font-weight:700;margin:0 0 4px">🎙 Mensaje de voz para tu yo del próximo lunes</p>'
+    const card = el('<div class="card ps-recuadro voz-card"><p style="font-weight:700;margin:0 0 4px">🎙 Nota de voz a tu yo del ' + fechaCorta(proximo) + '</p>'
       + '<p style="margin:0 0 10px;font-size:14px">Grábate un mensaje corto (hasta 2 minutos): qué te propones esta semana y cómo quieres sentirte. Lo escucharás el <b>lunes ' + proximo.getDate() + '</b>, antes de tu nuevo compromiso.</p>'
       + '<div class="voz-escuchar"></div><div class="voz-grabar"></div></div>').firstElementChild;
     const zona = card.querySelector('.voz-grabar');
     if(!tienePlan('sesiones')){
       zona.innerHTML = '<button type="button" class="panel-link-btn" style="width:100%;border:none;cursor:pointer;background:#7B5FB8">👑👑 Grabar mi mensaje</button>';
-      zona.querySelector('button').onclick = () => avisoCorona('El mensaje de voz semanal es del Plan Guías + Grupo');
+      zona.querySelector('button').onclick = () => avisoCorona('La nota de voz semanal es del Plan Guías + Grupo');
       return card;
     }
     // El que te dejaste el lunes pasado
@@ -7672,7 +7739,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       + '<p class="posit-fijo">' + p3 + '</p><textarea id="cartaT3" rows="3" maxlength="800" placeholder="…haya conseguido…"></textarea>'
       + '<p class="posit-fijo">' + cierre + '</p><p class="carta-firma">' + firma + '</p></div>'
       + '<div id="cartaDictar"></div>'
-      + '<button type="button" class="panel-link-btn" id="cartaGuardar" style="background:#B3261E;border:none;width:100%;cursor:pointer;margin-top:10px">Sellar y guardar mi carta</button>'
+      + '<button type="button" class="panel-link-btn" id="cartaGuardar" style="background:#B3261E;border:none;width:100%;cursor:pointer;margin-top:10px">Sellar y guardar mi nota</button>'
       + '<p id="cartaMsg" style="margin:6px 0 0;font-size:14px"></p>';
     const ts = ['#cartaT1', '#cartaT3'].map(s => caja.querySelector(s));
     ts.forEach(micDentro);
@@ -7688,12 +7755,12 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
         delete caja.dataset.editando;
         sonidoTing();
         pintarCartaFuturo(caja);
-      } catch(err){ b.disabled = false; b.textContent = 'Sellar y guardar mi carta'; msg.textContent = (err && err.message) || 'No se pudo guardar. Prueba de nuevo.'; }
+      } catch(err){ b.disabled = false; b.textContent = 'Sellar y guardar mi nota'; msg.textContent = (err && err.message) || 'No se pudo guardar. Prueba de nuevo.'; }
     };
   }
   function renderCarta(){
     const c = cartaGuardada(), abre = aperturaCarta(c) || lunesProximoTrimestre();
-    renderBackTopbar('✉️ Carta a mi yo del lunes ' + diaUnoTexto(abre));
+    renderBackTopbar('✉️ Nota a tu yo del ' + fechaCorta(abre));
     app.querySelector('#btnVolver').onclick = () => { state.view = 'practicaSemanal'; window.scrollTo(0,0); render(); };
     const caja = el('<div class="carta-pantalla"><div id="cartaFuturo"></div></div>').firstElementChild;
     app.appendChild(caja);
@@ -7705,7 +7772,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     if(!tienePlan('sesiones') || !c || !abre || hoy < abre || hoy - abre > 21 * 86400000) return null;
     const clave = 'carta_vista_' + state.me + '_' + c.trimestre;
     try { if(localStorage.getItem(clave)) return null; } catch(e){}
-    const t = el('<div class="card carta-aviso"><p style="font-weight:800;margin:0 0 6px">✉️ Tu yo del pasado te escribió una carta</p><p style="margin:0 0 8px">Empieza un trimestre nuevo: es tiempo de cosechar lo que sembraste y de volver a sembrar. Léela: es de ti, para ti.</p><details><summary>Abrir la carta</summary>' + cartaLeidaHTML(c) + '</details><button type="button" class="carta-btn-sec">Ya la he leído</button></div>').firstElementChild;
+    const t = el('<div class="card carta-aviso"><p style="font-weight:800;margin:0 0 6px">✉️ Tu yo del pasado te dejó una nota</p><p style="margin:0 0 8px">Empieza un trimestre nuevo: es tiempo de cosechar lo que sembraste y de volver a sembrar. Léela: es de ti, para ti.</p><details><summary>Abrir la nota</summary>' + cartaLeidaHTML(c) + '</details><button type="button" class="carta-btn-sec">Ya la he leído</button></div>').firstElementChild;
     t.querySelector('details').addEventListener('toggle', ev => { if(ev.target.open && typeof sonarSintonia === 'function') sonarSintonia(15, 0.5); });
     t.querySelector('button').onclick = () => { try { localStorage.setItem(clave, '1'); } catch(e){} t.remove(); };
     return t;
@@ -8532,4 +8599,4 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V11.66 · App Metas Amables · 2026-10-08 13:39==== -->
+<!-- ==== Fin del index V11.67 · App Metas Amables · 2026-10-08 13:50==== -->
