@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V11.67 · App Metas Amables · 2026-10-08 13:50==== -->
+<!-- ==== index V11.68 · App Metas Amables · 2026-10-08 15:05==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1098,7 +1098,7 @@ body.theme-dark .guia-progreso{background:var(--surface)}
 .tour-foco{position:fixed;border-radius:18px;box-shadow:0 0 0 9999px rgba(20,10,40,.62);outline:3px solid #F2C14E;transition:left .3s,top .3s,width .3s,height .3s;pointer-events:none}
 .tour-globo{position:fixed;left:50%;transform:translateX(-50%);width:min(420px,calc(100% - 32px));background:#fff;border-radius:18px;padding:14px 16px;box-shadow:0 8px 30px rgba(0,0,0,.3);font:15.5px/1.45 Karla,sans-serif;color:#101010;transition:top .3s}
 .tour-globo .tt{display:block;font:700 18px Lora,serif;color:#5B3A9E;margin-bottom:4px}
-.tour-pie{display:flex;align-items:center;gap:10px;margin-top:12px}.tour-n{font-size:13px;color:#777}.tour-saltar{margin-left:auto;background:none;border:0;color:#777;text-decoration:underline;font:inherit;cursor:pointer}.tour-sig{background:#7B5FB8;color:#fff;border:0;border-radius:12px;padding:9px 16px;font:800 15px Karla,sans-serif;cursor:pointer}
+.tour-pie{display:flex;align-items:center;gap:10px;margin-top:12px}.tour-n{font-size:13px;color:#777;margin-right:auto}.tour-saltar{margin-left:auto;background:none;border:0;color:#777;text-decoration:underline;font:inherit;cursor:pointer}.tour-sig{background:#7B5FB8;color:#fff;border:0;border-radius:12px;padding:9px 16px;font:800 15px Karla,sans-serif;cursor:pointer}
 .planta-meta{display:block;margin:3px 0 0;font:italic 600 14.5px/1.35 Lora,serif;color:#4F7A43}
 .util-nov{display:flex;align-items:center;gap:10px;width:100%;margin:14px 0 0;padding:12px 16px;border:2px solid #101010;border-radius:16px;background:#FFF6DC;font:inherit;color:#101010;text-align:left;cursor:pointer}.util-nov b{display:block;font-size:16px}.util-nov small{display:block;color:var(--ink-soft);font-size:13px}.util-nov .opcion-flecha{margin-left:auto;font-size:22px}
 .nov-lista{display:block}.nov-ver{margin:0 0 14px;padding:14px 16px}.nov-ver h3{margin:0 0 2px;font:700 18px Lora,serif;color:#2F5A23}.nov-ver .nov-fecha{display:block;margin:0 0 8px;font-size:13px;color:var(--ink-soft)}.nov-ver ul{margin:0;padding-left:20px}.nov-ver li{margin:0 0 6px;line-height:1.45}
@@ -1955,7 +1955,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V11.67';
+  const APP_VERSION = 'V11.68';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -2204,8 +2204,9 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     try{ marca = localStorage.getItem('ma_alta_' + state.me) || '1'; if(localStorage.getItem('tour_' + state.me) !== 'visto') localStorage.setItem('tour_' + state.me, 'pendiente'); }catch(e){}
     const nombre = String(state.me || '').split(' ')[0];
     const paso = [1, 2, 3, 4, 5].includes(state.altaPaso) ? state.altaPaso : 1;
-    // La música oficial suena al ver crecer la planta (pantalla 3): unos segundos y se apaga suave
-    if(paso === 3 && !state.sintoniaAlta){ state.sintoniaAlta = true; sonarSintonia(4); }
+    // La música oficial suena al ver crecer la planta (pantalla 3) mientras se esté en ella; al pasar de pantalla se apaga suave
+    if(paso === 3 && !sintoniaSonando()){ state.sintoniaAlta = true; sonarSintonia(0, 0.8); }
+    if(paso !== 3 && state.sintoniaAlta){ state.sintoniaAlta = false; apagarSintoniaSuave(2500); }
     // Cada pantalla con su muñeco: saludo, escribiendo (registro de los lunes) y pizarra (formulario)
     const figura = { 1: ['saludo', 130], 5: ['pizarra', 190] }[paso];
     // Pantallas en blanco, a pantalla completa, con las colinas moradas abajo; textos sin recuadro
@@ -3260,6 +3261,12 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     if(sintonia){ sintonia.pause(); sintonia.loop = false; }
   }
   function sintoniaSonando(){ return !!(sintonia && !sintonia.paused); }
+  function apagarSintoniaSuave(ms){
+    if(!sintoniaSonando()) return;
+    if(sintoniaReloj){ clearInterval(sintoniaReloj); sintoniaReloj = null; }
+    const v0 = sintonia.volume, fin = Date.now() + ms;
+    sintoniaReloj = setInterval(() => { const queda = fin - Date.now(); if(queda <= 0) pararSintonia(); else sintonia.volume = Math.max(0, v0 * queda / ms); }, 100);
+  }
   function sonarSintonia(segundos, volumen){
     try{
       const vol = volumen || 0.8;
@@ -3718,14 +3725,12 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     const PASOS = [
       { s: '.ciclo-meta', t: '1 · Siembra tu meta', x: 'Empieza por aquí: rellena el formulario con <b>una meta importante para ti</b> este trimestre. Con tus respuestas preparamos tu guía.' },
       { s: '.ciclo-a', t: '2 · Lee tu guía semanal', x: 'Cada semana te llega una guía con prácticas pequeñas. Léela con calma, o escúchala con 🔊 Oír.' },
-      { s: '.ciclo-b', t: '3 · Riega tu meta', x: 'Aquí está tu práctica de la semana. <b>Marca cada día que la hagas</b>: así riegas tu meta 💧' },
-      { s: '.planta-card', t: 'Tu meta es una planta 🌱', x: 'Si la riegas cada día, crece. Si no, se va marchitando… pero siempre puede volver a brotar.' },
-      { s: '.ciclo-c', t: '4 · Grupo de apoyo', x: 'Cada lunes registras tu compromiso y cada 15 días hay sesión en grupo. Juntos se llega más lejos.' },
-      { s: '.tabbar', t: 'Y abajo, el resto', x: '<b>Viaje</b>: tus pasos del trimestre. <b>Progreso</b>: cómo vas. <b>Utilidades</b>: habla con Prácti, formación, frases y música.' }
+      { s: '.ciclo-b', t: '3 · Riega tu meta', x: 'Aquí está tu práctica de la semana. <b>Marca cada día que la hagas</b>: así riegas tu meta 💧' }
+
     ].filter(p => document.querySelector(p.s));
     if(!PASOS.length) return;
     document.querySelectorAll('.tour-capa').forEach(c => c.remove());
-    const capa = el('<div class="tour-capa" role="dialog" aria-label="Cómo se usa la app"><div class="tour-foco"></div><div class="tour-globo"><b class="tt"></b><div class="tour-tx"></div><div class="tour-pie"><span class="tour-n"></span><button type="button" class="tour-saltar">Saltar</button><button type="button" class="tour-sig"></button></div></div></div>').firstElementChild;
+    const capa = el('<div class="tour-capa" role="dialog" aria-label="Cómo se usa la app"><div class="tour-foco"></div><div class="tour-globo"><b class="tt"></b><div class="tour-tx"></div><div class="tour-pie"><span class="tour-n"></span><button type="button" class="tour-sig"></button></div></div></div>').firstElementChild;
     document.body.appendChild(capa);
     const foco = capa.querySelector('.tour-foco'), globo = capa.querySelector('.tour-globo');
     let i = 0;
@@ -3743,11 +3748,10 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       globo.querySelector('.tour-n').textContent = (i + 1) + ' de ' + PASOS.length;
       globo.querySelector('.tour-sig').textContent = i < PASOS.length - 1 ? 'Siguiente →' : '¡Entendido!';
       const obj = document.querySelector(p.s);
-      if(obj && p.s !== '.tabbar') obj.scrollIntoView({ block: 'center', behavior: 'smooth' });
+      if(obj) obj.scrollIntoView({ block: 'center', behavior: 'smooth' });
       colocar(); setTimeout(colocar, 450);
     };
     const cerrar = () => { capa.remove(); window.removeEventListener('resize', colocar); window.removeEventListener('scroll', colocar); };
-    capa.querySelector('.tour-saltar').onclick = cerrar;
     capa.querySelector('.tour-sig').onclick = () => { if(i < PASOS.length - 1){ i++; pintar(); } else cerrar(); };
     window.addEventListener('resize', colocar); window.addEventListener('scroll', colocar, { passive: true });
     pintar();
@@ -8599,4 +8603,4 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V11.67 · App Metas Amables · 2026-10-08 13:50==== -->
+<!-- ==== Fin del index V11.68 · App Metas Amables · 2026-10-08 15:05==== -->
