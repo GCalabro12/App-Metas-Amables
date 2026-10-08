@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V11.77 · App Metas Amables · 2026-10-08 18:28==== -->
+<!-- ==== index V11.78 · App Metas Amables · 2026-10-08 18:31==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -15,7 +15,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="application-name" content="Metas Amables">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600;700&family=Karla:wght@400;500;700&family=UnifrakturMaguntia&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Karla:wght@400;500;600;700;800&family=UnifrakturMaguntia&display=swap" rel="stylesheet">
 <style>
   /* Sin el recuadro azul que Android pinta al tocar */
   *{ -webkit-tap-highlight-color: transparent; }
@@ -43,7 +43,8 @@
     --honey-tint: #3A2F1A;
   }
   *{ box-sizing: border-box; }
-  html,body{ margin:0; padding:0; }
+  html,body{ margin:0; padding:0; font-family:'Karla',sans-serif; }
+button, input, textarea, select{ font-family:inherit; }
   body{
     background: var(--bg);
     color: var(--ink);
@@ -1332,7 +1333,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 .juego-overlay{position:fixed;inset:0;z-index:9999;background:#111;-webkit-tap-highlight-color:transparent;display:flex;flex-direction:column}
 .juego-overlay iframe{flex:1;width:100%;border:0;display:block}
 .juego-cerrar{position:absolute;top:calc(12px + env(safe-area-inset-top));left:12px;z-index:2}
-.juego-girar{position:absolute;top:calc(12px + env(safe-area-inset-top));right:12px;z-index:2;padding:10px 14px;border-radius:12px;border:2px solid #fff;background:#222;color:#fff;font:600 15px Fredoka,sans-serif;cursor:pointer}
+.juego-girar{position:absolute;top:calc(12px + env(safe-area-inset-top));right:12px;z-index:2;padding:10px 14px;border-radius:12px;border:2px solid #fff;background:#222;color:#fff;font:600 15px Karla,sans-serif;cursor:pointer}
 .plan-precio-paren{font-weight:600;font-size:.88em;opacity:.85;white-space:nowrap}
 .plan-nota{font-size:12.5px;color:var(--ink-soft);margin:-2px 0 8px;line-height:1.4}
   .interruptor{position:relative;display:inline-block;width:46px;height:26px;flex-shrink:0}
@@ -1984,7 +1985,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V11.77';
+  const APP_VERSION = 'V11.78';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -3907,7 +3908,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       if(p){ const sx = 40, sw = 180, sh = 636, h = H*0.52, w = sw*h/sh; x.drawImage(p, sx, 0, sw, sh, W*0.06, H*0.885 - h, w, h); }
     }
     x.restore();
-    const tam = Math.round(W/12); x.font = '600 ' + tam + 'px Fredoka, Karla, sans-serif'; x.textAlign = 'center';
+    const tam = Math.round(W/12); x.font = '600 ' + tam + 'px Karla, sans-serif'; x.textAlign = 'center';
     const lineas = partirLineas(x, frase, W*0.8), alto = lineas.length * tam * 1.25;
     // En las dos de Prácti la frase va arriba, sobre la pared, para no taparle
     const y0 = foto ? ((fondoId === 'practi' || fondoId === 'hogar') ? H*0.1 + tam : H*0.45 - alto/2 + tam) : H*0.07 + tam;
@@ -3915,7 +3916,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     lineas.forEach((l, i) => x.fillText(l, W/2, y0 + i*tam*1.25));
     x.shadowBlur = 0;
     // Botón con el enlace a la web
-    const et = '🌱 metasamables.club'; x.font = '600 ' + Math.round(W/24) + 'px Fredoka, Karla, sans-serif';
+    const et = '🌱 metasamables.club'; x.font = '600 ' + Math.round(W/24) + 'px Karla, sans-serif';
     const ew = x.measureText(et).width + W*0.09, eh = W/12, ex = foto ? (W-ew)/2 : Math.min(W*0.97 - ew, W*0.63 - ew/2), ey = Math.min(H*0.75 - eh, Math.max(H*0.64, y0 + (lineas.length - 1)*tam*1.25 + tam*0.9));
     x.fillStyle = 'rgba(255,255,255,0.88)'; x.strokeStyle = '#101010'; x.lineWidth = foto ? 0 : Math.max(3, W/220);
     x.beginPath(); x.roundRect ? x.roundRect(ex, ey, ew, eh, eh/2) : x.rect(ex, ey, ew, eh); x.fill(); if(!foto) x.stroke();
@@ -6472,7 +6473,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   try {
     init();
   } catch(err){
-    app.innerHTML = '<div style="padding:24px;font-family:sans-serif">No se pudo iniciar la app: ' + (err && err.message ? err.message : err) + '</div>';
+    app.innerHTML = '<div style="padding:24px;font-family:Karla,sans-serif">No se pudo iniciar la app: ' + (err && err.message ? err.message : err) + '</div>';
   }
 
   // Instalar en la pantalla de inicio. En Android (Chrome) el navegador nos deja
@@ -8756,4 +8757,4 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V11.77 · App Metas Amables · 2026-10-08 18:28==== -->
+<!-- ==== Fin del index V11.78 · App Metas Amables · 2026-10-08 18:31==== -->
