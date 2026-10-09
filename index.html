@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V11.80 · App Metas Amables · 2026-10-09 19:29==== -->
+<!-- ==== index V11.81 · App Metas Amables · 2026-10-09 23:39==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1985,7 +1985,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V11.80';
+  const APP_VERSION = 'V11.81';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -7328,7 +7328,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     if(!meta) gBloq = 'Aún no desbloqueado';
     else if(!guiaHecha && libre > ahora){ const fl = new Date(libre); gBloq = 'Disponible ' + (fl.getDate() === new Date().getDate() ? 'hoy' : 'mañana') + ' a las ' + String(fl.getHours()).padStart(2, '0') + ':' + String(fl.getMinutes()).padStart(2, '0'); }
     else if(!state.guiaTexto) gBloq = 'Tu guía está en camino';
-    pasos.push({ id: 'guia', titulo: vistaAlguna ? 'Lee tu guía de esta semana' : 'Lee tu guía', hecho: guiaHecha, bloqueo: guiaHecha ? '' : gBloq, sub: guiaHecha ? 'Leída' : 'Tu guía personalizada te espera' });
+    pasos.push({ id: 'guia', titulo: 'Guía semanal', hecho: guiaHecha, bloqueo: guiaHecha ? '' : gBloq, sub: guiaHecha ? 'Leída' : 'Tu guía personalizada te espera' });
     const contrato = !!contratoGuardado();
     const finTrim = finTrimestreActual();
     pasos.push({ id: 'contrato', titulo: 'Compromiso trimestral', hecho: contrato, plan: plan1 ? '' : '👑 Plan Guías', bloqueo: (contrato || vistaAlguna) ? '' : 'Aún no desbloqueado', sub: contrato ? 'Sellado hasta el ' + fechaCorta(finTrim) + ' ' + finTrim.getFullYear() : 'Siembra tu meta con tu sello' });
@@ -8757,4 +8757,4 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V11.80 · App Metas Amables · 2026-10-09 19:29==== -->
+<!-- ==== Fin del index V11.81 · App Metas Amables · 2026-10-09 23:39==== -->
