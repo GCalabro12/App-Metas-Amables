@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V11.81 · App Metas Amables · 2026-10-09 23:39==== -->
+<!-- ==== index V11.82 · App Metas Amables · 2026-10-10 01:17==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1129,6 +1129,15 @@ body.riego-abierto{overflow:hidden}
 .av-card{padding:12px 16px}.av-fila{display:flex;align-items:center;gap:10px}.av-tit{flex:1;font-weight:700;cursor:pointer}.av-flecha{font-size:13px;color:var(--ink-soft)}.av-estado{font-size:13px;color:var(--ink-soft)}
 .av-switch{position:relative;flex:none;width:50px;height:28px;padding:0;border:0;border-radius:14px;background:#C9C9C9;cursor:pointer;transition:background .2s}.av-switch span{position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.3);transition:left .2s}.av-switch.on{background:#8E2B2B}.av-switch.on span{left:25px}
 .av-detalle p{margin:8px 0 6px;font-size:14px;line-height:1.45}.av-prueba{background:none;border:0;padding:0;color:#8E2B2B;text-decoration:underline;font:600 14px Karla,sans-serif;cursor:pointer}
+.ritual-card{background:#FFF8E6 !important;border:2px solid #F2C14E;padding:14px 16px}
+.ritual-tit{margin:0 0 4px;font:700 18px Lora,serif;color:#7A5200}
+.ritual-practica{margin:0 0 6px;font:italic 600 15px/1.35 Lora,serif;color:#4F7A43}
+.ritual-tx{margin:0 0 10px;font-size:15px;line-height:1.45}
+.ritual-ops{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.ritual-op{padding:9px 6px;line-height:1.25;border:2px solid #F2C14E;border-radius:12px;background:#fff;font:700 14.5px Karla,sans-serif;color:#7A5200;cursor:pointer}
+.ritual-otro{display:flex;gap:8px;margin-top:8px}.ritual-otro input{flex:1;min-width:0;padding:9px 12px;border:1px solid #E2D3A8;border-radius:10px;font:inherit;font-size:14.5px;background:#fff}
+.ritual-otro button{padding:9px 14px;border:0;border-radius:10px;background:#F2C14E;color:#2B1B00;font:800 14px Karla,sans-serif;cursor:pointer}
+.ritual-cambiar{background:none;border:0;padding:0;color:#7A5200;text-decoration:underline;font:600 13.5px Karla,sans-serif;cursor:pointer}
 .planta-meta{display:block;margin:3px 0 0;font:italic 600 14.5px/1.35 Lora,serif;color:#4F7A43}
 .util-nov{display:flex;align-items:center;gap:10px;width:100%;margin:14px 0 0;padding:12px 16px;border:2px solid #101010;border-radius:16px;background:#FFF6DC;font:inherit;color:#101010;text-align:left;cursor:pointer}.util-nov b{display:block;font-size:16px}.util-nov small{display:block;color:var(--ink-soft);font-size:13px}.util-nov .opcion-flecha{margin-left:auto;font-size:22px}
 .nov-lista{display:block}.nov-ver{margin:0 0 14px;padding:14px 16px}.nov-ver h3{margin:0 0 2px;font:700 18px Lora,serif;color:#2F5A23}.nov-ver .nov-fecha{display:block;margin:0 0 8px;font-size:13px;color:var(--ink-soft)}.nov-ver ul{margin:0;padding-left:20px}.nov-ver li{margin:0 0 6px;line-height:1.45}
@@ -1985,7 +1994,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V11.81';
+  const APP_VERSION = 'V11.82';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -3710,6 +3719,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
+    { v: 'V11.82', f: '10 de octubre de 2026', n: [
+      '<b>Tu minuto de la mañana</b>: hasta las 12, en Inicio decides cuándo harás hoy tu práctica (al levantarte, después de comer, por la tarde u otro momento). Cuando llega la hora, ya está decidido.' ] },
     { v: 'V11.76', f: '8 de octubre de 2026', n: [
       'Las notas a tu yo, una vez guardadas, quedan cerradas hasta su día: <b>la sorpresa</b> es leerlas cuando llegue.',
       'Los pasos del Viaje también van en MAYÚSCULAS.' ] },
@@ -5567,6 +5578,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
         const avisos = tarjetasPlanHTML();
         if(avisos){ const a = el('<div class="avisos-plan">' + avisos + '</div>').firstElementChild; app.appendChild(a); activarTarjetasPlan(a); }
         try { const sp = tarjetaSiguientePaso(); if(sp) app.appendChild(sp); } catch(e){}
+        try { const mm = tarjetaMinutoManana(); if(mm) app.appendChild(mm); } catch(e){}
         try { const tp = tarjetaPlanta(); if(tp) app.appendChild(tp); } catch(e){}
         try { const zv = document.createElement('div'); app.appendChild(zv); tarjetaVozPendiente(zv); } catch(e){}
         const opciones = document.createElement('div');
@@ -7618,6 +7630,37 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     vozDescargar(isoLocal(lunes)).then(url => { if(url && !rec) pintar('guardado'); }).catch(() => {});
     return card;
   }
+  // ===== Minuto de la mañana (idea de HabitatZero): hasta las 12, si aún no has regado, decides CUÁNDO harás hoy tu práctica =====
+  // Es la intención de implementación de la historia 1: con el momento decidido, cuesta mucho menos hacerla
+  function claveRitual(){ return 'ritual_' + state.me + '_' + hoyISO(); }
+  const MOMENTOS_RITUAL = [['☀️ Al levantarme', 'al levantarte'], ['🍽 Después de comer', 'después de comer'], ['🌇 Por la tarde', 'por la tarde']];
+  function tarjetaMinutoManana(){
+    if(!state.me || diaHechoFecha(new Date()) > 0) return null;
+    let elegido = ''; try { elegido = localStorage.getItem(claveRitual()) || ''; } catch(e){}
+    if(!elegido && new Date().getHours() >= 12) return null;
+    const practica = String(textosCiclo().practica || '').trim();
+    const c = document.createElement('div'); c.className = 'card ritual-card';
+    const pintar = () => {
+      if(elegido){
+        c.innerHTML = '<p class="ritual-tit">☀️ Ya lo has decidido</p><p class="ritual-tx">Hoy harás tu práctica <b>' + escapeAttr(elegido) + '</b>. Cuando llegue ese momento, solo tienes que hacerla 🌱</p><button type="button" class="ritual-cambiar">Cambiar el momento</button>';
+        c.querySelector('.ritual-cambiar').onclick = () => { elegido = ''; try { localStorage.removeItem(claveRitual()); } catch(e){} pintar(); };
+        return;
+      }
+      c.innerHTML = '<p class="ritual-tit">☀️ Tu minuto de la mañana</p>'
+        + (practica ? '<p class="ritual-practica">«' + escapeAttr(practica.length > 90 ? practica.slice(0, 89) + '…' : practica) + '»</p>' : '')
+        + '<p class="ritual-tx"><b>¿Cuándo la harás hoy?</b></p>'
+        + '<div class="ritual-ops">' + MOMENTOS_RITUAL.map(m => '<button type="button" class="ritual-op" data-m="' + m[1] + '">' + m[0] + '</button>').join('') + '</div>'
+        + '<div class="ritual-otro"><input type="text" maxlength="60" placeholder="Otro momento: después del café…" aria-label="Otro momento"><button type="button">OK</button></div>';
+      const elegir = m => { m = String(m || '').trim(); if(!m) return; elegido = m; try { localStorage.setItem(claveRitual(), m); } catch(e){} try { sonidoTing(); } catch(e){} pintar(); };
+      c.querySelectorAll('.ritual-op').forEach(b => b.onclick = () => elegir(b.dataset.m));
+      const inp = c.querySelector('.ritual-otro input');
+      c.querySelector('.ritual-otro button').onclick = () => elegir(inp.value);
+      inp.onkeydown = ev => { if(ev.key === 'Enter') elegir(inp.value); };
+    };
+    pintar();
+    return c;
+  }
+
   // ===== Momento de regar: pantalla completa para marcar la práctica de hoy (idea de los recordatorios de Fabulous) =====
   // Escena casi quieta con 2 o 3 detalles que se mueven (sol, mariposa, brillos), un consejo de una línea y un solo botón
   const CONSEJOS_RIEGO = [
@@ -7633,7 +7676,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     let meta = ''; try { meta = metaFinalViaje().texto; } catch(err){}
     if(meta.length > 80) meta = meta.slice(0, 79) + '…';
     let receta = ''; try { receta = recetaTexto(historiaGuardada('brecha')); } catch(err){}
-    const consejo = receta ? 'Tu receta: «' + receta + '»' : CONSEJOS_RIEGO[new Date().getDate() % CONSEJOS_RIEGO.length];
+    let cuando = ''; try { cuando = localStorage.getItem(claveRitual()) || ''; } catch(err){}
+    const consejo = cuando ? 'Esta mañana decidiste hacerla ' + cuando + '. ¡Es el momento! 🌱' : receta ? 'Tu receta: «' + receta + '»' : CONSEJOS_RIEGO[new Date().getDate() % CONSEJOS_RIEGO.length];
     const hecho = diaHechoFecha(new Date()) > 0, e = estadoPlanta();
     const capa = el('<div class="riego-capa" role="dialog" aria-label="Riega tu meta">'
       + '<button type="button" class="riego-cerrar" aria-label="Cerrar">✕</button><button type="button" class="riego-son" aria-label="Música">🔈</button>'
@@ -8757,4 +8801,4 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V11.81 · App Metas Amables · 2026-10-09 23:39==== -->
+<!-- ==== Fin del index V11.82 · App Metas Amables · 2026-10-10 01:17==== -->
