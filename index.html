@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V11.85 · App Metas Amables · 2026-10-10 14:05==== -->
+<!-- ==== index V11.86 · App Metas Amables · 2026-10-10 14:09==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1105,6 +1105,7 @@ body.riego-abierto{overflow:hidden}
 .riego-capa{position:fixed;inset:0;z-index:9500;display:flex;flex-direction:column;align-items:center;padding:60px 22px 28px;background:linear-gradient(180deg,#CFE8F7 0%,#EAF6E4 55%,#D9EFCB 100%);overflow-y:auto;text-align:center;font-family:Karla,sans-serif;color:#1F3A18}
 .riego-cerrar,.riego-son{position:absolute;top:14px;width:42px;height:42px;border-radius:50%;border:0;background:rgba(255,255,255,.8);font-size:19px;cursor:pointer;color:#2F5A23}
 .riego-cerrar{left:14px}.riego-son{right:14px}
+.riego-ir{position:absolute;top:14px;left:64px;height:42px;padding:0 16px;border-radius:21px;border:0;background:rgba(255,255,255,.8);font:800 14px Karla,sans-serif;color:#2F5A23;cursor:pointer}
 .riego-tit{margin:0 0 4px;font:700 clamp(22px,6.5vw,30px)/1.2 Lora,serif;color:#2F5A23}
 .riego-meta{margin:0 0 6px;font:italic 600 15px/1.35 Lora,serif;color:#4F7A43}
 .riego-escena{position:relative;width:min(300px,78vw);margin:12px auto 6px;flex:none}
@@ -2020,7 +2021,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V11.85';
+  const APP_VERSION = 'V11.86';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -7880,7 +7881,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     const consejo = cuando ? 'Esta mañana decidiste hacerla ' + cuando + '. ¡Es el momento! 🌱' : receta ? 'Tu receta: «' + receta + '»' : CONSEJOS_RIEGO[new Date().getDate() % CONSEJOS_RIEGO.length];
     const hecho = diaHechoFecha(new Date()) > 0, e = estadoPlanta();
     const capa = el('<div class="riego-capa" role="dialog" aria-label="Riega tu meta">'
-      + '<button type="button" class="riego-cerrar" aria-label="Cerrar">✕</button><button type="button" class="riego-son" aria-label="Música">🔈</button>'
+      + '<button type="button" class="riego-cerrar" aria-label="Cerrar">✕</button><button type="button" class="riego-ir">Ir a Metas Amables</button><button type="button" class="riego-son" aria-label="Música">🔈</button>'
       + '<h2 class="riego-tit">' + escapeAttr(practica || 'Tu práctica de hoy') + '</h2>'
       + (meta ? '<p class="riego-meta">🌱 «' + escapeAttr(meta) + '»</p>' : '')
       + '<div class="riego-escena"><span class="riego-sol"></span><span class="riego-mariposa">🦋</span><span class="riego-brillo b1"></span><span class="riego-brillo b2"></span><span class="riego-brillo b3"></span>'
@@ -7891,8 +7892,10 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     document.body.appendChild(capa);
     document.body.classList.add('riego-abierto');
     const quitar = () => { capa.remove(); document.body.classList.remove('riego-abierto'); try { apagarSintoniaSuave(1200); } catch(err){} };
-    const cerrar = () => { quitar(); if(state.view === 'panel') render(); };
+    // ✕ e «Ir a Metas Amables» hacen lo mismo: cerrar y volver a Inicio
+    const cerrar = () => { quitar(); state.view = 'panel'; state.panelSub = null; window.scrollTo(0, 0); render(); };
     capa.querySelector('.riego-cerrar').onclick = cerrar;
+    capa.querySelector('.riego-ir').onclick = cerrar;
     capa.querySelector('.riego-cal').onclick = () => { quitar(); irCalendario(); };
     const son = capa.querySelector('.riego-son');
     son.onclick = () => { if(sintoniaSonando()){ apagarSintoniaSuave(800); son.textContent = '🔈'; } else { sonarSintonia(0, 0.5); son.textContent = '🔊'; } };
@@ -9001,4 +9004,4 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V11.85 · App Metas Amables · 2026-10-10 14:05==== -->
+<!-- ==== Fin del index V11.86 · App Metas Amables · 2026-10-10 14:09==== -->
