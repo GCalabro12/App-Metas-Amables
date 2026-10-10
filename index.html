@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V11.97 · App Metas Amables · 2026-10-10 16:27==== -->
+<!-- ==== index V11.98 · App Metas Amables · 2026-10-10 16:31==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2031,7 +2031,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V11.97';
+  const APP_VERSION = 'V11.98';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -3677,6 +3677,11 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     if(n.length < 9) return false;
     return !(/^(\d)\1+$/.test(n.slice(1)) || /12345678|23456789|98765432|87654321/.test(n));
   }
+  // Fecha en que se escribió a la persona: «10/oct/2026»
+  function fechaEnvio(iso){
+    const m = String(iso || '').match(/^(\d{4})-(\d{2})-(\d{2})/);
+    return m ? m[3] + '/' + ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'][Number(m[2]) - 1] + '/' + m[1] : '';
+  }
   function planEtiqueta(x){
     const hasta = x.planHasta ? ' hasta ' + x.planHasta.slice(8, 10) + '/' + x.planHasta.slice(5, 7) : '';
     return (PLAN_CORTO[x.plan] || '') + (x.planTipo === 'prueba' ? ' · prueba gratis' + hasta : x.planTipo === 'regalo' ? ' · regalo tester' + hasta : '');
@@ -3738,7 +3743,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
         ${x.aceptaWhatsApp ? '<p class="pf-ok-wa">✅ Ha activado los mensajes por WhatsApp</p>' : '<p class="pf-aviso">⚠️ No ha activado los mensajes por WhatsApp en la app</p>'}
         <p style="margin:12px 0 4px;font-size:14px">🎯 <b>Meta:</b> ${x.meta ? escapeAttr(x.meta) : '<span class="pf-gris">sin meta escrita</span>'}</p>
         ${x.practica ? `<p style="margin:0 0 4px;font-size:14px">🏃 <b>Práctica:</b> ${escapeAttr(x.practica)}</p>` : ''}
-        <p style="margin:0;font-size:14px">💧 ${escapeAttr(textoRiego(x))}${x.contactado ? ' · le escribiste el ' + escapeAttr(x.contactado.slice(8, 10) + '/' + x.contactado.slice(5, 7)) : ''}</p>
+        <p style="margin:0;font-size:14px">💧 ${escapeAttr(textoRiego(x))}${x.contactado ? ' · le escribiste el ' + escapeAttr(fechaEnvio(x.contactado)) : ''}</p>
       </div>
       <div class="card"><p class="pf-sub" style="margin-top:0">🗓️ Sus últimas semanas</p>${sem.length ? sem.map(fila).join('') : '<p class="pf-gris" style="margin:0">Todavía no tiene semanas registradas.</p>'}</div>
       <div class="card"><p class="pf-sub" style="margin-top:0">🔒 Tu nota privada <span class="pf-gris" style="font-weight:400">(solo la ves tú)</span></p>
@@ -3765,7 +3770,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
   // Filas de personas (se tocan para abrir su ficha)
   function filasPersonasHTML(lista){
-    return lista.map(x => `<div class="pf-fila" data-nombre="${escapeAttr(x.nombre)}" role="button" tabindex="0"><span class="pf-fn"><b>${escapeAttr(x.nombre)}</b><small>${escapeAttr(planEtiqueta(x))}${x.usaPlay ? ' · 📱 Play' : ''}${x.contactado ? ' · ✉️ ' + escapeAttr(x.contactado.slice(8, 10) + '/' + x.contactado.slice(5, 7)) : ''}${x.silenciado ? ' · ❌' : ''}</small></span>
+    return lista.map(x => `<div class="pf-fila" data-nombre="${escapeAttr(x.nombre)}" role="button" tabindex="0"><span class="pf-fn"><b>${escapeAttr(x.nombre)}</b><small>${escapeAttr(planEtiqueta(x))}${x.usaPlay ? ' · 📱 Play' : ''}${x.contactado ? ' · ✉️ ' + escapeAttr(fechaEnvio(x.contactado)) : ''}${x.silenciado ? ' · ❌' : ''}</small></span>
         <span class="pf-fr${x.diasSinRegar === null || x.diasSinRegar >= 3 ? ' alerta' : ''}">${x.diasSinRegar === null ? 'nunca' : (x.diasSinRegar === 0 ? 'hoy' : (x.diasSinRegar === 1 ? 'ayer' : 'hace ' + x.diasSinRegar + ' d'))}<small>${x.diasEstaSemana} ${x.diasEstaSemana === 1 ? 'día' : 'días'} esta sem.</small></span>
         <span class="pf-fl" title="Registro del lunes">${x.lunesHecho ? '✓' : '—'}</span><span class="pf-ir">›</span></div>`).join('');
   }
@@ -3848,7 +3853,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
         const texto = 'Hola ' + pila + ', soy ' + firma + ', tu facilitador en Metas Amables 🌱 Hace unos días que no riegas tu meta en la app y quería saber qué tal vas. Si te ha surgido algo, cuéntame y lo ajustamos para que te resulte más fácil.\n\n👉 Riega tu meta aquí: ' + ENLACE_REGAR + '\n\nSi prefieres que no te escriba por aquí, dímelo sin problema.\nUn abrazo, ' + firma;
         return `<div class="card pf-tarea">
           <p class="pf-quien"><b>${escapeAttr(x.nombre)}</b> · ${escapeAttr(planEtiqueta(x))}</p>
-          <p class="pf-dato">${escapeAttr(textoRiego(x))}${x.contactado ? ' · le escribiste el ' + escapeAttr(x.contactado.slice(8, 10) + '/' + x.contactado.slice(5, 7)) : ''}</p>
+          <p class="pf-dato">${escapeAttr(textoRiego(x))}${x.contactado ? ' · le escribiste el ' + escapeAttr(fechaEnvio(x.contactado)) : ''}</p>
           ${x.aceptaWhatsApp ? '' : '<p class="pf-aviso" style="margin:-4px 0 8px">⚠️ No ha activado los mensajes por WhatsApp en la app: mejor un mensaje breve y amable, o espera a la sesión.</p>'}
           <div class="pf-acciones">${telValido(x.tel) ? `<a class="pf-btn wa" href="${wa(x.tel, texto)}" target="_blank" rel="noopener">📲 Escribir por WhatsApp</a>` : '<span class="pf-aviso">Su teléfono parece inventado (' + escapeAttr(x.tel) + '): no se le puede escribir por WhatsApp</span>'}
           <button type="button" class="pf-btn" data-contacto="${i}">✓ Hecho</button></div></div>`;
@@ -9122,4 +9127,4 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V11.97 · App Metas Amables · 2026-10-10 16:27==== -->
+<!-- ==== Fin del index V11.98 · App Metas Amables · 2026-10-10 16:31==== -->
