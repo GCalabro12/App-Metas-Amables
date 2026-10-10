@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V11.84 · App Metas Amables · 2026-10-10 13:58==== -->
+<!-- ==== index V11.85 · App Metas Amables · 2026-10-10 14:05==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2020,7 +2020,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V11.84';
+  const APP_VERSION = 'V11.85';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -3791,6 +3791,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
         <span class="pf-fl" title="Registro del lunes">${x.lunesHecho ? '✓' : '—'}</span><span class="pf-ir">›</span></div>`).join('')}
       <p class="pf-gris" style="margin:8px 0 0;font-size:12px">Último riego · días regados esta semana · ✓ = registro del lunes hecho. Toca a una persona para ver su ficha.</p></div>`;
     h += `<button type="button" class="pf-btn pf-actualizar" id="pfActualizar">${p.cargando ? 'Actualizando…' : '🔄 Actualizar'}</button>`;
+    h += `<button type="button" class="link-quiet" id="pfTelegram" style="display:block;margin:-12px auto 20px;font-size:13.5px">📨 Mandarme ahora el resumen a Telegram</button>`;
     app.appendChild(el(h));
     const hecho = async (b, cuerpo, quitar) => {
       b.disabled = true; b.textContent = '…';
@@ -3815,6 +3816,12 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     });
     app.querySelectorAll('[data-ficha]').forEach(f => f.onclick = () => { state.pfPersona = gente[Number(f.dataset.ficha)].nombre; window.scrollTo(0, 0); render(); });
     app.querySelector('#pfActualizar').onclick = () => cargarPanelFac(true);
+    const bt = app.querySelector('#pfTelegram');
+    bt.onclick = async () => {
+      bt.disabled = true; bt.textContent = 'Enviando…';
+      try { await api('/panel/resumen-telegram', {}); bt.textContent = '✓ Enviado: míralo en Telegram'; }
+      catch(e){ bt.disabled = false; bt.textContent = '📨 Mandarme ahora el resumen a Telegram'; avisoBreve(mensajeError(e, 'No se pudo enviar. Inténtalo de nuevo.')); }
+    };
   }
 
   // Formulario trimestral enviado hace menos de 100 días (lo apunta el script de la hoja)
@@ -8994,4 +9001,4 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V11.84 · App Metas Amables · 2026-10-10 13:58==== -->
+<!-- ==== Fin del index V11.85 · App Metas Amables · 2026-10-10 14:05==== -->
