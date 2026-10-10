@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V11.82 · App Metas Amables · 2026-10-10 01:17==== -->
+<!-- ==== index V11.83 · App Metas Amables · 2026-10-10 13:42==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1130,6 +1130,27 @@ body.riego-abierto{overflow:hidden}
 .av-switch{position:relative;flex:none;width:50px;height:28px;padding:0;border:0;border-radius:14px;background:#C9C9C9;cursor:pointer;transition:background .2s}.av-switch span{position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.3);transition:left .2s}.av-switch.on{background:#8E2B2B}.av-switch.on span{left:25px}
 .av-detalle p{margin:8px 0 6px;font-size:14px;line-height:1.45}.av-prueba{background:none;border:0;padding:0;color:#8E2B2B;text-decoration:underline;font:600 14px Karla,sans-serif;cursor:pointer}
 .ritual-card{background:#FFF8E6 !important;border:2px solid #F2C14E;padding:14px 16px}
+/* Tu día como facilitador (solo moderadores) */
+.pf-tarjeta{display:flex;align-items:center;gap:12px;width:100%;text-align:left;cursor:pointer;background:#EEF4EC !important;border:2px solid #6B9362;padding:12px 16px;font:inherit;color:inherit}
+.pf-tarjeta-tx{flex:1;display:flex;flex-direction:column;gap:2px}.pf-tarjeta-tx b{font-size:16px;color:#3F6338}.pf-tarjeta-tx small{font-size:13.5px;color:var(--ink-soft)}
+.pf-num{min-width:34px;height:34px;border-radius:17px;background:#C0392B;color:#fff;font-weight:800;display:flex;align-items:center;justify-content:center;font-size:16px;padding:0 8px}.pf-num.cero{background:#6B9362}
+.pf-seccion{font:700 17px Lora,serif;margin:18px 0 8px;color:#3F6338}
+.pf-sub{font-weight:800;font-size:14px;margin:12px 0 6px;color:#3F6338}
+.pf-tarea{border-left:4px solid #6B9362;padding:12px 14px;margin-bottom:10px}
+.pf-quien{margin:0 0 6px;font-size:14px}.pf-dato{margin:0 0 8px;font-size:14px;color:#8E2B2B}
+.pf-texto{margin:0 0 10px;font-size:14px;line-height:1.45;white-space:pre-wrap;background:#F7F7F2;border-radius:10px;padding:10px 12px}
+.pf-acciones{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.pf-btn{display:inline-flex;align-items:center;justify-content:center;padding:9px 14px;border-radius:10px;border:2px solid #6B9362;background:#fff;color:#3F6338;font:700 14px Karla,sans-serif;cursor:pointer;text-decoration:none}
+.pf-btn.wa{background:#25D366;border-color:#25D366;color:#fff}.pf-btn:disabled{opacity:.6}
+.pf-actualizar{width:100%;margin:6px 0 20px}
+.pf-aviso{font-size:13px;color:var(--ink-soft)}.pf-gris{color:var(--ink-soft)}.pf-nota,.pf-vacio{font-size:14px}.pf-vacio{text-align:center}
+.pf-cifras{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:0 0 10px}
+.pf-cifra{background:#fff;border:1px solid #DCE6D8;border-radius:14px;padding:10px 12px;text-align:center}
+.pf-cifra b{display:block;font:700 26px/1.1 Lora,serif;color:#3F6338}.pf-cifra b small{font-size:15px;color:var(--ink-soft)}.pf-cifra span{font-size:12.5px;color:var(--ink-soft)}
+.pf-fila{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #EEE}.pf-fila:last-of-type{border-bottom:0}
+.pf-fn{flex:1;min-width:0;display:flex;flex-direction:column}.pf-fn b{font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.pf-fn small,.pf-fr small{font-size:12px;color:var(--ink-soft)}
+.pf-fr{display:flex;flex-direction:column;align-items:flex-end;font-size:13.5px;font-weight:700;color:#3F6338}.pf-fr.alerta{color:#8E2B2B}
+.pf-fl{width:22px;text-align:center;font-weight:800;color:#6B9362}
 .ritual-tit{margin:0 0 4px;font:700 18px Lora,serif;color:#7A5200}
 .ritual-practica{margin:0 0 6px;font:italic 600 15px/1.35 Lora,serif;color:#4F7A43}
 .ritual-tx{margin:0 0 10px;font-size:15px;line-height:1.45}
@@ -1994,7 +2015,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V11.82';
+  const APP_VERSION = 'V11.83';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -3517,7 +3538,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       ${MODO_PLAY ? '' : '<button class="menu-item" id="facturacionBtn">💳 Facturación</button>'}
       <button class="menu-item" id="ajustesBtn">⚙️ Ajustes</button>
       <button class="menu-item" id="mpAyuda">❓ Centro de ayuda</button>
-      ${soyModerador() ? '<button class="menu-item" id="miSituacionBtn">👥 Situación de tu grupo</button>' : ''}
+      ${soyModerador() ? '<button class="menu-item" id="miPanelFacBtn">🛠️ Tu día como facilitador</button><button class="menu-item" id="miSituacionBtn">👥 Situación de tu grupo</button>' : ''}
       ${esCuentaPruebas() ? `<div class="menu-divider"></div>
       <p style="font-size:13px;font-weight:700;margin:6px 14px 4px">🛠️ Moderador · entrar como:</p>
       <div style="display:flex;gap:6px;flex-wrap:wrap;margin:0 14px 8px">${[['Libre (moderador)','Libre'],['Guías (moderador)','Guías'],['Gustavo','Guías + Grupo']].map(([cuenta, t]) =>
@@ -3552,6 +3573,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       try { await navigator.clipboard.writeText(texto + ' ' + url); avisoBreve('Enlace copiado: pégalo donde quieras'); } catch(e){}
     };
     if(panel.querySelector('#miSituacionBtn')) panel.querySelector('#miSituacionBtn').onclick = () => { state.menuOpen = false; state.prevView = 'panel'; state.view = 'situacion'; window.scrollTo(0,0); render(); };
+    if(panel.querySelector('#miPanelFacBtn')) panel.querySelector('#miPanelFacBtn').onclick = () => { state.menuOpen = false; abrirPanelFacilitador(); };
     // Moderador: cambiar de plan al momento para probar la app (solo en este móvil)
     // Moderador: pasar a otra de sus cuentas de prueba (Libre / Guías / Gustavo) sin contraseña
     panel.querySelectorAll('.mod-cuenta').forEach(b => b.onclick = async () => {
@@ -3624,6 +3646,115 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   function soyModerador(){
     const g = (state.groups && state.groups[state.me]) || [];
     return (Array.isArray(g) ? g : [g]).some(x => String(x).toLowerCase().includes('moderador'));
+  }
+
+  // ===== Tu día como facilitador (moderador): tareas de hoy y resumen de toda la gente =====
+  // Los datos los junta el Worker (GET /panel); las tareas hechas se marcan con POST /panel/hecho.
+  const PLAN_CORTO = { gratis: 'Libre', guias: 'Guías', sesiones: 'Guías + Grupo' };
+  function isoLocal(d){ return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
+  async function cargarPanelFac(forzar){
+    const p = state.panelFac || (state.panelFac = {});
+    if(p.cargando || (!forzar && p.datos && Date.now() - p.cuando < 5 * 60000)) return;
+    p.cargando = true; p.error = '';
+    try { p.datos = await api('/panel'); p.cuando = Date.now(); }
+    catch(e){ p.error = mensajeError(e, 'No se pudo cargar el panel. Comprueba tu conexión.'); }
+    p.cargando = false;
+    if(state.view === 'panelFac' || (state.view === 'panel' && !state.panelSub)) render();
+  }
+  function abrirPanelFacilitador(){
+    state.prevView = 'panel'; state.view = 'panelFac'; window.scrollTo(0, 0); render();
+    cargarPanelFac(true);
+  }
+  // Personas a las que conviene escribir: 3 días o más sin regar (o sin regar nunca, con el alta
+  // de hace 3 días o más), con teléfono, y sin haberles escrito en los últimos 4 días
+  function personasAEscribir(d){
+    const hace = n => isoLocal(new Date(Date.now() - n * 86400000));
+    return (d.personas || []).filter(p => p.tel
+      && (p.diasSinRegar === null ? (p.alta && p.alta <= hace(3)) : p.diasSinRegar >= 3)
+      && !(p.contactado && p.contactado > hace(4)))
+      .sort((a, b) => (b.diasSinRegar === null ? 999 : b.diasSinRegar) - (a.diasSinRegar === null ? 999 : a.diasSinRegar));
+  }
+  function tarjetaPanelFacilitador(){
+    if(!soyModerador()) return null;
+    cargarPanelFac(false);
+    const d = state.panelFac && state.panelFac.datos;
+    const n = d ? (d.animos || []).length + personasAEscribir(d).length : null;
+    const c = el(`<button type="button" class="card pf-tarjeta"><span class="pf-tarjeta-tx"><b>🛠️ Tu día como facilitador</b><small>${n === null ? 'Toca para ver tus tareas y el resumen' : (n ? (n === 1 ? 'Tienes 1 tarea para hoy' : 'Tienes ' + n + ' tareas para hoy') : 'Todo al día ✓')}</small></span><span class="pf-num${n ? '' : ' cero'}">${n === null ? '›' : (n || '✓')}</span></button>`).firstElementChild;
+    c.onclick = abrirPanelFacilitador;
+    return c;
+  }
+  function textoRiego(p){
+    if(p.diasSinRegar === null) return 'aún no ha regado nunca';
+    if(p.diasSinRegar === 0) return 'ha regado hoy';
+    if(p.diasSinRegar === 1) return 'regó ayer';
+    return 'lleva ' + p.diasSinRegar + ' días sin regar';
+  }
+  function renderPanelFacilitador(){
+    renderBackTopbar('🛠️ TU DÍA COMO FACILITADOR');
+    const p = state.panelFac || {}, d = p.datos;
+    if(!d){
+      app.appendChild(el(p.error ? `<div class="card"><p style="margin:0 0 10px">${escapeAttr(p.error)}</p><button type="button" class="pf-btn" id="pfReintentar">🔄 Reintentar</button></div>` : '<div class="card"><p style="margin:0;text-align:center">Cargando tus tareas…</p></div>'));
+      const r = app.querySelector('#pfReintentar'); if(r) r.onclick = () => cargarPanelFac(true);
+      return;
+    }
+    const firma = String(state.me || '').split(' ')[0];
+    const animos = d.animos || [], escribir = personasAEscribir(d);
+    const wa = (tel, texto) => 'https://wa.me/' + tel + '?text=' + encodeURIComponent(texto);
+    let h = '<h3 class="pf-seccion">✅ Tareas de hoy</h3>';
+    if(!d.tareasActivas) h += '<div class="card pf-nota">Los mensajes de ánimo aún no se guardan como tareas (falta activar el almacén del Worker). Mientras tanto siguen llegando por Telegram.</div>';
+    if(!animos.length && !escribir.length) h += '<div class="card pf-vacio">¡Todo al día! 🎉 No tienes mensajes pendientes.</div>';
+    if(animos.length){
+      h += `<p class="pf-sub">💬 Mensajes de ánimo para enviar (${animos.length})</p>`;
+      h += animos.map((a, i) => `<div class="card pf-tarea">
+        <p class="pf-quien"><b>${escapeAttr(a.nombre)}</b> · ${escapeAttr(PLAN_CORTO[a.plan] || '')} · semana ${escapeAttr(a.semana || '')}</p>
+        <p class="pf-texto">${escapeAttr(a.texto)}</p>
+        <div class="pf-acciones">${a.tel ? `<a class="pf-btn wa" href="${wa(a.tel, a.texto)}" target="_blank" rel="noopener">📲 Enviar por WhatsApp</a>` : '<span class="pf-aviso">Sin teléfono válido</span>'}
+        <button type="button" class="pf-btn" data-animo="${i}">✓ Hecho</button></div></div>`).join('');
+    }
+    if(escribir.length){
+      h += `<p class="pf-sub">🌱 Personas a las que conviene escribir (${escribir.length})</p>`;
+      h += escribir.map((x, i) => {
+        const pila = x.nombre.split(' ')[0];
+        const texto = 'Hola ' + pila + ', ¿qué tal vas con tu práctica? Hace unos días que no riegas tu meta en la app. Si te ha surgido algo, cuéntame y lo ajustamos para que te resulte más fácil. 🌱\n\nUn abrazo, ' + firma;
+        return `<div class="card pf-tarea">
+          <p class="pf-quien"><b>${escapeAttr(x.nombre)}</b> · ${escapeAttr(PLAN_CORTO[x.plan] || '')}</p>
+          <p class="pf-dato">${escapeAttr(textoRiego(x))}${x.contactado ? ' · le escribiste el ' + escapeAttr(x.contactado.slice(8, 10) + '/' + x.contactado.slice(5, 7)) : ''}</p>
+          <div class="pf-acciones"><a class="pf-btn wa" href="${wa(x.tel, texto)}" target="_blank" rel="noopener">📲 Escribir por WhatsApp</a>
+          <button type="button" class="pf-btn" data-contacto="${i}">✓ Hecho</button></div></div>`;
+      }).join('');
+    }
+    // Resumen
+    const gente = d.personas || [], lunes = isoLocal(lunesHoy);
+    const nuevas = gente.filter(x => x.alta && x.alta >= lunes);
+    const riegan = gente.filter(x => x.riegaHoy).length, lunesHechos = gente.filter(x => x.lunesHecho).length;
+    h += '<h3 class="pf-seccion">📊 Resumen</h3>';
+    h += `<div class="pf-cifras">
+      <div class="pf-cifra"><b>${gente.length}</b><span>personas</span></div>
+      <div class="pf-cifra"><b>${nuevas.length}</b><span>${nuevas.length === 1 ? 'nueva' : 'nuevas'} esta semana</span></div>
+      <div class="pf-cifra"><b>${riegan}<small>/${gente.length}</small></b><span>han regado hoy</span></div>
+      <div class="pf-cifra"><b>${lunesHechos}<small>/${gente.length}</small></b><span>registro del lunes</span></div></div>`;
+    if(nuevas.length) h += `<div class="card"><p class="pf-sub" style="margin-top:0">🆕 Nuevas esta semana</p><p style="margin:0;font-size:14px">${nuevas.map(x => escapeAttr(x.nombre) + ' <span class="pf-gris">(' + escapeAttr(PLAN_CORTO[x.plan] || '') + ')</span>').join(' · ')}</p></div>`;
+    h += `<div class="card pf-lista"><p class="pf-sub" style="margin-top:0">👥 Todas las personas · semana ${escapeAttr(d.semana || '')}</p>
+      ${gente.map(x => `<div class="pf-fila"><span class="pf-fn"><b>${escapeAttr(x.nombre)}</b><small>${escapeAttr(PLAN_CORTO[x.plan] || '')}${x.usaPlay ? ' · 📱 Play' : ''}</small></span>
+        <span class="pf-fr${x.diasSinRegar === null || x.diasSinRegar >= 3 ? ' alerta' : ''}">${x.diasSinRegar === null ? 'nunca' : (x.diasSinRegar === 0 ? 'hoy' : (x.diasSinRegar === 1 ? 'ayer' : 'hace ' + x.diasSinRegar + ' d'))}<small>${x.diasEstaSemana} ${x.diasEstaSemana === 1 ? 'día' : 'días'} esta sem.</small></span>
+        <span class="pf-fl" title="Registro del lunes">${x.lunesHecho ? '✓' : '—'}</span></div>`).join('')}
+      <p class="pf-gris" style="margin:8px 0 0;font-size:12px">Último riego · días regados esta semana · ✓ = registro del lunes hecho</p></div>`;
+    h += `<button type="button" class="pf-btn pf-actualizar" id="pfActualizar">${p.cargando ? 'Actualizando…' : '🔄 Actualizar'}</button>`;
+    app.appendChild(el(h));
+    const hecho = async (b, cuerpo, quitar) => {
+      b.disabled = true; b.textContent = '…';
+      try { await api('/panel/hecho', cuerpo); quitar(); avisoBreve('Hecho ✓'); render(); }
+      catch(e){ b.disabled = false; b.textContent = '✓ Hecho'; avisoBreve(mensajeError(e, 'No se pudo guardar. Inténtalo de nuevo.')); }
+    };
+    app.querySelectorAll('[data-animo]').forEach(b => b.onclick = () => {
+      const a = animos[Number(b.dataset.animo)];
+      hecho(b, { tipo: 'animo', clave: a.clave }, () => { d.animos = d.animos.filter(x => x !== a); });
+    });
+    app.querySelectorAll('[data-contacto]').forEach(b => b.onclick = () => {
+      const x = escribir[Number(b.dataset.contacto)];
+      hecho(b, { tipo: 'contacto', persona: x.nombre }, () => { x.contactado = isoLocal(new Date()); });
+    });
+    app.querySelector('#pfActualizar').onclick = () => cargarPanelFac(true);
   }
 
   // Formulario trimestral enviado hace menos de 100 días (lo apunta el script de la hoja)
@@ -5578,6 +5709,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
         const avisos = tarjetasPlanHTML();
         if(avisos){ const a = el('<div class="avisos-plan">' + avisos + '</div>').firstElementChild; app.appendChild(a); activarTarjetasPlan(a); }
         try { const sp = tarjetaSiguientePaso(); if(sp) app.appendChild(sp); } catch(e){}
+        try { const pf = tarjetaPanelFacilitador(); if(pf) app.appendChild(pf); } catch(e){}
         try { const mm = tarjetaMinutoManana(); if(mm) app.appendChild(mm); } catch(e){}
         try { const tp = tarjetaPlanta(); if(tp) app.appendChild(tp); } catch(e){}
         try { const zv = document.createElement('div'); app.appendChild(zv); tarjetaVozPendiente(zv); } catch(e){}
@@ -6446,6 +6578,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     }
 
     if(state.view === 'situacion'){ renderSituacionGrupo(); return; }
+    if(state.view === 'panelFac'){ renderPanelFacilitador(); return; }
     if(state.view === 'group'){
       const nav = document.createElement('nav');
       nav.className = 'tabs';
@@ -8801,4 +8934,4 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V11.82 · App Metas Amables · 2026-10-10 01:17==== -->
+<!-- ==== Fin del index V11.83 · App Metas Amables · 2026-10-10 13:42==== -->
