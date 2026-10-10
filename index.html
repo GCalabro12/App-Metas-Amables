@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V11.88 · App Metas Amables · 2026-10-10 14:17==== -->
+<!-- ==== index V11.89 · App Metas Amables · 2026-10-10 14:49==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1144,7 +1144,7 @@ body.riego-abierto{overflow:hidden}
 .pf-btn{display:inline-flex;align-items:center;justify-content:center;padding:9px 14px;border-radius:10px;border:2px solid #6B9362;background:#fff;color:#3F6338;font:700 14px Karla,sans-serif;cursor:pointer;text-decoration:none}
 .pf-btn.wa{background:#25D366;border-color:#25D366;color:#fff}.pf-btn:disabled{opacity:.6}
 .pf-actualizar{width:100%;margin:6px 0 20px}
-.pf-aviso{font-size:13px;color:var(--ink-soft)}.pf-gris{color:var(--ink-soft)}.pf-nota,.pf-vacio{font-size:14px}.pf-vacio{text-align:center}
+.pf-aviso{font-size:13px;color:var(--ink-soft)}.pf-ok-wa{font-size:13px;color:#3F6338;margin:6px 0 0}.pf-gris{color:var(--ink-soft)}.pf-nota,.pf-vacio{font-size:14px}.pf-vacio{text-align:center}
 .pf-cifras{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:0 0 10px}
 .pf-cifra{background:#fff;border:1px solid #DCE6D8;border-radius:14px;padding:10px 12px;text-align:center;font:inherit;color:inherit;cursor:pointer}
 .pf-cifra-ancha{grid-column:1 / -1}.pf-cifra.alerta{background:#FBEDEA;border-color:#E9B8AE}.pf-cifra.alerta b{color:#8E2B2B}
@@ -2023,7 +2023,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V11.88';
+  const APP_VERSION = 'V11.89';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -3663,6 +3663,12 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   const PLAN_CORTO = { gratis: 'Libre', guias: 'Guías', sesiones: 'Guías + Grupo' };
   // Plan con su detalle: «Guías · prueba gratis hasta 05/11» o «Guías · regalo tester hasta 31/12».
   // Cuando vence, el Worker ya lo devuelve como Libre y la etiqueta desaparece sola. (isoLocal está más abajo)
+  function telValido(tel){
+    let n = String(tel || '').replace(/\D/g, '');
+    if(n.length === 11 && n.startsWith('34')) n = n.slice(2);
+    if(n.length < 9) return false;
+    return !(/^(\d)\1+$/.test(n.slice(1)) || /12345678|23456789|98765432|87654321/.test(n));
+  }
   function planEtiqueta(x){
     const hasta = x.planHasta ? ' hasta ' + x.planHasta.slice(8, 10) + '/' + x.planHasta.slice(5, 7) : '';
     return (PLAN_CORTO[x.plan] || '') + (x.planTipo === 'prueba' ? ' · prueba gratis' + hasta : x.planTipo === 'regalo' ? ' · regalo tester' + hasta : '');
@@ -3719,7 +3725,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       <div class="card pf-ficha">
         <p class="pf-ficha-nombre">${escapeAttr(conAvatar(x.nombre))}</p>
         <p class="pf-gris" style="margin:0 0 8px;font-size:13.5px">${escapeAttr(planEtiqueta(x))}${x.alta ? ' · alta el ' + escapeAttr(x.alta.slice(8, 10) + '/' + x.alta.slice(5, 7)) : ''}${x.usaPlay ? ' · 📱 usa la app de Play' : ''}</p>
-        ${x.tel ? `<a class="pf-btn wa" href="https://wa.me/${x.tel}" target="_blank" rel="noopener">📲 Abrir su WhatsApp</a>` : '<p class="pf-aviso">Sin teléfono válido</p>'}
+        ${telValido(x.tel) ? `<a class="pf-btn wa" href="https://wa.me/${x.tel}" target="_blank" rel="noopener">📲 Abrir su WhatsApp</a>` : '<p class="pf-aviso">' + (x.tel ? 'Su teléfono parece inventado (' + escapeAttr(x.tel) + ')' : 'Sin teléfono') + '</p>'}
+        ${x.aceptaWhatsApp ? '<p class="pf-ok-wa">✅ Ha activado los mensajes por WhatsApp</p>' : '<p class="pf-aviso">⚠️ No ha activado los mensajes por WhatsApp en la app</p>'}
         <p style="margin:12px 0 4px;font-size:14px">🎯 <b>Meta:</b> ${x.meta ? escapeAttr(x.meta) : '<span class="pf-gris">sin meta escrita</span>'}</p>
         ${x.practica ? `<p style="margin:0 0 4px;font-size:14px">🏃 <b>Práctica:</b> ${escapeAttr(x.practica)}</p>` : ''}
         <p style="margin:0;font-size:14px">💧 ${escapeAttr(textoRiego(x))}${x.contactado ? ' · le escribiste el ' + escapeAttr(x.contactado.slice(8, 10) + '/' + x.contactado.slice(5, 7)) : ''}</p>
@@ -3819,11 +3826,12 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       h += `<p class="pf-sub">🌱 Personas a las que conviene escribir (${escribir.length})</p>`;
       h += escribir.map((x, i) => {
         const pila = x.nombre.split(' ')[0];
-        const texto = 'Hola ' + pila + ', ¿qué tal vas con tu práctica? Hace unos días que no riegas tu meta en la app. Si te ha surgido algo, cuéntame y lo ajustamos para que te resulte más fácil. 🌱\n\n👉 Riega tu meta aquí: ' + ENLACE_REGAR + '\n\nUn abrazo, ' + firma;
+        const texto = 'Hola ' + pila + ', soy ' + firma + ', tu facilitador en Metas Amables 🌱 Hace unos días que no riegas tu meta en la app y quería saber qué tal vas. Si te ha surgido algo, cuéntame y lo ajustamos para que te resulte más fácil.\n\n👉 Riega tu meta aquí: ' + ENLACE_REGAR + '\n\nSi prefieres que no te escriba por aquí, dímelo sin problema.\nUn abrazo, ' + firma;
         return `<div class="card pf-tarea">
           <p class="pf-quien"><b>${escapeAttr(x.nombre)}</b> · ${escapeAttr(planEtiqueta(x))}</p>
           <p class="pf-dato">${escapeAttr(textoRiego(x))}${x.contactado ? ' · le escribiste el ' + escapeAttr(x.contactado.slice(8, 10) + '/' + x.contactado.slice(5, 7)) : ''}</p>
-          <div class="pf-acciones"><a class="pf-btn wa" href="${wa(x.tel, texto)}" target="_blank" rel="noopener">📲 Escribir por WhatsApp</a>
+          ${x.aceptaWhatsApp ? '' : '<p class="pf-aviso" style="margin:-4px 0 8px">⚠️ No ha activado los mensajes por WhatsApp en la app: mejor un mensaje breve y amable, o espera a la sesión.</p>'}
+          <div class="pf-acciones">${telValido(x.tel) ? `<a class="pf-btn wa" href="${wa(x.tel, texto)}" target="_blank" rel="noopener">📲 Escribir por WhatsApp</a>` : '<span class="pf-aviso">Su teléfono parece inventado (' + escapeAttr(x.tel) + '): no se le puede escribir por WhatsApp</span>'}
           <button type="button" class="pf-btn" data-contacto="${i}">✓ Hecho</button></div></div>`;
       }).join('');
     }
@@ -9056,4 +9064,4 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V11.88 · App Metas Amables · 2026-10-10 14:17==== -->
+<!-- ==== Fin del index V11.89 · App Metas Amables · 2026-10-10 14:49==== -->
