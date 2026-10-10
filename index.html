@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V11.95 · App Metas Amables · 2026-10-10 16:02==== -->
+<!-- ==== index V11.96 · App Metas Amables · 2026-10-10 16:26==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2031,7 +2031,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V11.95';
+  const APP_VERSION = 'V11.96';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -3699,7 +3699,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   // de hace 3 días o más), con teléfono, y sin haberles escrito en los últimos 4 días
   function personasAEscribir(d){
     const hace = n => isoLocal(new Date(Date.now() - n * 86400000));
-    return (d.personas || []).filter(p => p.tel
+    return (d.personas || []).filter(p => p.tel && !p.silenciado
       && (p.diasSinRegar === null ? (p.alta && p.alta <= hace(3)) : p.diasSinRegar >= 3)
       && !(p.contactado && p.contactado > hace(4)))
       .sort((a, b) => (b.diasSinRegar === null ? 999 : b.diasSinRegar) - (a.diasSinRegar === null ? 999 : a.diasSinRegar));
@@ -3745,6 +3745,16 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
         <textarea id="pfNota" rows="4" class="pf-nota-tx" placeholder="Lo que quieras recordar de esta persona: cómo está, de qué hablasteis…">${escapeAttr(x.notaFac || '')}</textarea>
         <div class="pf-acciones" style="margin-top:8px"><button type="button" class="pf-btn" id="pfGuardarNota">💾 Guardar nota</button>${x.notaFecha ? '<span class="pf-gris" style="font-size:12.5px">Guardada el ' + escapeAttr(x.notaFecha.slice(8, 10) + '/' + x.notaFecha.slice(5, 7)) + '</span>' : ''}</div></div>`));
     app.querySelector('#pfVolverLista').onclick = () => { state.pfPersona = null; window.scrollTo(0, 0); render(); };
+    // 🔕 No incluir en tareas (p. ej. familia): sigue en el resumen y en las listas
+    app.appendChild(el(`<div class="card"><p class="pf-sub" style="margin-top:0">${x.silenciado ? '🔕 No sale en tus tareas' : '🔔 Sale en tus tareas'}</p>
+      <p class="pf-gris" style="margin:0 0 10px;font-size:13.5px">${x.silenciado ? 'No te avisaré para escribirle aunque deje de regar. Sigue contando en el resumen y en las listas.' : 'Si deja de regar, te avisaré para escribirle.'}</p>
+      <button type="button" class="pf-btn" id="pfSilenciar">${x.silenciado ? '🔔 Volver a incluir en tareas' : '🔕 No incluir en tareas'}</button></div>`));
+    const bs = app.querySelector('#pfSilenciar');
+    bs.onclick = async () => {
+      bs.disabled = true; bs.textContent = 'Guardando…';
+      try { await api('/panel/hecho', { tipo: 'silenciar', persona: x.nombre, texto: x.silenciado ? 'no' : 'si' }); x.silenciado = !x.silenciado; avisoBreve(x.silenciado ? 'No saldrá en tus tareas 🔕' : 'Vuelve a salir en tus tareas 🔔'); render(); }
+      catch(e){ bs.disabled = false; bs.textContent = x.silenciado ? '🔔 Volver a incluir en tareas' : '🔕 No incluir en tareas'; avisoBreve(mensajeError(e, 'No se pudo guardar.')); }
+    };
     const bn = app.querySelector('#pfGuardarNota');
     bn.onclick = async () => {
       const texto = app.querySelector('#pfNota').value;
@@ -3755,7 +3765,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
   // Filas de personas (se tocan para abrir su ficha)
   function filasPersonasHTML(lista){
-    return lista.map(x => `<div class="pf-fila" data-nombre="${escapeAttr(x.nombre)}" role="button" tabindex="0"><span class="pf-fn"><b>${escapeAttr(x.nombre)}</b><small>${escapeAttr(planEtiqueta(x))}${x.usaPlay ? ' · 📱 Play' : ''}</small></span>
+    return lista.map(x => `<div class="pf-fila" data-nombre="${escapeAttr(x.nombre)}" role="button" tabindex="0"><span class="pf-fn"><b>${escapeAttr(x.nombre)}</b><small>${escapeAttr(planEtiqueta(x))}${x.usaPlay ? ' · 📱 Play' : ''}${x.contactado ? ' · ✉️ ' + escapeAttr(x.contactado.slice(8, 10) + '/' + x.contactado.slice(5, 7)) : ''}${x.silenciado ? ' · 🔕' : ''}</small></span>
         <span class="pf-fr${x.diasSinRegar === null || x.diasSinRegar >= 3 ? ' alerta' : ''}">${x.diasSinRegar === null ? 'nunca' : (x.diasSinRegar === 0 ? 'hoy' : (x.diasSinRegar === 1 ? 'ayer' : 'hace ' + x.diasSinRegar + ' d'))}<small>${x.diasEstaSemana} ${x.diasEstaSemana === 1 ? 'día' : 'días'} esta sem.</small></span>
         <span class="pf-fl" title="Registro del lunes">${x.lunesHecho ? '✓' : '—'}</span><span class="pf-ir">›</span></div>`).join('');
   }
@@ -9112,4 +9122,4 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V11.95 · App Metas Amables · 2026-10-10 16:02==== -->
+<!-- ==== Fin del index V11.96 · App Metas Amables · 2026-10-10 16:26==== -->
