@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V11.86 · App Metas Amables · 2026-10-10 14:09==== -->
+<!-- ==== index V11.87 · App Metas Amables · 2026-10-10 14:15==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1146,7 +1146,9 @@ body.riego-abierto{overflow:hidden}
 .pf-actualizar{width:100%;margin:6px 0 20px}
 .pf-aviso{font-size:13px;color:var(--ink-soft)}.pf-gris{color:var(--ink-soft)}.pf-nota,.pf-vacio{font-size:14px}.pf-vacio{text-align:center}
 .pf-cifras{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:0 0 10px}
-.pf-cifra{background:#fff;border:1px solid #DCE6D8;border-radius:14px;padding:10px 12px;text-align:center}
+.pf-cifra{background:#fff;border:1px solid #DCE6D8;border-radius:14px;padding:10px 12px;text-align:center;font:inherit;color:inherit;cursor:pointer}
+.pf-cifra-ancha{grid-column:1 / -1}.pf-cifra.alerta{background:#FBEDEA;border-color:#E9B8AE}.pf-cifra.alerta b{color:#8E2B2B}
+.pf-planes{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:0 0 10px}
 .pf-cifra b{display:block;font:700 26px/1.1 Lora,serif;color:#3F6338}.pf-cifra b small{font-size:15px;color:var(--ink-soft)}.pf-cifra span{font-size:12.5px;color:var(--ink-soft)}
 .pf-fila{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #EEE}.pf-fila:last-of-type{border-bottom:0}
 .pf-fn{flex:1;min-width:0;display:flex;flex-direction:column}.pf-fn b{font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.pf-fn small,.pf-fr small{font-size:12px;color:var(--ink-soft)}
@@ -2021,7 +2023,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V11.86';
+  const APP_VERSION = 'V11.87';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -3670,7 +3672,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     if(state.view === 'panelFac' || (state.view === 'panel' && !state.panelSub)) render();
   }
   function abrirPanelFacilitador(){
-    state.prevView = 'panel'; state.view = 'panelFac'; state.pfPersona = null; window.scrollTo(0, 0); render();
+    state.prevView = 'panel'; state.view = 'panelFac'; state.pfPersona = null; state.pfDetalle = null; window.scrollTo(0, 0); render();
     cargarPanelFac(true);
   }
   // Personas a las que conviene escribir: 3 días o más sin regar (o sin regar nunca, con el alta
@@ -3708,7 +3710,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
         <span>${nd ? '💧 ' + DIAS_SEMANA.filter(k => dias[k]).join(' ') : '<span class="pf-gris">sin riegos</span>'}${s.comp ? ' · ' + (s.hechas || 0) + ' de ' + s.comp + ' veces' : ''}${s.estado ? ' · ' + escapeAttr(s.estado) : ''}</span>
         ${s.notas ? '<small>📝 ' + escapeAttr(s.notas) + '</small>' : ''}</div>`;
     };
-    app.appendChild(el(`<button type="button" class="pf-btn" id="pfVolverLista" style="margin:0 0 10px">← Volver al panel</button>
+    app.appendChild(el(`<button type="button" class="pf-btn" id="pfVolverLista" style="margin:0 0 10px">← Volver</button>
       <div class="card pf-ficha">
         <p class="pf-ficha-nombre">${escapeAttr(conAvatar(x.nombre))}</p>
         <p class="pf-gris" style="margin:0 0 8px;font-size:13.5px">${escapeAttr(PLAN_CORTO[x.plan] || '')}${x.alta ? ' · alta el ' + escapeAttr(x.alta.slice(8, 10) + '/' + x.alta.slice(5, 7)) : ''}${x.usaPlay ? ' · 📱 usa la app de Play' : ''}</p>
@@ -3730,11 +3732,56 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       catch(e){ bn.disabled = false; bn.textContent = '💾 Guardar nota'; avisoBreve(mensajeError(e, 'No se pudo guardar la nota.')); }
     };
   }
+  // Filas de personas (se tocan para abrir su ficha)
+  function filasPersonasHTML(lista){
+    return lista.map(x => `<div class="pf-fila" data-nombre="${escapeAttr(x.nombre)}" role="button" tabindex="0"><span class="pf-fn"><b>${escapeAttr(x.nombre)}</b><small>${escapeAttr(PLAN_CORTO[x.plan] || '')}${x.usaPlay ? ' · 📱 Play' : ''}</small></span>
+        <span class="pf-fr${x.diasSinRegar === null || x.diasSinRegar >= 3 ? ' alerta' : ''}">${x.diasSinRegar === null ? 'nunca' : (x.diasSinRegar === 0 ? 'hoy' : (x.diasSinRegar === 1 ? 'ayer' : 'hace ' + x.diasSinRegar + ' d'))}<small>${x.diasEstaSemana} ${x.diasEstaSemana === 1 ? 'día' : 'días'} esta sem.</small></span>
+        <span class="pf-fl" title="Registro del lunes">${x.lunesHecho ? '✓' : '—'}</span><span class="pf-ir">›</span></div>`).join('');
+  }
+  function activarFilasPanel(){
+    app.querySelectorAll('[data-nombre]').forEach(f => f.onclick = () => { state.pfPersona = f.dataset.nombre; window.scrollTo(0, 0); render(); });
+  }
+  // Se están desenganchando: 5 días o más sin regar (o sin regar nunca, con el alta de hace 5 días o más)
+  function perdiendoInteres(gente){
+    const hace5 = isoLocal(new Date(Date.now() - 5 * 86400000));
+    return gente.filter(x => x.diasSinRegar === null ? (x.alta && x.alta <= hace5) : x.diasSinRegar >= 5)
+      .sort((a, b) => (b.diasSinRegar === null ? 999 : b.diasSinRegar) - (a.diasSinRegar === null ? 999 : a.diasSinRegar));
+  }
+  // Detalle de una cifra del resumen: quiénes son
+  function renderDetallePanel(d){
+    const gente = d.personas || [], det = state.pfDetalle, lunes = isoLocal(lunesHoy);
+    const bloque = (titulo, lista, vacio) => `<div class="card pf-lista"><p class="pf-sub" style="margin-top:0">${titulo} (${lista.length})</p>${lista.length ? filasPersonasHTML(lista) : '<p class="pf-gris" style="margin:0;font-size:14px">' + vacio + '</p>'}</div>`;
+    let h = `<button type="button" class="pf-btn" id="pfVolverDet" style="margin:0 0 10px">← ${det.tipo === 'plan' ? 'Volver a las inscritas' : 'Volver al panel'}</button>`;
+    if(det.tipo === 'inscritas'){
+      h += `<h3 class="pf-seccion">👥 ${gente.length} personas inscritas</h3><div class="pf-planes">`
+        + ['gratis', 'guias', 'sesiones'].map(pl => { const n = gente.filter(x => x.plan === pl).length;
+            return `<button type="button" class="pf-cifra pf-plan" data-plan="${pl}"><b>${n}</b><span>Plan ${escapeAttr(PLAN_CORTO[pl])} ›</span></button>`; }).join('') + '</div>';
+      h += bloque('Todas', gente, 'Todavía no hay nadie inscrito.');
+    } else if(det.tipo === 'plan'){
+      h += `<h3 class="pf-seccion">⭐ Plan ${escapeAttr(PLAN_CORTO[det.plan] || '')}</h3>` + bloque('Personas en este plan', gente.filter(x => x.plan === det.plan), 'Nadie en este plan.');
+    } else if(det.tipo === 'nuevas'){
+      h += '<h3 class="pf-seccion">🆕 Nuevas esta semana</h3>' + bloque('Se han inscrito desde el lunes', gente.filter(x => x.alta && x.alta >= lunes), 'Nadie nuevo esta semana.');
+    } else if(det.tipo === 'riegan'){
+      h += '<h3 class="pf-seccion">💧 Riego de hoy</h3>' + bloque('💧 Han regado hoy', gente.filter(x => x.riegaHoy), 'Todavía nadie ha regado hoy.')
+        + bloque('⏳ Aún no han regado hoy', gente.filter(x => !x.riegaHoy), '¡Todo el mundo ha regado hoy! 🎉');
+    } else if(det.tipo === 'lunes'){
+      h += '<h3 class="pf-seccion">📝 Registro del lunes</h3>' + bloque('✓ Ya lo han hecho', gente.filter(x => x.lunesHecho), 'Nadie lo ha hecho todavía esta semana.')
+        + bloque('— Pendiente', gente.filter(x => !x.lunesHecho), '¡Lo ha hecho todo el mundo! 🎉');
+    } else if(det.tipo === 'perdiendo'){
+      h += '<h3 class="pf-seccion">🍂 Se están desenganchando</h3><p class="pf-gris" style="margin:0 0 10px;font-size:13.5px">Llevan 5 días o más sin regar su meta, o se inscribieron hace 5 días o más y aún no han regado nunca. Un mensaje tuyo ahora puede marcar la diferencia.</p>'
+        + bloque('Sin regar desde hace 5 días o más', perdiendoInteres(gente), 'Nadie se está desenganchando. 🌱');
+    }
+    app.appendChild(el(h));
+    app.querySelector('#pfVolverDet').onclick = () => { state.pfDetalle = det.tipo === 'plan' ? { tipo: 'inscritas' } : null; window.scrollTo(0, 0); render(); };
+    app.querySelectorAll('[data-plan]').forEach(b => b.onclick = () => { state.pfDetalle = { tipo: 'plan', plan: b.dataset.plan }; window.scrollTo(0, 0); render(); });
+    activarFilasPanel();
+  }
   function renderPanelFacilitador(){
     renderBackTopbar('🛠️ PANEL DE CONTROL ADMIN METAS A.');
     const p = state.panelFac || {}, d = p.datos;
     const fichaDe = d && state.pfPersona ? (d.personas || []).find(x => x.nombre === state.pfPersona) : null;
     if(fichaDe){ renderFichaPersona(d, fichaDe); return; }
+    if(d && state.pfDetalle){ renderDetallePanel(d); return; }
     if(!d){
       app.appendChild(el(p.error ? `<div class="card"><p style="margin:0 0 10px">${escapeAttr(p.error)}</p><button type="button" class="pf-btn" id="pfReintentar">🔄 Reintentar</button></div>` : '<div class="card"><p style="margin:0;text-align:center">Cargando tus tareas…</p></div>'));
       const r = app.querySelector('#pfReintentar'); if(r) r.onclick = () => cargarPanelFac(true);
@@ -3775,21 +3822,20 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
           <button type="button" class="pf-btn" data-contacto="${i}">✓ Hecho</button></div></div>`;
       }).join('');
     }
-    // Resumen
+    // Resumen: cada cifra se toca para ver quiénes son
     const gente = d.personas || [], lunes = isoLocal(lunesHoy);
     const nuevas = gente.filter(x => x.alta && x.alta >= lunes);
     const riegan = gente.filter(x => x.riegaHoy).length, lunesHechos = gente.filter(x => x.lunesHecho).length;
+    const perdiendo = perdiendoInteres(gente);
     h += '<h3 class="pf-seccion">📊 Resumen</h3>';
     h += `<div class="pf-cifras">
-      <div class="pf-cifra"><b>${gente.length}</b><span>personas</span></div>
-      <div class="pf-cifra"><b>${nuevas.length}</b><span>${nuevas.length === 1 ? 'nueva' : 'nuevas'} esta semana</span></div>
-      <div class="pf-cifra"><b>${riegan}<small>/${gente.length}</small></b><span>han regado hoy</span></div>
-      <div class="pf-cifra"><b>${lunesHechos}<small>/${gente.length}</small></b><span>registro del lunes</span></div></div>`;
-    if(nuevas.length) h += `<div class="card"><p class="pf-sub" style="margin-top:0">🆕 Nuevas esta semana</p><p style="margin:0;font-size:14px">${nuevas.map(x => escapeAttr(x.nombre) + ' <span class="pf-gris">(' + escapeAttr(PLAN_CORTO[x.plan] || '') + ')</span>').join(' · ')}</p></div>`;
+      <button type="button" class="pf-cifra" data-detalle="inscritas"><b>${gente.length}</b><span>personas inscritas ›</span></button>
+      <button type="button" class="pf-cifra" data-detalle="nuevas"><b>${nuevas.length}</b><span>${nuevas.length === 1 ? 'nueva' : 'nuevas'} esta semana ›</span></button>
+      <button type="button" class="pf-cifra" data-detalle="riegan"><b>${riegan}<small>/${gente.length}</small></b><span>han regado hoy ›</span></button>
+      <button type="button" class="pf-cifra" data-detalle="lunes"><b>${lunesHechos}<small>/${gente.length}</small></b><span>registro del lunes ›</span></button>
+      <button type="button" class="pf-cifra pf-cifra-ancha${perdiendo.length ? ' alerta' : ''}" data-detalle="perdiendo"><b>${perdiendo.length}</b><span>🍂 sin regar desde hace 5 días o más (se están desenganchando) ›</span></button></div>`;
     h += `<div class="card pf-lista"><p class="pf-sub" style="margin-top:0">👥 Todas las personas · semana ${escapeAttr(d.semana || '')}</p>
-      ${gente.map((x, i) => `<div class="pf-fila" data-ficha="${i}" role="button" tabindex="0"><span class="pf-fn"><b>${escapeAttr(x.nombre)}</b><small>${escapeAttr(PLAN_CORTO[x.plan] || '')}${x.usaPlay ? ' · 📱 Play' : ''}</small></span>
-        <span class="pf-fr${x.diasSinRegar === null || x.diasSinRegar >= 3 ? ' alerta' : ''}">${x.diasSinRegar === null ? 'nunca' : (x.diasSinRegar === 0 ? 'hoy' : (x.diasSinRegar === 1 ? 'ayer' : 'hace ' + x.diasSinRegar + ' d'))}<small>${x.diasEstaSemana} ${x.diasEstaSemana === 1 ? 'día' : 'días'} esta sem.</small></span>
-        <span class="pf-fl" title="Registro del lunes">${x.lunesHecho ? '✓' : '—'}</span><span class="pf-ir">›</span></div>`).join('')}
+      ${filasPersonasHTML(gente)}
       <p class="pf-gris" style="margin:8px 0 0;font-size:12px">Último riego · días regados esta semana · ✓ = registro del lunes hecho. Toca a una persona para ver su ficha.</p></div>`;
     h += `<button type="button" class="pf-btn pf-actualizar" id="pfActualizar">${p.cargando ? 'Actualizando…' : '🔄 Actualizar'}</button>`;
     h += `<button type="button" class="link-quiet" id="pfTelegram" style="display:block;margin:-12px auto 20px;font-size:13.5px">📨 Mandarme ahora el resumen a Telegram</button>`;
@@ -3815,7 +3861,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       try { await navigator.clipboard.writeText(comunicados[Number(b.dataset.copiar)].texto); avisoBreve('Texto copiado: pégalo en el grupo de WhatsApp'); }
       catch(e){ avisoBreve('No se pudo copiar. Abre «Ver el texto» y cópialo a mano.'); }
     });
-    app.querySelectorAll('[data-ficha]').forEach(f => f.onclick = () => { state.pfPersona = gente[Number(f.dataset.ficha)].nombre; window.scrollTo(0, 0); render(); });
+    activarFilasPanel();
+    app.querySelectorAll('[data-detalle]').forEach(b => b.onclick = () => { state.pfDetalle = { tipo: b.dataset.detalle }; window.scrollTo(0, 0); render(); });
     app.querySelector('#pfActualizar').onclick = () => cargarPanelFac(true);
     const bt = app.querySelector('#pfTelegram');
     bt.onclick = async () => {
@@ -9004,4 +9051,4 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V11.86 · App Metas Amables · 2026-10-10 14:09==== -->
+<!-- ==== Fin del index V11.87 · App Metas Amables · 2026-10-10 14:15==== -->
