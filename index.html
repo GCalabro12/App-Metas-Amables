@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V11.90 · App Metas Amables · 2026-10-10 15:22==== -->
+<!-- ==== index V11.91 · App Metas Amables · 2026-10-10 15:50==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2024,7 +2024,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V11.90';
+  const APP_VERSION = 'V11.91';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -3983,6 +3983,9 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
+    { v: 'V11.91', f: '10 de octubre de 2026', n: [
+      'En tu Perfil: <b>🤳 Hacerme una foto ahora</b>, para poner tu foto con la cámara del móvil al momento.',
+      'En la pantalla de regar, arriba: <b>Ir a Metas Amables</b>, para volver a Inicio.' ] },
     { v: 'V11.82', f: '10 de octubre de 2026', n: [
       '<b>Tu minuto de la mañana</b>: hasta las 12, en Inicio decides cuándo harás hoy tu práctica (al levantarte, después de comer, por la tarde u otro momento). Cuando llega la hora, ya está decidido.' ] },
     { v: 'V11.76', f: '8 de octubre de 2026', n: [
@@ -4602,7 +4605,9 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       <div style="display:flex;gap:16px;flex-wrap:wrap;margin:0 0 10px">
         <button class="link-quiet" id="btnSubirFoto" style="padding:0">📷 ${fotoDePerfil() ? 'Cambiar mi foto' : 'Subir mi foto'}</button>
         ${fotoDePerfil() ? '<button class="link-quiet" id="btnQuitarFoto" style="padding:0;color:#B94A3A">Quitar foto</button>' : ''}
+        <button class="link-quiet" id="btnCamaraFoto" style="padding:0">🤳 Hacerme una foto ahora</button>
         <input type="file" id="inputFoto" accept="image/*" style="display:none">
+        <input type="file" id="inputFotoCamara" accept="image/*" capture="user" style="display:none">
       </div>
       <div id="fotoMsg" style="font-size:13px;margin:-4px 0 8px"></div>
       <button class="link-quiet" id="btnElegirAvatar" style="padding:0;margin:0 0 10px">🎨 ${avatarDe(state.me) ? 'Cambiar mi avatar' : 'Elegir mi avatar'}</button>
@@ -4652,8 +4657,13 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       } catch(e){ fotoMsg.style.color = '#B94A3A'; fotoMsg.textContent = mensajeError(e, 'No se pudo guardar la foto (revisa tu conexión)'); }
     };
     card.querySelector('#btnSubirFoto').onclick = () => inputFoto.click();
-    inputFoto.onchange = () => {
-      const archivo = inputFoto.files && inputFoto.files[0];
+    // «Hacerme una foto ahora»: abre directamente la cámara delantera del móvil
+    const inputCamara = card.querySelector('#inputFotoCamara');
+    card.querySelector('#btnCamaraFoto').onclick = () => inputCamara.click();
+    inputCamara.onchange = () => leerFoto(inputCamara);
+    inputFoto.onchange = () => leerFoto(inputFoto);
+    function leerFoto(input){
+      const archivo = input.files && input.files[0];
       if(!archivo) return;
       const lector = new FileReader();
       lector.onload = () => {
@@ -4668,7 +4678,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
         img.src = lector.result;
       };
       lector.readAsDataURL(archivo);
-    };
+    }
     if(card.querySelector('#btnQuitarFoto')) card.querySelector('#btnQuitarFoto').onclick = () => guardarFoto('');
 
     // Avatar: se guarda en Gamifica y lo ven también sus compañeros en «Mi grupo»
@@ -9069,4 +9079,4 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V11.90 · App Metas Amables · 2026-10-10 15:22==== -->
+<!-- ==== Fin del index V11.91 · App Metas Amables · 2026-10-10 15:50==== -->
