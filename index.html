@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V11.89 · App Metas Amables · 2026-10-10 14:49==== -->
+<!-- ==== index V11.90 · App Metas Amables · 2026-10-10 15:22==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1143,7 +1143,8 @@ body.riego-abierto{overflow:hidden}
 .pf-acciones{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 .pf-btn{display:inline-flex;align-items:center;justify-content:center;padding:9px 14px;border-radius:10px;border:2px solid #6B9362;background:#fff;color:#3F6338;font:700 14px Karla,sans-serif;cursor:pointer;text-decoration:none}
 .pf-btn.wa{background:#25D366;border-color:#25D366;color:#fff}.pf-btn:disabled{opacity:.6}
-.pf-actualizar{width:100%;margin:6px 0 20px}
+.pf-actualizar{width:100%;margin:6px 0 20px}.pf-btn:active{background:#6B9362;color:#fff;transform:scale(.98)}.pf-btn.wa:active{background:#1EB257}
+.pf-desplegar{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;background:none;border:0;padding:0;font:inherit;color:#3F6338;cursor:pointer;text-align:left}.pf-desplegar span{display:flex;flex-direction:column;font-weight:800;font-size:15px}.pf-desplegar small{font-weight:400;font-size:12.5px;color:var(--ink-soft)}.pf-desplegar b{font-size:14px}.pf-desplegar[aria-expanded="true"]{margin-bottom:8px}
 .pf-aviso{font-size:13px;color:var(--ink-soft)}.pf-ok-wa{font-size:13px;color:#3F6338;margin:6px 0 0}.pf-gris{color:var(--ink-soft)}.pf-nota,.pf-vacio{font-size:14px}.pf-vacio{text-align:center}
 .pf-cifras{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:0 0 10px}
 .pf-cifra{background:#fff;border:1px solid #DCE6D8;border-radius:14px;padding:10px 12px;text-align:center;font:inherit;color:inherit;cursor:pointer}
@@ -2023,7 +2024,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V11.89';
+  const APP_VERSION = 'V11.90';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -3673,12 +3674,13 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     const hasta = x.planHasta ? ' hasta ' + x.planHasta.slice(8, 10) + '/' + x.planHasta.slice(5, 7) : '';
     return (PLAN_CORTO[x.plan] || '') + (x.planTipo === 'prueba' ? ' · prueba gratis' + hasta : x.planTipo === 'regalo' ? ' · regalo tester' + hasta : '');
   }
-  async function cargarPanelFac(forzar){
+  async function cargarPanelFac(forzar, avisar){
     const p = state.panelFac || (state.panelFac = {});
     if(p.cargando || (!forzar && p.datos && Date.now() - p.cuando < 5 * 60000)) return;
     p.cargando = true; p.error = '';
-    try { p.datos = await api('/panel'); p.cuando = Date.now(); }
-    catch(e){ p.error = mensajeError(e, 'No se pudo cargar el panel. Comprueba tu conexión.'); }
+    if(avisar && state.view === 'panelFac') render();   // el botón pasa a «Actualizando…»
+    try { p.datos = await api('/panel'); p.cuando = Date.now(); if(avisar) avisoBreve('Panel actualizado ✓'); }
+    catch(e){ p.error = mensajeError(e, 'No se pudo cargar el panel. Comprueba tu conexión.'); if(avisar) avisoBreve(p.error); }
     p.cargando = false;
     if(state.view === 'panelFac' || (state.view === 'panel' && !state.panelSub)) render();
   }
@@ -3847,11 +3849,11 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       <button type="button" class="pf-cifra" data-detalle="riegan"><b>${riegan}<small>/${gente.length}</small></b><span>han regado hoy ›</span></button>
       <button type="button" class="pf-cifra" data-detalle="lunes"><b>${lunesHechos}<small>/${gente.length}</small></b><span>registro del lunes ›</span></button>
       <button type="button" class="pf-cifra pf-cifra-ancha${perdiendo.length ? ' alerta' : ''}" data-detalle="perdiendo"><b>${perdiendo.length}</b><span>🍂 sin regar desde hace 5 días o más (se están desenganchando) ›</span></button></div>`;
-    h += `<div class="card pf-lista"><p class="pf-sub" style="margin-top:0">👥 Todas las personas · semana ${escapeAttr(d.semana || '')}</p>
-      ${filasPersonasHTML(gente)}
-      <p class="pf-gris" style="margin:8px 0 0;font-size:12px">Último riego · días regados esta semana · ✓ = registro del lunes hecho. Toca a una persona para ver su ficha.</p></div>`;
-    h += `<button type="button" class="pf-btn pf-actualizar" id="pfActualizar">${p.cargando ? 'Actualizando…' : '🔄 Actualizar'}</button>`;
-    h += `<button type="button" class="link-quiet" id="pfTelegram" style="display:block;margin:-12px auto 20px;font-size:13.5px">📨 Mandarme ahora el resumen a Telegram</button>`;
+    const listaAbierta = !!state.pfListaAbierta;
+    h += `<div class="card pf-lista"><button type="button" class="pf-desplegar" id="pfDesplegar" aria-expanded="${listaAbierta}"><span>👥 Todas las personas (${gente.length})<small>Semana del ${escapeAttr(d.semana || '')}</small></span><b>${listaAbierta ? '▲' : '▼'}</b></button>
+      ${listaAbierta ? filasPersonasHTML(gente) + '<p class="pf-gris" style="margin:8px 0 0;font-size:12px">Último riego · días regados esta semana · ✓ = registro del lunes hecho. Toca a una persona para ver su ficha.</p>' : ''}</div>`;
+    h += `<button type="button" class="pf-btn pf-actualizar" id="pfActualizar">${p.cargando ? '⏳ Actualizando…' : '🔄 Actualizar'}</button>`;
+    h += `<button type="button" class="link-quiet" id="pfTelegram" style="display:block;margin:-12px auto 20px;font-size:13.5px">📨 Mandarme ahora el resumen a Telegram y WhatsApp</button>`;
     app.appendChild(el(h));
     const hecho = async (b, cuerpo, quitar) => {
       b.disabled = true; b.textContent = '…';
@@ -3876,12 +3878,15 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     });
     activarFilasPanel();
     app.querySelectorAll('[data-detalle]').forEach(b => b.onclick = () => { state.pfDetalle = { tipo: b.dataset.detalle }; window.scrollTo(0, 0); render(); });
-    app.querySelector('#pfActualizar').onclick = () => cargarPanelFac(true);
+    app.querySelector('#pfDesplegar').onclick = () => { state.pfListaAbierta = !state.pfListaAbierta; render(); };
+    const ba = app.querySelector('#pfActualizar');
+    ba.disabled = !!p.cargando;
+    ba.onclick = () => cargarPanelFac(true, true);
     const bt = app.querySelector('#pfTelegram');
     bt.onclick = async () => {
       bt.disabled = true; bt.textContent = 'Enviando…';
-      try { await api('/panel/resumen-telegram', {}); bt.textContent = '✓ Enviado: míralo en Telegram'; }
-      catch(e){ bt.disabled = false; bt.textContent = '📨 Mandarme ahora el resumen a Telegram'; avisoBreve(mensajeError(e, 'No se pudo enviar. Inténtalo de nuevo.')); }
+      try { await api('/panel/resumen-telegram', {}); bt.textContent = '✓ Enviado: míralo en Telegram y WhatsApp'; }
+      catch(e){ bt.disabled = false; bt.textContent = '📨 Mandarme ahora el resumen a Telegram y WhatsApp'; avisoBreve(mensajeError(e, 'No se pudo enviar. Inténtalo de nuevo.')); }
     };
   }
 
@@ -9064,4 +9069,4 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V11.89 · App Metas Amables · 2026-10-10 14:49==== -->
+<!-- ==== Fin del index V11.90 · App Metas Amables · 2026-10-10 15:22==== -->
