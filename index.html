@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V11.92 · App Metas Amables · 2026-10-10 15:56==== -->
+<!-- ==== index V11.93 · App Metas Amables · 2026-10-10 15:58==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -968,7 +968,8 @@ body.con-tabbar:has(.musica-barra) #app{padding-bottom:170px}
 .hamburger-btn-text.menu-avatar{width:42px;height:42px;padding:0;border-radius:50%;background:#4B3BC9;border:2px solid #fff;box-shadow:0 0 0 2px #4B3BC9;color:#fff;display:inline-flex;align-items:center;justify-content:center;overflow:hidden;font:800 16px/1 Karla,sans-serif;letter-spacing:.5px;cursor:pointer}
 .hamburger-btn-text.menu-avatar img{width:100%;height:100%;object-fit:cover}
 .hamburger-btn-text.menu-avatar span{font-size:16px}
-.avatar-grande img.foto-perfil{width:64px;height:64px;border-radius:50%;object-fit:cover;display:block}
+.avatar-grande img.foto-perfil{width:96px;height:96px;border-radius:50%;object-fit:cover;display:block}
+#fotoPerfilBtn{width:96px;height:96px;font-size:44px;cursor:pointer;overflow:hidden}
 .menu-panel.menu-perfil{padding:0;gap:0;width:88%;max-width:380px}
 .mp-cabecera{position:relative;flex:0 0 auto;height:170px;background-size:cover;background-position:center 30%;display:flex;align-items:flex-start;gap:14px;padding:calc(14px + env(safe-area-inset-top)) 16px 0}
 .mp-cabecera::after{content:"";position:absolute;inset:0;background:linear-gradient(rgba(40,30,90,.45),rgba(40,30,90,0) 70%);pointer-events:none}
@@ -2030,7 +2031,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V11.92';
+  const APP_VERSION = 'V11.93';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -4605,7 +4606,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     card.className = 'card';
     card.innerHTML = `
       <div class="perfil-cabecera">
-        <span class="avatar-grande">${fotoDePerfil() ? '<img class="foto-perfil" src="' + escapeAttr(fotoDePerfil()) + '" alt="Tu foto" referrerpolicy="no-referrer">' : (avatarDe(state.me) || '🙂')}</span>
+        <span class="avatar-grande" id="fotoPerfilBtn" role="button" tabindex="0" aria-label="Cambiar foto">${fotoDePerfil() ? '<img class="foto-perfil" src="' + escapeAttr(fotoDePerfil()) + '" alt="Tu foto" referrerpolicy="no-referrer">' : (avatarDe(state.me) || '🙂')}</span>
         <p style="margin:0;font-size:20px;font-family:'Lora',serif;font-weight:600">${escapeAttr(state.me)}</p>
       </div>
       <div style="display:flex;gap:16px;flex-wrap:wrap;margin:0 0 10px">
@@ -4662,6 +4663,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     };
     // «Cambiar foto»: ventana con tu foto en grande y las opciones (álbum, cámara delantera o quitarla)
     const inputCamara = card.querySelector('#inputFotoCamara');
+    // Tocar la foto hace lo mismo que «Cambiar foto»
+    card.querySelector('#fotoPerfilBtn').onclick = () => card.querySelector('#btnSubirFoto').click();
     card.querySelector('#btnSubirFoto').onclick = () => {
       const foto = fotoDePerfil();
       const capa = el(`<div class="foto-capa" role="dialog" aria-label="Cambiar foto"><div class="foto-hoja">
@@ -9098,4 +9101,4 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V11.92 · App Metas Amables · 2026-10-10 15:56==== -->
+<!-- ==== Fin del index V11.93 · App Metas Amables · 2026-10-10 15:58==== -->
