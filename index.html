@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V11.87 · App Metas Amables · 2026-10-10 14:15==== -->
+<!-- ==== index V11.88 · App Metas Amables · 2026-10-10 14:17==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1148,7 +1148,7 @@ body.riego-abierto{overflow:hidden}
 .pf-cifras{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:0 0 10px}
 .pf-cifra{background:#fff;border:1px solid #DCE6D8;border-radius:14px;padding:10px 12px;text-align:center;font:inherit;color:inherit;cursor:pointer}
 .pf-cifra-ancha{grid-column:1 / -1}.pf-cifra.alerta{background:#FBEDEA;border-color:#E9B8AE}.pf-cifra.alerta b{color:#8E2B2B}
-.pf-planes{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:0 0 10px}
+.pf-planes{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:0 0 10px}.pf-plan-det{display:block;font-size:11.5px;color:#7B5FB8;margin-top:4px;line-height:1.25}
 .pf-cifra b{display:block;font:700 26px/1.1 Lora,serif;color:#3F6338}.pf-cifra b small{font-size:15px;color:var(--ink-soft)}.pf-cifra span{font-size:12.5px;color:var(--ink-soft)}
 .pf-fila{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #EEE}.pf-fila:last-of-type{border-bottom:0}
 .pf-fn{flex:1;min-width:0;display:flex;flex-direction:column}.pf-fn b{font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.pf-fn small,.pf-fr small{font-size:12px;color:var(--ink-soft)}
@@ -2023,7 +2023,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V11.87';
+  const APP_VERSION = 'V11.88';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -3661,7 +3661,12 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   // ===== Panel de control admin Metas A. (moderador): tareas de hoy y resumen de toda la gente =====
   // Los datos los junta el Worker (GET /panel); las tareas hechas se marcan con POST /panel/hecho.
   const PLAN_CORTO = { gratis: 'Libre', guias: 'Guías', sesiones: 'Guías + Grupo' };
-  function isoLocal(d){ return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
+  // Plan con su detalle: «Guías · prueba gratis hasta 05/11» o «Guías · regalo tester hasta 31/12».
+  // Cuando vence, el Worker ya lo devuelve como Libre y la etiqueta desaparece sola. (isoLocal está más abajo)
+  function planEtiqueta(x){
+    const hasta = x.planHasta ? ' hasta ' + x.planHasta.slice(8, 10) + '/' + x.planHasta.slice(5, 7) : '';
+    return (PLAN_CORTO[x.plan] || '') + (x.planTipo === 'prueba' ? ' · prueba gratis' + hasta : x.planTipo === 'regalo' ? ' · regalo tester' + hasta : '');
+  }
   async function cargarPanelFac(forzar){
     const p = state.panelFac || (state.panelFac = {});
     if(p.cargando || (!forzar && p.datos && Date.now() - p.cuando < 5 * 60000)) return;
@@ -3713,7 +3718,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     app.appendChild(el(`<button type="button" class="pf-btn" id="pfVolverLista" style="margin:0 0 10px">← Volver</button>
       <div class="card pf-ficha">
         <p class="pf-ficha-nombre">${escapeAttr(conAvatar(x.nombre))}</p>
-        <p class="pf-gris" style="margin:0 0 8px;font-size:13.5px">${escapeAttr(PLAN_CORTO[x.plan] || '')}${x.alta ? ' · alta el ' + escapeAttr(x.alta.slice(8, 10) + '/' + x.alta.slice(5, 7)) : ''}${x.usaPlay ? ' · 📱 usa la app de Play' : ''}</p>
+        <p class="pf-gris" style="margin:0 0 8px;font-size:13.5px">${escapeAttr(planEtiqueta(x))}${x.alta ? ' · alta el ' + escapeAttr(x.alta.slice(8, 10) + '/' + x.alta.slice(5, 7)) : ''}${x.usaPlay ? ' · 📱 usa la app de Play' : ''}</p>
         ${x.tel ? `<a class="pf-btn wa" href="https://wa.me/${x.tel}" target="_blank" rel="noopener">📲 Abrir su WhatsApp</a>` : '<p class="pf-aviso">Sin teléfono válido</p>'}
         <p style="margin:12px 0 4px;font-size:14px">🎯 <b>Meta:</b> ${x.meta ? escapeAttr(x.meta) : '<span class="pf-gris">sin meta escrita</span>'}</p>
         ${x.practica ? `<p style="margin:0 0 4px;font-size:14px">🏃 <b>Práctica:</b> ${escapeAttr(x.practica)}</p>` : ''}
@@ -3734,7 +3739,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
   // Filas de personas (se tocan para abrir su ficha)
   function filasPersonasHTML(lista){
-    return lista.map(x => `<div class="pf-fila" data-nombre="${escapeAttr(x.nombre)}" role="button" tabindex="0"><span class="pf-fn"><b>${escapeAttr(x.nombre)}</b><small>${escapeAttr(PLAN_CORTO[x.plan] || '')}${x.usaPlay ? ' · 📱 Play' : ''}</small></span>
+    return lista.map(x => `<div class="pf-fila" data-nombre="${escapeAttr(x.nombre)}" role="button" tabindex="0"><span class="pf-fn"><b>${escapeAttr(x.nombre)}</b><small>${escapeAttr(planEtiqueta(x))}${x.usaPlay ? ' · 📱 Play' : ''}</small></span>
         <span class="pf-fr${x.diasSinRegar === null || x.diasSinRegar >= 3 ? ' alerta' : ''}">${x.diasSinRegar === null ? 'nunca' : (x.diasSinRegar === 0 ? 'hoy' : (x.diasSinRegar === 1 ? 'ayer' : 'hace ' + x.diasSinRegar + ' d'))}<small>${x.diasEstaSemana} ${x.diasEstaSemana === 1 ? 'día' : 'días'} esta sem.</small></span>
         <span class="pf-fl" title="Registro del lunes">${x.lunesHecho ? '✓' : '—'}</span><span class="pf-ir">›</span></div>`).join('');
   }
@@ -3754,8 +3759,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     let h = `<button type="button" class="pf-btn" id="pfVolverDet" style="margin:0 0 10px">← ${det.tipo === 'plan' ? 'Volver a las inscritas' : 'Volver al panel'}</button>`;
     if(det.tipo === 'inscritas'){
       h += `<h3 class="pf-seccion">👥 ${gente.length} personas inscritas</h3><div class="pf-planes">`
-        + ['gratis', 'guias', 'sesiones'].map(pl => { const n = gente.filter(x => x.plan === pl).length;
-            return `<button type="button" class="pf-cifra pf-plan" data-plan="${pl}"><b>${n}</b><span>Plan ${escapeAttr(PLAN_CORTO[pl])} ›</span></button>`; }).join('') + '</div>';
+        + ['gratis', 'guias', 'sesiones'].map(pl => { const de = gente.filter(x => x.plan === pl), pr = de.filter(x => x.planTipo === 'prueba').length, rg = de.filter(x => x.planTipo === 'regalo').length;
+            return `<button type="button" class="pf-cifra pf-plan" data-plan="${pl}"><b>${de.length}</b><span>Plan ${escapeAttr(PLAN_CORTO[pl])} ›</span>${pr || rg ? '<small class="pf-plan-det">' + [pr ? pr + ' en prueba gratis' : '', rg ? rg + ' regalo tester' : ''].filter(Boolean).join(' · ') + '</small>' : ''}</button>`; }).join('') + '</div>';
       h += bloque('Todas', gente, 'Todavía no hay nadie inscrito.');
     } else if(det.tipo === 'plan'){
       h += `<h3 class="pf-seccion">⭐ Plan ${escapeAttr(PLAN_CORTO[det.plan] || '')}</h3>` + bloque('Personas en este plan', gente.filter(x => x.plan === det.plan), 'Nadie en este plan.');
@@ -3816,7 +3821,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
         const pila = x.nombre.split(' ')[0];
         const texto = 'Hola ' + pila + ', ¿qué tal vas con tu práctica? Hace unos días que no riegas tu meta en la app. Si te ha surgido algo, cuéntame y lo ajustamos para que te resulte más fácil. 🌱\n\n👉 Riega tu meta aquí: ' + ENLACE_REGAR + '\n\nUn abrazo, ' + firma;
         return `<div class="card pf-tarea">
-          <p class="pf-quien"><b>${escapeAttr(x.nombre)}</b> · ${escapeAttr(PLAN_CORTO[x.plan] || '')}</p>
+          <p class="pf-quien"><b>${escapeAttr(x.nombre)}</b> · ${escapeAttr(planEtiqueta(x))}</p>
           <p class="pf-dato">${escapeAttr(textoRiego(x))}${x.contactado ? ' · le escribiste el ' + escapeAttr(x.contactado.slice(8, 10) + '/' + x.contactado.slice(5, 7)) : ''}</p>
           <div class="pf-acciones"><a class="pf-btn wa" href="${wa(x.tel, texto)}" target="_blank" rel="noopener">📲 Escribir por WhatsApp</a>
           <button type="button" class="pf-btn" data-contacto="${i}">✓ Hecho</button></div></div>`;
@@ -9051,4 +9056,4 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V11.87 · App Metas Amables · 2026-10-10 14:15==== -->
+<!-- ==== Fin del index V11.88 · App Metas Amables · 2026-10-10 14:17==== -->
