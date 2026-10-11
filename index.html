@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V12.33 · App Metas Amables · 2026-10-11 20:34==== -->
+<!-- ==== index V12.34 · App Metas Amables · 2026-10-11 20:39==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1103,7 +1103,7 @@ body.theme-dark .guia-progreso{background:var(--surface)}
 .hs-montana{width:min(36vw,165px);margin:0 auto 10px}.hs-img{display:block;width:min(48vw,200px);height:auto;margin:0 auto 10px}.hs-img-portada{width:min(62vw,240px);border-radius:24px;background:#fff;padding:6px}
 .planta-card{display:block;padding:14px 16px;background:#FDF0F0 !important;border:2px solid #C0392B !important;text-align:left}
 .ciclo .planta-card{margin:0}.ciclo .planta-card.actual{box-shadow:0 0 0 4px #FFD400;animation:toca 1.6s ease-in-out infinite}
-.planta-tit{display:block;font:700 19px Lora,serif;color:#A93226}
+.planta-tit{display:flex;align-items:center;gap:8px;font:700 19px Lora,serif;color:#A93226}.planta-tit-ico{width:34px;height:34px;flex:none;display:inline-flex}.planta-tit-ico svg{width:100%;height:100%}
 .planta-card .planta-meta{margin:6px 0 4px;font:italic 700 20px/1.3 Lora,serif;color:#4F7A43}
 .planta-estado-tx{margin:4px 0 10px;font-size:14.5px;line-height:1.4}
 .planta-fila{display:flex;gap:12px;align-items:center}
@@ -1252,7 +1252,7 @@ body.riego-abierto{overflow:hidden}
 .guia-semana{position:relative;margin:0}
 .guia-semana .ritual-tit{display:flex;align-items:center;gap:8px;color:#2F5F93;padding-right:76px}
 .ciclo .guia-semana.actual{box-shadow:0 0 0 4px #FFD400;animation:toca 1.6s ease-in-out infinite}
-.guia-semana-ico{width:30px;height:30px;flex:none}
+.guia-semana-ico{width:34px;height:34px;flex:none;display:inline-flex}.guia-semana-ico svg{width:100%;height:100%}
 .guia-semana .ritual-sub,.guia-semana .ritual-cambiar{color:#2F5F93}
 .guia-semana .ritual-practica{color:#1F3F66}
 .guia-semana .ritual-guia{background:linear-gradient(135deg,#4F7FB5 0%,#2F5F93 100%);color:#fff}
@@ -2133,7 +2133,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V12.33';
+  const APP_VERSION = 'V12.34';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -3261,16 +3261,17 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     document.body.style.overflow = ''; juegoAbierto = null;
   }
   const PRACTI_LEYENDO_PNG = 'data:image/png;base64,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';
+  // Letras del ciclo (11-10-2026): a Formulario de meta · b Tu guía de esta semana · c Compromiso y práctica · d Grupo de apoyo
   function iconoCiclo(tipo){
-    const t = (x, y, letra) => '<text x="' + x + '" y="' + y + '" text-anchor="middle" font-family="Karla,Arial,sans-serif" font-size="' + (/^[ac]$/.test(letra) ? 21 : 17) + '" font-weight="800" fill="#101010">' + letra + '</text>';
+    const t = (x, y, letra) => '<text x="' + x + '" y="' + y + '" text-anchor="middle" font-family="Karla,Arial,sans-serif" font-size="' + (/^[ace]$/.test(letra) ? 21 : 17) + '" font-weight="800" fill="#101010">' + letra + '</text>';
     const svg = inner => '<svg class="ciclo-svg" viewBox="0 0 48 48" aria-hidden="true">' + inner + '</svg>';
-    if(tipo === 'a') return svg('<path d="M4 12 Q14 8 24 12 Q34 8 44 12 L44 38 Q34 34 24 38 Q14 34 4 38 Z" fill="#C6DBF2" stroke="#101010" stroke-width="2.4" stroke-linejoin="round"/>' + t(24, 30, 'a'));
-    if(tipo === 'cero') return svg('<circle cx="24" cy="24" r="15" fill="#E2C79A" stroke="#101010" stroke-width="2.4"/>' + t(24, 30, '0'));
+    if(tipo === 'a') return svg('<path d="M4 12 Q14 8 24 12 Q34 8 44 12 L44 38 Q34 34 24 38 Q14 34 4 38 Z" fill="#C6DBF2" stroke="#101010" stroke-width="2.4" stroke-linejoin="round"/>' + t(24, 30, 'b'));
+    if(tipo === 'cero') return svg('<circle cx="24" cy="24" r="15" fill="#E2C79A" stroke="#101010" stroke-width="2.4"/>' + t(24, 30, 'a'));
     if(tipo === 'b') return svg('<ellipse cx="24" cy="30" rx="10.5" ry="13" fill="#F7C6C6" stroke="#101010" stroke-width="2.2"/>'
-      + [[14,11,3.4],[20.5,8,3.6],[27.5,8,3.6],[34,11,3.2]].map(c => '<circle cx="' + c[0] + '" cy="' + c[1] + '" r="' + c[2] + '" fill="#F7C6C6" stroke="#101010" stroke-width="2"/>').join('') + t(24, 36, 'b'));
-    if(tipo === 'c') return svg('<path d="M13 20 L24 5 L35 20 L35 43 L13 43 Z" fill="#CFE3C0" stroke="#101010" stroke-width="2.4" stroke-linejoin="round"/><path d="M20 10.5 L24 5 L28 10.5 Z" fill="#101010"/><path d="M13 20 H35" stroke="#101010" stroke-width="1.6"/>' + t(24, 37, 'c'));
+      + [[14,11,3.4],[20.5,8,3.6],[27.5,8,3.6],[34,11,3.2]].map(c => '<circle cx="' + c[0] + '" cy="' + c[1] + '" r="' + c[2] + '" fill="#F7C6C6" stroke="#101010" stroke-width="2"/>').join('') + t(24, 36, 'c'));
+    if(tipo === 'c') return svg('<path d="M13 20 L24 5 L35 20 L35 43 L13 43 Z" fill="#CFE3C0" stroke="#101010" stroke-width="2.4" stroke-linejoin="round"/><path d="M20 10.5 L24 5 L28 10.5 Z" fill="#101010"/><path d="M13 20 H35" stroke="#101010" stroke-width="1.6"/>' + t(24, 37, 'd'));
     // c = compromiso y grupo de apoyo: la pantalla del ordenador, en verde y con la letra c
-    if(tipo === 'cpc') return svg('<rect x="4" y="7" width="40" height="27" rx="4" fill="#CFE3C0" stroke="#101010" stroke-width="2.4"/><path d="M19 34 L17 41 H31 L29 34" fill="#CFE3C0" stroke="#101010" stroke-width="2.2" stroke-linejoin="round"/><path d="M13 41 H35" stroke="#101010" stroke-width="2.4" stroke-linecap="round"/>' + t(24, 27, 'c'));
+    if(tipo === 'cpc') return svg('<rect x="4" y="7" width="40" height="27" rx="4" fill="#CFE3C0" stroke="#101010" stroke-width="2.4"/><path d="M19 34 L17 41 H31 L29 34" fill="#CFE3C0" stroke="#101010" stroke-width="2.2" stroke-linejoin="round"/><path d="M13 41 H35" stroke="#101010" stroke-width="2.4" stroke-linecap="round"/>' + t(24, 27, 'd'));
     if(tipo === 'gorro') return svg('<path d="M24 9 L45 18 L24 27 L3 18 Z" fill="#2E2E2E" stroke="#101010" stroke-width="2" stroke-linejoin="round"/><path d="M12 22 V32 Q24 39 36 32 V22 L24 27 Z" fill="#2E2E2E" stroke="#101010" stroke-width="2" stroke-linejoin="round"/><path d="M40 20 V31" stroke="#C9942D" stroke-width="2.4"/><circle cx="40" cy="33" r="2.6" fill="#C9942D"/>');
     return '';
   }
@@ -4122,6 +4123,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
+    { v: 'V12.34', f: '11 de octubre de 2026', n: [
+      'El ciclo de Inicio va ahora con letras: <b>a</b> Formulario de meta, <b>b</b> Tu guía de esta semana, <b>c</b> Compromiso y práctica y <b>d</b> Grupo de apoyo. Cada paso lleva su icono con su letra.' ] },
     { v: 'V12.33', f: '11 de octubre de 2026', n: [
       'En <b>Compromiso y práctica</b>, el botón <b>Registra</b> abre Registros amables: tu clima, tu entorno, tu práctica y, al final, cómo vas esta semana.',
       '«¿Te lo recuerdo cada día?» se despliega al tocarlo, y el botón dice «Poner recordatorio en el calendario del móvil».' ] },
@@ -4235,9 +4238,10 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   // Oscurece la pantalla y va iluminando cada parte, con un globo que la explica
   function iniciarTour(){
     const PASOS = [
-      { s: '.ciclo-meta', t: '1 · Siembra tu meta', x: 'Empieza por aquí: rellena el formulario con <b>una meta importante para ti</b> este trimestre. Con tus respuestas preparamos tu guía.' },
-      { s: '.ciclo-a', t: '2 · Guía semanal', x: 'Cada semana te llega una guía con prácticas pequeñas. Léela con calma, o escúchala con 🔊 Oír.' },
-      { s: '.ciclo-b', t: '3 · Riega tu meta', x: 'Aquí está tu práctica de la semana. <b>Marca cada día que la hagas</b>: así riegas tu meta 💧' }
+      { s: '.ciclo-meta', t: 'a · Siembra tu meta', x: 'Empieza por aquí: rellena el formulario con <b>una meta importante para ti</b> este trimestre. Con tus respuestas preparamos tu guía.' },
+      { s: '.ciclo-a', t: 'b · Tu guía de esta semana', x: 'Cada semana te llega una guía con prácticas pequeñas. Es el tutor de tu planta: léela con calma, o escúchala con 🔊 Oír.' },
+      { s: '.ciclo-b', t: 'c · Compromiso y práctica', x: 'Aquí miras tu clima y tu entorno y <b>registras tu práctica</b>: así riegas tu meta 💧' },
+      { s: '.ciclo-c', t: 'd · Grupo de apoyo', x: 'Cada lunes registras tu compromiso de la semana y, con el Plan Guías + Grupo, nos vemos en grupo cada 15 días.' }
 
     ].filter(p => document.querySelector(p.s));
     if(!PASOS.length) return;
@@ -5166,8 +5170,8 @@ lo que haces cada día es lo que vas a ser.`;
     renderBackTopbar('Centro de ayuda');
     app.querySelector('#btnVolver').onclick = () => { state.view = 'ajustes'; window.scrollTo(0,0); render(); };
     const preguntas = [
-      ['¿Cómo marco que he hecho mi práctica?', 'En <b>b · Compromiso y práctica</b>, en el recuadro <b>«Registra tu práctica»</b>, toca el día y elige cuántas veces la hiciste. También desde <b>Viaje → «Marca tu práctica de hoy»</b>.'],
-      ['¿Cuándo me llega mi guía?', 'Con el <b>Plan Guías</b> tienes una guía nueva cada semana. Con el <b>Plan Libre</b>, la primera semana de cada mes. La encuentras en <b>a · Guía semanal</b>.'],
+      ['¿Cómo marco que he hecho mi práctica?', 'En <b>c · Compromiso y práctica</b>, en el recuadro <b>«Registra tu práctica»</b>, toca el día y elige cuántas veces la hiciste. También desde <b>Viaje → «Marca tu práctica de hoy»</b>.'],
+      ['¿Cuándo me llega mi guía?', 'Con el <b>Plan Guías</b> tienes una guía nueva cada semana. Con el <b>Plan Libre</b>, la primera semana de cada mes. La encuentras en <b>b · Guía semanal</b>.'],
       ['¿Qué es el Viaje?', 'Son los pasos de tu trimestre, uno detrás de otro: tu meta, tu guía, tu compromiso, tus notas… y al final, tu meta alcanzada. El paso que toca ahora se mueve para que lo veas.'],
       ['¿Cómo cambio la voz de Prácti?', 'En <b>Ajustes → Voz de Prácti</b> eliges voz, tono y velocidad. Si no te suena bien, mira <a href="#" data-ir="ayudaVoz">cómo cambiar la voz del móvil</a>.'],
       ['¿Cómo cambio de plan o lo cancelo?', 'En <b>Perfil y Ajustes → Tu plan</b> ves los planes. Para cancelar o cualquier duda con un pago, escríbenos por WhatsApp y lo resolvemos contigo.'],
@@ -6341,13 +6345,13 @@ lo que haces cada día es lo que vas a ser.`;
       if(metaHechaYa()){
         // Ya está hecha: en el Plan Libre no se vuelve a abrir el formulario
         s2.innerHTML = `
-          ${badgeSeccion('', 'Formulario de meta trimestral')}
+          ${badgeSeccion('cero', 'Formulario de meta trimestral')}
           <p style="background:var(--honey-tint);border-radius:10px;padding:12px 14px">✅ <b>Ya tienes el formulario rellenado</b>${enviado ? ' (el ' + enviado.getDate() + '/' + (enviado.getMonth() + 1) + ')' : ''}: tu meta está definida para el <b>${trimestreMeta()}</b>.<br>
-          ${state.guiaTexto ? 'Tu guía ya está lista en <b>«a · Guía semanal»</b>.' : 'En breve tendrás tu guía de prácticas en <b>«a · Guía semanal»</b>.'}</p>
+          ${state.guiaTexto ? 'Tu guía ya está lista en <b>«b · Guía semanal»</b>.' : 'En breve tendrás tu guía de prácticas en <b>«b · Guía semanal»</b>.'}</p>
           <p style="font-size:13px;color:var(--ink-soft)">${reglaMeta}</p>
           ${cambios > 1 ? '<button type="button" class="panel-link-btn honey fm-abrir" style="width:100%;border:none;cursor:pointer">Cambiar mi meta →</button>' : ''}`;
       } else s2.innerHTML = `
-        ${badgeSeccion('', 'Formulario de meta trimestral')}
+        ${badgeSeccion('cero', 'Formulario de meta trimestral')}
         <p>Rellena el formulario para definir tu meta trimestral más importante para ti, tus dificultades y a qué ritmo quieres ir. Te crearemos tu guía de prácticas.</p>
         <p style="background:var(--honey-tint);border-radius:10px;padding:10px 12px;font-size:14px">${reglaMeta}</p>
         <button type="button" class="panel-link-btn honey fm-abrir" style="width:100%;border:none;cursor:pointer">Rellenar formulario de meta →</button>
@@ -8307,9 +8311,7 @@ lo que haces cada día es lo que vas a ser.`;
     let receta = ''; try { receta = recetaTexto(historiaGuardada('brecha')); } catch(e){}
     const c = document.createElement('div'); c.className = 'card ritual-card guia-semana ciclo-a';
     // La guía es el tutor (el palo) de la planta: la sostiene para que crezca recta y no se tuerza. Va en el azul de la guía
-    const icono = '<svg class="guia-semana-ico" viewBox="0 0 32 32" aria-hidden="true"><path d="M8 26h16l-2 5H10z" fill="#C9942D" stroke="#7A5200" stroke-width="1.2" stroke-linejoin="round"/>'
-      + '<path d="M19 26V5" stroke="#8A6A2E" stroke-width="2.6" stroke-linecap="butt"/><path d="M14 26c0-6 1-11 3-15" fill="none" stroke="#3E7A2E" stroke-width="1.8" stroke-linecap="round"/>'
-      + '<path d="M15 19q-6-1-7-5q5-1 7 4z M16 13q6-3 4-7q-5 2-4 7z" fill="#6BAE4F"/><path d="M15 17.5q2.5-1.6 5 0" fill="none" stroke="#2F5F93" stroke-width="1.6"/></svg>';
+    const icono = '<span class="guia-semana-ico">' + iconoCiclo('a') + '</span>';   // b · Tu guía de esta semana
     c.innerHTML = '<span class="etiqueta-recibida">Recibida</span><p class="ritual-tit">' + icono + 'Tu guía de esta semana</p>' + (extraHTML || '')
       + '<p class="ritual-sub">Tu guía es el <b>tutor</b> de tu planta: la sostiene para que crezca recta y no se tuerza.</p>'
       + (pg ? (pg.ejercicio ? '<p class="ritual-practica">' + escapeAttr(pg.ejercicio) + '</p>' : '')
@@ -8646,7 +8648,7 @@ lo que haces cada día es lo que vas a ser.`;
     const tutor = '<svg class="planta-tutor" viewBox="0 0 600 640" aria-hidden="true"><rect x="390" y="150" width="16" height="302" rx="2" fill="#D8B26A" stroke="#8A6A2E" stroke-width="3"/>'
       + '<path d="M390 240 h16 M390 320 h16 M390 400 h16" stroke="#8A6A2E" stroke-width="3"/></svg>';
     const lazo = '<svg class="planta-tutor planta-lazo" viewBox="0 0 600 640" aria-hidden="true"><path d="M350 404 q26 -11 52 0 q-26 11 -52 0z" fill="none" stroke="#3E7A2E" stroke-width="5"/></svg>';
-    const t = el('<div class="card planta-card ciclo-b"><b class="planta-tit">Compromiso y práctica</b>'
+    const t = el('<div class="card planta-card ciclo-b"><b class="planta-tit"><span class="planta-tit-ico">' + iconoCiclo('b') + '</span>Compromiso y práctica</b>'
       + (mt ? '<span class="planta-meta">🌱 «' + escapeAttr(mt) + '»</span>' : '')
       + '<p class="planta-estado-tx"><span class="planta-estado">' + e.tit + (/[.!?]$/.test(e.tit) ? '' : '.') + '</span> ' + e.tx + '</p>'
       + '<div class="planta-fila"><span class="planta-fig" title="El tutor de tu planta es tu guía semanal">' + tutor + '<img src="' + e.img + '" alt="">' + lazo + '</span>'
@@ -9684,4 +9686,4 @@ lo que haces cada día es lo que vas a ser.`;
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V12.33 · App Metas Amables · 2026-10-11 20:34==== -->
+<!-- ==== Fin del index V12.34 · App Metas Amables · 2026-10-11 20:39==== -->
