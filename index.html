@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V12.38 · App Metas Amables · 2026-10-11 20:49==== -->
+<!-- ==== index V12.39 · App Metas Amables · 2026-10-11 20:54==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2138,7 +2138,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V12.38';
+  const APP_VERSION = 'V12.39';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -4130,6 +4130,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
+    { v: 'V12.39', f: '11 de octubre de 2026', n: [
+      'Sonidos nuevos al registrar: un <b>arpa</b> cuando registras tu práctica, una <b>kalimba</b> con tu clima y una <b>marimba</b> con tu entorno.' ] },
     { v: 'V12.37', f: '11 de octubre de 2026', n: [
       'En Inicio, el botón «Registra» (o «Hoy ya has registrado») abre directamente Registros amables. En Compromiso y práctica, el botón «Registra» lleva los iconos del clima, el entorno y la práctica.' ] },
     { v: 'V12.36', f: '11 de octubre de 2026', n: [
@@ -7211,7 +7213,7 @@ lo que haces cada día es lo que vas a ser.`;
         if(n > 0 && !veces[d]){
           const r = b.getBoundingClientRect();
           fuegoArtificial(e.clientX || r.left + r.width / 2, e.clientY || r.top + r.height / 2);
-          sonidoLogro();
+          sonidoRiego();
         }
         elegido = null;
         cambiar(d, n);
@@ -7341,7 +7343,7 @@ lo que haces cada día es lo que vas a ser.`;
         if(!hechoEl(d)){
           const r = b.getBoundingClientRect();
           fuegoArtificial(e.clientX || r.left + r.width / 2, e.clientY || r.top + r.height / 2);
-          sonidoLogro();
+          sonidoRiego();
         }
         cambiar(d);
       });
@@ -7464,6 +7466,59 @@ lo que haces cada día es lo que vas a ser.`;
   }
   // Sonidito agradable (dos notas cortas), sin archivos de audio
   let ctxAudio = null;
+  // ===== Sonidos de celebración al registrar (elegidos por Gustavo el 11-10-2026) =====
+  // Arpa brillante = riego (práctica) · Kalimba alegre = clima · Marimba feliz = entorno. Hechos con el navegador (sin archivos)
+  let ctxCelebra = null, ecoCelebra = null;
+  function audioCelebra(){
+    ctxCelebra = ctxCelebra || new (window.AudioContext || window.webkitAudioContext)();
+    if(ctxCelebra.state === 'suspended') ctxCelebra.resume();
+    return ctxCelebra;
+  }
+  function busCelebra(A, eco){
+    const out = A.createGain(); out.gain.value = 0.9;
+    const comp = A.createDynamicsCompressor(); out.connect(comp); comp.connect(A.destination);
+    if(!eco) return out;
+    if(!ecoCelebra){
+      const len = A.sampleRate * 2.4; ecoCelebra = A.createBuffer(2, len, A.sampleRate);
+      for(let ch = 0; ch < 2; ch++){ const d = ecoCelebra.getChannelData(ch); for(let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 3); }
+    }
+    const cv = A.createConvolver(); cv.buffer = ecoCelebra;
+    const wet = A.createGain(); wet.gain.value = eco;
+    const inp = A.createGain(); inp.connect(out); inp.connect(cv); cv.connect(wet); wet.connect(out);
+    return inp;
+  }
+  function notaCelebra(A, dest, midi, t, dur, o){
+    const f = 440 * Math.pow(2, (midi - 69) / 12), t0 = A.currentTime + t;
+    (o.p || [[1, 1]]).forEach(([m, a, dec]) => {
+      const osc = A.createOscillator(), g = A.createGain();
+      osc.type = o.tipo || 'sine'; osc.frequency.value = f * m;
+      const v = (o.vol || 0.2) * a, d = dec ? dur * dec : dur;
+      g.gain.setValueAtTime(0.0001, t0); g.gain.exponentialRampToValueAtTime(v, t0 + (o.at || 0.006)); g.gain.exponentialRampToValueAtTime(0.0001, t0 + d);
+      osc.connect(g); g.connect(dest); osc.start(t0); osc.stop(t0 + d + 0.05);
+    });
+  }
+  function sonidoRiego(){   // arpa brillante
+    try {
+      const A = audioCelebra(), b = busCelebra(A, 0.45), P = { tipo: 'triangle', vol: 0.13, p: [[1, 1], [2, 0.3, 0.5]] };
+      [60, 62, 64, 67, 69, 72, 74, 76, 79, 81, 84, 86, 88, 91, 93, 96].forEach((n, i) => notaCelebra(A, b, n, i * 0.045, 1.4, P));
+      [72, 76, 79, 84].forEach(n => notaCelebra(A, b, n, 0.85, 2.2, { tipo: 'triangle', vol: 0.12, p: [[1, 1], [2, 0.25, 0.6]] }));
+    } catch(e){}
+  }
+  function sonidoClima(){   // kalimba alegre
+    try {
+      const A = audioCelebra(), b = busCelebra(A, 0.3), K = { p: [[1, 1], [3, 0.18, 0.3], [5.2, 0.06, 0.15]], vol: 0.26, at: 0.004 };
+      [[72, 0], [76, 0.12], [79, 0.24], [76, 0.36], [84, 0.5], [88, 0.62]].forEach(([n, t]) => notaCelebra(A, b, n, t, 1.1, K));
+      [84, 91].forEach(n => notaCelebra(A, b, n, 0.8, 1.8, K));
+    } catch(e){}
+  }
+  function sonidoEntorno(){   // marimba feliz
+    try {
+      const A = audioCelebra(), b = busCelebra(A, 0.25), M = { p: [[1, 1], [4, 0.25, 0.25], [10, 0.05, 0.1]], vol: 0.28 };
+      [72, 76, 79, 84, 88].forEach((n, i) => notaCelebra(A, b, n, i * 0.09, 0.6, M));
+      [84, 88, 91].forEach(n => notaCelebra(A, b, n, 0.55, 1.6, M));
+      notaCelebra(A, b, 96, 0.7, 1.4, { vol: 0.12 });
+    } catch(e){}
+  }
   function sonidoLogro(){
     try {
       ctxAudio = ctxAudio || new (window.AudioContext || window.webkitAudioContext)();
@@ -8410,7 +8465,7 @@ lo que haces cada día es lo que vas a ser.`;
       ok.disabled = true; okTx.textContent = 'Guardando…';
       try { await marcarHoyHecho(); }
       catch(err){ ok.disabled = false; okTx.textContent = 'Hoy hice mi práctica'; avisoBreve('No se pudo guardar. Revisa tu conexión e inténtalo de nuevo.'); return; }
-      try { sonidoLogro(); launchConfetti(); } catch(err){}
+      try { sonidoRiego(); launchConfetti(); } catch(err){}
       ok.classList.add('on'); okTx.textContent = 'Hoy hice mi práctica: meta regada 🌱';
       capa.querySelector('.riego-consejo').textContent = 'Hoy has cuidado tu meta. Mañana, otro pequeño riego.';
       capa.querySelector('.riego-cal').remove();
@@ -8572,7 +8627,7 @@ lo que haces cada día es lo que vas a ser.`;
         try {
           await guardarAbonoHoy(copia);
           msg.textContent = copia.length ? '✓ Clima guardado' : 'Clima quitado';
-          if(copia.length && primeraVez){ primeraVez = false; try { sonidoTing(); } catch(e){} }
+          if(copia.length){ try { sonidoClima(); } catch(e){} }
           if(alGuardar) alGuardar(copia);
         } catch(e){ msg.textContent = 'No se pudo guardar. Revisa tu conexión e inténtalo de nuevo.'; }
       }, 700);
@@ -8586,7 +8641,7 @@ lo que haces cada día es lo que vas a ser.`;
     caja.querySelectorAll('.entorno-op').forEach(b => b.onclick = async () => {
       const antes = ent, n = Number(b.dataset.n);
       ent = ent === n ? 0 : n; pintarEnt(); entMsg.textContent = 'Guardando…';
-      try { await guardarAbonoHoy(null, ent); entMsg.textContent = ent ? '✓ Guardado. Tu entorno también cuenta.' : 'Entorno quitado.'; }
+      try { await guardarAbonoHoy(null, ent); entMsg.textContent = ent ? '✓ Guardado. Tu entorno también cuenta.' : 'Entorno quitado.'; if(ent){ try { sonidoEntorno(); } catch(e){} } }
       catch(e){ ent = antes; pintarEnt(); entMsg.textContent = 'No se pudo guardar. Revisa tu conexión e inténtalo de nuevo.'; }
     });
     return caja;
@@ -9694,4 +9749,4 @@ lo que haces cada día es lo que vas a ser.`;
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V12.38 · App Metas Amables · 2026-10-11 20:49==== -->
+<!-- ==== Fin del index V12.39 · App Metas Amables · 2026-10-11 20:54==== -->
