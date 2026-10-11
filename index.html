@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V12.02 · App Metas Amables · 2026-10-11 02:20==== -->
+<!-- ==== index V12.03 · App Metas Amables · 2026-10-11 02:27==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1094,7 +1094,7 @@ body.theme-dark .guia-progreso{background:var(--surface)}
 .montana-niveles{position:relative;container-type:inline-size;line-height:1.15}.montana-niveles img{display:block;width:100%;height:auto;border-radius:12px}
 .mn-et{position:absolute;left:50%;transform:translate(-50%,-50%);text-align:center;white-space:nowrap;font:800 clamp(10px,5cqw,26px) Karla,sans-serif;color:#fff;letter-spacing:.02em;text-shadow:0 0 3px rgba(0,0,0,.9),0 1px 2px rgba(0,0,0,.9),0 0 8px rgba(0,0,0,.45)}
 .hs-montana{width:min(36vw,165px);margin:0 auto 10px}.hs-img{display:block;width:min(48vw,200px);height:auto;margin:0 auto 10px}.hs-img-portada{width:min(62vw,240px);border-radius:24px;background:#fff;padding:6px}
-.planta-card{display:flex;gap:12px;align-items:center;padding:12px 14px}.planta-card img{width:112px;height:auto;flex:none;border-radius:14px;background:#fff}
+.planta-card{display:flex;gap:12px;align-items:center;padding:12px 14px}.planta-fig{position:relative;flex:none;display:block}.planta-fig img{display:block}.planta-tutor{position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none}.planta-card img{width:112px;height:auto;flex:none;border-radius:14px;background:#fff}
 .planta-tx{flex:1;min-width:0}.planta-tx b{display:block;font:700 18px Lora,serif;color:#2F5A23}.planta-tx p{margin:4px 0 10px;font-size:14.5px;line-height:1.4}
 .tour-capa{position:fixed;inset:0;z-index:9000}
 .tour-foco{position:fixed;border-radius:18px;box-shadow:0 0 0 9999px rgba(20,10,40,.62);outline:3px solid #F2C14E;transition:left .3s,top .3s,width .3s,height .3s;pointer-events:none}
@@ -2053,7 +2053,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V12.02';
+  const APP_VERSION = 'V12.03';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -4028,6 +4028,9 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
+    { v: 'V12.03', f: '11 de octubre de 2026', n: [
+      'Tu planta de Inicio tiene ahora un <b>tutor</b>: el palo que la sostiene es tu guía semanal, para que crezca recta y no se tuerza.',
+      'El aviso de las 20:00 te recuerda también <b>abonar tu meta</b>: contar cómo te sientes hoy.' ] },
     { v: 'V12.01', f: '11 de octubre de 2026', n: [
       'En Inicio, <b>Tu práctica de esta semana</b>: el ejercicio que te propone tu guía y su objetivo, tu disparador («Cuando…, haré…») y el botón <b>Descripción completa</b>, que abre la guía en «Tu práctica de la semana». Ya no se pregunta a qué hora la harás: un hábito se hace siempre en el mismo momento, justo después de algo que ya haces.',
       'En <b>Mi calendario de prácticas</b>, cada día hecho es una <b>maceta</b> (del color de tu emoción si ese día abonaste), sin la marca ✓.' ] },
@@ -8285,7 +8288,10 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     // Debajo del título, la meta de la persona con sus palabras: la planta ES su meta
     let mt = ''; try { mt = metaFinalViaje().texto; } catch(err){}
     if(mt.length > 80) mt = mt.slice(0, 79) + '…';
-    const t = el('<div class="card planta-card"><img src="' + e.img + '" alt=""><div class="planta-tx"><b>' + e.tit + '</b>' + (mt ? '<span class="planta-meta">🌱 «' + escapeAttr(mt) + '»</span>' : '') + '<p>' + e.tx + '</p>'
+    // El tutor (el palo junto a la planta) es la guía semanal: la sostiene para que crezca recta y no se tuerza
+    const tutor = '<svg class="planta-tutor" viewBox="0 0 600 640" aria-hidden="true"><path d="M390 175 L398 148 L406 175 V452 H390 Z" fill="#D8B26A" stroke="#8A6A2E" stroke-width="3" stroke-linejoin="round"/>'
+      + '<path d="M390 240 h16 M390 320 h16 M390 400 h16" stroke="#8A6A2E" stroke-width="3"/><path d="M350 404 q26 -11 52 0 q-26 11 -52 0z" fill="none" stroke="#3E7A2E" stroke-width="5"/></svg>';
+    const t = el('<div class="card planta-card"><span class="planta-fig" title="El tutor de tu planta es tu guía semanal"><img src="' + e.img + '" alt="">' + tutor + '</span><div class="planta-tx"><b>' + e.tit + '</b>' + (mt ? '<span class="planta-meta">🌱 «' + escapeAttr(mt) + '»</span>' : '') + '<p>' + e.tx + '</p>'
       + (e.boton ? '<button type="button" class="panel-link-btn planta-regar">' + e.boton + '</button>' : '') + '</div></div>').firstElementChild;
     const b = t.querySelector('.planta-regar'); if(b) b.onclick = () => abrirMomentoRiego();
     // Abonar: contar cómo te sientes (se puede aunque hoy no hayas regado)
@@ -9315,4 +9321,4 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V12.02 · App Metas Amables · 2026-10-11 02:20==== -->
+<!-- ==== Fin del index V12.03 · App Metas Amables · 2026-10-11 02:27==== -->
