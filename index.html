@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V12.21 · App Metas Amables · 2026-10-11 18:39==== -->
+<!-- ==== index V12.22 · App Metas Amables · 2026-10-11 18:44==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2084,7 +2084,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V12.21';
+  const APP_VERSION = 'V12.22';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -4073,6 +4073,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
+    { v: 'V12.22', f: '11 de octubre de 2026', n: [
+      'Lo primero es saber <b>cómo está tu clima</b>: en «Compromiso y práctica» y en la pantalla de regar, el clima va antes que la práctica. El botón ahora dice <b>«Registrar si hiciste tu práctica»</b>.' ] },
     { v: 'V12.14', f: '11 de octubre de 2026', n: [
       '<b>☀️ Tu clima de hoy</b> (antes «Abona tu meta»): tus emociones son el clima de tu meta. Elige cómo te sientes en un <b>sol partido en cuatro quesitos</b>: arriba más energía, abajo menos; a la izquierda lo desagradable y a la derecha lo agradable.',
       'En los calendarios, cada día es ahora un <b>redondel</b> del color de tu clima.',
@@ -7260,7 +7262,7 @@ lo que haces cada día es lo que vas a ser.`;
       const meta = String(((state.gamifica && state.gamifica.datosFormulario) || {}).metaTexto || textosCiclo().meta || '').trim();
       const textoRec = (meta || (ultima ? ultima.metaSem : '') || 'Mi práctica de Metas Amables').trim().replace(/[.。]+$/, '');
       const titulo = '🌱 ' + (textoRec.length > 70 ? textoRec.slice(0, 69).trim() + '…' : textoRec);
-      const detalle = (ultima ? 'Tu práctica: ' + ultima.metaSem + '\n\n' : '') + 'Metas Amables · cuando la hagas, márcala en la app: https://app.practicaintegral.club';
+      const detalle = (ultima ? 'Tu práctica: ' + ultima.metaSem + '\n\n' : '') + 'Metas Amables · primero mira cómo está tu clima y después registra si hiciste tu práctica: https://app.practicaintegral.club';
       const ini = new Date(); ini.setHours(hh, mm, 0, 0);
       if(ini < new Date()) ini.setDate(ini.getDate() + 1);
       const fin = new Date(ini.getTime() + 10 * 60000);
@@ -8209,11 +8211,12 @@ lo que haces cada día es lo que vas a ser.`;
       + '<div class="riego-escena"><span class="riego-sol"></span><span class="riego-mariposa">🦋</span><span class="riego-brillo b1"></span><span class="riego-brillo b2"></span><span class="riego-brillo b3"></span>'
       + '<img class="riego-img" src="' + (hecho ? imgRegando(3) : e.img) + '" alt=""></div>'
       + '<p class="riego-consejo">' + escapeAttr(consejo) + '</p>'
-      + '<button type="button" class="riego-ok">' + (hecho ? '✓ Hoy ya la has regado' : '✓ Hecho: riego mi meta') + '</button>'
+      + '<button type="button" class="riego-ok">' + (hecho ? '✓ Hoy ya la has regado' : '✓ Sí, hice mi práctica: riego mi meta') + '</button>'
       + '<button type="button" class="riego-cal">Marcar otro día en el calendario</button></div>').firstElementChild;
     document.body.appendChild(capa);
     document.body.classList.add('riego-abierto');
-    try { capa.appendChild(crearMacetaAbonar()); if(abrirEnAbonar) setTimeout(() => { const a = capa.querySelector('.abonar'); if(a) a.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 250); } catch(e){}
+    // Lo primero es saber cómo está tu clima; después, registrar si hiciste tu práctica
+    try { capa.insertBefore(crearMacetaAbonar(), capa.querySelector('.riego-escena')); } catch(e){}
     const quitar = () => { capa.remove(); document.body.classList.remove('riego-abierto'); try { apagarSintoniaSuave(1200); } catch(err){} };
     // ✕ e «Ir a Metas Amables» hacen lo mismo: cerrar y volver a Inicio
     const cerrar = () => { quitar(); state.view = 'panel'; state.panelSub = null; window.scrollTo(0, 0); render(); };
@@ -8228,7 +8231,7 @@ lo que haces cada día es lo que vas a ser.`;
     ok.onclick = async () => {
       ok.disabled = true; ok.textContent = 'Regando…';
       try { await marcarHoyHecho(); }
-      catch(err){ ok.disabled = false; ok.textContent = '✓ Hecho: riego mi meta'; avisoBreve('No se pudo guardar. Revisa tu conexión e inténtalo de nuevo.'); return; }
+      catch(err){ ok.disabled = false; ok.textContent = '✓ Sí, hice mi práctica: riego mi meta'; avisoBreve('No se pudo guardar. Revisa tu conexión e inténtalo de nuevo.'); return; }
       try { sonidoLogro(); launchConfetti(); } catch(err){}
       capa.querySelector('.riego-tit').textContent = '¡Meta regada! 🌱';
       capa.querySelector('.riego-consejo').textContent = 'Hoy has cuidado tu meta. Mañana, otro pequeño riego.';
@@ -8385,10 +8388,10 @@ lo que haces cada día es lo que vas a ser.`;
     const sin = diasSinPractica(), hora = new Date().getHours();
     if(sin === 0) return { img: imgRegando(3), tit: '¡Tu meta está feliz!', tx: 'Hoy ya la has regado con tu práctica. Sigue creciendo 🌱', boton: '' };
     // anim: animación en bucle de ese estado (archivos aparte, junto a index.html)
-    if(sin === 99) return { img: imgRegando(1), anim: 'practi-siembra.json', tit: 'Siembra tu meta', tx: 'Cada día que marcas tu práctica, la riegas. ¡Empieza hoy!', boton: '💧 Marcar mi práctica de hoy' };
-    if(sin === 1 && hora < 18) return { img: imgPlanta('espera'), anim: 'practi-espera.json', tit: 'Tu meta te espera', tx: 'Hoy toca regarla: haz tu práctica y márcala.', boton: '💧 Regar: marcar mi práctica' };
-    if(sin === 1) return { img: imgPlanta('sed'), anim: 'practi-mustia.json', tit: 'Tu meta tiene sed', tx: 'Aún estás a tiempo: un pequeño riego hoy y vuelve a ponerse bonita.', boton: '💧 Regar ahora' };
-    if(sin <= 3) return { img: imgPlanta('mustia'), anim: 'practi-mustia.json', tit: 'Tu meta se está mustiando', tx: 'Lleva ' + sin + ' días sin agua. Con 2 minutos de práctica hoy se recupera.', boton: '💧 Regarla hoy' };
+    if(sin === 99) return { img: imgRegando(1), anim: 'practi-siembra.json', tit: 'Siembra tu meta', tx: 'Cada día que marcas tu práctica, la riegas. ¡Empieza hoy!', boton: '💧 Registrar si hiciste tu práctica' };
+    if(sin === 1 && hora < 18) return { img: imgPlanta('espera'), anim: 'practi-espera.json', tit: 'Tu meta te espera', tx: 'Hoy toca regarla: haz tu práctica y márcala.', boton: '💧 Registrar si hiciste tu práctica' };
+    if(sin === 1) return { img: imgPlanta('sed'), anim: 'practi-mustia.json', tit: 'Tu meta tiene sed', tx: 'Aún estás a tiempo: un pequeño riego hoy y vuelve a ponerse bonita.', boton: '💧 Registrar si hiciste tu práctica' };
+    if(sin <= 3) return { img: imgPlanta('mustia'), anim: 'practi-mustia.json', tit: 'Tu meta se está mustiando', tx: 'Lleva ' + sin + ' días sin agua. Con 2 minutos de práctica hoy se recupera.', boton: '💧 Registrar si hiciste tu práctica' };
     return { img: imgPlanta('seca'), tit: 'Tu meta se ha secado', tx: 'No pasa nada: las metas vuelven a brotar. Hoy puedes sembrarla de nuevo, con calma.', boton: '🌱 Volver a sembrar' };
   }
   function diasSinPracticaAntesDeHoy(){
@@ -8441,7 +8444,8 @@ lo que haces cada día es lo que vas a ser.`;
       const maceta = '<svg viewBox="0 0 20 20" aria-hidden="true"><g stroke="#B7791F" stroke-width="1.6" stroke-linecap="round"><path d="M10 1.5v2.5M10 16v2.5M1.5 10h2.5M16 10h2.5M4 4l1.8 1.8M14.2 14.2L16 16M4 16l1.8-1.8M14.2 5.8L16 4"/></g><circle cx="10" cy="10" r="4.2" fill="#F6C94A" stroke="#B7791F" stroke-width="1.2"/></svg>';
       const ab = el('<button type="button" class="planta-abonar' + (hoyAb.length ? ' abonado' : '') + '"' + (hoyAb.length ? ' style="background:' + fondoAbono(hoyAb) + '"' : '') + '>' + maceta + '<span>' + (hoyAb.length ? 'Tu clima de hoy: ' + hoyAb.map(x => nombreEmocion(emoPorId(x.id))).join(' y ') : 'Tu clima de hoy: ¿cómo te sientes?') + '</span></button>').firstElementChild;
       ab.onclick = () => abrirMomentoRiego(true);
-      t.querySelector('.planta-tx').appendChild(ab);
+      const tx = t.querySelector('.planta-tx'), reg = tx.querySelector('.planta-regar');
+      if(reg) tx.insertBefore(ab, reg); else tx.appendChild(ab);   // el clima va antes que registrar la práctica
     } catch(e){}
     if(pushPosible() && !pushActivo()){
       const av = el('<button type="button" class="planta-avisar">🔔 Avísame si se me olvida regarla</button>').firstElementChild;
@@ -9463,4 +9467,4 @@ lo que haces cada día es lo que vas a ser.`;
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V12.21 · App Metas Amables · 2026-10-11 18:39==== -->
+<!-- ==== Fin del index V12.22 · App Metas Amables · 2026-10-11 18:44==== -->
