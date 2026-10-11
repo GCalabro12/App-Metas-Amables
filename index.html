@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V12.11 · App Metas Amables · 2026-10-11 02:52==== -->
+<!-- ==== index V12.12 · App Metas Amables · 2026-10-11 17:55==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -891,6 +891,12 @@ body.con-fondo-nivel{background:#fff}
 body.con-fondo-nivel::before{content:"";position:fixed;inset:0;z-index:-1;background:linear-gradient(var(--velo-nivel,rgba(255,255,255,.55)),var(--velo-nivel,rgba(255,255,255,.55))),var(--fondo-nivel) center/cover no-repeat}
 .musica-oficial{display:grid;grid-template-columns:auto 1fr auto;grid-template-rows:auto auto;column-gap:10px;align-items:center;width:100%;text-align:left;background:linear-gradient(135deg,#FFF3C4,#FFD9E6);border:2px solid #101010;border-radius:16px;padding:12px 14px;margin:0 0 12px;font:inherit;color:var(--ink);cursor:pointer;box-shadow:0 3px 0 #101010}
 .musica-oficial b{grid-column:2;grid-row:1 / span 2}.musica-oficial small{grid-column:2;font-size:13px;opacity:.75}
+#btnSintonia b{grid-row:1}#btnSintonia .musica-oficial-sub{grid-row:2}
+.musica-letra{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:-4px 0 10px}
+.musica-letra button{padding:9px 6px;border:2px solid #101010;border-radius:12px;background:#fff;font:700 14.5px Karla,sans-serif;color:var(--ink);cursor:pointer}
+.musica-letra button.activo{background:#101010;color:#fff}
+.musica-letra-texto{margin:0 0 12px;border:1px solid rgba(0,0,0,.12);border-radius:12px;background:rgba(255,255,255,.75);padding:8px 12px}
+.musica-letra-texto summary{cursor:pointer;font-weight:700}.musica-letra-texto p{margin:8px 0 2px;font-size:14.5px;line-height:1.5}
 .musica-oficial-play{grid-column:3;grid-row:1 / span 2;width:40px;height:40px;border-radius:50%;background:#101010;color:#fff;display:flex;align-items:center;justify-content:center;font-size:16px}
 .ciencia-fuente{margin:6px 0;border:1px solid rgba(0,0,0,.12);border-radius:10px;background:rgba(255,255,255,.7);padding:6px 10px}
 .ciencia-fuente summary{cursor:pointer}.ciencia-fuente ul{margin:6px 0;padding-left:18px}.ciencia-fuente li{margin:3px 0}
@@ -2064,7 +2070,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V12.11';
+  const APP_VERSION = 'V12.12';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -3389,10 +3395,13 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     const v0 = sintonia.volume, fin = Date.now() + ms;
     sintoniaReloj = setInterval(() => { const queda = fin - Date.now(); if(queda <= 0) pararSintonia(); else sintonia.volume = Math.max(0, v0 * queda / ms); }, 100);
   }
-  function sonarSintonia(segundos, volumen){
+  function sonarSintonia(segundos, volumen, conLetra){
     try{
       const vol = volumen || 0.8;
-      if(!sintonia){ sintonia = new Audio('musica-oficial-metas-amables.mp3'); }
+      // Con letra solo desde Música; los saludos de Prácti, el juego y la planta usan siempre la instrumental
+      const archivo = conLetra ? 'riega-tu-meta.mp3' : 'musica-oficial-metas-amables.mp3';
+      if(!sintonia){ sintonia = new Audio(archivo); }
+      else if(!decodeURIComponent(sintonia.src).endsWith(archivo)){ sintonia.pause(); sintonia.src = archivo; }
       pararSintonia();
       if(typeof musica !== 'undefined' && musica && musica.id && typeof musicaPoner === 'function'){ try{ musicaPoner(null); }catch(e){} }
       sintonia.currentTime = 0; sintonia.volume = vol; sintonia.loop = !segundos; sintonia.play().catch(() => {});
@@ -4045,6 +4054,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
+    { v: 'V12.12', f: '11 de octubre de 2026', n: [
+      'En <b>Utilidades → Música</b>, la música oficial de Metas Amables se puede escuchar <b>sin letra</b> o <b>con letra</b>: «Riega tu meta», la canción de la app, con la misma melodía. Toca «Ver la letra» para cantarla.' ] },
     { v: 'V12.07', f: '11 de octubre de 2026', n: [
       'Deja el dedo pulsado sobre el icono de la app y tendrás accesos directos: <b>💧 Regar hoy</b>, <b>🌿 Abonar</b> y <b>📖 Mi guía</b>.',
       'El botón <b>Abona tu meta</b> tiene ahora forma de maceta marrón; cuando abonas, toma el color de tu emoción.' ] },
@@ -4571,6 +4582,49 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     { id: 'exteriores', nombre: '🌍 Módulos exteriores' }
   ];
   var musica = { id: null, pausada: false, porFormulario: false };
+  // Música oficial: con letra o sin letra (se recuerda en este móvil)
+  function musicaConLetra(){ try { return localStorage.getItem('musica_letra') === '1'; } catch(e){ return false; } }
+  const LETRA_RIEGA = `Tenía un sueño en un cajón
+y mil propósitos de enero,
+quería todo de un tirón
+y me cansaba el primero.
+Hasta que entendí, despacito,
+que una meta es una flor:
+no se grita, no se exige,
+se cuida con amor.
+
+Después del café,
+justo después,
+un gesto pequeño
+que cabe en mis pies…
+
+Riega tu meta, poquito a poco,
+una gota cada día, sin prisa y sin agobio.
+Si un día se te olvida, no pasa nada,
+mañana vuelve el agua… ¡metas amables!
+
+El lunes me comprometo,
+cuántas veces, cuál será,
+y en el calendario dejo
+macetas de verdad.
+Mi guía es el palo firme
+que sostiene el tallo al sol,
+para que crezca derecha
+aunque sople el viento atroz.
+
+Rojo si hay tensión,
+azul si hay cansancio,
+verde si hay calma,
+amarillo si hay canto…
+Cada emoción es abono
+para mi meta.
+
+Riega tu meta, poquito a poco,
+una gota cada día, sin prisa y sin agobio.
+Si un día se te olvida, no pasa nada,
+mañana vuelve el agua… ¡metas amables!
+Riega tu meta, mírala crecer,
+lo que haces cada día es lo que vas a ser.`;
   var MUSICA_FORMULARIO = 'c_FBwFq7bug';   // «Zen, meditación»: suave, para pensar la meta con calma
   function musicaOrden(func, args){
     const fr = document.querySelector('#musicaBarra iframe');
@@ -4593,9 +4647,9 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     let barra = document.getElementById('musicaBarra');
     if(!id){ if(barra) barra.remove(); if(state.view === 'musica') render(); return; }
     // La música oficial de la app suena con el reproductor propio (en bucle), pero con la misma barra
-    if(id === 'oficial'){ if(barra) barra.innerHTML = ''; sonarSintonia(0); }
+    if(id === 'oficial'){ if(barra) barra.innerHTML = ''; sonarSintonia(0, 0, musicaConLetra()); }
     musica.id = id;
-    const c = id === 'oficial' ? { titulo: 'Música oficial de Metas Amables' } : (CANCIONES.find(x => x.id === id) || { titulo: 'Música' });
+    const c = id === 'oficial' ? { titulo: musicaConLetra() ? 'Riega tu meta (con letra)' : 'Música oficial de Metas Amables' } : (CANCIONES.find(x => x.id === id) || { titulo: 'Música' });
     if(!barra){
       barra = document.createElement('div'); barra.id = 'musicaBarra'; barra.className = 'musica-barra';
       document.body.appendChild(barra);
@@ -4621,7 +4675,11 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     renderBackTopbar('🎵 Música motivacional');
     app.querySelector('#btnVolver').onclick = () => { state.view = 'utilidades'; window.scrollTo(0,0); render(); };
     const caja = el(`<div class="musica-lista">
-        <button type="button" class="musica-oficial" id="btnSintonia">🎵 <b>Música oficial de Metas Amables</b><span class="musica-oficial-play">▶</span></button>
+        <button type="button" class="musica-oficial" id="btnSintonia">🎵 <b>Música oficial de Metas Amables</b><small class="musica-oficial-sub"></small><span class="musica-oficial-play">▶</span></button>
+        <div class="musica-letra" role="group" aria-label="Música oficial con letra o sin letra">
+          <button type="button" data-letra="0">🎼 Sin letra</button><button type="button" data-letra="1">🎤 Con letra</button>
+        </div>
+        <details class="musica-letra-texto"><summary>📝 Ver la letra de «Riega tu meta»</summary><p>${escapeAttr(LETRA_RIEGA).replace(/\n/g, '<br>')}</p></details>
         <p class="musica-ayuda">Elige una música y sigue usando la app: sonará mientras tanto. Para pararla, toca ⏹ abajo.</p>
         <details class="ciencia musica-ciencia"><summary>🔬 ¿Por qué música mientras practicas?</summary>
           <p>Escuchar una música agradable mientras haces tu práctica funciona como un <b>reforzador</b>: tu cerebro asocia la conducta con algo placentero y, poco a poco, le apetece más repetirla.</p>
@@ -4633,9 +4691,20 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       </div>`).firstElementChild;
     app.appendChild(caja);
     const bSint = caja.querySelector('#btnSintonia');
-    const pintarSint = () => { bSint.querySelector('.musica-oficial-play').textContent = musica.id === 'oficial' ? '⏹' : '▶'; };
+    const pintarSint = () => {
+      const letra = musicaConLetra();
+      bSint.querySelector('.musica-oficial-play').textContent = musica.id === 'oficial' ? '⏹' : '▶';
+      bSint.querySelector('.musica-oficial-sub').textContent = letra ? '🎤 Con letra: «Riega tu meta»' : '🎼 Sin letra';
+      caja.querySelectorAll('.musica-letra button').forEach(b => b.classList.toggle('activo', (b.dataset.letra === '1') === letra));
+      caja.querySelector('.musica-letra-texto').hidden = !letra;
+    };
     pintarSint();
     bSint.onclick = () => { musicaPoner(musica.id === 'oficial' ? null : 'oficial'); pintarSint(); };
+    caja.querySelectorAll('.musica-letra button').forEach(b => b.onclick = () => {
+      try { localStorage.setItem('musica_letra', b.dataset.letra); } catch(e){}
+      if(musica.id === 'oficial') musicaPoner('oficial');   // si ya sonaba, cambia a la otra versión
+      pintarSint();
+    });
     caja.querySelectorAll('.musica-cancion').forEach(b => b.onclick = () => {
       if(b.classList.contains('con-corona')){ avisoCorona('Esta música es del Plan Guías. Tienes una libre en cada módulo.'); return; }
       musicaPoner(b.getAttribute('data-id') || null);
@@ -9358,4 +9427,4 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V12.11 · App Metas Amables · 2026-10-11 02:52==== -->
+<!-- ==== Fin del index V12.12 · App Metas Amables · 2026-10-11 17:55==== -->
