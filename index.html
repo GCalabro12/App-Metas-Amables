@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V12.07 · App Metas Amables · 2026-10-11 02:36==== -->
+<!-- ==== index V12.08 · App Metas Amables · 2026-10-11 02:39==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1094,7 +1094,7 @@ body.theme-dark .guia-progreso{background:var(--surface)}
 .montana-niveles{position:relative;container-type:inline-size;line-height:1.15}.montana-niveles img{display:block;width:100%;height:auto;border-radius:12px}
 .mn-et{position:absolute;left:50%;transform:translate(-50%,-50%);text-align:center;white-space:nowrap;font:800 clamp(10px,5cqw,26px) Karla,sans-serif;color:#fff;letter-spacing:.02em;text-shadow:0 0 3px rgba(0,0,0,.9),0 1px 2px rgba(0,0,0,.9),0 0 8px rgba(0,0,0,.45)}
 .hs-montana{width:min(36vw,165px);margin:0 auto 10px}.hs-img{display:block;width:min(48vw,200px);height:auto;margin:0 auto 10px}.hs-img-portada{width:min(62vw,240px);border-radius:24px;background:#fff;padding:6px}
-.planta-card{display:flex;gap:12px;align-items:center;padding:12px 14px}.planta-fig{position:relative;flex:none;display:block}.planta-fig img{display:block}.planta-tutor{position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none}.planta-card img{width:112px;height:auto;flex:none;border-radius:14px;background:#fff}
+.planta-card{display:flex;gap:12px;align-items:center;padding:12px 14px}.planta-fig{position:relative;flex:none;display:block;background:#fff;border-radius:14px;isolation:isolate}.planta-fig img,.planta-fig .planta-anim{display:block;position:relative;z-index:1;mix-blend-mode:multiply;background:transparent !important}.planta-tutor{position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none;z-index:0}.planta-tutor.planta-lazo{z-index:2}.planta-card img{width:112px;height:auto;flex:none;border-radius:14px;background:#fff}
 .planta-tx{flex:1;min-width:0}.planta-tx b{display:block;font:700 18px Lora,serif;color:#2F5A23}.planta-tx p{margin:4px 0 10px;font-size:14.5px;line-height:1.4}
 .tour-capa{position:fixed;inset:0;z-index:9000}
 .tour-foco{position:fixed;border-radius:18px;box-shadow:0 0 0 9999px rgba(20,10,40,.62);outline:3px solid #F2C14E;transition:left .3s,top .3s,width .3s,height .3s;pointer-events:none}
@@ -2063,7 +2063,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V12.07';
+  const APP_VERSION = 'V12.08';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -5921,9 +5921,12 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
                 : state.panelSub === 's4'
                   ? '<span class="practi-tocable" data-reaccion="practi-pizarra-empujon.json" title="Tócame">' + practiHTML('pizarra', '', 190) + '</span>'   // al tocarlo, empujón en la pizarra
                   : practiHTML(figuraSub[0], '', figuraSub[1], figuraSub[2] ? 'una-vez' : '')}</div>`)
-        : el(`<div style="position:relative;text-align:center;margin-bottom:14px"><div style="font-family:'Lora',serif;font-size:24px;font-weight:600;color:var(--ink)">Hola, ${escapeAttr(state.me)}${avatarDe(state.me) ? ' ' + avatarDe(state.me) : ''}</div><div style="font-family:'Karla',sans-serif;font-size:15px;font-weight:700;color:var(--ink);margin-top:2px">${bienvenidaTexto(state.me)} a tu ciclo de aprendizaje</div><div class="fecha-hoy" id="fechaHoy" style="margin-bottom:10px">${textoFechaHoy()}</div><div class="practi-inicio" style="margin-bottom:10px">${practiReaccionHTML('saludo', 'empujonSaludo', 104, 'practi-saludo')}${bocadilloPracti(fraseInicio(), 'tono-calma')}</div></div>`);
+        : el(`<div style="position:relative;text-align:center;margin-bottom:14px"><div style="font-family:'Lora',serif;font-size:24px;font-weight:600;color:var(--ink)">Hola, ${escapeAttr(state.me)}${avatarDe(state.me) ? ' ' + avatarDe(state.me) : ''}</div><div style="font-family:'Karla',sans-serif;font-size:15px;font-weight:700;color:var(--ink);margin-top:2px">${bienvenidaTexto(state.me)} a tu ciclo de aprendizaje</div><div class="fecha-hoy" id="fechaHoy" style="margin-bottom:10px">${textoFechaHoy()}</div><div class="hueco-panel-fac"></div><div class="practi-inicio" style="margin-bottom:10px">${practiReaccionHTML('saludo', 'empujonSaludo', 104, 'practi-saludo')}${bocadilloPracti(fraseInicio(), 'tono-calma')}</div></div>`);
       // (el() devuelve un fragmento: hay que buscar dentro antes de añadirlo a la página)
       greetPanel.querySelectorAll('.practi-tocable').forEach(c => { c.onclick = () => reaccionExterna(c, c.dataset.reaccion); });
+      // «Panel de control admin Metas A.» (solo moderadores): justo debajo de la fecha, antes de Prácti saludando
+      const huecoPf = greetPanel.querySelector('.hueco-panel-fac');
+      if(huecoPf){ let pf = null; try { pf = tarjetaPanelFacilitador(); } catch(e){} if(pf){ pf.style.textAlign = 'left'; pf.style.marginBottom = '12px'; huecoPf.replaceWith(pf); } else huecoPf.remove(); }
       app.appendChild(greetPanel);
       if(!state.panelSub && !bienvenidaVista()) app.appendChild(el(bienvenidaHTML()));
       if(nivelBtnPanel) nivelBtnPanel.onclick = () => { state.prevView = 'panel'; state.view = insigniasBloqueadas() ? 'planes' : 'perfil'; window.scrollTo(0,0); render(); };
@@ -5949,7 +5952,6 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
         const avisos = tarjetasPlanHTML();
         if(avisos){ const a = el('<div class="avisos-plan">' + avisos + '</div>').firstElementChild; app.appendChild(a); activarTarjetasPlan(a); }
         try { const sp = tarjetaSiguientePaso(); if(sp) app.appendChild(sp); } catch(e){}
-        try { const pf = tarjetaPanelFacilitador(); if(pf) app.appendChild(pf); } catch(e){}
         try { const tp = tarjetaPlanta(); if(tp) app.appendChild(tp); } catch(e){}
         try { const zv = document.createElement('div'); app.appendChild(zv); tarjetaVozPendiente(zv); } catch(e){}
         const opciones = document.createElement('div');
@@ -8063,7 +8065,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     const c = document.createElement('div'); c.className = 'card ritual-card guia-semana ciclo-a';
     // La guía es el tutor (el palo) de la planta: la sostiene para que crezca recta y no se tuerza. Va en el azul de la guía
     const icono = '<svg class="guia-semana-ico" viewBox="0 0 32 32" aria-hidden="true"><path d="M8 26h16l-2 5H10z" fill="#C9942D" stroke="#7A5200" stroke-width="1.2" stroke-linejoin="round"/>'
-      + '<path d="M19 26V5" stroke="#8A6A2E" stroke-width="2.6" stroke-linecap="round"/><path d="M14 26c0-6 1-11 3-15" fill="none" stroke="#3E7A2E" stroke-width="1.8" stroke-linecap="round"/>'
+      + '<path d="M19 26V5" stroke="#8A6A2E" stroke-width="2.6" stroke-linecap="butt"/><path d="M14 26c0-6 1-11 3-15" fill="none" stroke="#3E7A2E" stroke-width="1.8" stroke-linecap="round"/>'
       + '<path d="M15 19q-6-1-7-5q5-1 7 4z M16 13q6-3 4-7q-5 2-4 7z" fill="#6BAE4F"/><path d="M15 17.5q2.5-1.6 5 0" fill="none" stroke="#2F5F93" stroke-width="1.6"/></svg>';
     c.innerHTML = '<span class="etiqueta-recibida">Recibida</span><p class="ritual-tit">' + icono + 'Tu guía de esta semana</p>' + (extraHTML || '')
       + '<p class="ritual-sub">Tu guía es el <b>tutor</b> de tu planta: la sostiene para que crezca recta y no se tuerza.</p>'
@@ -8318,9 +8320,10 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     let mt = ''; try { mt = metaFinalViaje().texto; } catch(err){}
     if(mt.length > 80) mt = mt.slice(0, 79) + '…';
     // El tutor (el palo junto a la planta) es la guía semanal: la sostiene para que crezca recta y no se tuerza
-    const tutor = '<svg class="planta-tutor" viewBox="0 0 600 640" aria-hidden="true"><path d="M390 175 L398 148 L406 175 V452 H390 Z" fill="#D8B26A" stroke="#8A6A2E" stroke-width="3" stroke-linejoin="round"/>'
-      + '<path d="M390 240 h16 M390 320 h16 M390 400 h16" stroke="#8A6A2E" stroke-width="3"/><path d="M350 404 q26 -11 52 0 q-26 11 -52 0z" fill="none" stroke="#3E7A2E" stroke-width="5"/></svg>';
-    const t = el('<div class="card planta-card"><span class="planta-fig" title="El tutor de tu planta es tu guía semanal"><img src="' + e.img + '" alt="">' + tutor + '</span><div class="planta-tx"><b>' + e.tit + '</b>' + (mt ? '<span class="planta-meta">🌱 «' + escapeAttr(mt) + '»</span>' : '') + '<p>' + e.tx + '</p>'
+    const tutor = '<svg class="planta-tutor" viewBox="0 0 600 640" aria-hidden="true"><rect x="390" y="150" width="16" height="302" rx="2" fill="#D8B26A" stroke="#8A6A2E" stroke-width="3"/>'
+      + '<path d="M390 240 h16 M390 320 h16 M390 400 h16" stroke="#8A6A2E" stroke-width="3"/></svg>';
+    const lazo = '<svg class="planta-tutor planta-lazo" viewBox="0 0 600 640" aria-hidden="true"><path d="M350 404 q26 -11 52 0 q-26 11 -52 0z" fill="none" stroke="#3E7A2E" stroke-width="5"/></svg>';
+    const t = el('<div class="card planta-card"><span class="planta-fig" title="El tutor de tu planta es tu guía semanal">' + tutor + '<img src="' + e.img + '" alt="">' + lazo + '</span><div class="planta-tx"><b>' + e.tit + '</b>' + (mt ? '<span class="planta-meta">🌱 «' + escapeAttr(mt) + '»</span>' : '') + '<p>' + e.tx + '</p>'
       + (e.boton ? '<button type="button" class="panel-link-btn planta-regar">' + e.boton + '</button>' : '') + '</div></div>').firstElementChild;
     const b = t.querySelector('.planta-regar'); if(b) b.onclick = () => abrirMomentoRiego();
     // Abonar: contar cómo te sientes (se puede aunque hoy no hayas regado)
@@ -9352,4 +9355,4 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V12.07 · App Metas Amables · 2026-10-11 02:36==== -->
+<!-- ==== Fin del index V12.08 · App Metas Amables · 2026-10-11 02:39==== -->
