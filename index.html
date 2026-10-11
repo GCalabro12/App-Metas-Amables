@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V11.98 · App Metas Amables · 2026-10-10 16:31==== -->
+<!-- ==== index V11.99 · App Metas Amables · 2026-10-11 02:07==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1122,6 +1122,23 @@ body.riego-abierto{overflow:hidden}
 .riego-consejo{max-width:420px;margin:12px auto 18px;padding:12px 16px;border-radius:16px;background:rgba(255,255,255,.82);font-size:16px;line-height:1.45}
 .riego-ok{width:min(420px,100%);padding:16px;border:0;border-radius:18px;background:#4F9A5A;color:#fff;font:800 18px Karla,sans-serif;cursor:pointer;box-shadow:0 6px 18px rgba(79,154,90,.35)}
 .riego-ok:disabled{opacity:.75;cursor:default}
+.abonar{width:min(420px,100%);margin:22px auto 0;padding:16px 12px 14px;border-radius:20px;background:rgba(255,255,255,.88);text-align:center}
+.abonar-tit{margin:0;font:700 20px Lora,serif;color:#2F5A23}.abonar-sub{margin:4px 0 8px;font-size:14.5px;color:#3F4A38}
+.abonar-eje{margin:2px 0;font-size:12px;color:#6A6A60}.abonar-lados{display:flex;justify-content:space-between;width:min(300px,82vw);margin:2px auto 8px;font-size:12px;color:#6A6A60}
+.abonar-pot{width:min(320px,86vw);margin:0 auto}.abonar-borde{height:20px;border-radius:7px;background:#B4B2A9;transition:background .3s}
+.abonar-maceta{width:94%;margin:-1px auto 0;height:210px;clip-path:polygon(0 0,100% 0,80% 100%,20% 100%);background:#D3D1C7}
+.abonar-maceta.rejilla{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1.15fr 1fr}
+.abonar-q{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;padding:4px}
+.abonar-q.bajo{padding-bottom:18px}.abonar-q.izq.bajo{padding-left:36px}.abonar-q.der.bajo{padding-right:36px}
+.abonar-em{border:0;background:rgba(255,255,255,.6);border-radius:14px;padding:5px 9px;font:700 13px Karla,sans-serif;cursor:pointer}.abonar-em.activa{outline:2px solid currentColor}
+.abonar-maceta.elegida{display:flex}.abonar-parte{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:0 6px 40px}
+.abonar-cuad{font-size:11.5px;font-weight:700;opacity:.85}.abonar-palabra{font:700 22px Lora,serif;line-height:1.1}
+.abonar-int{display:flex;gap:4px}.abonar-int button{border:0;border-radius:10px;padding:3px 9px;font:700 12px Karla,sans-serif;background:rgba(255,255,255,.6);cursor:pointer}.abonar-int button.on{background:#fff;outline:2px solid currentColor}
+.abonar-acciones{display:flex;flex-direction:column;align-items:center;gap:8px}
+.abonar-guardar{width:100%;max-width:320px;padding:13px;border:0;border-radius:16px;background:#6B9362;color:#fff;font:800 16px Karla,sans-serif;cursor:pointer}.abonar-guardar.hecho{background:#3B6D11}
+.abonar-fila2{display:flex;gap:14px}.abonar-sec{background:none;border:0;color:#2F5A23;text-decoration:underline;font:600 14px Karla,sans-serif;cursor:pointer}
+.abonar-msg{margin:8px 0 0;font-size:13.5px;color:#3F4A38;min-height:0}
+.planta-abonar{display:block;margin:8px 0 0;padding:8px 12px;border-radius:12px;border:2px solid #C0DD97;background:#F3F8EC;color:#2F3A2A;font:700 13.5px Karla,sans-serif;cursor:pointer;text-align:left}
 .riego-cal{margin:12px 0 0;background:none;border:0;color:#2F5A23;text-decoration:underline;font:600 14.5px Karla,sans-serif;cursor:pointer}
 @media (prefers-reduced-motion: reduce){.riego-escena img,.riego-mariposa,.riego-sol{animation:none}.riego-brillo{display:none}}
 .futuro-cab{margin:24px 4px 10px}.futuro-cab h3{margin:0 0 4px;font:700 20px Lora,serif;color:#5B3A9E}.futuro-cab p{margin:0;font-size:14.5px;line-height:1.45;color:var(--ink-soft)}
@@ -1428,6 +1445,9 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   .dia-btn.hecho{background:#4C8C4A;border-color:#4C8C4A;color:#fff}
   .dia-btn:disabled{opacity:.35;cursor:default}
   .dia-tick{font-size:16px;line-height:1;min-height:16px}
+  .dia-maceta{width:30px;height:22px;margin-top:3px;clip-path:polygon(0 0,100% 0,80% 100%,20% 100%);background:#E9E3D3;display:flex;align-items:center;justify-content:center}
+  .dia-btn.hecho .dia-maceta{background:#F5F1E6}
+  .dia-maceta .dia-tick{font-size:14px;min-height:0;color:#2B2B2B;font-weight:800}
   .chispa{position:fixed;width:10px;height:10px;border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);animation:chispa 1.3s cubic-bezier(.15,.7,.3,1) forwards}
   @keyframes chispa{to{transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) scale(.3);opacity:0}}
 </style>
@@ -2031,7 +2051,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V11.98';
+  const APP_VERSION = 'V11.99';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -2055,7 +2075,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   // la sesión de cada persona y solo le deja leer y escribir lo suyo.
   const API_URL = 'https://metas-amables-api.proud-hill-016b.workers.dev';
   const AIR = {
-    fields: { alumno: 'Practicante', semana: 'Semana', cumplida: 'Cumplida', notas: 'Notas', metaTrim: 'Meta trimestre', metaSem: 'Meta semana', identidad: 'Identidad', grupo: 'Grupo MAC', urlGuia: 'URL Guías Mensuales', fechasSesiones: 'Fechas Sesiones', guiaTexto: 'Guía Trimestral Texto', valoracion: 'Valoracion', oportunidades: 'Opo estimadas', compromisoVeces: 'Me comprometo a', vecesRealizadas: 'Veces realizado', estadoSemana: 'Estado Semana', enlaceGamifica: 'Practicantes', diasHechos: 'Días hechos' }
+    fields: { alumno: 'Practicante', semana: 'Semana', cumplida: 'Cumplida', notas: 'Notas', metaTrim: 'Meta trimestre', metaSem: 'Meta semana', identidad: 'Identidad', grupo: 'Grupo MAC', urlGuia: 'URL Guías Mensuales', fechasSesiones: 'Fechas Sesiones', guiaTexto: 'Guía Trimestral Texto', valoracion: 'Valoracion', oportunidades: 'Opo estimadas', compromisoVeces: 'Me comprometo a', vecesRealizadas: 'Veces realizado', estadoSemana: 'Estado Semana', enlaceGamifica: 'Practicantes', diasHechos: 'Días hechos', abonos: 'Abonos' }
   };
   // Sesión firmada por el Worker al entrar con nombre y contraseña (dura un año)
   function leerSesion(){ try{ return localStorage.getItem('ma_sesion'); }catch(e){ return null; } }
@@ -2124,6 +2144,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
         vecesRealizadas: (f[AIR.fields.vecesRealizadas] !== undefined && f[AIR.fields.vecesRealizadas] !== null) ? f[AIR.fields.vecesRealizadas] : null,
         estadoSemana: f[AIR.fields.estadoSemana] || '',
         diasHechos: f[AIR.fields.diasHechos] || '',
+        abonos: f[AIR.fields.abonos] || '',
         grupo: g || []
       });
     });
@@ -4005,6 +4026,9 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
+    { v: 'V11.99', f: '11 de octubre de 2026', n: [
+      '<b>🌿 Abona tu meta</b>: regar es practicar; abonar es conocer cómo te sientes. Elige una o dos emociones en la maceta (energía alta o baja, agradable o desagradable) y su intensidad. Puedes abonar aunque hoy no hayas regado.',
+      'En «¿Qué días la hiciste?», cada día es una <b>maceta pequeña</b> del color de tu emoción, con las veces que hiciste la práctica dentro.' ] },
     { v: 'V11.92', f: '10 de octubre de 2026', n: [
       'En tu Perfil, <b>Cambiar foto</b> abre una ventana con tu foto en grande: escoge una de tu álbum, <b>🤳 hazte una foto ahora</b> con la cámara o quítala.',
       'En la pantalla de regar, arriba: <b>Ir a Metas Amables</b>, para volver a Inicio.' ] },
@@ -6924,6 +6948,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   function tarjetaDias(estaSemana){
     const hoy = (new Date().getDay() + 6) % 7;   // 0 = lunes
     let veces = leerDias(estaSemana && estaSemana.diasHechos);
+    const abonosSem = leerAbonos(estaSemana && estaSemana.abonos);
     let elegido = null;   // día abierto para elegir el número
     const card = document.createElement('div');
     card.className = 'card dias-card';
@@ -6933,7 +6958,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       cont.innerHTML = `
         <p style="margin:0 0 4px;font-size:16px;display:flex;align-items:center;gap:8px"><svg class="icono-regar" viewBox="0 0 44 30" width="38" height="26" aria-hidden="true"><g stroke="#2B2B2B" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"><path d="M6 10 a5 5 0 0 1 8 0" fill="none"/><rect x="3" y="10" width="13" height="11" rx="2.5" fill="#7B3FB0"/><path d="M4 14.5 h11" stroke="#fff" stroke-width="1.8"/><path d="M16 13 L24 9" stroke="#7B3FB0" stroke-width="3.2"/><path d="M29 21 h12 l-1.8 8 h-8.4 z" fill="#C9942D"/><path d="M35 21 V13" fill="none" stroke="#3E7A2E" stroke-width="2"/><path d="M35 16 q-6 -5 -7 -1 q2 3 7 1z" fill="#6BAE4F"/><path d="M35 13.5 q6 -6 7 -1.5 q-2 3.2 -7 1.5z" fill="#6BAE4F"/></g><g fill="#4FA3E3"><circle cx="25.5" cy="12.5" r="1.3"/><circle cx="27" cy="16" r="1.3"/><circle cx="25" cy="18.5" r="1.2"/></g></svg><b>Registra tu práctica</b></p>
         <p style="font-size:13px;color:var(--ink-soft);margin:0 0 10px">${registraLunes() ? 'Opcional. Toca el día y elige cuántas veces lo hiciste; el lunes tu cierre saldrá ya rellenado.' : 'Toca el día y elige cuántas veces hiciste tu práctica (del 1 al 9).'}</p>
-        <div class="dias-fila">${DIAS_SEMANA.map((d, i) => `<button type="button" class="dia-btn${veces[d] ? ' hecho' : ''}${i === hoy ? ' hoy' : ''}" data-dia="${d}" ${i > hoy ? 'disabled' : ''} aria-pressed="${!!veces[d]}" style="${elegido === d ? 'outline:3px solid var(--honey);outline-offset:1px' : ''}"><span class="dia-letra">${d}</span><span class="dia-tick" style="font-size:16px">${veces[d] || ''}</span></button>`).join('')}</div>
+        <div class="dias-fila">${DIAS_SEMANA.map((d, i) => `<button type="button" class="dia-btn${veces[d] ? ' hecho' : ''}${i === hoy ? ' hoy' : ''}" data-dia="${d}" ${i > hoy ? 'disabled' : ''} aria-pressed="${!!veces[d]}" style="${elegido === d ? 'outline:3px solid var(--honey);outline-offset:1px' : ''}"><span class="dia-letra">${d}</span><span class="dia-maceta" style="${abonosSem[d] ? 'background:' + fondoAbono(abonosSem[d]) : ''}"><span class="dia-tick">${veces[d] || ''}</span></span></button>`).join('')}</div>
         ${elegido ? `<div style="margin:10px 0 0;padding:10px;border-radius:12px;background:var(--honey-tint)">
           <p style="font-size:13px;margin:0 0 8px;text-align:center"><b>¿Cuántas veces el ${['lunes','martes','miércoles','jueves','viernes','sábado','domingo'][DIAS_SEMANA.indexOf(elegido)]}?</b> (0 = no lo hice)</p>
           <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:6px">${[1,2,3,4,5,6,7,8,9,0].map(n => `<button type="button" class="dia-num" data-n="${n}" style="padding:10px 0;border-radius:10px;font-size:17px;font-weight:700;cursor:pointer;border:2px solid ${n ? '#6B9362' : 'var(--border)'};background:${(veces[elegido] || 0) === n ? (n ? '#6B9362;color:#fff' : '#ddd') : '#fff;color:' + (n ? '#4E7446' : 'var(--ink-soft)')}">${n}</button>`).join('')}</div></div>` : ''}
@@ -7994,7 +8019,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     'Deja a la vista lo que necesitas para tu práctica: así el momento llega solo.',
     'No hace falta hacerlo perfecto: lo importante es que no se seque.'
   ];
-  function abrirMomentoRiego(){
+  function abrirMomentoRiego(abrirEnAbonar){
+    if(abrirEnAbonar !== true) abrirEnAbonar = false;
     document.querySelectorAll('.riego-capa').forEach(c => c.remove());
     const practica = String(textosCiclo().practica || '').trim();
     let meta = ''; try { meta = metaFinalViaje().texto; } catch(err){}
@@ -8014,6 +8040,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       + '<button type="button" class="riego-cal">Marcar otro día en el calendario</button></div>').firstElementChild;
     document.body.appendChild(capa);
     document.body.classList.add('riego-abierto');
+    try { capa.appendChild(crearMacetaAbonar()); if(abrirEnAbonar) setTimeout(() => { const a = capa.querySelector('.abonar'); if(a) a.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 250); } catch(e){}
     const quitar = () => { capa.remove(); document.body.classList.remove('riego-abierto'); try { apagarSintoniaSuave(1200); } catch(err){} };
     // ✕ e «Ir a Metas Amables» hacen lo mismo: cerrar y volver a Inicio
     const cerrar = () => { quitar(); state.view = 'panel'; state.panelSub = null; window.scrollTo(0, 0); render(); };
@@ -8039,6 +8066,120 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       try { if(caja) animarPlantaEn(caja, 'practi-crece.json', true); else if(img){ img.src = imgRegando(3); animarPlanta(img, 'practi-crece.json', true); } } catch(err){}
     };
   }
+  // ===== Abona tu meta: registrar cómo te sientes (autoconocerse). Regar = practicar; abonar = conocer lo que sientes =====
+  // Cuatro cuadrantes (energía × agrado, como el Mood Meter de Yale), dos emociones en cada uno.
+  // Se guarda en «Abonos» de la fila de la semana: «L=estresado.a+cansado.b;M=alegre.b» (a = intensidad alta, b = baja; hasta 2 por día).
+  const EMO_CUAD = {
+    tension: { n: 'Tensión y alerta', claro: '#F7C1C1', fuerte: '#E24B4A', borde: '#A32D2D', txt: '#501313' },
+    vital: { n: 'Vitalidad y expansión', claro: '#FAC775', fuerte: '#EF9F27', borde: '#854F0B', txt: '#412402' },
+    agot: { n: 'Agotamiento y desánimo', claro: '#B5D4F4', fuerte: '#378ADD', borde: '#185FA5', txt: '#042C53' },
+    calma: { n: 'Calma y paz', claro: '#C0DD97', fuerte: '#639922', borde: '#3B6D11', txt: '#173404' }
+  };
+  const EMOCIONES = [
+    { id: 'estresado', n: 'Estresado', c: 'tension' }, { id: 'preocupado', n: 'Preocupado', c: 'tension' }, { id: 'enfadado', n: 'Enfadado', c: 'tension' },
+    { id: 'alegre', n: 'Alegre', c: 'vital' }, { id: 'activo', n: 'Activo', c: 'vital' },
+    { id: 'cansado', n: 'Cansado', c: 'agot' }, { id: 'desmotivado', n: 'Desmotivado', c: 'agot' },
+    { id: 'tranquilo', n: 'Tranquilo', c: 'calma' }, { id: 'agradecido', n: 'Agradecido', c: 'calma' }
+  ];
+  const emoPorId = id => EMOCIONES.find(e => e.id === id);
+  // En femenino si la persona dijo «Mujer» en su formulario (Estresada, Tranquila…)
+  function nombreEmocion(e){
+    const g = state.gamifica && state.gamifica.datosFormulario && state.gamifica.datosFormulario.genero;
+    return /mujer/i.test(String(g || '')) ? e.n.replace(/o$/, 'a') : e.n;
+  }
+  function leerAbonos(txt){
+    const o = {};
+    String(txt || '').split(';').forEach(p => {
+      const [d, v] = p.split('=');
+      if(!DIAS_SEMANA.includes(d) || !v) return;
+      const lista = v.split('+').map(x => { const [id, i] = x.split('.'); return { id, i: i === 'a' ? 'a' : 'b' }; }).filter(x => emoPorId(x.id)).slice(0, 2);
+      if(lista.length) o[d] = lista;
+    });
+    return o;
+  }
+  function escribirAbonos(o){ return DIAS_SEMANA.filter(d => o[d] && o[d].length).map(d => d + '=' + o[d].map(x => x.id + '.' + x.i).join('+')).join(';'); }
+  function colorEmo(x){ const c = EMO_CUAD[emoPorId(x.id).c]; return x.i === 'a' ? c.fuerte : c.claro; }
+  function fondoAbono(lista){
+    if(!lista || !lista.length) return '';
+    return lista.length === 1 ? colorEmo(lista[0]) : 'linear-gradient(90deg,' + colorEmo(lista[0]) + ' 50%,' + colorEmo(lista[1]) + ' 50%)';
+  }
+  function filaSemanaActual(){ return ((state.checkins && state.checkins[state.me]) || []).find(c => c.week === currentWeekShort); }
+  function abonoDeHoy(){ const f = filaSemanaActual(); return (leerAbonos(f && f.abonos)[DIAS_SEMANA[(new Date().getDay() + 6) % 7]] || []).map(x => ({ ...x })); }
+  async function guardarAbonoHoy(lista){
+    const letra = DIAS_SEMANA[(new Date().getDay() + 6) % 7];
+    const listaCheck = state.checkins[state.me] || (state.checkins[state.me] = []);
+    let fila = filaSemanaActual();
+    const abonos = leerAbonos(fila && fila.abonos);
+    if(lista.length) abonos[letra] = lista; else delete abonos[letra];
+    const campos = {}; campos[AIR.fields.semana] = currentWeekShort; campos[AIR.fields.abonos] = escribirAbonos(abonos);
+    const data = await guardarSemana(campos);
+    if(!fila){ fila = { id: data.id, week: currentWeekShort, label: currentWeekLabel, cumplida: false, nota: '', estadoSemana: '', compromisoVeces: null, vecesRealizadas: null, diasHechos: '' }; listaCheck.push(fila); }
+    fila.abonos = escribirAbonos(abonos);
+  }
+  // La maceta con los cuatro cuadrantes: arriba (la parte ancha) más energía, abajo menos; izquierda desagradable, derecha agradable.
+  // Al tocar una emoción la maceta toma su color y la palabra sale en el centro; con dos, mitad y mitad.
+  function crearMacetaAbonar(alGuardar){
+    let sel = abonoDeHoy(), modo = sel.length ? 'ver' : 'grid', guardado = sel.length > 0;
+    const caja = el('<div class="abonar"><p class="abonar-tit">🌿 Abona tu meta</p><p class="abonar-sub">Conocer lo que sientes también la hace crecer. <b>¿Cómo te sientes hoy?</b></p>'
+      + '<p class="abonar-eje">⚡ Más energía</p><div class="abonar-pot"><div class="abonar-borde"></div><div class="abonar-maceta"></div></div><p class="abonar-eje">🔋 Menos energía</p>'
+      + '<p class="abonar-lados"><span>← Desagradable</span><span>Agradable →</span></p><div class="abonar-acciones"></div><p class="abonar-msg"></p></div>').firstElementChild;
+    const maceta = caja.querySelector('.abonar-maceta'), borde = caja.querySelector('.abonar-borde'), acc = caja.querySelector('.abonar-acciones'), msg = caja.querySelector('.abonar-msg');
+    const pintar = () => {
+      maceta.innerHTML = ''; acc.innerHTML = '';
+      if(modo === 'grid'){
+        maceta.className = 'abonar-maceta rejilla'; borde.style.background = '#B4B2A9';
+        [['tension', 'izq alto'], ['vital', 'der alto'], ['agot', 'izq bajo'], ['calma', 'der bajo']].forEach(([k, cl]) => {
+          const c = EMO_CUAD[k], q = document.createElement('div');
+          q.className = 'abonar-q ' + cl; q.style.background = c.claro;
+          EMOCIONES.filter(e => e.c === k).forEach(e => {
+            const b = document.createElement('button'); b.type = 'button'; b.className = 'abonar-em' + (sel.some(x => x.id === e.id) ? ' activa' : '');
+            b.textContent = nombreEmocion(e); b.style.color = c.txt;
+            b.onclick = () => {
+              if(sel.some(x => x.id === e.id)) sel = sel.filter(x => x.id !== e.id);
+              else if(sel.length < 2) sel.push({ id: e.id, i: 'b' });
+              else sel[1] = { id: e.id, i: 'b' };
+              guardado = false; modo = sel.length ? 'ver' : 'grid'; msg.textContent = ''; pintar();
+            };
+            q.appendChild(b);
+          });
+          maceta.appendChild(q);
+        });
+        if(sel.length) acc.appendChild(boton('Volver a mi emoción', () => { modo = 'ver'; pintar(); }));
+        return;
+      }
+      // Ver: la maceta del color de la emoción (o mitad y mitad), la palabra en el centro y su intensidad
+      maceta.className = 'abonar-maceta elegida';
+      borde.style.background = EMO_CUAD[emoPorId(sel[0].id).c].borde;
+      sel.forEach((x, n) => {
+        const e = emoPorId(x.id), c = EMO_CUAD[e.c], parte = document.createElement('div');
+        parte.className = 'abonar-parte'; parte.style.background = colorEmo(x);
+        const tc = x.i === 'a' ? '#fff' : c.txt;
+        parte.innerHTML = '<span class="abonar-cuad" style="color:' + tc + '">' + c.n + '</span><span class="abonar-palabra" style="color:' + tc + '">' + nombreEmocion(e) + '</span>'
+          + '<span class="abonar-int"><button type="button" data-i="b">Baja</button><button type="button" data-i="a">Alta</button></span>';
+        parte.querySelectorAll('[data-i]').forEach(b => {
+          b.style.color = c.txt; if(b.dataset.i === x.i) b.classList.add('on');
+          b.onclick = () => { sel[n].i = b.dataset.i; guardado = false; msg.textContent = ''; pintar(); };
+        });
+        maceta.appendChild(parte);
+      });
+      const g = document.createElement('button'); g.type = 'button'; g.className = 'abonar-guardar' + (guardado ? ' hecho' : '');
+      g.textContent = guardado ? '✓ Meta abonada' : '🌿 Guardar mi abono';
+      g.onclick = async () => {
+        g.disabled = true; g.textContent = 'Guardando…';
+        try { await guardarAbonoHoy(sel); guardado = true; try { sonidoTing(); } catch(e){} msg.textContent = 'Gracias por mirarte por dentro: así también crece tu meta 🌱'; pintar(); if(alGuardar) alGuardar(sel); }
+        catch(e){ g.disabled = false; g.textContent = '🌿 Guardar mi abono'; msg.textContent = 'No se pudo guardar. Revisa tu conexión e inténtalo de nuevo.'; }
+      };
+      acc.appendChild(g);
+      const fila2 = document.createElement('div'); fila2.className = 'abonar-fila2';
+      if(sel.length < 2) fila2.appendChild(boton('＋ Añadir otra emoción', () => { modo = 'grid'; pintar(); }));
+      fila2.appendChild(boton('Cambiar', () => { sel = []; guardado = false; modo = 'grid'; msg.textContent = ''; pintar(); }));
+      acc.appendChild(fila2);
+    };
+    function boton(t, f){ const b = document.createElement('button'); b.type = 'button'; b.className = 'abonar-sec'; b.textContent = t; b.onclick = f; return b; }
+    pintar();
+    return caja;
+  }
+
   // Marca hoy como hecho (1 vez) en «Días hechos» de esta semana, igual que la fila L–D de paso b
   async function marcarHoyHecho(){
     const letra = DIAS_SEMANA[(new Date().getDay() + 6) % 7];
@@ -8106,7 +8247,14 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     if(mt.length > 80) mt = mt.slice(0, 79) + '…';
     const t = el('<div class="card planta-card"><img src="' + e.img + '" alt=""><div class="planta-tx"><b>' + e.tit + '</b>' + (mt ? '<span class="planta-meta">🌱 «' + escapeAttr(mt) + '»</span>' : '') + '<p>' + e.tx + '</p>'
       + (e.boton ? '<button type="button" class="panel-link-btn planta-regar">' + e.boton + '</button>' : '') + '</div></div>').firstElementChild;
-    const b = t.querySelector('.planta-regar'); if(b) b.onclick = abrirMomentoRiego;
+    const b = t.querySelector('.planta-regar'); if(b) b.onclick = () => abrirMomentoRiego();
+    // Abonar: contar cómo te sientes (se puede aunque hoy no hayas regado)
+    try {
+      const hoyAb = abonoDeHoy();
+      const ab = el('<button type="button" class="planta-abonar"' + (hoyAb.length ? ' style="background:' + fondoAbono(hoyAb) + '"' : '') + '>🌿 ' + (hoyAb.length ? 'Hoy te sientes: ' + hoyAb.map(x => nombreEmocion(emoPorId(x.id))).join(' y ') : 'Abona tu meta: ¿cómo te sientes hoy?') + '</button>').firstElementChild;
+      ab.onclick = () => abrirMomentoRiego(true);
+      t.querySelector('.planta-tx').appendChild(ab);
+    } catch(e){}
     if(pushPosible() && !pushActivo()){
       const av = el('<button type="button" class="planta-avisar">🔔 Avísame si se me olvida regarla</button>').firstElementChild;
       av.onclick = () => abrirGuiaAvisos(() => { if(pushActivo()) av.remove(); });
@@ -9127,4 +9275,4 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V11.98 · App Metas Amables · 2026-10-10 16:31==== -->
+<!-- ==== Fin del index V11.99 · App Metas Amables · 2026-10-11 02:07==== -->
