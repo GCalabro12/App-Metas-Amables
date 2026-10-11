@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V12.22 · App Metas Amables · 2026-10-11 18:44==== -->
+<!-- ==== index V12.23 · App Metas Amables · 2026-10-11 18:58==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1159,6 +1159,12 @@ body.riego-abierto{overflow:hidden}
 .abonar-guardar{width:100%;max-width:320px;padding:13px;border:0;border-radius:16px;background:#6B9362;color:#fff;font:800 16px Karla,sans-serif;cursor:pointer}.abonar-guardar.hecho{background:#3B6D11}
 .abonar-fila2{display:flex;gap:14px}.abonar-sec{background:none;border:0;color:#2F5A23;text-decoration:underline;font:600 14px Karla,sans-serif;cursor:pointer}
 .abonar-msg{margin:8px 0 0;font-size:13.5px;color:#3F4A38;min-height:0}
+.entorno{margin:6px auto 14px;max-width:340px}.entorno-tit{margin:0 0 8px;font:700 15px Karla,sans-serif;color:#3F4A38}
+.entorno-ops{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.entorno-op{display:flex;align-items:center;gap:8px;padding:7px 9px;border:2px solid #E2DDD0;border-radius:10px;background:#fff;font:700 13px/1.2 Karla,sans-serif;color:#2B2B2B;text-align:left;cursor:pointer}
+.entorno-op.on{border-color:#2B2B2B}
+.entorno-cuadro{flex:none;width:20px;height:20px;border-radius:4px;border:1.5px solid #BDB8AA}
+.entorno-msg{margin:6px 0 0;font-size:12.5px;color:#6A6A60;min-height:0}
 .planta-abonar{display:flex;align-items:center;justify-content:center;gap:7px;width:100%;margin:8px 0 0;padding:9px 12px;border:2px solid #F0C44C;border-radius:999px;background:#FFF6D6;color:#5A3D00;font:700 13.5px/1.25 Karla,sans-serif;cursor:pointer;text-align:center}
 .planta-abonar.abonado{color:#2B2B2B}
 .planta-abonar svg{width:20px;height:20px;flex:none}
@@ -1478,7 +1484,9 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   .dia-btn.hecho{background:#4C8C4A;border-color:#4C8C4A;color:#fff}
   .dia-btn:disabled{opacity:.35;cursor:default}
   .dia-tick{font-size:16px;line-height:1;min-height:16px}
-  .dia-maceta{width:26px;height:26px;margin-top:3px;border-radius:50%;background:#E9E3D3;display:flex;align-items:center;justify-content:center}
+  .dia-entorno{width:36px;height:36px;margin-top:2px;border-radius:7px;border:1.5px solid transparent;box-sizing:border-box;display:flex;align-items:center;justify-content:center}
+  .dia-entorno[data-e="1"]{border-color:#C9C4B4}
+  .dia-maceta{width:26px;height:26px;border-radius:50%;background:#E9E3D3;display:flex;align-items:center;justify-content:center}
   .dia-btn.hecho .dia-maceta{background:#F5F1E6}
   .dia-maceta .dia-tick{font-size:14px;min-height:0;color:#2B2B2B;font-weight:800}
   .chispa{position:fixed;width:10px;height:10px;border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);animation:chispa 1.3s cubic-bezier(.15,.7,.3,1) forwards}
@@ -2084,7 +2092,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V12.22';
+  const APP_VERSION = 'V12.23';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -4073,6 +4081,9 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
+    { v: 'V12.23', f: '11 de octubre de 2026', n: [
+      'Debajo del sol, <b>¿cómo está tu entorno hoy?</b>: día tranquilo, poco tiempo, visitas o viaje, o enfermo. Lo de fuera también cuenta.',
+      'En los calendarios, cada día es un <b>cuadrado</b> del gris de tu entorno, con el <b>redondel</b> de tu clima dentro y el número de veces que regaste.' ] },
     { v: 'V12.22', f: '11 de octubre de 2026', n: [
       'Lo primero es saber <b>cómo está tu clima</b>: en «Compromiso y práctica» y en la pantalla de regar, el clima va antes que la práctica. El botón ahora dice <b>«Registrar si hiciste tu práctica»</b>.' ] },
     { v: 'V12.14', f: '11 de octubre de 2026', n: [
@@ -7084,7 +7095,7 @@ lo que haces cada día es lo que vas a ser.`;
   function tarjetaDias(estaSemana){
     const hoy = (new Date().getDay() + 6) % 7;   // 0 = lunes
     let veces = leerDias(estaSemana && estaSemana.diasHechos);
-    const abonosSem = leerAbonos(estaSemana && estaSemana.abonos);
+    const abonosSem = leerAbonos(estaSemana && estaSemana.abonos), entSem = leerEntornos(estaSemana && estaSemana.abonos);
     let elegido = null;   // día abierto para elegir el número
     const card = document.createElement('div');
     card.className = 'card dias-card';
@@ -7094,7 +7105,7 @@ lo que haces cada día es lo que vas a ser.`;
       cont.innerHTML = `
         <p style="margin:0 0 4px;font-size:16px;display:flex;align-items:center;gap:8px"><svg class="icono-regar" viewBox="0 0 44 30" width="38" height="26" aria-hidden="true"><g stroke="#2B2B2B" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"><path d="M6 10 a5 5 0 0 1 8 0" fill="none"/><rect x="3" y="10" width="13" height="11" rx="2.5" fill="#7B3FB0"/><path d="M4 14.5 h11" stroke="#fff" stroke-width="1.8"/><path d="M16 13 L24 9" stroke="#7B3FB0" stroke-width="3.2"/><path d="M29 21 h12 l-1.8 8 h-8.4 z" fill="#C9942D"/><path d="M35 21 V13" fill="none" stroke="#3E7A2E" stroke-width="2"/><path d="M35 16 q-6 -5 -7 -1 q2 3 7 1z" fill="#6BAE4F"/><path d="M35 13.5 q6 -6 7 -1.5 q-2 3.2 -7 1.5z" fill="#6BAE4F"/></g><g fill="#4FA3E3"><circle cx="25.5" cy="12.5" r="1.3"/><circle cx="27" cy="16" r="1.3"/><circle cx="25" cy="18.5" r="1.2"/></g></svg><b>Registra tu práctica</b></p>
         <p style="font-size:13px;color:var(--ink-soft);margin:0 0 10px">${registraLunes() ? 'Opcional. Toca el día y elige cuántas veces lo hiciste; el lunes tu cierre saldrá ya rellenado.' : 'Toca el día y elige cuántas veces hiciste tu práctica (del 1 al 9).'}</p>
-        <div class="dias-fila">${DIAS_SEMANA.map((d, i) => `<button type="button" class="dia-btn${veces[d] ? ' hecho' : ''}${i === hoy ? ' hoy' : ''}" data-dia="${d}" ${i > hoy ? 'disabled' : ''} aria-pressed="${!!veces[d]}" style="${elegido === d ? 'outline:3px solid var(--honey);outline-offset:1px' : ''}"><span class="dia-letra">${d}</span><span class="dia-maceta" style="${abonosSem[d] ? 'background:' + fondoAbono(abonosSem[d]) : ''}"><span class="dia-tick">${veces[d] || ''}</span></span></button>`).join('')}</div>
+        <div class="dias-fila">${DIAS_SEMANA.map((d, i) => `<button type="button" class="dia-btn${veces[d] ? ' hecho' : ''}${i === hoy ? ' hoy' : ''}" data-dia="${d}" ${i > hoy ? 'disabled' : ''} aria-pressed="${!!veces[d]}" style="${elegido === d ? 'outline:3px solid var(--honey);outline-offset:1px' : ''}"><span class="dia-letra">${d}</span><span class="dia-entorno" data-e="${entSem[d] || 0}" style="${entSem[d] ? 'background:' + colorEntorno(entSem[d]) : ''}"><span class="dia-maceta" style="${abonosSem[d] ? 'background:' + fondoAbono(abonosSem[d]) : ''}"><span class="dia-tick">${veces[d] || ''}</span></span></span></button>`).join('')}</div>
         ${elegido ? `<div style="margin:10px 0 0;padding:10px;border-radius:12px;background:var(--honey-tint)">
           <p style="font-size:13px;margin:0 0 8px;text-align:center"><b>¿Cuántas veces el ${['lunes','martes','miércoles','jueves','viernes','sábado','domingo'][DIAS_SEMANA.indexOf(elegido)]}?</b> (0 = no lo hice)</p>
           <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:6px">${[1,2,3,4,5,6,7,8,9,0].map(n => `<button type="button" class="dia-num" data-n="${n}" style="padding:10px 0;border-radius:10px;font-size:17px;font-weight:700;cursor:pointer;border:2px solid ${n ? '#6B9362' : 'var(--border)'};background:${(veces[elegido] || 0) === n ? (n ? '#6B9362;color:#fff' : '#ddd') : '#fff;color:' + (n ? '#4E7446' : 'var(--ink-soft)')}">${n}</button>`).join('')}</div></div>` : ''}
@@ -7163,7 +7174,11 @@ lo que haces cada día es lo que vas a ser.`;
       const fila = lista().find(c => c.week === weekShort(lunesDe(d)));
       return fila ? (leerDias(fila.diasHechos)[letraDe(d)] || 0) : 0;   // veces de ese día (0 = no)
     };
-    const abonoEl = d => {   // color de «Abona tu meta» de ese día, si lo registró
+    const entornoEl = d => {   // gris del entorno de ese día (cuadrado de alrededor), si lo registró
+      const fila = lista().find(c => c.week === weekShort(lunesDe(d)));
+      return leerEntornos(fila && fila.abonos)[letraDe(d)] || 0;
+    };
+    const abonoEl = d => {   // color del clima de ese día, si lo registró
       const fila = lista().find(c => c.week === weekShort(lunesDe(d)));
       try { return fondoAbono(leerAbonos(fila && fila.abonos)[letraDe(d)]); } catch(e){ return ''; }
     };
@@ -7176,8 +7191,8 @@ lo que haces cada día es lo que vas a ser.`;
       for(let n = 1; n <= dias; n++){
         const d = new Date(y, m, n), futuro = d > hoy, h = !futuro && hechoEl(d);
         if(h){ total++; totalVeces += h; }
-        const ab = h ? abonoEl(d) : '';
-        celdas += `<button type="button" class="cd-dia${h ? ' hecho' : ''}${ab ? ' abonado' : ''}${+d === +hoy ? ' hoy' : ''}" data-n="${n}" ${futuro ? 'disabled' : soloVer ? 'tabindex="-1"' : ''} aria-pressed="${!!h}"><span class="cd-maceta"${ab ? ' style="background:' + ab + '"' : ''}></span><b>${n}</b><i>${h > 1 ? '×' + h : ''}</i></button>`;
+        const ab = h ? abonoEl(d) : '', en = futuro ? 0 : entornoEl(d);
+        celdas += `<button type="button" class="cd-dia${h ? ' hecho' : ''}${ab ? ' abonado' : ''}${en ? ' con-entorno' : ''}${+d === +hoy ? ' hoy' : ''}" data-n="${n}" data-e="${en}"${en ? ' style="background:' + colorEntorno(en) + '"' : ''} ${futuro ? 'disabled' : soloVer ? 'tabindex="-1"' : ''} aria-pressed="${!!h}"><span class="cd-maceta"${ab ? ' style="background:' + ab + '"' : ''}></span><b>${n}</b><i>${h > 1 ? '×' + h : ''}</i></button>`;
       }
       const puedeAtras = new Date(y, m - 1, 1) >= minMes, puedeAdelante = new Date(y, m + 1, 1) <= hoy;
       card.innerHTML = `
@@ -7191,6 +7206,9 @@ lo que haces cada día es lo que vas a ser.`;
           .cal-diario .cd-dia b{position:relative;font-weight:400}
           .cal-diario .cd-dia i{position:relative;font-style:normal;font-weight:700;font-size:11px;height:11px;color:#fff}
           .cal-diario .cd-dia.hecho{color:#fff}
+          .cal-diario .cd-dia.con-entorno{border-radius:7px}
+          .cal-diario .cd-dia.con-entorno .cd-maceta{inset:4px}
+          .cal-diario .cd-dia[data-e="1"]{box-shadow:inset 0 0 0 1.5px #C9C4B4}
           .cal-diario .cd-dia.hecho b{font-weight:800;margin-top:2px}
           .cal-diario .cd-maceta{position:absolute;inset:2px;border-radius:50%;background:#ECE6D6}
           .cal-diario .cd-dia.hecho .cd-maceta{background:#6B9362}
@@ -7201,7 +7219,7 @@ lo que haces cada día es lo que vas a ser.`;
           .cal-diario .cd-dia:disabled{opacity:.35;cursor:default}
         </style>
         <p style="margin:0 0 4px;font-size:16px"><b>📅 Mi calendario de prácticas</b></p>
-        <p style="font-size:13px;color:var(--ink-soft);margin:0 0 10px">Cada día que haces tu práctica aparece como un redondel verde (×3 si la hiciste tres veces). Si ese día miraste tu clima, el redondel toma el color de cómo te sentías.</p>
+        <p style="font-size:13px;color:var(--ink-soft);margin:0 0 10px">Cada día que haces tu práctica aparece como un redondel verde (×3 si la hiciste tres veces). Si ese día miraste tu clima, el redondel toma el color de cómo te sentías. El cuadrado de alrededor es tu entorno: blanco, día tranquilo; gris claro, poco tiempo; gris, visitas, viaje o salida; gris oscuro, enfermo o imposibilitado.</p>
         <div class="cd-cab"><button type="button" class="cd-atras" ${puedeAtras ? '' : 'disabled'} aria-label="Mes anterior">‹</button><b>${monthNamesEs[m].charAt(0).toUpperCase() + monthNamesEs[m].slice(1)} ${y}</b><button type="button" class="cd-adelante" ${puedeAdelante ? '' : 'disabled'} aria-label="Mes siguiente">›</button></div>
         <div class="cd-grid">${DIAS_SEMANA.map(l => '<span class="cd-sem">' + l + '</span>').join('')}${celdas}</div>
         ${resumenSemanasMes(y, m)}
@@ -8273,7 +8291,29 @@ lo que haces cada día es lo que vas a ser.`;
     });
     return o;
   }
-  function escribirAbonos(o){ return DIAS_SEMANA.filter(d => o[d] && o[d].length).map(d => d + '=' + o[d].map(x => x.id + '.' + x.i).join('+')).join(';'); }
+  // El entorno (lo de fuera, que no depende de ti) va en el mismo campo: «L=estresado.a+ent2;M=ent1» (1 tranquilo … 4 enfermo)
+  const ENTORNOS = [
+    { n: 1, t: 'Día tranquilo', c: '#FFFFFF' },
+    { n: 2, t: 'Poco tiempo', c: '#D4D4D4' },
+    { n: 3, t: 'Visitas, viaje, salida…', c: '#9C9C9C' },
+    { n: 4, t: 'Enfermo, imposibilitado', c: '#565656' }
+  ];
+  function leerEntornos(txt){
+    const o = {};
+    String(txt || '').split(';').forEach(p => {
+      const [d, v] = p.split('=');
+      if(!DIAS_SEMANA.includes(d) || !v) return;
+      const m = v.split('+').map(x => /^ent([1-4])$/.exec(x)).find(Boolean);
+      if(m) o[d] = Number(m[1]);
+    });
+    return o;
+  }
+  function colorEntorno(n){ const e = ENTORNOS.find(x => x.n === n); return e ? e.c : ''; }
+  function escribirAbonos(o, ent){
+    ent = ent || {};
+    return DIAS_SEMANA.filter(d => (o[d] && o[d].length) || ent[d])
+      .map(d => d + '=' + (o[d] || []).map(x => x.id + '.' + x.i).concat(ent[d] ? ['ent' + ent[d]] : []).join('+')).join(';');
+  }
   function colorEmo(x){ const c = EMO_CUAD[emoPorId(x.id).c]; return x.i === 'a' ? c.fuerte : c.claro; }
   function fondoAbono(lista){
     if(!lista || !lista.length) return '';
@@ -8281,17 +8321,20 @@ lo que haces cada día es lo que vas a ser.`;
   }
   function filaSemanaActual(){ return ((state.checkins && state.checkins[state.me]) || []).find(c => c.week === currentWeekShort); }
   function abonoDeHoy(){ const f = filaSemanaActual(); return (leerAbonos(f && f.abonos)[DIAS_SEMANA[(new Date().getDay() + 6) % 7]] || []).map(x => ({ ...x })); }
-  async function guardarAbonoHoy(lista){
+  async function guardarAbonoHoy(lista, entorno){
     const letra = DIAS_SEMANA[(new Date().getDay() + 6) % 7];
     const listaCheck = state.checkins[state.me] || (state.checkins[state.me] = []);
     let fila = filaSemanaActual();
-    const abonos = leerAbonos(fila && fila.abonos);
-    if(lista.length) abonos[letra] = lista; else delete abonos[letra];
-    const campos = {}; campos[AIR.fields.semana] = currentWeekShort; campos[AIR.fields.abonos] = escribirAbonos(abonos);
+    const abonos = leerAbonos(fila && fila.abonos), ent = leerEntornos(fila && fila.abonos);
+    if(lista === null){ /* solo cambia el entorno */ }
+    else if(lista.length) abonos[letra] = lista; else delete abonos[letra];
+    if(entorno !== undefined){ if(entorno) ent[letra] = entorno; else delete ent[letra]; }
+    const campos = {}; campos[AIR.fields.semana] = currentWeekShort; campos[AIR.fields.abonos] = escribirAbonos(abonos, ent);
     const data = await guardarSemana(campos);
     if(!fila){ fila = { id: data.id, week: currentWeekShort, label: currentWeekLabel, cumplida: false, nota: '', estadoSemana: '', compromisoVeces: null, vecesRealizadas: null, diasHechos: '' }; listaCheck.push(fila); }
-    fila.abonos = escribirAbonos(abonos);
+    fila.abonos = escribirAbonos(abonos, ent);
   }
+  function entornoDeHoy(){ const f = filaSemanaActual(); return leerEntornos(f && f.abonos)[DIAS_SEMANA[(new Date().getDay() + 6) % 7]] || 0; }
   // La maceta con los cuatro cuadrantes: arriba (la parte ancha) más energía, abajo menos; izquierda desagradable, derecha agradable.
   // Al tocar una emoción la maceta toma su color y la palabra sale en el centro; con dos, mitad y mitad.
   // El clima de hoy: las emociones son el clima de tu meta (no se eligen, se observan). Un sol partido en cuatro quesitos:
@@ -8307,6 +8350,9 @@ lo que haces cada día es lo que vas a ser.`;
     let sel = abonoDeHoy(), modo = sel.length ? 'ver' : 'grid', guardado = sel.length > 0;
     const caja = el('<div class="abonar"><p class="abonar-tit">☀️ Tu clima de hoy</p><p class="abonar-sub">Aunque no eliges tus emociones, ellas influyen en tu meta. <b>¿Cómo te sientes hoy?</b></p>'
       + '<p class="abonar-eje">Más energía</p><div class="clima-fila"><span class="clima-lado izq">Desagradable</span><div class="clima-sol">' + RAYOS_SOL + '<div class="clima-disco"></div></div><span class="clima-lado der">Agradable</span></div><p class="abonar-eje">Menos energía</p>'
+      + '<div class="entorno"><p class="entorno-tit">¿Y cómo está tu entorno hoy?</p><div class="entorno-ops">'
+      + ENTORNOS.map(x => '<button type="button" class="entorno-op" data-n="' + x.n + '"><span class="entorno-cuadro" style="background:' + x.c + '"></span>' + x.t + '</button>').join('')
+      + '</div><p class="entorno-msg"></p></div>'
       + '<div class="abonar-acciones"></div><p class="abonar-msg"></p></div>').firstElementChild;
     const maceta = caja.querySelector('.clima-disco'), sol = caja.querySelector('.clima-sol'), acc = caja.querySelector('.abonar-acciones'), msg = caja.querySelector('.abonar-msg');
     const pintar = () => {
@@ -8362,6 +8408,17 @@ lo que haces cada día es lo que vas a ser.`;
     };
     function boton(t, f){ const b = document.createElement('button'); b.type = 'button'; b.className = 'abonar-sec'; b.textContent = t; b.onclick = f; return b; }
     pintar();
+    // Entorno: se guarda al tocarlo (otra vez para quitarlo)
+    let ent = entornoDeHoy();
+    const entMsg = caja.querySelector('.entorno-msg');
+    const pintarEnt = () => caja.querySelectorAll('.entorno-op').forEach(b => b.classList.toggle('on', Number(b.dataset.n) === ent));
+    pintarEnt();
+    caja.querySelectorAll('.entorno-op').forEach(b => b.onclick = async () => {
+      const antes = ent, n = Number(b.dataset.n);
+      ent = ent === n ? 0 : n; pintarEnt(); entMsg.textContent = 'Guardando…';
+      try { await guardarAbonoHoy(null, ent); entMsg.textContent = ent ? '✓ Guardado. Tu entorno también cuenta.' : 'Entorno quitado.'; }
+      catch(e){ ent = antes; pintarEnt(); entMsg.textContent = 'No se pudo guardar. Revisa tu conexión e inténtalo de nuevo.'; }
+    });
     return caja;
   }
 
@@ -9467,4 +9524,4 @@ lo que haces cada día es lo que vas a ser.`;
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V12.22 · App Metas Amables · 2026-10-11 18:44==== -->
+<!-- ==== Fin del index V12.23 · App Metas Amables · 2026-10-11 18:58==== -->
