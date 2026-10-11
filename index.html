@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V12.49 · App Metas Amables · 2026-10-11 22:15==== -->
+<!-- ==== index V12.50 · App Metas Amables · 2026-10-11 22:25==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1181,6 +1181,15 @@ body.riego-abierto{overflow:hidden}
 .planta-abonar svg{width:20px;height:20px;flex:none}
 .ps-reto{display:flex;align-items:center;gap:12px;width:100%;text-align:left;cursor:pointer;border:2px solid #E2C79A;background:#FFF8E6;font:inherit;color:inherit}
 .ps-reto-ico{font-size:28px}.ps-reto b{display:block;font-size:16px}.ps-reto small{display:block;font-size:13.5px;color:var(--ink-soft);margin-top:2px}.ps-reto>span:nth-child(2){flex:1}
+.amable-capa{position:fixed;inset:0;z-index:9750;background:rgba(30,20,10,.45);display:flex;align-items:flex-end;justify-content:center;animation:amable-fondo .25s ease-out}
+.amable-hoja{width:min(520px,100%);min-height:50vh;max-height:88vh;overflow:auto;box-sizing:border-box;border-radius:24px 24px 0 0;background:linear-gradient(180deg,#EEF5E6 0%,#FFFDF8 55%);box-shadow:0 -12px 40px rgba(0,0,0,.25);padding:10px 22px calc(22px + env(safe-area-inset-bottom));text-align:center;font-family:Karla,sans-serif;color:#1F3A18;animation:amable-sube .35s cubic-bezier(.2,.8,.3,1)}
+.amable-asa{width:44px;height:5px;border-radius:3px;background:#C9D8BC;margin:0 auto 6px}
+.amable-hoja h2{margin:4px 0 10px;font:700 24px Lora,serif;color:#3B6D11}
+.amable-hoja p{margin:0 0 10px;font-size:16.5px;line-height:1.5;text-align:left}
+.amable-hoja .amable-nota{font-size:14.5px;color:#5E6B55}
+.amable-hoja .reto-btn{background:#639922;margin-top:14px}
+@keyframes amable-sube{from{transform:translateY(100%)}to{transform:none}}
+@keyframes amable-fondo{from{opacity:0}to{opacity:1}}
 .reto-capa{position:fixed;inset:0;z-index:9700;background:rgba(30,20,10,.55);display:flex;align-items:center;justify-content:center;padding:14px;box-sizing:border-box;overflow:auto}
 .reto-card{width:min(420px,100%);max-height:100%;overflow:auto;border-radius:22px;background:#FFFDF8;box-shadow:0 18px 50px rgba(0,0,0,.3)}
 .reto-cab{background:linear-gradient(160deg,#FFE7B8 0%,#FFD3D8 55%,#E7DBFF 100%);padding:18px 0 6px;display:flex;justify-content:center}
@@ -2154,7 +2163,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V12.49';
+  const APP_VERSION = 'V12.50';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -4264,6 +4273,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   const NOVEDADES = [
     { v: 'V12.45', f: '11 de octubre de 2026', n: [
       '<b>Reto de 15 días</b>: cada día que registras algo, Prácti te lo celebra y se ilumina tu camino. Cada 5 días hay un regalo: el día 5, la canción con letra; el día 10, la nota a tu yo del próximo mes (para cualquier plan); el día 15, el juego «Salta la valla con Prácti».' ] },
+    { v: 'V12.50', f: '11 de octubre de 2026', n: [
+      '<b>Hoy, sé amable contigo.</b> Si marcas un clima difícil (enfado, estrés, cansancio…) o un entorno complicado (visitas, viaje, enfermedad), te recordamos que no tienes ninguna necesidad de hacer tu práctica ese día si no puedes o no te apetece.' ] },
     { v: 'V12.49', f: '11 de octubre de 2026', n: [
       '<b>¿Has olvidado tu contraseña?</b> Ahora puedes recuperarla tú: escribe tu email y te llega un código de 6 cifras para poner una nueva.' ] },
     { v: 'V12.39', f: '11 de octubre de 2026', n: [
@@ -8747,6 +8758,27 @@ lo que haces cada día es lo que vas a ser.`;
     for(let k = 0; k < 20; k++){ const a = k * Math.PI / 10 - Math.PI / 2, w = Math.PI / 20; s += '<polygon points="' + pt(44, a - w) + ' ' + pt(49.5, a) + ' ' + pt(44, a + w) + '"/>'; }   // bases tocándose, picos cortos
     return '<svg class="clima-rayos" viewBox="0 0 100 100" aria-hidden="true">' + s + '</svg>';
   })();
+  // «Hoy, sé amable contigo»: si el clima es difícil (tensión o agotamiento) o el entorno pesa (visitas, viaje, enfermedad),
+  // sale una hoja a media pantalla que da permiso para no practicar hoy. Una vez al día (idea de Gustavo, V12.50)
+  function abrirHojaAmable(motivo){
+    if(!state.me || document.querySelector('.amable-capa')) return;
+    const k = 'hoja_amable_' + state.me + '_' + hoyISO();
+    try { if(localStorage.getItem(k)) return; localStorage.setItem(k, '1'); } catch(e){}
+    const inicio = motivo === 'entorno' ? 'Tu entorno hoy está complicado' : 'Hoy tu clima está difícil';
+    const capa = el('<div class="amable-capa" role="dialog" aria-label="Hoy, sé amable contigo"><div class="amable-hoja"><div class="amable-asa"></div>'
+      + practiHTML('calma', '🍃', 110)
+      + '<h2>Hoy, sé amable contigo</h2>'
+      + '<p>' + inicio + ', y está bien. <b>No tienes ninguna necesidad de hacer tu práctica hoy</b> si no puedes o no te apetece.</p>'
+      + '<p>Descansar también es cuidar tu meta. Y si te ves con fuerzas, una versión mini de 2 minutos también vale.</p>'
+      + '<p class="amable-nota">Haber registrado cómo estás ya es cuidarte, y cuenta como día registrado.</p>'
+      + '<button type="button" class="reto-btn amable-ok">Entendido 🌿</button></div></div>').firstElementChild;
+    document.body.appendChild(capa);
+    try { activarPracti(capa); } catch(e){}
+    const cerrar = () => capa.remove();
+    capa.querySelector('.amable-ok').onclick = cerrar;
+    capa.onclick = ev => { if(ev.target === capa) cerrar(); };
+  }
+
   function crearMacetaAbonar(alGuardar, numerado){
     let sel = abonoDeHoy(), modo = sel.length ? 'ver' : 'grid', guardado = sel.length > 0;
     const caja = el('<div class="abonar"><p class="abonar-tit">' + (numerado ? '1 · ' : '') + '☀️ Tu clima de hoy</p><p class="abonar-sub">Aunque no eliges tus emociones, ellas influyen en tu meta. <b>¿Cómo te sientes hoy?</b></p>'
@@ -8813,6 +8845,7 @@ lo que haces cada día es lo que vas a ser.`;
           msg.textContent = copia.length ? '✓ Clima guardado' : 'Clima quitado';
           if(copia.length){ try { sonidoClima(); } catch(e){} }
           if(alGuardar) alGuardar(copia);
+          if(copia.some(x => ['tension', 'agot'].includes(emoPorId(x.id).c))) setTimeout(() => abrirHojaAmable('clima'), 600);
         } catch(e){ msg.textContent = 'No se pudo guardar. Revisa tu conexión e inténtalo de nuevo.'; }
       }, 700);
     }
@@ -8826,7 +8859,7 @@ lo que haces cada día es lo que vas a ser.`;
     entCaja.querySelectorAll('.entorno-op').forEach(b => b.onclick = async () => {
       const antes = ent, n = Number(b.dataset.n);
       ent = ent === n ? 0 : n; pintarEnt(); entMsg.textContent = 'Guardando…';
-      try { await guardarAbonoHoy(null, ent); entMsg.textContent = ent ? '✓ Guardado. Tu entorno también cuenta.' : 'Entorno quitado.'; if(ent){ try { sonidoEntorno(); } catch(e){} } }
+      try { await guardarAbonoHoy(null, ent); entMsg.textContent = ent ? '✓ Guardado. Tu entorno también cuenta.' : 'Entorno quitado.'; if(ent){ try { sonidoEntorno(); } catch(e){} } if(ent >= 3) setTimeout(() => abrirHojaAmable('entorno'), 600); }
       catch(e){ ent = antes; pintarEnt(); entMsg.textContent = 'No se pudo guardar. Revisa tu conexión e inténtalo de nuevo.'; }
     });
     return caja;
@@ -9934,4 +9967,4 @@ lo que haces cada día es lo que vas a ser.`;
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V12.49 · App Metas Amables · 2026-10-11 22:15==== -->
+<!-- ==== Fin del index V12.50 · App Metas Amables · 2026-10-11 22:25==== -->
