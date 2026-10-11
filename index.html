@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V12.01 · App Metas Amables · 2026-10-11 02:19==== -->
+<!-- ==== index V12.02 · App Metas Amables · 2026-10-11 02:20==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2053,7 +2053,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V12.01';
+  const APP_VERSION = 'V12.02';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -7046,7 +7046,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
         const d = new Date(y, m, n), futuro = d > hoy, h = !futuro && hechoEl(d);
         if(h){ total++; totalVeces += h; }
         const ab = h ? abonoEl(d) : '';
-        celdas += `<button type="button" class="cd-dia${h ? ' hecho' : ''}${ab ? ' abonado' : ''}${+d === +hoy ? ' hoy' : ''}" data-n="${n}" ${futuro ? 'disabled' : soloVer ? 'tabindex="-1"' : ''} aria-pressed="${!!h}">${h ? '<span class="cd-maceta"' + (ab ? ' style="background:' + ab + '"' : '') + '></span>' : ''}<b>${n}</b><i>${h > 1 ? '×' + h : ''}</i></button>`;
+        celdas += `<button type="button" class="cd-dia${h ? ' hecho' : ''}${ab ? ' abonado' : ''}${+d === +hoy ? ' hoy' : ''}" data-n="${n}" ${futuro ? 'disabled' : soloVer ? 'tabindex="-1"' : ''} aria-pressed="${!!h}"><span class="cd-maceta"${ab ? ' style="background:' + ab + '"' : ''}></span><b>${n}</b><i>${h > 1 ? '×' + h : ''}</i></button>`;
       }
       const puedeAtras = new Date(y, m - 1, 1) >= minMes, puedeAdelante = new Date(y, m + 1, 1) <= hoy;
       card.innerHTML = `
@@ -7056,16 +7056,17 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
           .cal-diario .cd-cab button:disabled{opacity:.3;cursor:default}
           .cal-diario .cd-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center}
           .cal-diario .cd-sem{font-size:12px;font-weight:700;color:var(--ink-soft)}
-          .cal-diario .cd-dia{position:relative;aspect-ratio:1;border:1px solid var(--border);border-radius:8px;background:var(--card, #fff);font-size:13px;color:var(--ink);cursor:pointer;padding:0;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1}
+          .cal-diario .cd-dia{position:relative;aspect-ratio:1;border:0;border-radius:0;background:transparent;font-size:13px;color:var(--ink);cursor:pointer;padding:0;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1}
           .cal-diario .cd-dia b{position:relative;font-weight:400}
           .cal-diario .cd-dia i{position:relative;font-style:normal;font-weight:700;font-size:11px;height:11px;color:#fff}
-          .cal-diario .cd-dia.hecho{background:transparent;border-color:transparent;color:#fff}
+          .cal-diario .cd-dia.hecho{color:#fff}
           .cal-diario .cd-dia.hecho b{font-weight:800;margin-top:2px}
-          .cal-diario .cd-maceta{position:absolute;inset:1px 2px 2px;background:#6B9362;clip-path:polygon(0 0,100% 0,100% 24%,90% 24%,78% 100%,22% 100%,10% 24%,0 24%)}
+          .cal-diario .cd-maceta{position:absolute;inset:3px 2px 2px;background:#ECE6D6;clip-path:polygon(0 0,100% 0,86% 100%,14% 100%)}
+          .cal-diario .cd-dia.hecho .cd-maceta{background:#6B9362}
+          .cal-diario .cd-dia.hoy:not(.hecho) .cd-maceta{background:#F8DE9A}
           .cal-diario .cd-dia.abonado{color:#2B2B2B}
           .cal-diario .cd-dia.abonado i{color:#2B2B2B}
-          .cal-diario .cd-dia.hecho.hoy{border:2px solid var(--honey)}
-          .cal-diario .cd-dia.hoy{border:2px solid var(--honey)}
+          .cal-diario .cd-dia.hoy b{text-decoration:underline 2px;text-underline-offset:2px}
           .cal-diario .cd-dia:disabled{opacity:.35;cursor:default}
         </style>
         <p style="margin:0 0 4px;font-size:16px"><b>📅 Mi calendario de prácticas</b></p>
@@ -9314,4 +9315,4 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V12.01 · App Metas Amables · 2026-10-11 02:19==== -->
+<!-- ==== Fin del index V12.02 · App Metas Amables · 2026-10-11 02:20==== -->
