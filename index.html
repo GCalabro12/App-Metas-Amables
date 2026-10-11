@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V12.18 · App Metas Amables · 2026-10-11 18:36==== -->
+<!-- ==== index V12.19 · App Metas Amables · 2026-10-11 18:36==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2083,7 +2083,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V12.18';
+  const APP_VERSION = 'V12.19';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -8302,7 +8302,7 @@ lo que haces cada día es lo que vas a ser.`;
   function crearMacetaAbonar(alGuardar){
     let sel = abonoDeHoy(), modo = sel.length ? 'ver' : 'grid', guardado = sel.length > 0;
     const caja = el('<div class="abonar"><p class="abonar-tit">☀️ El clima de hoy</p><p class="abonar-sub">Tus emociones son el clima de tu meta: no se eligen, se observan. <b>¿Cómo te sientes hoy?</b></p>'
-      + '<p class="abonar-eje">⚡ Más energía</p><div class="clima-fila"><span class="clima-lado izq">Desagradable</span><div class="clima-sol">' + RAYOS_SOL + '<div class="clima-disco"></div></div><span class="clima-lado der">Agradable</span></div><p class="abonar-eje">🔋 Menos energía</p>'
+      + '<p class="abonar-eje">Más energía</p><div class="clima-fila"><span class="clima-lado izq">Desagradable</span><div class="clima-sol">' + RAYOS_SOL + '<div class="clima-disco"></div></div><span class="clima-lado der">Agradable</span></div><p class="abonar-eje">Menos energía</p>'
       + '<div class="abonar-acciones"></div><p class="abonar-msg"></p></div>').firstElementChild;
     const maceta = caja.querySelector('.clima-disco'), sol = caja.querySelector('.clima-sol'), acc = caja.querySelector('.abonar-acciones'), msg = caja.querySelector('.abonar-msg');
     const pintar = () => {
@@ -9462,4 +9462,4 @@ lo que haces cada día es lo que vas a ser.`;
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V12.18 · App Metas Amables · 2026-10-11 18:36==== -->
+<!-- ==== Fin del index V12.19 · App Metas Amables · 2026-10-11 18:36==== -->
