@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V12.14 · App Metas Amables · 2026-10-11 18:31==== -->
+<!-- ==== index V12.15 · App Metas Amables · 2026-10-11 18:33==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1133,11 +1133,13 @@ body.riego-abierto{overflow:hidden}
 .abonar{width:min(420px,100%);margin:22px auto 0;padding:16px 12px 14px;border-radius:20px;background:rgba(255,255,255,.88);text-align:center}
 .abonar-tit{margin:0;font:700 20px Lora,serif;color:#2F5A23}.abonar-sub{margin:4px 0 8px;font-size:14.5px;color:#3F4A38}
 .abonar-eje{margin:2px 0;font-size:12px;color:#6A6A60}.abonar-lados{display:flex;justify-content:space-between;width:min(300px,82vw);margin:2px auto 8px;font-size:12px;color:#6A6A60}
-.clima-sol{width:min(300px,80vw);aspect-ratio:1;margin:4px auto;padding:13px;border-radius:50%;box-sizing:border-box;background:repeating-conic-gradient(var(--rayo,#F6C94A) 0 7deg,transparent 7deg 15deg);transition:background .3s}
-.clima-disco{width:100%;height:100%;border-radius:50%;overflow:hidden;box-shadow:0 0 0 4px rgba(255,255,255,.9),0 4px 14px rgba(0,0,0,.12)}
+.clima-sol{position:relative;width:min(300px,80vw);aspect-ratio:1;margin:4px auto;padding:10%;box-sizing:border-box;color:var(--rayo,#F6C94A);transition:color .3s}
+.clima-rayos{position:absolute;left:0;top:0;width:100%;height:100%;fill:currentColor}
+.clima-disco{position:relative;width:100%;height:100%;border-radius:50%;overflow:hidden;box-shadow:0 0 0 4px rgba(255,255,255,.9),0 4px 14px rgba(0,0,0,.12)}
 .clima-disco.rejilla{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:3px;background:#fff}
 .clima-q{display:flex;flex-direction:column;justify-content:center;gap:4px;padding:8px}
-.clima-q.izq{align-items:flex-end;padding-left:14%}.clima-q.der{align-items:flex-start;padding-right:14%}
+.clima-q.izq{align-items:flex-end;padding-left:2%;padding-right:6px}.clima-q.der{align-items:flex-start;padding-right:2%;padding-left:6px}
+.clima-q .abonar-em{font-size:12.5px;padding:4px 8px}
 .clima-q.alto{padding-top:20%}.clima-q.bajo{padding-bottom:20%}
 .clima-disco.elegida{display:flex}
 .clima-disco .abonar-parte{padding:0 6px}
@@ -2079,7 +2081,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V12.14';
+  const APP_VERSION = 'V12.15';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -8288,10 +8290,17 @@ lo que haces cada día es lo que vas a ser.`;
   // Al tocar una emoción la maceta toma su color y la palabra sale en el centro; con dos, mitad y mitad.
   // El clima de hoy: las emociones son el clima de tu meta (no se eligen, se observan). Un sol partido en cuatro quesitos:
   // arriba más energía, abajo menos; izquierda desagradable, derecha agradable. Con dos emociones, el sol va mitad y mitad.
+  // Los picos del sol: triángulos alrededor del disco (toman el color de la emoción elegida)
+  const RAYOS_SOL = (() => {
+    const pt = (r, a) => (50 + r * Math.cos(a)).toFixed(2) + ',' + (50 + r * Math.sin(a)).toFixed(2);
+    let s = '';
+    for(let k = 0; k < 16; k++){ const a = k * Math.PI / 8 - Math.PI / 2, w = Math.PI / 16 * 0.62; s += '<polygon points="' + pt(38, a - w) + ' ' + pt(50, a) + ' ' + pt(38, a + w) + '"/>'; }
+    return '<svg class="clima-rayos" viewBox="0 0 100 100" aria-hidden="true">' + s + '</svg>';
+  })();
   function crearMacetaAbonar(alGuardar){
     let sel = abonoDeHoy(), modo = sel.length ? 'ver' : 'grid', guardado = sel.length > 0;
     const caja = el('<div class="abonar"><p class="abonar-tit">☀️ El clima de hoy</p><p class="abonar-sub">Tus emociones son el clima de tu meta: no se eligen, se observan. <b>¿Cómo te sientes hoy?</b></p>'
-      + '<p class="abonar-eje">⚡ Más energía</p><div class="clima-sol"><div class="clima-disco"></div></div><p class="abonar-eje">🔋 Menos energía</p>'
+      + '<p class="abonar-eje">⚡ Más energía</p><div class="clima-sol">' + RAYOS_SOL + '<div class="clima-disco"></div></div><p class="abonar-eje">🔋 Menos energía</p>'
       + '<p class="abonar-lados"><span>← Desagradable</span><span>Agradable →</span></p><div class="abonar-acciones"></div><p class="abonar-msg"></p></div>').firstElementChild;
     const maceta = caja.querySelector('.clima-disco'), sol = caja.querySelector('.clima-sol'), acc = caja.querySelector('.abonar-acciones'), msg = caja.querySelector('.abonar-msg');
     const pintar = () => {
@@ -9451,4 +9460,4 @@ lo que haces cada día es lo que vas a ser.`;
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V12.14 · App Metas Amables · 2026-10-11 18:31==== -->
+<!-- ==== Fin del index V12.15 · App Metas Amables · 2026-10-11 18:33==== -->
