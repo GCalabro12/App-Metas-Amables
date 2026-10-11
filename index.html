@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V12.47 · App Metas Amables · 2026-10-11 21:34==== -->
+<!-- ==== index V12.48 · App Metas Amables · 2026-10-11 21:40==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1179,6 +1179,8 @@ body.riego-abierto{overflow:hidden}
 .planta-abonar{display:flex;align-items:center;justify-content:center;gap:7px;width:100%;margin:8px 0 0;padding:9px 12px;border:2px solid #F0C44C;border-radius:999px;background:#FFF6D6;color:#5A3D00;font:700 13.5px/1.25 Karla,sans-serif;cursor:pointer;text-align:center}
 .planta-abonar.abonado{color:#2B2B2B}
 .planta-abonar svg{width:20px;height:20px;flex:none}
+.ps-reto{display:flex;align-items:center;gap:12px;width:100%;text-align:left;cursor:pointer;border:2px solid #E2C79A;background:#FFF8E6;font:inherit;color:inherit}
+.ps-reto-ico{font-size:28px}.ps-reto b{display:block;font-size:16px}.ps-reto small{display:block;font-size:13.5px;color:var(--ink-soft);margin-top:2px}.ps-reto>span:nth-child(2){flex:1}
 .reto-capa{position:fixed;inset:0;z-index:9700;background:rgba(30,20,10,.55);display:flex;align-items:center;justify-content:center;padding:14px;box-sizing:border-box;overflow:auto}
 .reto-card{width:min(420px,100%);max-height:100%;overflow:auto;border-radius:22px;background:#FFFDF8;box-shadow:0 18px 50px rgba(0,0,0,.3)}
 .reto-cab{background:linear-gradient(160deg,#FFE7B8 0%,#FFD3D8 55%,#E7DBFF 100%);padding:18px 0 6px;display:flex;justify-content:center}
@@ -2152,7 +2154,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V12.47';
+  const APP_VERSION = 'V12.48';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -3244,11 +3246,11 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   // ===== Reto de 15 días (idea de Gustavo, 11-10-2026) =====
   // Cuenta los días con algún registro (clima, entorno o práctica), seguidos o no. Al cerrar Registros amables, si hay un día nuevo,
   // sale Prácti con un cartel del número y el camino de 15 bolitas (5 · curva · 5 · curva · 5). Regalos: día 5 la canción con letra,
-  // día 10 la nota a tu yo del futuro, día 15 el juego «Salta la valla con Prácti».
+  // día 10 la nota a tu yo del próximo mes (para cualquier plan), día 15 el juego «Salta la valla con Prácti».
   const RETO_DIAS = 15;
   const RETO_PREMIOS = {
     5: { id: 'cancion', ico: '🎵', tit: 'la canción con letra «Riega tu meta»', boton: 'Escucharla' },
-    10: { id: 'carta', ico: '✉️', tit: 'la nota a tu yo del futuro', boton: 'Escribirla' },
+    10: { id: 'nota', ico: '📝', tit: 'la nota a tu yo del próximo mes', boton: 'Escribirla' },
     15: { id: 'juego', ico: '🎮', tit: 'el juego «Salta la valla con Prácti»', boton: 'Jugar' }
   };
   function diasRegistradosReto(){
@@ -3264,6 +3266,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     const dia = Number(Object.keys(RETO_PREMIOS).find(k => RETO_PREMIOS[k].id === id));
     return diasRegistradosReto() >= dia;
   }
+  // La nota a tu yo del próximo mes: con el Plan Guías, o como regalo del día 10 del reto (cualquier plan)
+  function puedeNotaMes(){ return tienePlan('guias') || premioRetoDesbloqueado('nota'); }
   function avisoPremioBloqueado(id){
     const dia = Number(Object.keys(RETO_PREMIOS).find(k => RETO_PREMIOS[k].id === id)), n = diasRegistradosReto();
     avisoBreve('🔒 Se desbloquea al registrar ' + dia + ' días (llevas ' + n + '). ¡Sigue así!');
@@ -3286,7 +3290,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     }
     return s + '</svg>';
   }
-  function abrirRetoDia(n){
+  function abrirRetoDia(n, soloVer){
     document.querySelectorAll('.reto-capa').forEach(x => x.remove());
     const premio = RETO_PREMIOS[n];
     const siguiente = Object.keys(RETO_PREMIOS).map(Number).find(d => d > n);
@@ -3302,7 +3306,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       + '<button type="button" class="reto-btn ' + (premio ? 'reto-sec' : '') + ' reto-ok">' + (n === 1 ? '¡Acepto el reto!' : 'Continuar') + '</button></div></div></div>').firstElementChild;
     document.body.appendChild(capa);
     try { activarPracti(capa); } catch(e){}
-    try { launchConfetti(); } catch(e){}
+    if(!soloVer){ try { launchConfetti(); } catch(e){} }
     const cerrar = () => capa.remove();
     capa.querySelector('.reto-ok').onclick = cerrar;
     // La «?» de cada regalo explica cuál es
@@ -3315,7 +3319,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     if(pb) pb.onclick = () => {
       cerrar();
       if(premio.id === 'cancion'){ try { localStorage.setItem('musica_letra', '1'); } catch(e){} state.view = 'musica'; window.scrollTo(0, 0); render(); }
-      else if(premio.id === 'carta'){ state.prevView = 'panel'; state.view = tienePlan('sesiones') ? 'carta' : 'planes'; window.scrollTo(0, 0); render(); }
+      else if(premio.id === 'nota'){ state.prevView = 'practicaSemanal'; state.view = 'posit'; window.scrollTo(0, 0); render(); }
       else if(premio.id === 'juego'){ abrirJuegoVallas(); }
     };
   }
@@ -4234,7 +4238,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
     { v: 'V12.45', f: '11 de octubre de 2026', n: [
-      '<b>Reto de 15 días</b>: cada día que registras algo, Prácti te lo celebra y se ilumina tu camino. Cada 5 días hay un regalo: el día 5, la canción con letra; el día 10, la nota a tu yo del futuro; el día 15, el juego «Salta la valla con Prácti».' ] },
+      '<b>Reto de 15 días</b>: cada día que registras algo, Prácti te lo celebra y se ilumina tu camino. Cada 5 días hay un regalo: el día 5, la canción con letra; el día 10, la nota a tu yo del próximo mes (para cualquier plan); el día 15, el juego «Salta la valla con Prácti».' ] },
     { v: 'V12.39', f: '11 de octubre de 2026', n: [
       'Sonidos nuevos al registrar: un <b>arpa</b> cuando registras tu práctica, una <b>kalimba</b> con tu clima y una <b>marimba</b> con tu entorno.' ] },
     { v: 'V12.37', f: '11 de octubre de 2026', n: [
@@ -5914,7 +5918,7 @@ lo que haces cada día es lo que vas a ser.`;
     // Se cumple el plazo de su meta (1 o 2 meses): «¿La conseguiste?»
     const avisoPlazo = (state.me && state.view === 'panel' && !state.panelSub) ? tarjetaPlazoMeta() : null;
     if(avisoPlazo) app.appendChild(avisoPlazo);
-    if(state.me && state.view === 'panel' && !state.panelSub && tienePlan('guias')){
+    if(state.me && state.view === 'panel' && !state.panelSub && puedeNotaMes()){
       const ep = estadoPosit(), clave = 'posit_visto_' + state.me + '_' + (ep.p ? (ep.p.mes || ep.p.trimestre) : '');
       let visto = false; try { visto = !!localStorage.getItem(clave); } catch(e){}
       if(ep.estado === 'abrir' && !visto){
@@ -7007,6 +7011,14 @@ lo que haces cada día es lo que vas a ser.`;
         + '<button type="button" class="ps-reg-btn"><span>Registra</span><span class="ps-reg-icos">☀️<svg class="entorno-ico" viewBox="0 0 20 20" aria-hidden="true"><rect x="2" y="2" width="8" height="8" fill="#FFFFFF"/><rect x="10" y="2" width="8" height="8" fill="#D4D4D4"/><rect x="2" y="10" width="8" height="8" fill="#9C9C9C"/><rect x="10" y="10" width="8" height="8" fill="#565656"/><rect x="2" y="2" width="16" height="16" rx="3" fill="none" stroke="#fff" stroke-width="1.5"/></svg>💧</span></button></div>').firstElementChild;
       tDias.querySelector('.ps-reg-btn').onclick = () => abrirMomentoRiego();   // clima, entorno, práctica y cómo vas esta semana
       app.appendChild(tDias);
+      // Reto de 15 días: se puede abrir siempre para ver el camino y los regalos
+      try {
+        const nReto = diasRegistradosReto();
+        const reto = el('<button type="button" class="card ps-reto"><span class="ps-reto-ico">🎯</span><span><b>Tu reto de 15 días</b><small>'
+          + (nReto >= RETO_DIAS ? '¡Reto completado! Tienes todos los regalos.' : nReto ? 'Llevas ' + nReto + (nReto === 1 ? ' día' : ' días') + ' registrados de 15. Mira tu camino y tus regalos.' : 'Registra tu primer día para empezar el camino.') + '</small></span><span class="opcion-flecha">›</span></button>').firstElementChild;
+        reto.onclick = () => abrirRetoDia(Math.max(1, Math.min(nReto, RETO_DIAS)), true);
+        app.appendChild(reto);
+      } catch(e){ console.error('Reto:', e); }
       try { app.appendChild(tarjetaAvisosMovil()); } catch(e){ console.error('Avisos:', e); }
       // El calendario y el historial, en un recuadro aparte (debajo del recordatorio); cada uno abre su pantalla
       const calHist = el('<div class="card ps-recuadro"><p style="font-weight:700;margin:0 0 8px">📅 Mi calendario y mi historial</p>'
@@ -7038,14 +7050,13 @@ lo que haces cada día es lo que vas a ser.`;
       const ep = estadoPosit();
       const posit = el('<div class="card ps-recuadro"><p class="nota-tit" style="font-weight:700;margin:0 0 4px;color:#6B4FA8">🔮📝 Nota a tu yo: próximo mes</p><p style="margin:0 0 8px;font-size:14px">' + (ep.estado === 'abrir' ? '¡Ya puedes abrir la nota que te dejaste! 💛' : ep.estado === 'guardado' ? 'Cuéntale cómo te sientes y qué esperas para el <b>lunes ' + diaUnoTexto(ep.abre) + '</b>.' : 'Cuéntale cómo te sientes y qué esperas para el <b>lunes ' + diaUnoTexto(ultimoLunes(mesClave())) + '</b>.') + '</p><button type="button" class="panel-link-btn" style="width:100%;border:none;cursor:pointer;background:#7B5FB8">' + (!tienePlan('guias') ? '👑 Escribir mi nota' : ep.estado === 'abrir' ? 'Abrir mi nota' : ep.estado === 'guardado' ? '✓ Nota guardada' : 'Escribir mi nota') + '</button></div>');
       posit.querySelector('button').onclick = () => {
-        if(!tienePlan('guias')){ avisoCorona('La nota para tu yo de principio de mes es del Plan Guías'); return; }
+        if(!puedeNotaMes()){ avisoPremioBloqueado('nota'); return; }   // regalo del día 10 del reto (o Plan Guías)
         sonidoTing(); state.view = 'posit'; window.scrollTo(0,0); render();
       };
       app.appendChild(posit);
       // Carta a mi yo del futuro, para todos, en su recuadro
       const carta = el('<div class="card ps-recuadro"><p class="nota-tit" style="font-weight:700;margin:0 0 4px;color:#6B4FA8">🔮✉️ Nota a tu yo: final de trimestre</p><p style="margin:0 0 8px;font-size:14px">' + 'Cuéntale cómo te sientes y qué esperas para el <b>lunes ' + fechaConAnio(cartaVigente() ? aperturaCarta(cartaGuardada()) : lunesProximoTrimestre()) + '</b>.' + '</p><button type="button" class="panel-link-btn" style="width:100%;border:none;cursor:pointer;background:#7B5FB8">' + (!tienePlan('sesiones') ? '👑👑 Escribir mi nota' : cartaVigente() ? '✓ Nota guardada' : 'Escribir mi nota') + '</button></div>');
       carta.querySelector('button').onclick = () => {
-        if(!premioRetoDesbloqueado('carta')){ avisoPremioBloqueado('carta'); return; }
         if(!tienePlan('sesiones')){ avisoCorona('La nota a tu yo de dentro de tres meses es del Plan Guías + Grupo'); return; }
         state.prevView = 'practicaSemanal'; state.view = 'carta'; window.scrollTo(0,0); render();
       };
@@ -8142,7 +8153,7 @@ lo que haces cada día es lo que vas a ser.`;
     pasos.push({ id: 'contrato', titulo: 'Compromiso trimestral', hecho: contrato, plan: plan1 ? '' : '👑 Plan Guías', bloqueo: (contrato || vistaAlguna) ? '' : 'Aún no desbloqueado', sub: contrato ? 'Sellado hasta el ' + fechaCorta(finTrim) + ' ' + finTrim.getFullYear() : 'Siembra tu meta con tu sello' });
     const ep = estadoPosit(), pg = positGuardado();
     const nota = !!(pg && (pg.mes || pg.trimestre) === mesClave()) || ep.estado === 'guardado';
-    pasos.push({ id: 'nota', titulo: ep.estado === 'abrir' && !nota ? 'Abre la nota que te dejaste' : 'Nota a tu yo: próximo mes (' + fechaCorta(ep.estado === 'guardado' && ep.abre ? ep.abre : ultimoLunes(mesClave())) + ')', hecho: nota, plan: plan1 ? '' : '👑 Plan Guías', bloqueo: (nota || contrato || ep.estado === 'abrir') ? '' : 'Aún no desbloqueado', sub: nota ? 'Guardada en la caja hasta ese lunes' : ep.estado === 'abrir' ? '¡Ya puedes abrirla!' : 'Se abrirá el primer lunes del mes que viene' });
+    pasos.push({ id: 'nota', titulo: ep.estado === 'abrir' && !nota ? 'Abre la nota que te dejaste' : 'Nota a tu yo: próximo mes (' + fechaCorta(ep.estado === 'guardado' && ep.abre ? ep.abre : ultimoLunes(mesClave())) + ')', hecho: nota, plan: (plan1 || premioRetoDesbloqueado('nota')) ? '' : '👑 Plan Guías', bloqueo: (nota || contrato || ep.estado === 'abrir') ? '' : 'Aún no desbloqueado', sub: nota ? 'Guardada en la caja hasta ese lunes' : ep.estado === 'abrir' ? '¡Ya puedes abrirla!' : 'Se abrirá el primer lunes del mes que viene' });
     const c = cartaGuardada(), ab = aperturaCarta(c);
     const carta = !!(ab && ab > new Date());
     pasos.push({ id: 'carta', titulo: 'Nota a tu yo: final de trimestre (' + fechaCorta(ab && carta ? ab : lunesProximoTrimestre()) + ')', hecho: carta, plan: plan2 ? '' : '👑👑 Plan Guías + Grupo', bloqueo: (carta || nota) ? '' : 'Aún no desbloqueado', sub: carta ? 'Cerrada hasta ese lunes' : 'Se abrirá el primer lunes del próximo trimestre' });
@@ -8171,7 +8182,6 @@ lo que haces cada día es lo que vas a ser.`;
     document.body.appendChild(a); setTimeout(() => a.remove(), 2600);
   }
   function irAPaso(p){
-    if(p.id === 'carta' && !premioRetoDesbloqueado('carta')){ avisoPremioBloqueado('carta'); return; }
     if(p.plan){ avisoCorona(p.id === 'carta' ? 'La carta a tu yo del futuro es del Plan Guías + Grupo' : 'Este paso es del Plan Guías'); return; }
     if(p.bloqueo && !p.hecho){ avisoBreve(p.bloqueo); return; }
     if(p.id === 'reflexion'){ abrirReflexion(); return; }
@@ -9864,4 +9874,4 @@ lo que haces cada día es lo que vas a ser.`;
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V12.47 · App Metas Amables · 2026-10-11 21:34==== -->
+<!-- ==== Fin del index V12.48 · App Metas Amables · 2026-10-11 21:40==== -->
