@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V12.45 · App Metas Amables · 2026-10-11 21:30==== -->
+<!-- ==== index V12.46 · App Metas Amables · 2026-10-11 21:31==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2151,7 +2151,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V12.45';
+  const APP_VERSION = 'V12.46';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -4181,11 +4181,11 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   const fondoBloqueado = id => !FONDOS_LIBRES.includes(id) && !tienePlan('guias');
 
   // Llave fija (mecánica), según el dibujo de Gustavo: cabeza redonda grande con un hueco ancho para la tuerca,
-  // mango corto y gordo con la punta redonda, y la letra d en la base de la cabeza
+  // mango corto y gordo con la punta redonda. Sin letra: Utilidades no es un paso del ciclo (la «d» es el Grupo de apoyo)
   function iconoLlave(){
     return '<svg class="ciclo-svg" viewBox="0 0 48 48" aria-hidden="true"><g transform="translate(24 24) rotate(-40) scale(0.78) translate(-28 0)">'
       + '<path d="M8 -8 L19.9 -8 A18 18 0 0 1 53 -6 L42 -6 L42 6 L53 6 A18 18 0 0 1 19.9 8 L8 8 A8 8 0 0 1 8 -8 Z" fill="#DCCFF5" stroke="#101010" stroke-width="2.6" stroke-linejoin="round"/>'
-      + '</g><text x="25" y="29.5" text-anchor="middle" font-family="Karla,Arial,sans-serif" font-size="17" font-weight="800" fill="#101010">d</text></svg>';
+      + '</g></svg>';
   }
   function avisoCorona(texto){
     if(confirm('👑 ' + texto + '.\n\n¿Quieres ver los planes?')){ state.prevView = state.view; state.view = 'planes'; window.scrollTo(0,0); render(); }
@@ -9853,4 +9853,4 @@ lo que haces cada día es lo que vas a ser.`;
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V12.45 · App Metas Amables · 2026-10-11 21:30==== -->
+<!-- ==== Fin del index V12.46 · App Metas Amables · 2026-10-11 21:31==== -->
