@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V12.66 · App Metas Amables · 2026-10-11 23:57==== -->
+<!-- ==== index V12.67 · App Metas Amables · 2026-10-12 00:06==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2215,7 +2215,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V12.66';
+  const APP_VERSION = 'V12.67';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -4271,6 +4271,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       pickMe(r.nombre);
     } catch(e){ b.textContent = 'Error'; }
   }
+  const MAPA_APP_URL = 'https://claude.ai/artifact/T69et1f7GJgrBZZPBjN655';
   const CUENTAS_PRUEBA = [['Libre (moderador)', 'Libre'], ['Guías (moderador)', 'Guías'], ['Gustavo', 'Guías + Grupo']];
   // Desplegables del panel: se recuerda si están abiertos (las tareas, abiertas de entrada)
   function plegable(clave, titulo, cuerpo, abiertoDeEntrada){
@@ -4340,6 +4341,9 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     h = plegable('tareas', '✅ Tareas de hoy', h, true);
     if(esCuentaPruebas()) h += plegable('moderador', '🛠️ Moderador · entrar como', '<p class="pf-gris" style="margin:0 0 8px;font-size:13.5px">Entra con otra cuenta de prueba para ver la app con ese plan.</p><div class="pf-mod-cuentas">'
       + CUENTAS_PRUEBA.map(([cuenta, t]) => '<button type="button" class="mod-cuenta' + (state.me === cuenta ? ' on' : '') + '" data-cuenta="' + escapeAttr(cuenta) + '">' + t + '</button>').join('') + '</div>', false);
+    // Mapa de la app (flujo de usuario): página privada de Gustavo en claude.ai; copia en «Documentos y sesiones/Mapa de Metas Amables.html»
+    h += '<a class="card pf-pantalla" href="' + MAPA_APP_URL + '" target="_blank" rel="noopener" style="text-decoration:none;align-items:center;margin-top:14px">' + mini('#F6F8F3', '#4E7F2A', '🗺️')
+      + '<span class="pf-pantalla-tx"><b>Mapa de la app (flujo de usuario)</b><small>Todos los recorridos de la persona, pantalla a pantalla, en un esquema.</small><em>Abrir el mapa ↗</em></span></a>';
     h += plegable('esporadicas', '👁️ Pantallas de acceso esporádico', '<p class="pf-gris" style="margin:0 0 10px;font-size:13.5px">Salen solo en momentos concretos. Toca una para verla tal como la ve la persona (sin guardar nada).</p>'
       + GRUPOS_ESPORADICAS.map(([g, titulo]) => '<p class="pf-sub" style="margin:14px 0 8px">' + titulo + '</p>' + pantallasEsporadicas().map((x, i) => x.grupo !== g ? '' : '<button type="button" class="card pf-pantalla" data-esporadica="' + i + '">' + x.img + '<span class="pf-pantalla-tx"><b>' + x.tit + '</b><small>' + x.cuando + '</small><em>Ver la pantalla ›</em></span></button>').join('')).join(''), false);
     // Resumen: cada cifra se toca para ver quiénes son
@@ -10459,4 +10463,4 @@ lo que haces cada día es lo que vas a ser.`;
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V12.66 · App Metas Amables · 2026-10-11 23:57==== -->
+<!-- ==== Fin del index V12.67 · App Metas Amables · 2026-10-12 00:06==== -->
