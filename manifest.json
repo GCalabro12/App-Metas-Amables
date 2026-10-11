@@ -15,5 +15,10 @@
     { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
     { "src": "icon-maskable-192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
     { "src": "icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "Regar hoy", "short_name": "Regar hoy", "description": "Marca tu práctica de hoy", "url": "./?regar=1", "icons": [{ "src": "atajo-regar.png", "sizes": "192x192", "type": "image/png" }] },
+    { "name": "Abonar: ¿cómo te sientes?", "short_name": "Abonar", "description": "Cuenta cómo te sientes hoy", "url": "./?abonar=1", "icons": [{ "src": "atajo-abonar.png", "sizes": "192x192", "type": "image/png" }] },
+    { "name": "Mi guía de esta semana", "short_name": "Mi guía", "description": "Abre tu guía semanal", "url": "./?guia=1", "icons": [{ "src": "atajo-guia.png", "sizes": "192x192", "type": "image/png" }] }
   ]
 }
