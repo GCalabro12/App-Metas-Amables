@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V12.03 · App Metas Amables · 2026-10-11 02:27==== -->
+<!-- ==== index V12.04 · App Metas Amables · 2026-10-11 02:29==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1192,6 +1192,12 @@ body.riego-abierto{overflow:hidden}
 .ritual-otro{display:flex;gap:8px;margin-top:8px}.ritual-otro input{flex:1;min-width:0;padding:9px 12px;border:1px solid #E2D3A8;border-radius:10px;font:inherit;font-size:14.5px;background:#fff}
 .ritual-otro button{padding:9px 14px;border:0;border-radius:10px;background:#F2C14E;color:#2B1B00;font:800 14px Karla,sans-serif;cursor:pointer}
 .ritual-sub{font-size:12px;color:#7A5200;opacity:.85;margin:0 0 8px}
+.guia-semana{background:#EEF4FB !important;border-color:#4F7FB5}
+.guia-semana .ritual-tit{display:flex;align-items:center;gap:8px;color:#2F5F93}
+.guia-semana-ico{width:30px;height:30px;flex:none}
+.guia-semana .ritual-sub,.guia-semana .ritual-cambiar{color:#2F5F93}
+.guia-semana .ritual-practica{color:#1F3F66}
+.guia-semana .ritual-guia{background:linear-gradient(135deg,#4F7FB5 0%,#2F5F93 100%);color:#fff}
   .ritual-guia{display:block;width:100%;margin:0 0 8px;padding:11px 14px;border:0;border-radius:12px;background:#F2C14E;color:#2B1B00;font:800 15px Karla,sans-serif;cursor:pointer}
 .ritual-cambiar{background:none;border:0;padding:0;color:#7A5200;text-decoration:underline;font:600 13.5px Karla,sans-serif;cursor:pointer}
 .planta-meta{display:block;margin:3px 0 0;font:italic 600 14.5px/1.35 Lora,serif;color:#4F7A43}
@@ -2053,7 +2059,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V12.03';
+  const APP_VERSION = 'V12.04';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -4032,7 +4038,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       'Tu planta de Inicio tiene ahora un <b>tutor</b>: el palo que la sostiene es tu guía semanal, para que crezca recta y no se tuerza.',
       'El aviso de las 20:00 te recuerda también <b>abonar tu meta</b>: contar cómo te sientes hoy.' ] },
     { v: 'V12.01', f: '11 de octubre de 2026', n: [
-      'En Inicio, <b>Tu práctica de esta semana</b>: el ejercicio que te propone tu guía y su objetivo, tu disparador («Cuando…, haré…») y el botón <b>Descripción completa</b>, que abre la guía en «Tu práctica de la semana». Ya no se pregunta a qué hora la harás: un hábito se hace siempre en el mismo momento, justo después de algo que ya haces.',
+      'En Inicio, la tarjeta azul <b>Tu guía de esta semana</b>: el ejercicio que te propone tu guía y su objetivo, tu disparador («Cuando…, haré…») y el botón <b>Descripción completa</b>, que abre la guía en «Tu práctica de la semana». Ya no se pregunta a qué hora la harás: un hábito se hace siempre en el mismo momento, justo después de algo que ya haces.',
       'En <b>Mi calendario de prácticas</b>, cada día hecho es una <b>maceta</b> (del color de tu emoción si ese día abonaste), sin la marca ✓.' ] },
     { v: 'V11.99', f: '11 de octubre de 2026', n: [
       '<b>🌿 Abona tu meta</b>: regar es practicar; abonar es conocer cómo te sientes. Elige una o dos emociones en la maceta (energía alta o baja, agradable o desagradable) y su intensidad. Puedes abonar aunque hoy no hayas regado.',
@@ -8034,9 +8040,12 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     if(!state.me || diaHechoFecha(new Date()) > 0) return null;
     const pg = practicaDeLaGuia();
     let receta = ''; try { receta = recetaTexto(historiaGuardada('brecha')); } catch(e){}
-    const c = document.createElement('div'); c.className = 'card ritual-card';
-    // La guía es el tutor (el palo) de la planta: la sostiene para que crezca recta y no se tuerza
-    c.innerHTML = '<p class="ritual-tit">🎋 Tu práctica de esta semana</p>'
+    const c = document.createElement('div'); c.className = 'card ritual-card guia-semana';
+    // La guía es el tutor (el palo) de la planta: la sostiene para que crezca recta y no se tuerza. Va en el azul de la guía
+    const icono = '<svg class="guia-semana-ico" viewBox="0 0 32 32" aria-hidden="true"><path d="M8 26h16l-2 5H10z" fill="#C9942D" stroke="#7A5200" stroke-width="1.2" stroke-linejoin="round"/>'
+      + '<path d="M19 26V5" stroke="#8A6A2E" stroke-width="2.6" stroke-linecap="round"/><path d="M14 26c0-6 1-11 3-15" fill="none" stroke="#3E7A2E" stroke-width="1.8" stroke-linecap="round"/>'
+      + '<path d="M15 19q-6-1-7-5q5-1 7 4z M16 13q6-3 4-7q-5 2-4 7z" fill="#6BAE4F"/><path d="M15 17.5q2.5-1.6 5 0" fill="none" stroke="#2F5F93" stroke-width="1.6"/></svg>';
+    c.innerHTML = '<p class="ritual-tit">' + icono + 'Tu guía de esta semana</p>'
       + '<p class="ritual-sub">Tu guía es el <b>tutor</b> de tu planta: la sostiene para que crezca recta y no se tuerza.</p>'
       + (pg ? (pg.ejercicio ? '<p class="ritual-practica">' + escapeAttr(pg.ejercicio) + '</p>' : '')
             + (pg.objetivo ? '<p class="ritual-tx">🎯 ' + escapeAttr(pg.objetivo) + '</p>' : '')
@@ -9321,4 +9330,4 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V12.03 · App Metas Amables · 2026-10-11 02:27==== -->
+<!-- ==== Fin del index V12.04 · App Metas Amables · 2026-10-11 02:29==== -->
