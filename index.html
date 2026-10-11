@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V12.50 · App Metas Amables · 2026-10-11 22:25==== -->
+<!-- ==== index V12.51 · App Metas Amables · 2026-10-11 22:30==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2163,7 +2163,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V12.50';
+  const APP_VERSION = 'V12.51';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -4274,7 +4274,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     { v: 'V12.45', f: '11 de octubre de 2026', n: [
       '<b>Reto de 15 días</b>: cada día que registras algo, Prácti te lo celebra y se ilumina tu camino. Cada 5 días hay un regalo: el día 5, la canción con letra; el día 10, la nota a tu yo del próximo mes (para cualquier plan); el día 15, el juego «Salta la valla con Prácti».' ] },
     { v: 'V12.50', f: '11 de octubre de 2026', n: [
-      '<b>Hoy, sé amable contigo.</b> Si marcas un clima difícil (enfado, estrés, cansancio…) o un entorno complicado (visitas, viaje, enfermedad), te recordamos que no tienes ninguna necesidad de hacer tu práctica ese día si no puedes o no te apetece.' ] },
+      '<b>Hoy, sé amable contigo.</b> Si marcas un clima difícil (enfado, estrés, cansancio…) o un entorno complicado (poco tiempo, visitas, viaje, enfermedad), te recordamos que no tienes ninguna necesidad de hacer tu práctica ese día si no puedes o no te apetece.' ] },
     { v: 'V12.49', f: '11 de octubre de 2026', n: [
       '<b>¿Has olvidado tu contraseña?</b> Ahora puedes recuperarla tú: escribe tu email y te llega un código de 6 cifras para poner una nueva.' ] },
     { v: 'V12.39', f: '11 de octubre de 2026', n: [
@@ -8759,12 +8759,12 @@ lo que haces cada día es lo que vas a ser.`;
     return '<svg class="clima-rayos" viewBox="0 0 100 100" aria-hidden="true">' + s + '</svg>';
   })();
   // «Hoy, sé amable contigo»: si el clima es difícil (tensión o agotamiento) o el entorno pesa (visitas, viaje, enfermedad),
-  // sale una hoja a media pantalla que da permiso para no practicar hoy. Una vez al día (idea de Gustavo, V12.50)
+  // o hay poco tiempo, sale una hoja a media pantalla que da permiso para no practicar hoy. Una vez al día (idea de Gustavo, V12.50)
   function abrirHojaAmable(motivo){
     if(!state.me || document.querySelector('.amable-capa')) return;
     const k = 'hoja_amable_' + state.me + '_' + hoyISO();
     try { if(localStorage.getItem(k)) return; localStorage.setItem(k, '1'); } catch(e){}
-    const inicio = motivo === 'entorno' ? 'Tu entorno hoy está complicado' : 'Hoy tu clima está difícil';
+    const inicio = motivo === 'poco' ? 'Hoy vas con poco tiempo' : motivo === 'entorno' ? 'Tu entorno hoy está complicado' : 'Hoy tu clima está difícil';
     const capa = el('<div class="amable-capa" role="dialog" aria-label="Hoy, sé amable contigo"><div class="amable-hoja"><div class="amable-asa"></div>'
       + practiHTML('calma', '🍃', 110)
       + '<h2>Hoy, sé amable contigo</h2>'
@@ -8859,7 +8859,7 @@ lo que haces cada día es lo que vas a ser.`;
     entCaja.querySelectorAll('.entorno-op').forEach(b => b.onclick = async () => {
       const antes = ent, n = Number(b.dataset.n);
       ent = ent === n ? 0 : n; pintarEnt(); entMsg.textContent = 'Guardando…';
-      try { await guardarAbonoHoy(null, ent); entMsg.textContent = ent ? '✓ Guardado. Tu entorno también cuenta.' : 'Entorno quitado.'; if(ent){ try { sonidoEntorno(); } catch(e){} } if(ent >= 3) setTimeout(() => abrirHojaAmable('entorno'), 600); }
+      try { await guardarAbonoHoy(null, ent); entMsg.textContent = ent ? '✓ Guardado. Tu entorno también cuenta.' : 'Entorno quitado.'; if(ent){ try { sonidoEntorno(); } catch(e){} } if(ent >= 2) setTimeout(() => abrirHojaAmable(ent === 2 ? 'poco' : 'entorno'), 600); }
       catch(e){ ent = antes; pintarEnt(); entMsg.textContent = 'No se pudo guardar. Revisa tu conexión e inténtalo de nuevo.'; }
     });
     return caja;
@@ -9967,4 +9967,4 @@ lo que haces cada día es lo que vas a ser.`;
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V12.50 · App Metas Amables · 2026-10-11 22:25==== -->
+<!-- ==== Fin del index V12.51 · App Metas Amables · 2026-10-11 22:30==== -->
