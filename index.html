@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V12.54 · App Metas Amables · 2026-10-11 22:51==== -->
+<!-- ==== index V12.55 · App Metas Amables · 2026-10-11 22:55==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1304,8 +1304,12 @@ body.riego-abierto{overflow:hidden}
 .simp-puntos span{width:9px;height:9px;border-radius:50%;background:#D8D2C4}.simp-puntos span.on{background:#2F4A22}
 .simp-nav{display:flex;gap:10px}.simp-nav .btn{flex:1;text-align:center}
 .simp-estado{margin:10px 0 0;font-size:14px;color:#5E6B55;text-align:center}
-html.modo-minimal .viaje-paso.ahora .viaje-punto,html.modo-minimal .riego-escena img,html.modo-minimal .riego-mariposa,html.modo-minimal .riego-sol,html.modo-minimal .practi-balanceo .practi-hueco.quieto,html.modo-minimal #practiQuieto{animation:none!important}
-html.modo-minimal .riego-brillo,html.modo-minimal .pajaro-vuela,html.modo-minimal .pajaro-vuelve{display:none!important}
+html.modo-minimal body,html.modo-minimal .riego-capa{background:#fff!important}
+.modo-switch-fila{width:100%;display:flex;justify-content:flex-end;margin:0 0 4px}
+.modo-switch{display:flex;align-items:center;gap:8px;padding:4px 4px 4px 12px;border:1px solid var(--border);border-radius:20px;background:#fff;font:700 13px Karla,sans-serif;color:#2F4A22;cursor:pointer}
+.ms-pista{position:relative;width:40px;height:22px;border-radius:11px;background:#639922;transition:background .25s}
+.ms-bola{position:absolute;top:2px;left:20px;width:18px;height:18px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.3);transition:left .25s}
+.modo-switch.off .ms-pista{background:#C9C9C9}.modo-switch.off .ms-bola{left:2px}
 .util-nov{display:flex;align-items:center;gap:10px;width:100%;margin:14px 0 0;padding:12px 16px;border:2px solid #101010;border-radius:16px;background:#FFF6DC;font:inherit;color:#101010;text-align:left;cursor:pointer}.util-nov b{display:block;font-size:16px}.util-nov small{display:block;color:var(--ink-soft);font-size:13px}.util-nov .opcion-flecha{margin-left:auto;font-size:22px}
 .nov-lista{display:block}.nov-ver{margin:0 0 14px;padding:14px 16px}.nov-ver h3{margin:0 0 2px;font:700 18px Lora,serif;color:#2F5A23}.nov-ver .nov-fecha{display:block;margin:0 0 8px;font-size:13px;color:var(--ink-soft)}.nov-ver ul{margin:0;padding-left:20px}.nov-ver li{margin:0 0 6px;line-height:1.45}
 .alta-marchita{position:relative;width:200px;height:213px;margin:0 auto}.alta-marchita img{position:absolute;left:0;top:0;width:200px;height:auto;opacity:0;animation-duration:6s;animation-timing-function:ease;animation-iteration-count:infinite}
@@ -2180,7 +2184,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V12.54';
+  const APP_VERSION = 'V12.55';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -3142,19 +3146,19 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   });
 
   // ---- Animaciones de cada resultado ----
-  // ===== Modo minimalista (Utilidades → La simplicidad voluntaria). Se guarda en este móvil; siempre se puede volver al normal =====
+  // ===== Modo minimalista (Utilidades → La simplicidad voluntaria). Se guarda en este móvil.
+  // Quita pantallas, no sonidos: sin Utilidades (ni juego), sin las notas a tu yo del futuro, sin el recordatorio del calendario
+  // y con fondo blanco. Se vuelve al modo normal con el interruptor de arriba a la derecha =====
   function modoMinimal(){ try { return localStorage.getItem('modo_minimal') === '1'; } catch(e){ return false; } }
   function ponerModoMinimal(si){
     try { if(si) localStorage.setItem('modo_minimal', '1'); else localStorage.removeItem('modo_minimal'); } catch(e){}
     document.documentElement.classList.toggle('modo-minimal', !!si);
-    if(si){ try { if(sintoniaSonando()) apagarSintoniaSuave(800); } catch(e){} }
     try { destruirPracti(); } catch(e){}
     render();
   }
   try { if(modoMinimal()) document.documentElement.classList.add('modo-minimal'); } catch(e){}
 
   function lanzarAnimacion(tipo){
-    if(modoMinimal()) return;
     if(tipo === 'confeti') return launchConfetti();
     if(tipo === 'pajaro') return lanzarPajaro();
     if(tipo === 'nubes') return lanzarNubes();
@@ -3197,7 +3201,6 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
   function launchConfetti(){
-    if(modoMinimal()) return;
     const colors = ['#E8002C','#C9942D','#F9C22D','#3F5D45','#1A1A1A'];
     const container = document.createElement('div');
     container.style.cssText = 'position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:9999;';
@@ -3404,7 +3407,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     const capa = el('<div class="reto-capa" role="dialog" aria-label="Reto de 15 días"><div class="reto-card">'
       + '<div class="reto-cab">' + practiCartelHTML(n, 140) + '</div>'
       + '<div class="reto-cuerpo"><h2>' + tit + '</h2>' + tx + caminoRetoSVG(n) + '<p class="reto-info" hidden></p>'
-      + (premio ? '<button type="button" class="reto-btn reto-premio-btn">' + premio.ico + ' ' + premio.boton + '</button>' : '')
+      + (premio && !(modoMinimal() && premio.id === 'juego') ? '<button type="button" class="reto-btn reto-premio-btn">' + premio.ico + ' ' + premio.boton + '</button>' : '')
       + '<button type="button" class="reto-btn ' + (premio ? 'reto-sec' : '') + ' reto-ok">' + (n === 1 ? '¡Acepto el reto!' : 'Continuar') + '</button></div></div></div>').firstElementChild;
     document.body.appendChild(capa);
     try { activarPracti(capa); moverCartelConPracti(capa); } catch(e){}
@@ -3434,13 +3437,13 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     const nm = diasRegistradosMeta(), km = 'dias_meta_visto_' + state.me, fm = fechaMetaActual();
     let vm = 0; try { const [f, v] = String(localStorage.getItem(km) || '').split('|'); if(f === fm) vm = Number(v) || 0; } catch(e){}
     if(nm > vm){ try { localStorage.setItem(km, fm + '|' + nm); } catch(e){} }
-    if(modoMinimal()){ if(n > visto){ try { localStorage.setItem(k, String(n)); } catch(e){} } return; }
     if(n > visto && n <= RETO_DIAS){ try { localStorage.setItem(k, String(n)); } catch(e){} abrirRetoDia(n); return; }   // el reto (una sola vez en la vida)
     if(n > visto){ try { localStorage.setItem(k, String(n)); } catch(e){} }
     if(n > RETO_DIAS && nm > vm) abrirDiasMeta(nm);   // reto ya hecho: solo el cartel con los días de esta meta
   }
 
   function abrirJuegoVallas(){
+    if(modoMinimal()){ avisoBreve('El juego no está en el modo minimalista'); return; }
     if(!premioRetoDesbloqueado('juego')){ avisoPremioBloqueado('juego'); return; }
     if(juegoAbierto) return;
     const bin = atob(JUEGO_VALLAS_B64), bytes = new Uint8Array(bin.length);
@@ -3685,15 +3688,13 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     const v0 = sintonia.volume, fin = Date.now() + ms;
     sintoniaReloj = setInterval(() => { const queda = fin - Date.now(); if(queda <= 0) pararSintonia(); else sintonia.volume = Math.max(0, v0 * queda / ms); }, 100);
   }
-  let musicaPedida = false;
-  function sonarSintoniaPedida(segundos, volumen, conLetra){ musicaPedida = true; try { sonarSintonia(segundos, volumen, conLetra); } finally { musicaPedida = false; } }
+  function sonarSintoniaPedida(segundos, volumen, conLetra){ sonarSintonia(segundos, volumen, conLetra); }
   // Cartel del reto y de los días registrados: un trocito de la música oficial (unos 3,5 s) que entra poco a poco y se apaga suave
   function musicaCartel(){
     if(sintoniaSonando() || (typeof musica !== 'undefined' && musica && musica.id)) return;   // no corta la música que ya suena
     sonarSintonia(3.5, 0.6, false, 900, 1500);
   }
   function sonarSintonia(segundos, volumen, conLetra, entradaMs, salidaMs){
-    if(modoMinimal() && !musicaPedida) return;
     try{
       const vol = volumen || 0.8;
       // Con letra solo desde Música; los saludos de Prácti, el juego y la planta usan siempre la instrumental
@@ -3814,7 +3815,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     }
     const L = window.lottie || window.bodymovin;
     if(!L || !raiz) return;
-    const quieto = modoMinimal() || (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+    const quieto = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     raiz.querySelectorAll('.practi[data-practi]:not(.activo)').forEach(nodo => {
       const datos = PRACTI_ANIM[nodo.getAttribute('data-practi')];
       if(!datos) return;
@@ -4359,11 +4360,13 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
+    { v: 'V12.55', f: '11 de octubre de 2026', n: [
+      'El <b>modo minimalista</b> quita pantallas: Utilidades y el juego, las notas a tu yo del futuro y el recordatorio del calendario, y deja el fondo en blanco. Los sonidos y las celebraciones se quedan. Para volver al modo normal, usa el interruptor de arriba a la derecha.' ] },
     { v: 'V12.54', f: '11 de octubre de 2026', n: [
       'En <b>Registros amables</b>, abajo del todo hay también un botón para volver a Metas Amables, igual que arriba. Y si deslizas el dedo a la izquierda o a la derecha, también vuelves.' ] },
     { v: 'V12.53', f: '11 de octubre de 2026', n: [
       'En Utilidades, <b>Metas Amables: la simplicidad voluntaria</b>: por qué la app es sencilla, qué es el minimalismo y cuáles son las piezas fundamentales para tu meta.',
-      'Nuevo <b>modo minimalista</b>: sin sonidos al registrar, sin animaciones y sin confeti ni ventanas de celebración. Siempre puedes volver al modo normal.',
+      'Nuevo <b>modo minimalista</b>, para quien prefiera una app con menos cosas. Siempre puedes volver al modo normal.',
       'Cada vez que Prácti te enseña su cartel con tus días, cae confeti y suena un trocito de la música de Metas Amables.' ] },
     { v: 'V12.52', f: '11 de octubre de 2026', n: [
       '<b>Prácti sujeta su cartel</b> por dos asas, y el cartel sube y baja con él.',
@@ -4507,10 +4510,10 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
         + '<div class="simp-pieza"><span class="simp-letra">d</span><span><b>Los grupos de apoyo</b> <span style="white-space:nowrap">(<button type="button" class="simp-planes">Plan Guías + Grupo</button>)</span>: personas que caminan contigo.</span></div>'
         + '<p>Lo demás (música, frases, juegos…) son ayudas: puedes usarlas o no.</p>'],
       ['¿Te abruma? Prueba el modo minimalista',
-        '<p>Si sientes que la app te abruma con tanta información, sonidos y pantallas, puedes activar el <b>modo minimalista</b>:</p>'
-        + '<ul><li>sin sonidos al registrar,</li><li>Prácti y las animaciones quietos,</li><li>sin confeti ni ventanas de celebración.</li></ul>'
+        '<p>Si sientes que la app te abruma con tanta información y pantallas, puedes activar el <b>modo minimalista</b>. Se quitan:</p>'
+        + '<ul><li>Utilidades (frases, música, formación, Habla con Prácti y el juego),</li><li>las notas a tu yo del futuro,</li><li>el recordatorio en el calendario del móvil,</li><li>y el fondo de imagen: todo queda en blanco.</li></ul>'
         + '<p>Lo importante sigue igual: tu meta, tu guía, tus registros y tu grupo.</p>'
-        + '<p><b>Siempre puedes volver al modo normal</b> desde aquí mismo: Utilidades → La simplicidad voluntaria.</p>']
+        + '<p><b>Siempre puedes volver al modo normal</b> con el interruptor que verás arriba a la derecha.</p>']
     ];
     const i = Math.max(0, Math.min(PAGS.length - 1, state.simpPag || 0)), ultima = i === PAGS.length - 1;
     const card = el('<div class="card simp-card"><h3>' + PAGS[i][0] + '</h3>' + PAGS[i][1]
@@ -6018,6 +6021,7 @@ lo que haces cada día es lo que vas a ser.`;
         if(paso === 'neutro'){ fondo = ''; }
         else if(paso){ fondo = FONDOS_PASO[paso]; velo = '.35'; }
       }
+      if(modoMinimal()) fondo = '';   // modo minimalista: fondo blanco
       document.body.style.setProperty('--velo-nivel', 'rgba(255,255,255,' + velo + ')');
       document.body.classList.toggle('con-fondo-nivel', !!fondo);
       document.body.style.setProperty('--fondo-nivel', fondo ? 'url(' + fondo + ')' : 'none');
@@ -6082,6 +6086,7 @@ lo que haces cada día es lo que vas a ser.`;
     header.className = 'top';
     header.innerHTML = `
       <div class="brand-row" style="width:100%">
+        ${state.me && modoMinimal() ? '<div class="modo-switch-fila"><button type="button" class="modo-switch" role="switch" aria-checked="true" aria-label="Modo minimalista activado. Toca para volver al modo normal"><span>Modo minimalista</span><span class="ms-pista"><span class="ms-bola"></span></span></button></div>' : ''}
         <div class="wordmark" style="display:flex;align-items:baseline;justify-content:space-between;width:100%">Metas Amables <small class="version-tag">${APP_VERSION}</small></div>
         <div class="lema">Sin distracciones. Solo tu meta.</div>
       </div>
@@ -6090,6 +6095,8 @@ lo que haces cada día es lo que vas a ser.`;
     app.appendChild(header);
     // «inicio» (cerrar sesión rápido, para pruebas) solo lo ve el moderador
     if(header.querySelector('#switchBtn')) header.querySelector('#switchBtn').onclick = switchUser;
+    const msw = header.querySelector('.modo-switch');
+    if(msw) msw.onclick = () => { msw.classList.add('off'); msw.setAttribute('aria-checked', 'false'); setTimeout(() => { ponerModoMinimal(false); try { avisoBreve('Has vuelto al modo normal'); } catch(e){} }, 280); };
     // Mientras no esté instalada: botón «Instalar la app» arriba en todas las pantallas
     if(state.me && !MODO_PLAY && !appInstalada() && !['pick', 'bienvenidaAlta'].includes(state.view)){
       const b = document.createElement('button');
@@ -6103,7 +6110,7 @@ lo que haces cada día es lo que vas a ser.`;
     // Se cumple el plazo de su meta (1 o 2 meses): «¿La conseguiste?»
     const avisoPlazo = (state.me && state.view === 'panel' && !state.panelSub) ? tarjetaPlazoMeta() : null;
     if(avisoPlazo) app.appendChild(avisoPlazo);
-    if(state.me && state.view === 'panel' && !state.panelSub && puedeNotaMes()){
+    if(state.me && state.view === 'panel' && !state.panelSub && puedeNotaMes() && !modoMinimal()){
       const ep = estadoPosit(), clave = 'posit_visto_' + state.me + '_' + (ep.p ? (ep.p.mes || ep.p.trimestre) : '');
       let visto = false; try { visto = !!localStorage.getItem(clave); } catch(e){}
       if(ep.estado === 'abrir' && !visto){
@@ -6530,7 +6537,7 @@ lo que haces cada día es lo que vas a ser.`;
                   ? 'Registro de compromiso cada lunes y sesiones en grupo cada 15 días. Plan Guías + Grupo'
                   : '✍️ Registro ' + (registroPendienteEstaSemana() ? 'pendiente: aún no has registrado esta semana' : textoProximoLunes())
                     + (textoProximaSesion() ? '<br><span style="font-weight:700">📅 ' + textoProximaSesion() + '</span>' : ''), '', sinSesiones && '👑👑')
-          + '<button type="button" class="opcion-inicio ciclo-formacion" data-ir="util"><span class="ciclo-icono">' + iconoLlave() + '</span><span class="opcion-tx"><b>Utilidades</b><small>Habla con Prácti, formación, frases y música</small></span><span class="opcion-flecha">›</span></button>';
+          + (modoMinimal() ? '' : '<button type="button" class="opcion-inicio ciclo-formacion" data-ir="util"><span class="ciclo-icono">' + iconoLlave() + '</span><span class="opcion-tx"><b>Utilidades</b><small>Habla con Prácti, formación, frases y música</small></span><span class="opcion-flecha">›</span></button>');
         app.appendChild(opciones);
         try { if(localStorage.getItem('tour_' + state.me) === 'pendiente' && state.view === 'panel'){ localStorage.setItem('tour_' + state.me, 'visto'); setTimeout(iniciarTour, 900); } } catch(e){}
         opciones.querySelector('.hablar-practi-btn').onclick = () => { state.hablaDesdeInicio = true; state.view = 'habla'; window.scrollTo(0,0); render(); };
@@ -7260,6 +7267,7 @@ lo que haces cada día es lo que vas a ser.`;
         lunes.querySelector('button').onclick = () => { state.view = 'checkin'; state.regPaso = null; window.scrollTo(0,0); render(); };
         app.appendChild(lunes);
       }
+      if(modoMinimal()) return;   // modo minimalista: sin las notas a tu yo del futuro
       // «Habla con tu yo del futuro»: título común para las tres notas
       app.appendChild(el('<div class="futuro-cab"><h3>🔮 Habla con tu yo del futuro</h3><p>Cuando le hablas a tu yo de dentro de unos días o unos meses, lo sientes más cercano y cuidas mejor lo que haces hoy por él. Cuéntale cómo te sientes y qué esperas.</p></div>'));
       // Las tres notas a tu yo, seguidas: la de voz (semana), la del mes y la del trimestre
@@ -7717,6 +7725,7 @@ lo que haces cada día es lo que vas a ser.`;
   // Recordatorio diario en el calendario del móvil (una web no puede poner alarmas):
   // en iPhone, archivo .ics con aviso; en Android y ordenador, Google Calendar.
   function recordatorioDiarioHTML(){
+    if(modoMinimal()) return document.createDocumentFragment();   // modo minimalista: sin el recordatorio del calendario
     const caja = document.createElement('div');
     caja.style.cssText = 'border-top:1px solid var(--border);margin-top:14px;padding-top:12px';
     caja.innerHTML = `
@@ -7830,7 +7839,6 @@ lo que haces cada día es lo que vas a ser.`;
     return inp;
   }
   function notaCelebra(A, dest, midi, t, dur, o){
-    if(modoMinimal()) return;   // en el modo minimalista no suenan arpa, kalimba, marimba ni fanfarrias
     const f = 440 * Math.pow(2, (midi - 69) / 12), t0 = A.currentTime + t;
     (o.p || [[1, 1]]).forEach(([m, a, dec]) => {
       const osc = A.createOscillator(), g = A.createGain();
@@ -8388,7 +8396,7 @@ lo que haces cada día es lo que vas a ser.`;
     const hd = new Date(), extras = extrasViaje(), ex = extras[(hd.getFullYear() * 400 + hd.getMonth() * 31 + hd.getDate()) % extras.length];
     let extraHecho = false; try { extraHecho = localStorage.getItem('viaje_extra_' + state.me) === hoyISO(); } catch(e){}
     pasos.push({ id: 'extra', titulo: ex.titulo, ir: ex.ir, opcional: true, hecho: extraHecho, bloqueo: alDia ? '' : 'Cuando lo tengas todo al día', sub: extraHecho ? 'Hecho hoy' : ex.sub });
-    return pasos;
+    return modoMinimal() ? pasos.filter(p => !['nota', 'carta', 'extra'].includes(p.id)) : pasos;
   }
   function pasoAhora(pasos){
     const orden = ['reflexion', 'meta', 'guia', 'diario', 'lunes', 'contrato', 'nota', 'carta', 'extra'];
@@ -9202,6 +9210,7 @@ lo que haces cada día es lo que vas a ser.`;
       descubre: '<circle cx="12" cy="12" r="8.5"/><path d="m15.5 8.5-2 5-5 2 2-5z"/>'
     };
     const nombres = { inicio: 'Inicio', viaje: 'Viaje', progreso: 'Progreso', descubre: 'Utilidades' };
+    if(modoMinimal()) delete nombres.descubre;   // modo minimalista: sin Utilidades
     const nav = document.createElement('nav'); nav.className = 'tabbar'; nav.setAttribute('aria-label', 'Secciones');
     nav.innerHTML = Object.keys(nombres).map(k => '<button type="button" data-tab="' + k + '" class="' + (k === tab ? 'activa' : '') + '"' + (k === tab ? ' aria-current="page"' : '') + '><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + ic[k] + '</svg><span>' + nombres[k] + '</span></button>').join('');
     nav.querySelectorAll('button').forEach(b => b.onclick = () => {
@@ -10119,4 +10128,4 @@ lo que haces cada día es lo que vas a ser.`;
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V12.54 · App Metas Amables · 2026-10-11 22:51==== -->
+<!-- ==== Fin del index V12.55 · App Metas Amables · 2026-10-11 22:55==== -->
