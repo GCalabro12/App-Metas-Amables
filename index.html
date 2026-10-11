@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V12.10 · App Metas Amables · 2026-10-11 02:46==== -->
+<!-- ==== index V12.11 · App Metas Amables · 2026-10-11 02:52==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2064,7 +2064,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V12.10';
+  const APP_VERSION = 'V12.11';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -3279,7 +3279,9 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     if(toca === 'a') return '📖 ' + nombre + ', tu guía de esta semana te está esperando. ¡Ábrela en «Guía semanal»!';
     if(haySesionEnDias(0) && tienePlan('sesiones')) return '🤝 Hoy tenemos reunión, ' + nombre + '. Nos vemos en un rato.';
     if(haySesionEnDias(1) && tienePlan('sesiones')) return '🤝 Mañana tenemos reunión, ' + nombre + '. Deja el rato apartado.';
-    if(toca === 'c') return '🗓️ Es lunes, ' + nombre + ': toca cerrar la semana y comprometerte con la nueva.';
+    if(toca === 'c') return new Date().getDay() === 1
+      ? '🗓️ Es lunes, ' + nombre + ': toca cerrar la semana y comprometerte con la nueva.'
+      : '🗓️ ' + nombre + ', aún tienes pendiente el registro de esta semana: cierra la anterior y comprométete con esta.';
     const inicioAno = new Date(today.getFullYear(), 0, 1);
     const diaDelAno = Math.floor((today - inicioAno) / 86400000);
     return FRASES_INICIO[diaDelAno % FRASES_INICIO.length].replace('{n}', nombre);
@@ -9356,4 +9358,4 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V12.10 · App Metas Amables · 2026-10-11 02:46==== -->
+<!-- ==== Fin del index V12.11 · App Metas Amables · 2026-10-11 02:52==== -->
