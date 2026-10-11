@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V12.31 · App Metas Amables · 2026-10-11 20:24==== -->
+<!-- ==== index V12.32 · App Metas Amables · 2026-10-11 20:29==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1193,7 +1193,7 @@ body.riego-abierto{overflow:hidden}
 .ciclo-btn .opcion-tx > b{text-transform:uppercase;letter-spacing:.04em;font-size:13.5px}
 .panel-badge > span:last-child{text-transform:uppercase;letter-spacing:.04em;font-weight:800}
 .viaje-paso .viaje-tx b{text-transform:uppercase;letter-spacing:.03em;font-size:15px}
-.av-card{padding:12px 16px}
+.av-card{padding:12px 16px}.av-cab{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}.av-cab .av-tit{white-space:nowrap}
 .ps-en-dias{margin:4px 0 10px;padding:0 0 10px;border-bottom:1px solid #EFE6E2}.ps-en-dias .ps-practica{font-size:17px}.av-fila{display:flex;align-items:center;gap:10px}.av-tit{flex:1;font-weight:700;cursor:pointer}.av-flecha{font-size:13px;color:var(--ink-soft)}.av-estado{font-size:13px;color:var(--ink-soft)}
 .av-switch{position:relative;flex:none;width:50px;height:28px;padding:0;border:0;border-radius:14px;background:#C9C9C9;cursor:pointer;transition:background .2s}.av-switch span{position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.3);transition:left .2s}.av-switch.on{background:#8E2B2B}.av-switch.on span{left:25px}
 .av-detalle p{margin:8px 0 6px;font-size:14px;line-height:1.45}
@@ -1510,7 +1510,10 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   [data-vista="checkin"] .back-btn, [data-vista="calendar"] .back-btn, [data-vista="sesionesCal"] .back-btn, [data-vista="situacion"] .back-btn, [data-vista="group"] .back-btn, [data-sub="s1"] .back-btn, [data-sub="s2"] .back-btn{ background:#6B9362 !important; border-color:#6B9362 !important; color:#fff !important; }
   [data-vista="utilidades"] .back-btn,[data-vista="frases"] .back-btn,[data-vista="habla"] .back-btn,[data-vista="musica"] .back-btn,[data-sub="s5"] .back-btn{ background:#7B5FB8 !important; border-color:#7B5FB8 !important; color:#fff !important; }
   [data-vista="formMeta"] .btn-dictar{ border-color:#C9942D !important; color:#7A5410 !important; }
-  .dias-fila{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px}
+  .dias-fila{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:2px}
+  .dia-col{display:flex;flex-direction:column;align-items:stretch;gap:3px;min-width:0}
+  .dia-letra2{text-align:center;font:700 12px Karla,sans-serif;color:var(--ink-soft)}
+  .dc.elegido{outline:3px solid #E8B400;outline-offset:1px;z-index:1}
   .dia-btn{min-width:0;height:54px;box-sizing:border-box;border:2px solid #d8d3c6;border-radius:12px;background:#FCFCF9;font-family:'Karla',sans-serif;font-size:15px;font-weight:700;color:var(--ink);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;padding:0;transition:transform .12s,background .2s}
   .dia-btn:active{transform:scale(.92)}
   .dia-btn.hoy{border-color:#E8B400}
@@ -2125,7 +2128,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V12.31';
+  const APP_VERSION = 'V12.32';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -4114,6 +4117,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
+    { v: 'V12.32', f: '11 de octubre de 2026', n: [
+      'En <b>Registra tu práctica</b>, los días de la semana tienen el mismo diseño que el calendario del mes: cuadrado del entorno, círculo del clima, número del día y tilde.' ] },
     { v: 'V12.29', f: '11 de octubre de 2026', n: [
       'En el calendario, los círculos son más grandes, el mes ocupa todo el ancho, el cuadrado se rellena con el gris de tu entorno y una <b>tilde</b> te dice qué días hiciste tu práctica.' ] },
     { v: 'V12.28', f: '11 de octubre de 2026', n: [
@@ -7162,12 +7167,17 @@ lo que haces cada día es lo que vas a ser.`;
         <p style="margin:0 0 4px;font-size:16px;display:flex;align-items:center;gap:8px"><svg class="icono-regar" viewBox="0 0 44 30" width="38" height="26" aria-hidden="true"><g stroke="#2B2B2B" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"><path d="M6 10 a5 5 0 0 1 8 0" fill="none"/><rect x="3" y="10" width="13" height="11" rx="2.5" fill="#7B3FB0"/><path d="M4 14.5 h11" stroke="#fff" stroke-width="1.8"/><path d="M16 13 L24 9" stroke="#7B3FB0" stroke-width="3.2"/><path d="M29 21 h12 l-1.8 8 h-8.4 z" fill="#C9942D"/><path d="M35 21 V13" fill="none" stroke="#3E7A2E" stroke-width="2"/><path d="M35 16 q-6 -5 -7 -1 q2 3 7 1z" fill="#6BAE4F"/><path d="M35 13.5 q6 -6 7 -1.5 q-2 3.2 -7 1.5z" fill="#6BAE4F"/></g><g fill="#4FA3E3"><circle cx="25.5" cy="12.5" r="1.3"/><circle cx="27" cy="16" r="1.3"/><circle cx="25" cy="18.5" r="1.2"/></g></svg><b>Registra tu práctica</b></p>
         ${extraHTML || ''}
         <p style="font-size:13px;color:var(--ink-soft);margin:0 0 10px">${registraLunes() ? 'Opcional. Toca el día y elige cuántas veces lo hiciste; el lunes tu cierre saldrá ya rellenado.' : 'Toca el día y elige cuántas veces hiciste tu práctica (del 1 al 9).'}</p>
-        <div class="dias-fila">${DIAS_SEMANA.map((d, i) => `<button type="button" class="dia-btn${veces[d] ? ' hecho' : ''}${i === hoy ? ' hoy' : ''}" data-dia="${d}" ${i > hoy ? 'disabled' : ''} aria-pressed="${!!veces[d]}" style="${elegido === d ? 'outline:3px solid var(--honey);outline-offset:1px' : ''}"><span class="dia-letra">${d}</span><span class="dia-entorno" data-e="${entSem[d] || 0}" style="${entSem[d] ? 'background:' + colorEntorno(entSem[d]) : ''}"><span class="dia-maceta" style="${abonosSem[d] ? 'background:' + fondoAbono(abonosSem[d]) : ''}"><span class="dia-tick">${veces[d] || ''}</span></span></span></button>`).join('')}</div>
+        <div class="dias-fila">${DIAS_SEMANA.map((d, i) => {
+          const lun = lunesDe(new Date()), f = new Date(lun.getFullYear(), lun.getMonth(), lun.getDate() + i), hoyD = new Date(); hoyD.setHours(0, 0, 0, 0);
+          let c = celdaDiaHTML(f, hoyD, 'button', ' type="button" data-dia="' + d + '"' + (i > hoy ? ' disabled' : '') + ' aria-pressed="' + !!veces[d] + '"', { veces: veces[d] || 0, clima: abonosSem[d] || null, ent: entSem[d] || 0 });
+          if(elegido === d) c = c.replace('class="dc', 'class="dc elegido');
+          return '<div class="dia-col"><span class="dia-letra2">' + d + '</span>' + c + '</div>';
+        }).join('')}</div>
         ${elegido ? `<div style="margin:10px 0 0;padding:10px;border-radius:12px;background:var(--honey-tint)">
           <p style="font-size:13px;margin:0 0 8px;text-align:center"><b>¿Cuántas veces el ${['lunes','martes','miércoles','jueves','viernes','sábado','domingo'][DIAS_SEMANA.indexOf(elegido)]}?</b> (0 = no lo hice)</p>
           <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:6px">${[1,2,3,4,5,6,7,8,9,0].map(n => `<button type="button" class="dia-num" data-n="${n}" style="padding:10px 0;border-radius:10px;font-size:17px;font-weight:700;cursor:pointer;border:2px solid ${n ? '#6B9362' : 'var(--border)'};background:${(veces[elegido] || 0) === n ? (n ? '#6B9362;color:#fff' : '#ddd') : '#fff;color:' + (n ? '#4E7446' : 'var(--ink-soft)')}">${n}</button>`).join('')}</div></div>` : ''}
         <p class="dias-msg" style="font-size:12px;color:var(--ink-soft);margin:8px 0 0">${resumenDias(veces) ? 'Esta semana: ' + resumenDias(veces) : 'Toca el día en que hiciste tu práctica.'}</p>`;
-      card.querySelectorAll('.dia-btn').forEach(b => b.onclick = () => { elegido = elegido === b.dataset.dia ? null : b.dataset.dia; pintar(); });
+      card.querySelectorAll('.dias-fila [data-dia]:not([disabled])').forEach(b => b.onclick = () => { elegido = elegido === b.dataset.dia ? null : b.dataset.dia; pintar(); });
       card.querySelectorAll('.dia-num').forEach(b => b.onclick = (e) => {
         const n = Number(b.dataset.n), d = elegido;
         // De 0 a algo: sonidito y fuego artificial. A 0: solo se quita.
@@ -7215,8 +7225,8 @@ lo que haces cada día es lo que vas a ser.`;
     const fila = lista.find(c => c.week === weekShort(lunesDe(d))), letra = DIAS_SEMANA[(d.getDay() + 6) % 7];
     return { veces: fila ? (leerDias(fila.diasHechos)[letra] || 0) : 0, clima: leerAbonos(fila && fila.abonos)[letra] || null, ent: leerEntornos(fila && fila.abonos)[letra] || 0 };
   }
-  function celdaDiaHTML(d, hoy, etiqueta, atributos){
-    const futuro = d > hoy, x = futuro ? { veces: 0, clima: null, ent: 0 } : datosDia(d);
+  function celdaDiaHTML(d, hoy, etiqueta, atributos, datos){
+    const futuro = d > hoy, x = futuro ? { veces: 0, clima: null, ent: 0 } : (datos || datosDia(d));
     const fondo = x.clima ? fondoAbono(x.clima) : x.veces ? '#6B9362' : '';
     const cls = 'dc' + (x.ent ? ' con-ent' : '') + (x.clima ? ' con-clima' : x.veces ? ' hecho' : '') + (+d === +hoy ? ' hoy' : '') + (futuro ? ' futuro' : '');
     return '<' + etiqueta + ' class="' + cls + '"' + (atributos || '') + ' data-e="' + x.ent + '"' + (x.ent ? ' style="background:' + colorEntorno(x.ent) + ';border-color:' + colorEntorno(x.ent) + '"' : '') + '>'
@@ -8055,8 +8065,8 @@ lo que haces cada día es lo que vas a ser.`;
   function tarjetaAvisosMovil(){
     // Un interruptor que activa dos cosas: el aviso de las 8 de la tarde (en el móvil) y los mensajes de ánimo por WhatsApp
     const g = state.gamifica || (state.gamifica = {});
-    const c = el('<div class="card ps-recuadro av-card"><div class="av-fila"><span class="av-tit">🔔 Avisos en el móvil</span><span class="av-estado"></span><button type="button" class="av-switch" role="switch" aria-label="Avisos en el móvil"><span></span></button></div>'
-      + '<div class="av-detalle"><p>Al activarlos recibirás:</p><ol class="av-lista">'
+    const c = el('<div class="card ps-recuadro av-card"><div class="av-fila"><div class="av-cab"><span class="av-tit">🔔 Avisos en el móvil <span class="av-flecha">▾</span></span><span class="av-estado"></span></div><button type="button" class="av-switch" role="switch" aria-label="Avisos en el móvil"><span></span></button></div>'
+      + '<div class="av-detalle" hidden><p>Al activarlos recibirás:</p><ol class="av-lista">'
       + '<li><span class="av-ok av-ok-push"></span>🔔 Una <b>notificación a las 8 de la tarde</b> para recordarte registrar, solo si aún no lo has hecho. Llega aunque la app esté cerrada.</li>'
       + '<li><span class="av-ok av-ok-wa"></span>💬 <b>Mensajes de ánimo por WhatsApp</b> cada 4 días.</li></ol>'
       + '<button type="button" class="av-prueba">Enviarme un aviso de prueba</button><div class="saved-msg av-msg"></div></div></div>').firstElementChild;
@@ -8069,6 +8079,7 @@ lo que haces cada día es lo que vas a ser.`;
       c.querySelector('.av-ok-wa').textContent = wa ? '✓' : '';
       bPr.hidden = !push;
     };
+    c.querySelector('.av-tit').onclick = () => { const det = c.querySelector('.av-detalle'); det.hidden = !det.hidden; c.querySelector('.av-flecha').textContent = det.hidden ? '▾' : '▴'; };
     const whatsapp = async valor => {
       try { await api('/avisos', { whatsapp: valor }); g.aceptaWhatsApp = valor; }
       catch(e){ msg.textContent = 'No se pudieron guardar los mensajes de WhatsApp. Revisa tu conexión.'; }
@@ -9647,4 +9658,4 @@ lo que haces cada día es lo que vas a ser.`;
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V12.31 · App Metas Amables · 2026-10-11 20:24==== -->
+<!-- ==== Fin del index V12.32 · App Metas Amables · 2026-10-11 20:29==== -->
