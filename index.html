@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V12.36 · App Metas Amables · 2026-10-11 20:45==== -->
+<!-- ==== index V12.37 · App Metas Amables · 2026-10-11 20:48==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1108,7 +1108,7 @@ body.theme-dark .guia-progreso{background:var(--surface)}
 .planta-estado-tx{margin:4px 0 10px;font-size:14.5px;line-height:1.4}
 .planta-fila{display:flex;gap:12px;align-items:center}
 .planta-card[role="button"]{cursor:pointer}.planta-ir{margin-left:auto;font:400 26px Karla,sans-serif;color:#A93226}
-.planta-reg{display:inline-block;margin:0 0 6px;padding:9px 16px;border-radius:999px;background:#C0392B;color:#fff;font:800 17px Karla,sans-serif}
+.planta-reg{display:inline-block;cursor:pointer;margin:0 0 6px;padding:9px 16px;border-radius:999px;background:#C0392B;color:#fff;font:800 17px Karla,sans-serif}
 .planta-reg.hecho{background:#E8F3E2;color:#2F5A23}
 .planta-reg-lista{margin:0;font-size:14px;line-height:1.4;color:#5A4A48}
 .planta-ver{display:block;margin:10px auto 0;padding:4px 8px;border:0;background:none;color:#A93226;font:700 14px Karla,sans-serif;cursor:pointer}
@@ -1202,8 +1202,9 @@ body.riego-abierto{overflow:hidden}
 .ps-en-dias{margin:4px 0 10px;padding:0 0 10px;border-bottom:1px solid #EFE6E2}
 .ps-registra .ps-en-dias{border-bottom:0;padding-bottom:0}.rec-abrir{display:flex;align-items:center;justify-content:space-between;width:100%;padding:10px 12px;border:2px solid #E2DDD0;border-radius:12px;background:#fff;font:700 15px Karla,sans-serif;color:var(--ink);cursor:pointer;text-align:left}
 .rec-abrir span{font-size:13px;color:var(--ink-soft)}.rec-cuerpo{margin-top:10px}
+.ps-reg-icos{display:inline-flex;align-items:center;gap:8px;font-size:20px}.ps-reg-icos .entorno-ico{width:20px;height:20px}
 .ps-reg-tit{margin:0 0 6px;font-size:16px;font-weight:700}
-.ps-reg-btn{display:block;width:100%;padding:14px;border:0;border-radius:14px;background:#C0392B;color:#fff;font:800 18px Karla,sans-serif;cursor:pointer;box-shadow:0 4px 12px rgba(192,57,43,.25)}.ps-en-dias .ps-practica{font-size:17px}.av-fila{display:flex;align-items:center;gap:10px}.av-tit{flex:1;font-weight:700;cursor:pointer}.av-flecha{font-size:13px;color:var(--ink-soft)}.av-estado{font-size:13px;color:var(--ink-soft)}
+.ps-reg-btn{display:flex;align-items:center;justify-content:space-between;width:100%;padding:14px;border:0;border-radius:14px;background:#C0392B;color:#fff;font:800 18px Karla,sans-serif;cursor:pointer;box-shadow:0 4px 12px rgba(192,57,43,.25)}.ps-en-dias .ps-practica{font-size:17px}.av-fila{display:flex;align-items:center;gap:10px}.av-tit{flex:1;font-weight:700;cursor:pointer}.av-flecha{font-size:13px;color:var(--ink-soft)}.av-estado{font-size:13px;color:var(--ink-soft)}
 .av-switch{position:relative;flex:none;width:50px;height:28px;padding:0;border:0;border-radius:14px;background:#C9C9C9;cursor:pointer;transition:background .2s}.av-switch span{position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.3);transition:left .2s}.av-switch.on{background:#8E2B2B}.av-switch.on span{left:25px}
 .av-detalle p{margin:8px 0 6px;font-size:14px;line-height:1.45}
 .av-lista{margin:0 0 8px;padding:0 0 0 22px;font-size:14px;line-height:1.45}.av-lista li{margin:0 0 6px}
@@ -2137,7 +2138,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V12.36';
+  const APP_VERSION = 'V12.37';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -4129,6 +4130,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
+    { v: 'V12.37', f: '11 de octubre de 2026', n: [
+      'En Inicio, el botón «Registra» (o «Hoy ya has registrado») abre directamente Registros amables. En Compromiso y práctica, el botón «Registra» lleva los iconos del clima, el entorno y la práctica.' ] },
     { v: 'V12.36', f: '11 de octubre de 2026', n: [
       'Nuevo icono para <b>a · Formulario de meta</b>: una hoja con la esquina doblada. Los cuatro iconos del ciclo tienen ahora el mismo tamaño de letra y de borde.' ] },
     { v: 'V12.35', f: '11 de octubre de 2026', n: [
@@ -6886,8 +6889,8 @@ lo que haces cada día es lo que vas a ser.`;
         ));
       // Se pueden marcar los días desde el primer momento, aunque aún no haya registro.
       // La meta del trimestre (y el compromiso semanal) van dentro de «Registra tu práctica»
-      const tDias = el('<div class="card dias-card ps-registra"><p class="ps-reg-tit">💧 Registra tu práctica</p><div class="ps-en-dias">' + bloqueMeta + cuerpo + '</div>'
-        + '<button type="button" class="ps-reg-btn">💧 Registra</button></div>').firstElementChild;
+      const tDias = el('<div class="card dias-card ps-registra"><p class="ps-reg-tit">Registra tu clima, entorno y práctica</p><div class="ps-en-dias">' + bloqueMeta + cuerpo + '</div>'
+        + '<button type="button" class="ps-reg-btn"><span>Registra</span><span class="ps-reg-icos">☀️<svg class="entorno-ico" viewBox="0 0 20 20" aria-hidden="true"><rect x="2" y="2" width="8" height="8" fill="#FFFFFF"/><rect x="10" y="2" width="8" height="8" fill="#D4D4D4"/><rect x="2" y="10" width="8" height="8" fill="#9C9C9C"/><rect x="10" y="10" width="8" height="8" fill="#565656"/><rect x="2" y="2" width="16" height="16" rx="3" fill="none" stroke="#fff" stroke-width="1.5"/></svg>💧</span></button></div>').firstElementChild;
       tDias.querySelector('.ps-reg-btn').onclick = () => abrirMomentoRiego();   // clima, entorno, práctica y cómo vas esta semana
       app.appendChild(tDias);
       try { app.appendChild(tarjetaAvisosMovil()); } catch(e){ console.error('Avisos:', e); }
@@ -8666,13 +8669,16 @@ lo que haces cada día es lo que vas a ser.`;
     // (con el clima, el entorno o la práctica ya vale)
     const hoyAb = abonoDeHoy(), hoyEnt = entornoDeHoy(), hoyPr = diaHechoFecha(new Date()) > 0, reg = registradoHoy();
     const estadoReg = reg
-      ? '<p class="planta-reg hecho">✓ Hoy ya has registrado</p><p class="planta-reg-lista">' + [hoyAb.length ? '☀️ tu clima' : '', hoyEnt ? 'tu entorno' : '', hoyPr ? '💧 tu práctica' : ''].filter(Boolean).join(' · ') + '</p>'
-      : '<p class="planta-reg">💧 Registra</p><p class="planta-reg-lista">Te falta registrar tu clima, tu entorno o tu práctica.</p>';
+      ? '<p class="planta-reg hecho" role="button" tabindex="0">✓ Hoy ya has registrado</p><p class="planta-reg-lista">' + [hoyAb.length ? '☀️ tu clima' : '', hoyEnt ? 'tu entorno' : '', hoyPr ? '💧 tu práctica' : ''].filter(Boolean).join(' · ') + '</p>'
+      : '<p class="planta-reg" role="button" tabindex="0">💧 Registra</p><p class="planta-reg-lista">Te falta registrar tu clima, tu entorno o tu práctica.</p>';
     const t = el('<div class="card planta-card ciclo-b" role="button" tabindex="0"><b class="planta-tit"><span class="planta-tit-ico">' + iconoCiclo('b') + '</span>Compromiso y práctica<span class="planta-ir">›</span></b>'
       + (mt ? '<span class="planta-meta">🌱 «' + escapeAttr(mt) + '»</span>' : '')
       + '<div class="planta-fila"><span class="planta-fig" title="El tutor de tu planta es tu guía semanal">' + tutor + '<img src="' + e.img + '" alt="">' + lazo + '</span>'
       + '<div class="planta-tx">' + estadoReg + '</div></div></div>').firstElementChild;
     if(alVer){ t.onclick = alVer; t.onkeydown = ev => { if(ev.key === 'Enter' || ev.key === ' '){ ev.preventDefault(); alVer(); } }; }
+    // El botón de estado abre directamente Registros amables (para registrar o cambiar lo de hoy)
+    const pill = t.querySelector('.planta-reg');
+    if(pill){ pill.onclick = ev => { ev.stopPropagation(); abrirMomentoRiego(); }; pill.onkeydown = ev => { if(ev.key === 'Enter' || ev.key === ' '){ ev.preventDefault(); ev.stopPropagation(); abrirMomentoRiego(); } }; }
     // El primer momento del día en que ya está regada: «crece»; si venía de varios días sin agua, «revive»
     try {
       if(diasSinPractica() === 0){
@@ -9688,4 +9694,4 @@ lo que haces cada día es lo que vas a ser.`;
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V12.36 · App Metas Amables · 2026-10-11 20:45==== -->
+<!-- ==== Fin del index V12.37 · App Metas Amables · 2026-10-11 20:48==== -->
