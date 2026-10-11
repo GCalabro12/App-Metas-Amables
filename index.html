@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V12.06 · App Metas Amables · 2026-10-11 02:33==== -->
+<!-- ==== index V12.07 · App Metas Amables · 2026-10-11 02:36==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2063,7 +2063,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V12.06';
+  const APP_VERSION = 'V12.07';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -2435,7 +2435,11 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     if(!state.me) return;   // la sesión había caducado: ya se muestra la pantalla de entrada
     // Si el móvil ya da permiso de avisos (la app de Google Play en Android anterior al 13), se activan solos
     try { if(pushPosible() && Notification.permission === 'granted' && !pushActivo() && localStorage.getItem('push_off_' + state.me) !== '1') activarAvisosPlanta(true); } catch(e){}
-    try { if(new URLSearchParams(location.search).get('regar') === '1'){ history.replaceState(null, '', location.pathname); if(diaHechoFecha(new Date()) === 0) setTimeout(abrirMomentoRiego, 700); } } catch(e){}
+    try { if(new URLSearchParams(location.search).get('regar') === '1'){ history.replaceState(null, '', location.pathname); if(diaHechoFecha(new Date()) === 0) setTimeout(abrirMomentoRiego, 700); else setTimeout(() => avisoBreve('🌱 Hoy ya has regado tu meta'), 700); } } catch(e){}
+    // Accesos directos del icono (dejarlo pulsado): «Abonar» y «Mi guía»
+    try { if(new URLSearchParams(location.search).get('abonar') === '1'){ history.replaceState(null, '', location.pathname); setTimeout(() => abrirMomentoRiego(true), 700); } } catch(e){}
+    try { if(new URLSearchParams(location.search).get('guia') === '1'){ history.replaceState(null, '', location.pathname);
+      setTimeout(() => { const b = document.querySelector('.guia-semana .ritual-guia') || document.querySelector('[data-ir="s3"]'); if(b) b.click(); }, 900); } } catch(e){}
     // Enlace del resumen de Telegram (?panel=1): abre «Panel de control admin Metas A.»
     try { if(new URLSearchParams(location.search).get('panel') === '1'){ history.replaceState(null, '', location.pathname); if(soyModerador()) abrirPanelFacilitador(); } } catch(e){}
     const list = state.checkins[state.me] || [];
@@ -4038,6 +4042,9 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
+    { v: 'V12.07', f: '11 de octubre de 2026', n: [
+      'Deja el dedo pulsado sobre el icono de la app y tendrás accesos directos: <b>💧 Regar hoy</b>, <b>🌿 Abonar</b> y <b>📖 Mi guía</b>.',
+      'El botón <b>Abona tu meta</b> tiene ahora forma de maceta marrón; cuando abonas, toma el color de tu emoción.' ] },
     { v: 'V12.03', f: '11 de octubre de 2026', n: [
       'Tu planta de Inicio tiene ahora un <b>tutor</b>: el palo que la sostiene es tu guía semanal, para que crezca recta y no se tuerza.',
       'El aviso de las 20:00 te recuerda también <b>abonar tu meta</b>: contar cómo te sientes hoy.' ] },
@@ -9345,4 +9352,4 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V12.06 · App Metas Amables · 2026-10-11 02:33==== -->
+<!-- ==== Fin del index V12.07 · App Metas Amables · 2026-10-11 02:36==== -->
