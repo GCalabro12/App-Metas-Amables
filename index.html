@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V12.43 · App Metas Amables · 2026-10-11 21:02==== -->
+<!-- ==== index V12.44 · App Metas Amables · 2026-10-11 21:11==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -78,7 +78,8 @@ button, input, textarea, select{ font-family:inherit; }
     color: var(--ink-soft); font-weight:400; font-size:11px; letter-spacing:.06em;
     font-family:'Karla',sans-serif; vertical-align:middle; margin-left:4px;
   }
-  .brand-row{ display:flex; align-items:center; gap:10px; }
+  .brand-row{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+  .lema{ width:100%; margin:-6px 0 0; font:italic 400 14px/1.3 'Lora',serif; color:var(--ink-soft); letter-spacing:.01em; }
   .brand-icon{ width:34px; height:34px; border-radius:50%; object-fit:cover; flex-shrink:0; background:#fff; box-shadow:0 0 0 1px var(--border); }
   .brand-hero{ width:100%; max-width:340px; height:auto; display:block; margin: 4px auto 22px; background:#fff; border-radius:16px; padding:10px 14px; box-sizing:border-box; }
   
@@ -2138,7 +2139,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V12.43';
+  const APP_VERSION = 'V12.44';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -5783,6 +5784,7 @@ lo que haces cada día es lo que vas a ser.`;
     header.innerHTML = `
       <div class="brand-row" style="width:100%">
         <div class="wordmark" style="display:flex;align-items:baseline;justify-content:space-between;width:100%">Metas Amables <small class="version-tag">${APP_VERSION}</small></div>
+        <div class="lema">Sin distracciones. Solo tu meta.</div>
       </div>
       ${state.me && soyModerador() ? `<div class="who"><button id="switchBtn">inicio</button></div>` : ''}
     `;
@@ -9750,4 +9752,4 @@ lo que haces cada día es lo que vas a ser.`;
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V12.43 · App Metas Amables · 2026-10-11 21:02==== -->
+<!-- ==== Fin del index V12.44 · App Metas Amables · 2026-10-11 21:11==== -->
