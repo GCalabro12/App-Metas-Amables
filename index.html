@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V12.58 · App Metas Amables · 2026-10-11 23:00==== -->
+<!-- ==== index V12.59 · App Metas Amables · 2026-10-11 23:03==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2185,7 +2185,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V12.58';
+  const APP_VERSION = 'V12.59';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -4363,6 +4363,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
+    { v: 'V12.59', f: '11 de octubre de 2026', n: [
+      'En <b>Registros amables</b>, en «Cómo vas esta semana», hay un botón para <b>ver el calendario mensual</b>.' ] },
     { v: 'V12.58', f: '11 de octubre de 2026', n: [
       'En el <b>modo minimalista</b> tampoco salen las insignias, y en el camino del reto de 15 días ya no aparece el regalo del juego.' ] },
     { v: 'V12.57', f: '11 de octubre de 2026', n: [
@@ -8812,6 +8814,10 @@ lo que haces cada día es lo que vas a ser.`;
         const lista = (state.checkins && state.checkins[state.me]) || [];
         const sem = tarjetaDias(lista.find(c => c.week === currentWeekShort), '', '4 · Cómo vas esta semana');
         sem.classList.add('rp-semana');
+        // «Ver calendario mensual»: cierra Registros amables y abre el calendario del mes («← Volver» regresa a donde estaba)
+        const verMes = el('<button type="button" class="panel-link-btn rp-vermes" style="width:100%;border:2px solid #C0392B;background:#fff;color:#A93226;cursor:pointer;margin:12px 0 0">📅 Ver calendario mensual</button>').firstElementChild;
+        verMes.onclick = () => { const desde = state.view; quitar(); state.prevView = desde; state.view = 'calendarioPracticas'; window.scrollTo(0, 0); render(); };
+        sem.appendChild(verMes);
         const vieja = capa.querySelector('.rp-semana');
         if(vieja) vieja.replaceWith(sem); else capa.appendChild(sem);
       } catch(e){ console.error('Semana:', e); }
@@ -10146,4 +10152,4 @@ lo que haces cada día es lo que vas a ser.`;
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V12.58 · App Metas Amables · 2026-10-11 23:00==== -->
+<!-- ==== Fin del index V12.59 · App Metas Amables · 2026-10-11 23:03==== -->
