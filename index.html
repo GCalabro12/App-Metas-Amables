@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V12.62 · App Metas Amables · 2026-10-11 23:36==== -->
+<!-- ==== index V12.63 · App Metas Amables · 2026-10-11 23:43==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1020,6 +1020,12 @@ body.theme-dark .ayuda-fila,body.theme-dark .ayuda-preg summary,body.theme-dark 
 body.theme-dark .ayuda-preg{background:#26262c}
 .reflexion-capa{position:fixed;inset:0;z-index:9600;overflow-y:auto;display:flex;flex-direction:column;align-items:center;text-align:center;padding:calc(70px + env(safe-area-inset-top)) 26px calc(28px + env(safe-area-inset-bottom));color:#fff;
   background:repeating-linear-gradient(135deg,rgba(255,255,255,.07) 0 3px,transparent 3px 26px),#1F63DB;font-family:Karla,sans-serif}
+.reflexion-capa.fin-pausa{background:repeating-linear-gradient(135deg,rgba(255,255,255,.07) 0 3px,transparent 3px 26px),#55657F}
+.rf-fecha{display:block;margin:6px auto 0;font:700 20px Karla,sans-serif;padding:12px 14px;border-radius:14px;border:0;width:100%;max-width:300px;box-sizing:border-box}
+.pausa-card{border:3px solid #7A8CA8;background:#EEF2F8;text-align:center}
+.pausa-card .pausa-tit{margin:0;font:800 26px Karla,sans-serif;color:#33415C}
+.pausa-card .pausa-hasta{margin:4px 0 10px;font:700 19px Lora,serif;color:#33415C}
+.pausa-card p{font-size:15.5px;line-height:1.5}
 .reflexion-capa.fin-verde{background:repeating-linear-gradient(135deg,rgba(255,255,255,.07) 0 3px,transparent 3px 26px),#3E7D2B}
 .rf-nota{font-size:15px;font-weight:600;opacity:.9}
 .rf-puntos{display:flex;justify-content:center;gap:8px;margin:0 0 14px}.rf-puntos span{width:9px;height:9px;border-radius:50%;background:rgba(255,255,255,.4)}.rf-puntos span.on{background:#fff}
@@ -2210,7 +2216,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V12.62';
+  const APP_VERSION = 'V12.63';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -4073,16 +4079,21 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   // de hace 3 días o más), con teléfono, y sin haberles escrito en los últimos 4 días
   function personasAEscribir(d){
     const hace = n => isoLocal(new Date(Date.now() - n * 86400000));
-    return (d.personas || []).filter(p => p.tel && !p.silenciado
+    return (d.personas || []).filter(p => p.tel && !p.silenciado && !p.pausaHasta
       && (p.diasSinRegar === null ? (p.alta && p.alta <= hace(3)) : p.diasSinRegar >= 3)
       && !(p.contactado && p.contactado > hace(4)))
       .sort((a, b) => (b.diasSinRegar === null ? 999 : b.diasSinRegar) - (a.diasSinRegar === null ? 999 : a.diasSinRegar));
+  }
+  // Prácticas en pausa: recordárselo por WhatsApp una vez por semana (misma regla que el Worker)
+  function pausasARecordar(d){
+    const hace7 = isoLocal(new Date(Date.now() - 7 * 86400000));
+    return (d.personas || []).filter(p => p.pausaHasta && p.tel && (p.pausaRecordada || p.pausaDesde) <= hace7);
   }
   function tarjetaPanelFacilitador(){
     if(!soyModerador()) return null;
     cargarPanelFac(false);
     const d = state.panelFac && state.panelFac.datos;
-    const n = d ? (d.animos || []).length + personasAEscribir(d).length + (d.comunicados || []).length : null;
+    const n = d ? (d.animos || []).length + personasAEscribir(d).length + (d.comunicados || []).length + pausasARecordar(d).length : null;
     const c = el(`<button type="button" class="card pf-tarjeta"><span class="pf-tarjeta-tx"><b>🛠️ Panel de control admin Metas A.</b><small>${n === null ? 'Toca para ver tus tareas y el resumen' : (n ? (n === 1 ? 'Tienes 1 tarea para hoy' : 'Tienes ' + n + ' tareas para hoy') : 'Todo al día ✓')}</small></span><span class="pf-num${n ? '' : ' cero'}">${n === null ? '›' : (n || '✓')}</span></button>`).firstElementChild;
     c.onclick = abrirPanelFacilitador;
     return c;
@@ -4149,7 +4160,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   // Se están desenganchando: 5 días o más sin regar (o sin regar nunca, con el alta de hace 5 días o más)
   function perdiendoInteres(gente){
     const hace5 = isoLocal(new Date(Date.now() - 5 * 86400000));
-    return gente.filter(x => x.diasSinRegar === null ? (x.alta && x.alta <= hace5) : x.diasSinRegar >= 5)
+    return gente.filter(x => !x.pausaHasta && (x.diasSinRegar === null ? (x.alta && x.alta <= hace5) : x.diasSinRegar >= 5))
       .sort((a, b) => (b.diasSinRegar === null ? 999 : b.diasSinRegar) - (a.diasSinRegar === null ? 999 : a.diasSinRegar));
   }
   // Detalle de una cifra del resumen: quiénes son
@@ -4208,6 +4219,9 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       { tit: 'Meta lograda o sin interés', img: mini('#3E7D2B', '#fff', '🏁'),
         cuando: 'Desde el botón de Compromiso y práctica, o con «Ya no me interesa» en la pausa para tu meta. En la vista previa no se guarda nada.',
         abrir: () => abrirFinMeta('elegir', true) },
+      { tit: 'Práctica en pausa', img: mini('#55657F', '#fff', '⏸️'),
+        cuando: 'Desde «Meta lograda, sin interés o en pausa», o al marcar un entorno de visitas/viaje o enfermedad. Pregunta hasta cuándo (1 semana, 15 días, 1 mes o una fecha). Después sale en grande en Inicio.',
+        abrir: () => abrirPausa('', true) },
       { tit: 'Tiempo de cosecha', img: mini('#fff', '#6B9362', '🧺'),
         cuando: 'En Inicio, cuando se cumple el plazo de la meta (1 o 2 meses desde el formulario): «¿Has podido cosecharla?».',
         abrir: () => vistaPreviaTarjeta('Tiempo de cosecha', '<div class="card" style="border:2px solid #6B9362;text-align:center">' + practiHTML('pizarra', '', 90)
@@ -4250,12 +4264,12 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       return;
     }
     const firma = String(state.me || '').split(' ')[0];
-    const animos = d.animos || [], escribir = personasAEscribir(d);
+    const animos = d.animos || [], escribir = personasAEscribir(d), pausas = pausasARecordar(d);
     const wa = (tel, texto) => 'https://wa.me/' + tel + '?text=' + encodeURIComponent(texto);
     let h = '';
     if(!d.tareasActivas) h += '<div class="card pf-nota">Los mensajes de ánimo aún no se guardan como tareas (falta activar el almacén del Worker). Mientras tanto siguen llegando por Telegram.</div>';
     const comunicados = d.comunicados || [];
-    if(!animos.length && !escribir.length && !comunicados.length) h += '<div class="card pf-vacio">¡Todo al día! 🎉 No tienes mensajes pendientes.</div>';
+    if(!animos.length && !escribir.length && !comunicados.length && !pausas.length) h += '<div class="card pf-vacio">¡Todo al día! 🎉 No tienes mensajes pendientes.</div>';
     if(comunicados.length){
       h += `<p class="pf-sub">📣 Mensajes para el grupo de testers (${comunicados.length})</p>`;
       h += comunicados.map((c, i) => `<div class="card pf-tarea pf-comunicado">
@@ -4283,6 +4297,18 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
           ${x.aceptaWhatsApp ? '' : '<p class="pf-aviso" style="margin:-4px 0 8px">⚠️ No ha activado los mensajes por WhatsApp en la app: mejor un mensaje breve y amable, o espera a la sesión.</p>'}
           <div class="pf-acciones">${telValido(x.tel) ? `<a class="pf-btn wa" href="${wa(x.tel, texto)}" target="_blank" rel="noopener">📲 Escribir por WhatsApp</a>` : '<span class="pf-aviso">Su teléfono parece inventado (' + escapeAttr(x.tel) + '): no se le puede escribir por WhatsApp</span>'}
           <button type="button" class="pf-btn" data-contacto="${i}">✓ Hecho</button></div></div>`;
+      }).join('');
+    }
+    if(pausas.length){
+      h += `<p class="pf-sub">⏸️ Prácticas en pausa: recordatorio semanal (${pausas.length})</p>`;
+      h += pausas.map((x, i) => {
+        const texto = 'Hola ' + x.nombre.split(' ')[0] + ', soy ' + firma + ' de Metas Amables 🌱 Solo te escribo para recordarte que tu práctica está en pausa hasta el ' + fechaBonita(x.pausaHasta)
+          + '. Cuídate mucho y, cuando te vaya bien, la retomas desde la app: ' + ENLACE_APP;
+        return `<div class="card pf-tarea">
+          <p class="pf-quien"><b>${escapeAttr(x.nombre)}</b> · ${escapeAttr(planEtiqueta(x))}</p>
+          <p class="pf-dato">En pausa hasta el ${escapeAttr(fechaBonita(x.pausaHasta))}${x.pausaMotivo ? ' (' + escapeAttr(x.pausaMotivo) + ')' : ''}${x.pausaRecordada ? ' · se lo recordaste el ' + escapeAttr(fechaEnvio(x.pausaRecordada)) : ''}</p>
+          <div class="pf-acciones"><a class="pf-btn wa" href="${wa(x.tel, texto)}" target="_blank" rel="noopener">📲 Enviar por WhatsApp</a>
+          <button type="button" class="pf-btn" data-pausa="${i}">✓ Hecho</button></div></div>`;
       }).join('');
     }
     h = plegable('tareas', '✅ Tareas de hoy', h, true);
@@ -4320,6 +4346,10 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     app.querySelectorAll('[data-contacto]').forEach(b => b.onclick = () => {
       const x = escribir[Number(b.dataset.contacto)];
       hecho(b, { tipo: 'contacto', persona: x.nombre }, () => { x.contactado = isoLocal(new Date()); });
+    });
+    app.querySelectorAll('[data-pausa]').forEach(b => b.onclick = () => {
+      const x = pausas[Number(b.dataset.pausa)];
+      hecho(b, { tipo: 'pausa', persona: x.nombre }, () => { x.pausaRecordada = isoLocal(new Date()); });
     });
     app.querySelectorAll('[data-comunicado]').forEach(b => b.onclick = () => {
       const c = comunicados[Number(b.dataset.comunicado)];
@@ -4444,6 +4474,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
+    { v: 'V12.63', f: '11 de octubre de 2026', n: [
+      '<b>Práctica en pausa</b>: si estás enfermo, de viaje o en una temporada complicada, puedes poner tu práctica en pausa una semana, 15 días, un mes o hasta la fecha que elijas. En Inicio verás «Práctica en pausa hasta…», y cada semana te recordaremos por WhatsApp que está en pausa.' ] },
     { v: 'V12.61', f: '11 de octubre de 2026', n: [
       'En <b>Compromiso y práctica</b>, debajo de tu contrato, nuevo botón <b>«Meta lograda o sin interés»</b>. Si la lograste, te felicitamos, la guardamos en tu historial y puedes sembrar una meta nueva. Si perdiste el interés, te acompañamos para elegir otra.',
       'Si vuelves a la app tras 5 días o más sin entrar, Prácti te pregunta si tu meta sigue teniendo interés para ti.' ] },
@@ -6217,6 +6249,8 @@ lo que haces cada día es lo que vas a ser.`;
     const avisoPlay = (state.me && state.view === 'panel' && !state.panelSub) ? tarjetaPasarseAPlay() : null;
     if(avisoPlay) app.appendChild(avisoPlay);
     // Se cumple el plazo de su meta (1 o 2 meses): «¿La conseguiste?»
+    const avisoPausa = (state.me && state.view === 'panel' && !state.panelSub) ? tarjetaPausa() : null;
+    if(avisoPausa) app.appendChild(avisoPausa);
     const avisoPlazo = (state.me && state.view === 'panel' && !state.panelSub) ? tarjetaPlazoMeta() : null;
     if(state.me && state.view === 'panel' && !state.panelSub){ try { if(reflexionPendiente() && !sessionStorage.getItem('ma_reflexion_vista')){ sessionStorage.setItem('ma_reflexion_vista', '1'); setTimeout(abrirReflexion, 600); } } catch(e){} }
     if(avisoPlazo) app.appendChild(avisoPlazo);
@@ -7373,7 +7407,7 @@ lo que haces cada día es lo que vas a ser.`;
       app.appendChild(contrato);
       // Meta lograda o sin interés: ventana con las dos opciones
       if(metaHechaYa()){
-        const fin = el('<button type="button" class="card ps-reto ps-fin"><span class="ps-reto-ico">🏁</span><span><b>Meta lograda o sin interés</b><small>¿Ya lograste tu meta o has perdido el interés por ella?</small></span><span class="opcion-flecha">›</span></button>').firstElementChild;
+        const fin = el('<button type="button" class="card ps-reto ps-fin"><span class="ps-reto-ico">🏁</span><span><b>Meta lograda, sin interés o en pausa</b><small>¿Ya lograste tu meta, has perdido el interés o necesitas una pausa?</small></span><span class="opcion-flecha">›</span></button>').firstElementChild;
         fin.onclick = () => abrirFinMeta('elegir');
         app.appendChild(fin);
       }
@@ -8434,7 +8468,7 @@ lo que haces cada día es lo que vas a ser.`;
     return 99;
   }
   function reflexionPendiente(){
-    if(!state.me || !metaHechaYa()) return false;
+    if(!state.me || !metaHechaYa() || pausaActual()) return false;
     let resp = 0, ausencia = 0, ts = 0;
     try { resp = Number(localStorage.getItem('ma_reflexion_' + state.me) || 0); ausencia = Number(localStorage.getItem('ma_ausencia_' + state.me) || 0); ts = Number(localStorage.getItem('ma_form_ts_' + state.me) || 0); } catch(e){}
     const ahora = Date.now();
@@ -8446,6 +8480,69 @@ lo que haces cada día es lo que vas a ser.`;
     if(desde && ahora - desde < 6 * 86400000) return false;
     return sin >= 6;
   }
+  // ===== Práctica en pausa (idea de Gustavo, 11-10-2026): enfermedad, viaje… =====
+  // Se guarda en el Worker (/pausa → datos.pausa = { desde, hasta, motivo }). Mientras dura: aviso grande en Inicio,
+  // sin la pausa de reflexión ni el aviso de las 20:00, y el facilitador recibe cada semana la tarea de recordárselo por WhatsApp.
+  function pausaGuardada(){ return ((state.gamifica && state.gamifica.datosFormulario) || {}).pausa || null; }
+  function pausaActual(){ const pz = pausaGuardada(); return pz && pz.hasta && pz.hasta >= hoyISO() ? pz : null; }
+  function pausaTerminada(){ const pz = pausaGuardada(); return pz && pz.hasta && pz.hasta < hoyISO() ? pz : null; }
+  function fechaBonita(iso){ const d = new Date(String(iso).slice(0, 10) + 'T12:00:00'); return d.getDate() + ' de ' + d.toLocaleDateString('es-ES', { month: 'long' }); }
+  async function guardarPausaApi(hasta, motivo){
+    const r = await api('/pausa', { hasta: hasta || '', motivo: motivo || '' });
+    state.gamifica = state.gamifica || {};
+    if(r && r.datosFormulario) state.gamifica.datosFormulario = r.datosFormulario;
+    else { const d = state.gamifica.datosFormulario = state.gamifica.datosFormulario || {}; if(hasta) d.pausa = { desde: hoyISO(), hasta, motivo: motivo || '' }; else delete d.pausa; }
+  }
+  async function retomarPractica(){
+    try { await guardarPausaApi('', ''); avisoBreve('▶️ ¡Bienvenido/a de vuelta! Tu práctica sigue donde la dejaste'); render(); }
+    catch(e){ avisoBreve(mensajeError(e, 'No se pudo guardar. Revisa tu conexión.')); }
+  }
+  function abrirPausa(motivo, prueba){   // prueba: vista previa del panel admin (no guarda nada)
+    document.querySelectorAll('.reflexion-capa').forEach(x => x.remove());
+    const capa = document.createElement('div'); capa.className = 'reflexion-capa fin-pausa';
+    const cerrar = () => capa.remove();
+    const pantalla = (titulo, texto, botones, extra) => {
+      capa.innerHTML = '<button type="button" class="rf-x" aria-label="Cerrar">✕</button><h2 class="rf-tit">' + titulo + '</h2><div class="rf-tx">' + texto + (extra || '') + '</div><div class="rf-botones">'
+        + botones.map((b, i) => '<button type="button" class="rf-boton' + (b[2] ? ' rf-sec' : '') + '" data-i="' + i + '">' + b[0] + '</button>').join('') + '</div>';
+      capa.querySelector('.rf-x').onclick = cerrar;
+      capa.querySelectorAll('.rf-boton').forEach(btn => btn.onclick = () => botones[Number(btn.dataset.i)][1]());
+      capa._sig = null; capa._ant = null; capa.scrollTop = 0;
+    };
+    const masDias = n => { const d = new Date(); return isoLocal(new Date(d.getFullYear(), d.getMonth(), d.getDate() + n)); };
+    const poner = async hasta => {
+      if(!prueba){
+        try { await guardarPausaApi(hasta, motivo); }
+        catch(e){ avisoBreve(mensajeError(e, 'No se pudo guardar la pausa. Revisa tu conexión.')); return; }
+      }
+      pantalla('Práctica en pausa ⏸️',
+        '<p>Hasta el <b>' + fechaBonita(hasta) + '</b>.</p><p>Cada semana te enviaremos un <b>WhatsApp</b> para recordarte que tu práctica está en pausa.</p><p>Cuando te vaya bien, la retomas desde Inicio. Cuídate mucho.</p>',
+        [['Entendido', () => { cerrar(); if(!prueba) render(); }]]);
+    };
+    const elegirFecha = () => {
+      pantalla('Elige la fecha', '<p>¿Hasta qué día quieres la pausa?</p>',
+        [['Guardar', () => { const v = capa.querySelector('.rf-fecha').value; if(!v){ avisoBreve('Elige una fecha'); return; } poner(v); }], ['Volver', inicio, true]],
+        '<input type="date" class="rf-fecha" min="' + masDias(1) + '" max="' + masDias(120) + '" value="' + masDias(7) + '">');
+    };
+    const inicio = () => pantalla('Poner tu práctica en pausa',
+      '<p>A veces la vida pide parar: una enfermedad, un viaje, una temporada complicada.</p><p>Puedes poner tu práctica en pausa <b>sin perder nada</b>.</p><p><b>¿Hasta cuándo?</b></p>',
+      [['1 semana', () => poner(masDias(7))], ['15 días', () => poner(masDias(15))], ['1 mes', () => poner(masDias(30))], ['📅 Elegir una fecha', elegirFecha], ['Volver', cerrar, true]]);
+    inicio();
+    document.body.appendChild(capa);
+  }
+  // En Inicio: «Práctica en pausa hasta…» en grande (o, si ya terminó, «¿Retomamos?»)
+  function tarjetaPausa(){
+    const pz = pausaActual(), fin = !pz && pausaTerminada();
+    if(!pz && !fin) return null;
+    const c = el(pz
+      ? '<div class="card pausa-card"><p class="pausa-tit">⏸️ Práctica en pausa</p><p class="pausa-hasta">hasta el ' + fechaBonita(pz.hasta) + '</p><p>Descansa y cuídate. Cada semana te recordaremos por WhatsApp que está en pausa. Cuando te vaya bien, la retomas.</p>'
+        + '<button type="button" class="btn btn-yes pz-retomar" style="text-align:center">▶️ Retomar mi práctica ahora</button><button type="button" class="link-quiet pz-cambiar" style="display:block;margin:10px auto 0">Cambiar la fecha</button></div>'
+      : '<div class="card pausa-card"><p class="pausa-tit">▶️ Tu pausa ha terminado</p><p class="pausa-hasta">el ' + fechaBonita(fin.hasta) + '</p><p>¿Retomamos tu práctica, poco a poco? Con 2 minutos hoy ya vale.</p>'
+        + '<button type="button" class="btn btn-yes pz-retomar" style="text-align:center">▶️ Retomar mi práctica</button><button type="button" class="link-quiet pz-cambiar" style="display:block;margin:10px auto 0">Alargar la pausa</button></div>').firstElementChild;
+    c.querySelector('.pz-retomar').onclick = retomarPractica;
+    c.querySelector('.pz-cambiar').onclick = () => abrirPausa((pz || fin).motivo || '');
+    return c;
+  }
+
   // ===== Meta lograda o sin interés (idea de Gustavo, 11-10-2026) =====
   // Se abre desde «Compromiso y práctica» (y, para «sin interés», desde la pausa de reflexión). Pantallas grandes, poco texto en cada una.
   // Lograda: se felicita, se guarda en el historial (Worker /meta-plazo) y se invita al formulario de una meta nueva (no cuenta como cambio).
@@ -8479,7 +8576,7 @@ lo que haces cada día es lo que vas a ser.`;
     };
     const elegir = () => pantalla('¿Cómo va tu meta?',
       (meta ? '<p class="rf-meta">«' + escapeAttr(meta) + '»</p>' : '') + '<p>Cuéntanos qué ha pasado.</p>',
-      [['🏆 Ya logré mi meta', logro1], ['💭 He perdido el interés', interes1], ['Volver', cerrar]]);
+      [['🏆 Ya logré mi meta', logro1], ['💭 He perdido el interés', interes1], ['⏸️ Necesito una pausa', () => abrirPausa('', prueba)], ['Volver', cerrar]]);
     // --- Meta lograda ---
     const logro1 = () => {
       avisar(true, 'lograda', 'Meta lograda (desde Compromiso y práctica)');
@@ -9125,11 +9222,14 @@ lo que haces cada día es lo que vas a ser.`;
       + '<p>' + inicio + ', y está bien. <b>No tienes ninguna necesidad de hacer tu práctica hoy</b> si no puedes o no te apetece.</p>'
       + '<p>Descansar también es cuidar tu meta. Y si te ves con fuerzas, una versión mini de 2 minutos también vale.</p>'
       + '<p class="amable-nota">Haber registrado cómo estás ya es cuidarte, y cuenta como día registrado.</p>'
-      + '<button type="button" class="reto-btn amable-ok">Entendido 🌿</button></div></div>').firstElementChild;
+      + '<button type="button" class="reto-btn amable-ok">Entendido 🌿</button>'
+      + (motivo === 'entorno' ? '<button type="button" class="reto-btn reto-sec amable-pausa">⏸️ Poner mi práctica en pausa</button>' : '') + '</div></div>').firstElementChild;
     document.body.appendChild(capa);
     try { activarPracti(capa); } catch(e){}
     const cerrar = () => capa.remove();
     capa.querySelector('.amable-ok').onclick = cerrar;
+    const bp = capa.querySelector('.amable-pausa');
+    if(bp) bp.onclick = () => { cerrar(); let e = 0; try { e = entornoDeHoy(); } catch(er){} abrirPausa(e === 4 ? 'enfermedad' : 'viaje o visitas', prueba); };
     capa.onclick = ev => { if(ev.target === capa) cerrar(); };
   }
 
@@ -10326,4 +10426,4 @@ lo que haces cada día es lo que vas a ser.`;
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V12.62 · App Metas Amables · 2026-10-11 23:36==== -->
+<!-- ==== Fin del index V12.63 · App Metas Amables · 2026-10-11 23:43==== -->
