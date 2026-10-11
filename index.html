@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V12.61 · App Metas Amables · 2026-10-11 23:21==== -->
+<!-- ==== index V12.62 · App Metas Amables · 2026-10-11 23:36==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1253,6 +1253,25 @@ body.riego-abierto{overflow:hidden}
 .pf-tarjeta{display:flex;align-items:center;gap:12px;width:100%;text-align:left;cursor:pointer;background:#EEF4EC !important;border:2px solid #6B9362;padding:12px 16px;font:inherit;color:inherit}
 .pf-tarjeta-tx{flex:1;display:flex;flex-direction:column;gap:2px}.pf-tarjeta-tx b{font-size:16px;color:#3F6338}.pf-tarjeta-tx small{font-size:13.5px;color:var(--ink-soft)}
 .pf-num{min-width:34px;height:34px;border-radius:17px;background:#C0392B;color:#fff;font-weight:800;display:flex;align-items:center;justify-content:center;font-size:16px;padding:0 8px}.pf-num.cero{background:#6B9362}
+.pf-plegable{margin:0 0 6px}
+.pf-plegable>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:8px}
+.pf-plegable>summary::-webkit-details-marker{display:none}
+.pf-plegable>summary::before{content:"▶";font-size:17px;line-height:1;color:#3F6338;transition:transform .2s;margin-top:10px}
+.pf-plegable[open]>summary::before{transform:rotate(90deg)}
+.pf-plegable>summary .pf-seccion{margin:18px 0 8px}
+.pf-mod-cuentas{display:flex;gap:6px;flex-wrap:wrap}
+.pf-mod-cuentas button{flex:1;min-width:90px;padding:10px 6px;border-radius:10px;border:2px solid #6B9362;font-weight:700;font-size:13.5px;cursor:pointer;background:#fff;color:#4E7446}
+.pf-mod-cuentas button.on{background:#6B9362;color:#fff}
+.pf-pantalla{display:flex;gap:12px;align-items:flex-start;width:100%;text-align:left;font:inherit;color:inherit;cursor:pointer;margin:0 0 10px;padding:12px}
+.pf-mini{flex:0 0 62px;height:104px;border-radius:10px;border:2px solid #2B2B2B;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;overflow:hidden;font-size:22px;box-sizing:border-box;padding:6px}
+.pf-mini i{display:block;width:80%;height:4px;border-radius:2px;background:currentColor;opacity:.45}
+.pf-mini i.c{width:55%}
+.pf-pantalla-tx b{display:block;font-size:15.5px;margin:0 0 3px}.pf-pantalla-tx small{display:block;font-size:13.5px;line-height:1.4;color:var(--ink-soft)}
+.pf-pantalla-tx em{display:block;font-style:normal;font-size:12.5px;color:#3F6338;margin-top:5px;font-weight:700}
+.pf-previa-capa{position:fixed;inset:0;z-index:9650;background:rgba(20,30,20,.55);display:flex;align-items:center;justify-content:center;padding:16px}
+.pf-previa-caja{width:min(440px,100%);max-height:90vh;overflow:auto;background:var(--bg);border-radius:18px;padding:14px}
+.pf-previa-caja .pf-previa-tit{margin:0 0 10px;font-size:13px;font-weight:800;color:#3F6338;text-transform:uppercase;letter-spacing:.04em}
+.pf-previa-caja .card button{pointer-events:none}
 .pf-seccion{font:700 17px Lora,serif;margin:18px 0 8px;color:#3F6338}
 .pf-sub{font-weight:800;font-size:14px;margin:12px 0 6px;color:#3F6338}
 .pf-tarea{border-left:4px solid #6B9362;padding:12px 14px;margin-bottom:10px}
@@ -2191,7 +2210,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V12.61';
+  const APP_VERSION = 'V12.62';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -3917,7 +3936,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       <button class="menu-item" id="ajustesBtn">⚙️ Ajustes</button>
       <button class="menu-item" id="mpAyuda">❓ Centro de ayuda</button>
       ${soyModerador() ? '<button class="menu-item" id="miPanelFacBtn">🛠️ Panel de control admin Metas A.</button><button class="menu-item" id="miSituacionBtn">👥 Situación de tu grupo</button>' : ''}
-      ${esCuentaPruebas() ? `<div class="menu-divider"></div>
+      ${esCuentaPruebas() && !soyModerador() ? `<div class="menu-divider"></div>
       <p style="font-size:13px;font-weight:700;margin:6px 14px 4px">🛠️ Moderador · entrar como:</p>
       <div style="display:flex;gap:6px;flex-wrap:wrap;margin:0 14px 8px">${[['Libre (moderador)','Libre'],['Guías (moderador)','Guías'],['Gustavo','Guías + Grupo']].map(([cuenta, t]) =>
         `<button type="button" class="mod-cuenta" data-cuenta="${cuenta}" style="flex:1;min-width:90px;padding:8px 6px;border-radius:10px;border:2px solid #6B9362;font-weight:700;font-size:13px;cursor:pointer;background:${state.me === cuenta ? '#6B9362;color:#fff' : '#fff;color:#4E7446'}">${t}</button>`).join('')}</div>` : ''}
@@ -3954,17 +3973,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     if(panel.querySelector('#miPanelFacBtn')) panel.querySelector('#miPanelFacBtn').onclick = () => { state.menuOpen = false; abrirPanelFacilitador(); };
     // Moderador: cambiar de plan al momento para probar la app (solo en este móvil)
     // Moderador: pasar a otra de sus cuentas de prueba (Libre / Guías / Gustavo) sin contraseña
-    panel.querySelectorAll('.mod-cuenta').forEach(b => b.onclick = async () => {
-      if(b.dataset.cuenta === state.me){ state.menuOpen = false; render(); return; }
-      b.textContent = '…';
-      try {
-        const r = await api('/cambiar-cuenta', { destino: b.dataset.cuenta });
-        guardarSesion(r.token);
-        try { localStorage.setItem('ma_user', r.nombre); localStorage.removeItem(clavePlanForzado()); } catch(e){}
-        state.menuOpen = false;
-        pickMe(r.nombre);
-      } catch(e){ b.textContent = 'Error'; }
-    });
+    panel.querySelectorAll('.mod-cuenta').forEach(b => b.onclick = () => entrarComoCuenta(b));
     
     document.body.appendChild(overlay);
   }
@@ -4172,6 +4181,63 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     app.querySelectorAll('[data-plan]').forEach(b => b.onclick = () => { state.pfDetalle = { tipo: 'plan', plan: b.dataset.plan }; window.scrollTo(0, 0); render(); });
     activarFilasPanel();
   }
+  // ===== Pantallas de acceso esporádico: las que solo salen en momentos concretos. Desde el panel se pueden ver cuando se quiera =====
+  function mini(fondo, color, emoji){ return '<span class="pf-mini" style="background:' + fondo + ';color:' + color + '">' + emoji + '<i></i><i class="c"></i><i></i></span>'; }
+  function vistaPreviaTarjeta(titulo, html){
+    const capa = el('<div class="pf-previa-capa"><div class="pf-previa-caja"><p class="pf-previa-tit">👁️ Vista previa · ' + titulo + '</p>' + html
+      + '<button type="button" class="pf-btn" style="width:100%;margin-top:6px">Cerrar</button></div></div>').firstElementChild;
+    capa.onclick = ev => { if(ev.target === capa || ev.target.closest('.pf-btn')) capa.remove(); };
+    document.body.appendChild(capa);
+    try { activarPracti(capa); } catch(e){}
+  }
+  function pantallasEsporadicas(){
+    const metaTxt = String(((state.gamifica && state.gamifica.datosFormulario) || {}).metaTexto || 'Tu meta del trimestre');
+    return [
+      { tit: 'Una pausa para tu meta', img: mini('#1F63DB', '#fff', '⏸️'),
+        cuando: 'Al volver tras 5 días o más sin entrar, o con 6 días sin marcar la práctica. Sale sola en Inicio (y en el Viaje); después no vuelve en 7 días.',
+        abrir: () => abrirReflexion(true) },
+      { tit: 'Hoy, sé amable contigo', img: mini('linear-gradient(180deg,#9AA59A 0 45%,#EEF5E6 45%)', '#3B6D11', '🍃'),
+        cuando: 'Al marcar un clima difícil (enfadado, estresado, preocupado, desmotivado, cansado) o un entorno complicado (poco tiempo, visitas, enfermo). Una vez al día.',
+        abrir: () => abrirHojaAmable('clima', true) },
+      { tit: 'Reto de 15 días (cartel del día)', img: mini('linear-gradient(160deg,#FFE7B8,#E7DBFF)', '#5B3FA8', '🪧'),
+        cuando: 'Al cerrar Registros amables (o marcar un día del calendario) cuando hay un día registrado nuevo, del día 1 al 15. Una vez en la vida.',
+        abrir: () => abrirRetoDia(8, true) },
+      { tit: 'Días registrados con tu meta', img: mini('linear-gradient(160deg,#FFE7B8,#FFD3D8)', '#2F5F93', '23'),
+        cuando: 'Después del reto (día 16 en adelante): cada día registrado nuevo. Cuenta los días desde la meta actual y vuelve a 1 con cada meta nueva.',
+        abrir: () => abrirDiasMeta(23) },
+      { tit: 'Meta lograda o sin interés', img: mini('#3E7D2B', '#fff', '🏁'),
+        cuando: 'Desde el botón de Compromiso y práctica, o con «Ya no me interesa» en la pausa para tu meta. En la vista previa no se guarda nada.',
+        abrir: () => abrirFinMeta('elegir', true) },
+      { tit: 'Tiempo de cosecha', img: mini('#fff', '#6B9362', '🧺'),
+        cuando: 'En Inicio, cuando se cumple el plazo de la meta (1 o 2 meses desde el formulario): «¿Has podido cosecharla?».',
+        abrir: () => vistaPreviaTarjeta('Tiempo de cosecha', '<div class="card" style="border:2px solid #6B9362;text-align:center">' + practiHTML('pizarra', '', 90)
+          + '<p style="font-weight:700;margin:8px 0 4px">🧺 Tiempo de cosecha: se cumple el plazo de tu meta</p><p style="margin:0 0 12px">«' + escapeAttr(metaTxt) + '»<br>¿Has podido cosecharla?</p>'
+          + '<button type="button" class="btn btn-yes" style="text-align:center">¡Sí, la conseguí! 🧺🎉</button><button type="button" class="btn btn-no" style="text-align:center;margin-top:8px">Todavía no</button></div>') },
+      { tit: 'Nota de tu yo de hace un mes', img: mini('#FFF8DC', '#8A6A1E', '📝'),
+        cuando: 'En Inicio, el día que se puede abrir la nota que la persona se escribió el mes pasado (Plan Guías o regalo del día 10 del reto).',
+        abrir: () => vistaPreviaTarjeta('Nota de tu yo de hace un mes', '<div class="card carta-aviso" style="border-color:#E2C79A;background:#FFF8DC"><p style="font-weight:800;margin:0 0 6px">📝 Tienes una nota de tu yo de hace un mes</p>'
+          + '<button type="button" class="panel-link-btn" style="width:100%">Abrir mi nota</button></div>') }
+    ];
+  }
+  // Moderador · entrar como: sus cuentas de prueba (Libre / Guías / Gustavo) sin contraseña
+  async function entrarComoCuenta(b){
+    if(b.dataset.cuenta === state.me){ state.menuOpen = false; render(); return; }
+    b.textContent = '…';
+    try {
+      const r = await api('/cambiar-cuenta', { destino: b.dataset.cuenta });
+      guardarSesion(r.token);
+      try { localStorage.setItem('ma_user', r.nombre); localStorage.removeItem(clavePlanForzado()); } catch(e){}
+      state.menuOpen = false;
+      pickMe(r.nombre);
+    } catch(e){ b.textContent = 'Error'; }
+  }
+  const CUENTAS_PRUEBA = [['Libre (moderador)', 'Libre'], ['Guías (moderador)', 'Guías'], ['Gustavo', 'Guías + Grupo']];
+  // Desplegables del panel: se recuerda si están abiertos (las tareas, abiertas de entrada)
+  function plegable(clave, titulo, cuerpo, abiertoDeEntrada){
+    let abierto = abiertoDeEntrada; try { const v = localStorage.getItem('pf_pleg_' + clave); if(v !== null) abierto = v === '1'; } catch(e){}
+    return '<details class="pf-plegable" data-pleg="' + clave + '"' + (abierto ? ' open' : '') + '><summary><h3 class="pf-seccion">' + titulo + '</h3></summary>' + cuerpo + '</details>';
+  }
+
   function renderPanelFacilitador(){
     renderBackTopbar('🛠️ PANEL DE CONTROL ADMIN METAS A.');
     const p = state.panelFac || {}, d = p.datos;
@@ -4186,7 +4252,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     const firma = String(state.me || '').split(' ')[0];
     const animos = d.animos || [], escribir = personasAEscribir(d);
     const wa = (tel, texto) => 'https://wa.me/' + tel + '?text=' + encodeURIComponent(texto);
-    let h = '<h3 class="pf-seccion">✅ Tareas de hoy</h3>';
+    let h = '';
     if(!d.tareasActivas) h += '<div class="card pf-nota">Los mensajes de ánimo aún no se guardan como tareas (falta activar el almacén del Worker). Mientras tanto siguen llegando por Telegram.</div>';
     const comunicados = d.comunicados || [];
     if(!animos.length && !escribir.length && !comunicados.length) h += '<div class="card pf-vacio">¡Todo al día! 🎉 No tienes mensajes pendientes.</div>';
@@ -4219,6 +4285,11 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
           <button type="button" class="pf-btn" data-contacto="${i}">✓ Hecho</button></div></div>`;
       }).join('');
     }
+    h = plegable('tareas', '✅ Tareas de hoy', h, true);
+    if(esCuentaPruebas()) h += plegable('moderador', '🛠️ Moderador · entrar como', '<p class="pf-gris" style="margin:0 0 8px;font-size:13.5px">Entra con otra cuenta de prueba para ver la app con ese plan.</p><div class="pf-mod-cuentas">'
+      + CUENTAS_PRUEBA.map(([cuenta, t]) => '<button type="button" class="mod-cuenta' + (state.me === cuenta ? ' on' : '') + '" data-cuenta="' + escapeAttr(cuenta) + '">' + t + '</button>').join('') + '</div>', false);
+    h += plegable('esporadicas', '👁️ Pantallas de acceso esporádico', '<p class="pf-gris" style="margin:0 0 10px;font-size:13.5px">Salen solo en momentos concretos. Toca una para verla tal como la ve la persona (sin guardar nada).</p>'
+      + pantallasEsporadicas().map((x, i) => '<button type="button" class="card pf-pantalla" data-esporadica="' + i + '">' + x.img + '<span class="pf-pantalla-tx"><b>' + x.tit + '</b><small>' + x.cuando + '</small><em>Ver la pantalla ›</em></span></button>').join(''), false);
     // Resumen: cada cifra se toca para ver quiénes son
     const gente = d.personas || [], lunes = isoLocal(lunesHoy);
     const nuevas = gente.filter(x => x.alta && x.alta >= lunes);
@@ -4259,6 +4330,10 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       catch(e){ avisoBreve('No se pudo copiar. Abre «Ver el texto» y cópialo a mano.'); }
     });
     activarFilasPanel();
+    app.querySelectorAll('.pf-plegable').forEach(dd => dd.addEventListener('toggle', () => { try { localStorage.setItem('pf_pleg_' + dd.dataset.pleg, dd.open ? '1' : '0'); } catch(e){} }));
+    app.querySelectorAll('.pf-mod-cuentas .mod-cuenta').forEach(b => b.onclick = () => entrarComoCuenta(b));
+    const esp = pantallasEsporadicas();
+    app.querySelectorAll('[data-esporadica]').forEach(b => b.onclick = () => esp[Number(b.dataset.esporadica)].abrir());
     app.querySelectorAll('[data-detalle]').forEach(b => b.onclick = () => { state.pfDetalle = { tipo: b.dataset.detalle }; window.scrollTo(0, 0); render(); });
     app.querySelector('#pfDesplegar').onclick = () => { state.pfListaAbierta = !state.pfListaAbierta; render(); };
     const ba = app.querySelector('#pfActualizar');
@@ -8376,16 +8451,17 @@ lo que haces cada día es lo que vas a ser.`;
   // Lograda: se felicita, se guarda en el historial (Worker /meta-plazo) y se invita al formulario de una meta nueva (no cuenta como cambio).
   // Sin interés: dos pantallas de consuelo y, según el plan, el formulario (5 minutos) o los planes.
   function puedeCambiarMeta(){ return tienePlan('guias') && limiteMetaIntentos() - metaIntentosUsados() > 0; }
-  function abrirFinMeta(empezar){
+  function abrirFinMeta(empezar, prueba){   // prueba: vista previa del panel admin (no guarda ni avisa)
     document.querySelectorAll('.reflexion-capa').forEach(x => x.remove());
     const meta = String(((state.gamifica && state.gamifica.datosFormulario) || {}).metaTexto || textosCiclo().meta || '').trim();
     const capa = document.createElement('div'); capa.className = 'reflexion-capa';
     const cerrar = () => capa.remove();
-    const avisar = (conseguida, motivo, siguiente) => api('/meta-plazo', { conseguida, motivo, siguiente }).then(r => {
+    const avisar = (conseguida, motivo, siguiente) => prueba ? Promise.resolve() : api('/meta-plazo', { conseguida, motivo, siguiente }).then(r => {
       if(r && r.datosFormulario && state.gamifica) state.gamifica.datosFormulario = r.datosFormulario;
     }).catch(() => {});
     const alFormulario = (sinCambio) => {
       cerrar();
+      if(prueba){ avisoBreve('Vista previa: aquí se abriría el formulario de meta'); return; }
       try { if(sinCambio) localStorage.setItem('meta_sin_cambio_' + state.me, '1'); localStorage.removeItem(fmClave()); } catch(e){}
       abrirFormularioMeta();
     };
@@ -8408,7 +8484,7 @@ lo que haces cada día es lo que vas a ser.`;
     const logro1 = () => {
       avisar(true, 'lograda', 'Meta lograda (desde Compromiso y práctica)');
       // Mientras no llegue la respuesta, la meta ya se ve en el historial
-      try {
+      if(!prueba) try {
         const d = state.gamifica && state.gamifica.datosFormulario;
         if(d && meta){ const l = Array.isArray(d.metasLogradas) ? d.metasLogradas : (d.metasLogradas = []); if(!l.some(x => x.meta === meta && x.desde === (d.fechaMeta || ''))) l.push({ meta, desde: d.fechaMeta || '', logrado: hoyISO() }); }
       } catch(e){}
@@ -8430,8 +8506,8 @@ lo que haces cada día es lo que vas a ser.`;
     const nueva = () => {
       if(!tienePlan('guias')) return pantalla('Tu plan no permite cambiar de meta',
         '<p>En el Plan Libre, la meta se define una vez por trimestre.</p><p>Con el <b>Plan Guías</b> puedes cambiarla hasta 2 veces por trimestre, y recibes una guía nueva.</p>',
-        [['👑 Ver los planes', () => { cerrar(); irAPlanes(); }], ['Volver', interes2]], { ant: interes2 });
-      if(!puedeCambiarMeta()) return pantalla('Ya cambiaste tu meta este trimestre',
+        [['👑 Ver los planes', () => { cerrar(); if(!prueba) irAPlanes(); }], ['Volver', interes2]], { ant: interes2 });
+      if(!puedeCambiarMeta() && !prueba) return pantalla('Ya cambiaste tu meta este trimestre',
         '<p>Has usado los cambios de meta de este trimestre.</p><p>Si lo necesitas, escríbenos por WhatsApp y lo vemos juntos.</p>',
         [['Entendido', cerrar]], { ant: interes2 });
       pantalla('Tu nueva meta',
@@ -8442,13 +8518,13 @@ lo que haces cada día es lo que vas a ser.`;
     document.body.appendChild(capa);
   }
 
-  function abrirReflexion(){
+  function abrirReflexion(prueba){   // prueba: vista previa del panel admin (no apunta la respuesta)
     document.querySelectorAll('.reflexion-capa').forEach(x => x.remove());
     const meta = String(((state.gamifica && state.gamifica.datosFormulario) || {}).metaTexto || textosCiclo().meta || '').trim();
     const sin = diasSinPractica();
     const capa = document.createElement('div'); capa.className = 'reflexion-capa';
     const cerrar = () => capa.remove();
-    const responder = (r) => { try { localStorage.setItem('ma_reflexion_' + state.me, String(Date.now())); localStorage.setItem('ma_reflexion_resp_' + state.me, r); } catch(e){} };
+    const responder = (r) => { if(prueba) return; try { localStorage.setItem('ma_reflexion_' + state.me, String(Date.now())); localStorage.setItem('ma_reflexion_resp_' + state.me, r); } catch(e){} };
     const pantalla = (titulo, texto, botones) => {
       capa.innerHTML = '<button type="button" class="rf-x" aria-label="Cerrar">✕</button><h2 class="rf-tit">' + titulo + '</h2><div class="rf-tx">' + texto + '</div><div class="rf-botones">'
         + botones.map((b, i) => '<button type="button" class="rf-boton' + (i ? ' rf-sec' : '') + '" data-i="' + i + '">' + b[0] + '</button>').join('') + '</div>';
@@ -8465,7 +8541,7 @@ lo que haces cada día es lo que vas a ser.`;
     const siImportante = () => { responder('si'); pantalla('¡Seguimos!',
       '<p>- Un paso pequeño -</p><p>Hoy no hace falta hacerlo todo: <b>haz solo 2 minutos de tu práctica</b> y márcala. Lo importante es volver a empezar.</p><p>Recuerda por qué la elegiste: tu yo del futuro te lo agradecerá.</p>',
       [['¡Entendido!', () => { cerrar(); state.prevView = state.view; state.view = 'practicaSemanal'; window.scrollTo(0,0); render(); }]]); };
-    const cambiarla = () => { responder('cambiar'); cerrar(); abrirFinMeta('sinInteres'); };   // «ya no me interesa»: el flujo de meta sin interés (mira el plan)
+    const cambiarla = () => { responder('cambiar'); cerrar(); abrirFinMeta('sinInteres', prueba); };   // «ya no me interesa»: el flujo de meta sin interés (mira el plan)
     inicio();
     document.body.appendChild(capa);
   }
@@ -9038,10 +9114,10 @@ lo que haces cada día es lo que vas a ser.`;
   })();
   // «Hoy, sé amable contigo»: si el clima es difícil (tensión o agotamiento) o el entorno pesa (visitas, viaje, enfermedad),
   // o hay poco tiempo, sale una hoja a media pantalla que da permiso para no practicar hoy. Una vez al día (idea de Gustavo, V12.50)
-  function abrirHojaAmable(motivo){
+  function abrirHojaAmable(motivo, prueba){
     if(!state.me || document.querySelector('.amable-capa')) return;
     const k = 'hoja_amable_' + state.me + '_' + hoyISO();
-    try { if(localStorage.getItem(k)) return; localStorage.setItem(k, '1'); } catch(e){}
+    if(!prueba){ try { if(localStorage.getItem(k)) return; localStorage.setItem(k, '1'); } catch(e){} }   // prueba: vista previa del panel admin
     const inicio = motivo === 'poco' ? 'Hoy vas con poco tiempo' : motivo === 'entorno' ? 'Tu entorno hoy está complicado' : 'Hoy tu clima está difícil';
     const capa = el('<div class="amable-capa" role="dialog" aria-label="Hoy, sé amable contigo"><div class="amable-hoja"><div class="amable-asa"></div>'
       + practiHTML('calma', '🍃', 110)
@@ -10250,4 +10326,4 @@ lo que haces cada día es lo que vas a ser.`;
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V12.61 · App Metas Amables · 2026-10-11 23:21==== -->
+<!-- ==== Fin del index V12.62 · App Metas Amables · 2026-10-11 23:36==== -->
