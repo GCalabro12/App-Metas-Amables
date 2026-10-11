@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V12.04 · App Metas Amables · 2026-10-11 02:29==== -->
+<!-- ==== index V12.05 · App Metas Amables · 2026-10-11 02:31==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1193,7 +1193,9 @@ body.riego-abierto{overflow:hidden}
 .ritual-otro button{padding:9px 14px;border:0;border-radius:10px;background:#F2C14E;color:#2B1B00;font:800 14px Karla,sans-serif;cursor:pointer}
 .ritual-sub{font-size:12px;color:#7A5200;opacity:.85;margin:0 0 8px}
 .guia-semana{background:#EEF4FB !important;border-color:#4F7FB5}
-.guia-semana .ritual-tit{display:flex;align-items:center;gap:8px;color:#2F5F93}
+.guia-semana{position:relative;margin:0}
+.guia-semana .ritual-tit{display:flex;align-items:center;gap:8px;color:#2F5F93;padding-right:76px}
+.ciclo .guia-semana.actual{box-shadow:0 0 0 4px #FFD400;animation:toca 1.6s ease-in-out infinite}
 .guia-semana-ico{width:30px;height:30px;flex:none}
 .guia-semana .ritual-sub,.guia-semana .ritual-cambiar{color:#2F5F93}
 .guia-semana .ritual-practica{color:#1F3F66}
@@ -2059,7 +2061,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V12.04';
+  const APP_VERSION = 'V12.05';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -4038,7 +4040,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       'Tu planta de Inicio tiene ahora un <b>tutor</b>: el palo que la sostiene es tu guía semanal, para que crezca recta y no se tuerza.',
       'El aviso de las 20:00 te recuerda también <b>abonar tu meta</b>: contar cómo te sientes hoy.' ] },
     { v: 'V12.01', f: '11 de octubre de 2026', n: [
-      'En Inicio, la tarjeta azul <b>Tu guía de esta semana</b>: el ejercicio que te propone tu guía y su objetivo, tu disparador («Cuando…, haré…») y el botón <b>Descripción completa</b>, que abre la guía en «Tu práctica de la semana». Ya no se pregunta a qué hora la harás: un hábito se hace siempre en el mismo momento, justo después de algo que ya haces.',
+      'En Inicio, el paso <b>a</b> es ahora la tarjeta azul <b>Tu guía de esta semana</b>: el ejercicio que te propone tu guía y su objetivo, tu disparador («Cuando…, haré…») y el botón <b>Ir a tu guía semanal</b>, que abre la guía en «Tu práctica de la semana». Ya no se pregunta a qué hora la harás: un hábito se hace siempre en el mismo momento, justo después de algo que ya haces.',
       'En <b>Mi calendario de prácticas</b>, cada día hecho es una <b>maceta</b> (del color de tu emoción si ese día abonaste), sin la marca ✓.' ] },
     { v: 'V11.99', f: '11 de octubre de 2026', n: [
       '<b>🌿 Abona tu meta</b>: regar es practicar; abonar es conocer cómo te sientes. Elige una o dos emociones en la maceta (energía alta o baja, agradable o desagradable) y su intensidad. Puedes abonar aunque hoy no hayas regado.',
@@ -5939,7 +5941,6 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
         if(avisos){ const a = el('<div class="avisos-plan">' + avisos + '</div>').firstElementChild; app.appendChild(a); activarTarjetasPlan(a); }
         try { const sp = tarjetaSiguientePaso(); if(sp) app.appendChild(sp); } catch(e){}
         try { const pf = tarjetaPanelFacilitador(); if(pf) app.appendChild(pf); } catch(e){}
-        try { const mm = tarjetaMinutoManana(); if(mm) app.appendChild(mm); } catch(e){}
         try { const tp = tarjetaPlanta(); if(tp) app.appendChild(tp); } catch(e){}
         try { const zv = document.createElement('div'); app.appendChild(zv); tarjetaVozPendiente(zv); } catch(e){}
         const opciones = document.createElement('div');
@@ -5964,6 +5965,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
             : '📖 Ya tienes tu guía para leer' + (sinGuias ? ' · próxima: 1 de ' + monthNamesEs[proxMes.getMonth()] : '');
         const toca = tareaDelDia();
         const act = k => (k === toca ? ' actual' : '');
+        // Con guía y sin candado, el paso «a» es la tarjeta azul «Tu guía de esta semana» (con su práctica)
+        const guiaEnTarjeta = !!state.guiaTexto && !practicaBloqueada;
         opciones.innerHTML =
           '<button type="button" class="hablar-practi-btn">💬 Quiero hablar con Prácti</button>'
           + '<button type="button" class="opcion-inicio ciclo-btn ciclo-meta' + (metaHecha ? ' hecha' : ' pendiente') + act('meta') + '" data-ir="s4">'
@@ -5975,8 +5978,9 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
               : '<small style="color:#B94A3A;font-weight:700">⚠️ Pendiente: empieza por aquí</small>')
           + '</span><span class="opcion-flecha">›</span></button>'
           + flechaAbajo
-          + boton('s3', 'ciclo-a' + (practicaBloqueada ? ' bloqueada' : '') + act('a'), 'a', 'Guía semanal', subGuia,
-                state.guiaTexto ? '<span class="etiqueta-recibida">Recibida</span>' : '', practicaBloqueada && '👑')
+          + (guiaEnTarjeta ? '<div class="hueco-guia-semana"></div>'
+             : boton('s3', 'ciclo-a' + (practicaBloqueada ? ' bloqueada' : '') + act('a'), 'a', 'Guía semanal', subGuia,
+                state.guiaTexto ? '<span class="etiqueta-recibida">Recibida</span>' : '', practicaBloqueada && '👑'))
           + flechaAbajo
           + boton('sB', 'ciclo-b' + act('b'), 'b', 'Compromiso y práctica',
                 (tx.practica ? '<span class="ciclo-dato">' + escapeAttr(corto(tx.practica, 110)) + '</span>' : registraLunes() ? 'La defines en tu registro del lunes' : 'Marca cada día que la hagas')
@@ -5992,9 +5996,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
         app.appendChild(opciones);
         try { if(localStorage.getItem('tour_' + state.me) === 'pendiente' && state.view === 'panel'){ localStorage.setItem('tour_' + state.me, 'visto'); setTimeout(iniciarTour, 900); } } catch(e){}
         opciones.querySelector('.hablar-practi-btn').onclick = () => { state.hablaDesdeInicio = true; state.view = 'habla'; window.scrollTo(0,0); render(); };
-        opciones.querySelectorAll('.opcion-inicio').forEach(btn => {
-          btn.onclick = () => {
-            const destino = btn.getAttribute('data-ir');
+        const irDestino = destino => {
             if(destino === 'util'){ state.view = 'utilidades'; window.scrollTo(0,0); render(); return; }
             if(destino === 'sB'){ state.prevView = 'panel'; state.view = 'practicaSemanal'; window.scrollTo(0,0); render(); return; }
             // Si marcó "No volver a mostrar", va directo al destino
@@ -6009,8 +6011,16 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
             // (el intento de meta se cuenta al enviar el formulario de la app, no al abrir esta pantalla)
             window.scrollTo(0,0);
             render();
-          };
-        });
+        };
+        opciones.querySelectorAll('.opcion-inicio').forEach(btn => { btn.onclick = () => irDestino(btn.getAttribute('data-ir')); });
+        const hueco = opciones.querySelector('.hueco-guia-semana');
+        if(hueco){
+          try {
+            const tg = tarjetaGuiaSemana(() => irDestino('s3'), guiaPendienteDeAbrir() ? '<p class="ritual-tx"><span class="guia-nueva">✨ Ya tienes tu nueva guía de esta semana para leer</span></p>' : '');
+            if(act('a')) tg.classList.add('actual');
+            hueco.replaceWith(tg);
+          } catch(e){ hueco.remove(); }
+        }
       } else {
         app.appendChild(botonVolver());
       }
@@ -8036,27 +8046,28 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
              cap: nombres.findIndex(n => /pr[aá]ctica de la semana/i.test(n)) };
   }
   function claveRitual(){ return 'ritual_' + state.me + '_' + hoyISO(); }   // (antiguo «momento del día»; ya no se pregunta)
-  function tarjetaMinutoManana(){
-    if(!state.me || diaHechoFecha(new Date()) > 0) return null;
+  // Paso «a» de Inicio: la guía de esta semana. alIr abre la guía como el antiguo botón «a · Guía semanal»
+  function tarjetaGuiaSemana(alIr, extraHTML){
+    if(!state.me) return null;
     const pg = practicaDeLaGuia();
     let receta = ''; try { receta = recetaTexto(historiaGuardada('brecha')); } catch(e){}
-    const c = document.createElement('div'); c.className = 'card ritual-card guia-semana';
+    const c = document.createElement('div'); c.className = 'card ritual-card guia-semana ciclo-a';
     // La guía es el tutor (el palo) de la planta: la sostiene para que crezca recta y no se tuerza. Va en el azul de la guía
     const icono = '<svg class="guia-semana-ico" viewBox="0 0 32 32" aria-hidden="true"><path d="M8 26h16l-2 5H10z" fill="#C9942D" stroke="#7A5200" stroke-width="1.2" stroke-linejoin="round"/>'
       + '<path d="M19 26V5" stroke="#8A6A2E" stroke-width="2.6" stroke-linecap="round"/><path d="M14 26c0-6 1-11 3-15" fill="none" stroke="#3E7A2E" stroke-width="1.8" stroke-linecap="round"/>'
       + '<path d="M15 19q-6-1-7-5q5-1 7 4z M16 13q6-3 4-7q-5 2-4 7z" fill="#6BAE4F"/><path d="M15 17.5q2.5-1.6 5 0" fill="none" stroke="#2F5F93" stroke-width="1.6"/></svg>';
-    c.innerHTML = '<p class="ritual-tit">' + icono + 'Tu guía de esta semana</p>'
+    c.innerHTML = '<span class="etiqueta-recibida">Recibida</span><p class="ritual-tit">' + icono + 'Tu guía de esta semana</p>' + (extraHTML || '')
       + '<p class="ritual-sub">Tu guía es el <b>tutor</b> de tu planta: la sostiene para que crezca recta y no se tuerza.</p>'
       + (pg ? (pg.ejercicio ? '<p class="ritual-practica">' + escapeAttr(pg.ejercicio) + '</p>' : '')
             + (pg.objetivo ? '<p class="ritual-tx">🎯 ' + escapeAttr(pg.objetivo) + '</p>' : '')
             : '<p class="ritual-tx">Tu guía semanal te explica la práctica de esta semana.</p>')
       + (receta ? '<p class="ritual-tx">🔗 <b>Tu disparador:</b> ' + escapeAttr(receta) + '</p>'
                 : '<p class="ritual-tx">🔗 Hazla siempre en el mismo momento, <b>justo después de algo que ya haces cada día</b> (por ejemplo, después del café). <button type="button" class="ritual-cambiar ritual-receta">Elegir mi disparador</button></p>')
-      + '<button type="button" class="ritual-guia">📖 Descripción completa</button>';
+      + '<button type="button" class="ritual-guia">📖 Ir a tu guía semanal</button>';
     c.querySelector('.ritual-guia').onclick = () => {
-      // Abre la guía de esta semana directamente en el capítulo «Tu práctica de la semana»
+      // La guía de esta semana se abre directamente en el capítulo «Tu práctica de la semana»
       if(pg && pg.cap >= 0) (window._capGuia = window._capGuia || {})[pg.clave] = pg.cap;
-      state.prevView = 'panel'; state.view = 'practicas'; window.scrollTo(0, 0); render();
+      alIr();
     };
     const r = c.querySelector('.ritual-receta'); if(r) r.onclick = () => abrirHistoria('brecha');
     return c;
@@ -9330,4 +9341,4 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V12.04 · App Metas Amables · 2026-10-11 02:29==== -->
+<!-- ==== Fin del index V12.05 · App Metas Amables · 2026-10-11 02:31==== -->
