@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V12.42 · App Metas Amables · 2026-10-11 21:01==== -->
+<!-- ==== index V12.43 · App Metas Amables · 2026-10-11 21:02==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2138,7 +2138,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V12.42';
+  const APP_VERSION = 'V12.43';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -8634,11 +8634,12 @@ lo que haces cada día es lo que vas a ser.`;
     }
     pintar();
     // Entorno: se guarda al tocarlo (otra vez para quitarlo)
+    // (se busca dentro de su propia caja: en Registros amables el entorno se saca a su propio marco)
     let ent = entornoDeHoy();
-    const entMsg = caja.querySelector('.entorno-msg');
-    const pintarEnt = () => caja.querySelectorAll('.entorno-op').forEach(b => b.classList.toggle('on', Number(b.dataset.n) === ent));
+    const entCaja = caja.querySelector('.entorno'), entMsg = entCaja.querySelector('.entorno-msg');
+    const pintarEnt = () => entCaja.querySelectorAll('.entorno-op').forEach(b => b.classList.toggle('on', Number(b.dataset.n) === ent));
     pintarEnt();
-    caja.querySelectorAll('.entorno-op').forEach(b => b.onclick = async () => {
+    entCaja.querySelectorAll('.entorno-op').forEach(b => b.onclick = async () => {
       const antes = ent, n = Number(b.dataset.n);
       ent = ent === n ? 0 : n; pintarEnt(); entMsg.textContent = 'Guardando…';
       try { await guardarAbonoHoy(null, ent); entMsg.textContent = ent ? '✓ Guardado. Tu entorno también cuenta.' : 'Entorno quitado.'; if(ent){ try { sonidoEntorno(); } catch(e){} } }
@@ -9749,4 +9750,4 @@ lo que haces cada día es lo que vas a ser.`;
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V12.42 · App Metas Amables · 2026-10-11 21:01==== -->
+<!-- ==== Fin del index V12.43 · App Metas Amables · 2026-10-11 21:02==== -->
