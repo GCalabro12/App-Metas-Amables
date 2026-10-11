@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V12.12 · App Metas Amables · 2026-10-11 17:55==== -->
+<!-- ==== index V12.13 · App Metas Amables · 2026-10-11 18:23==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -897,6 +897,7 @@ body.con-fondo-nivel::before{content:"";position:fixed;inset:0;z-index:-1;backgr
 .musica-letra button.activo{background:#101010;color:#fff}
 .musica-letra-texto{margin:0 0 12px;border:1px solid rgba(0,0,0,.12);border-radius:12px;background:rgba(255,255,255,.75);padding:8px 12px}
 .musica-letra-texto summary{cursor:pointer;font-weight:700}.musica-letra-texto p{margin:8px 0 2px;font-size:14.5px;line-height:1.5}
+.ico{display:inline-block;width:1em;height:1em;vertical-align:-0.125em;flex:none}
 .musica-oficial-play{grid-column:3;grid-row:1 / span 2;width:40px;height:40px;border-radius:50%;background:#101010;color:#fff;display:flex;align-items:center;justify-content:center;font-size:16px}
 .ciencia-fuente{margin:6px 0;border:1px solid rgba(0,0,0,.12);border-radius:10px;background:rgba(255,255,255,.7);padding:6px 10px}
 .ciencia-fuente summary{cursor:pointer}.ciencia-fuente ul{margin:6px 0;padding-left:18px}.ciencia-fuente li{margin:3px 0}
@@ -2070,7 +2071,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V12.12';
+  const APP_VERSION = 'V12.13';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -2923,8 +2924,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       if(!('speechSynthesis' in window)){ play.hidden = true; }
       play.onclick = () => {
         if(lector.activo && lector.caja === caja){
-          if(lector.pausado){ lector.pausado = false; play.textContent = '⏸ Pausa'; lectorDecir(); }
-          else { lector.pausado = true; try{ window.speechSynthesis.cancel(); }catch(e){} if(lector.reloj) clearTimeout(lector.reloj); play.textContent = '▶️ Seguir'; }
+          if(lector.pausado){ lector.pausado = false; play.innerHTML = ICO.pausa + ' Pausa'; lectorDecir(); }
+          else { lector.pausado = true; try{ window.speechSynthesis.cancel(); }catch(e){} if(lector.reloj) clearTimeout(lector.reloj); play.innerHTML = ICO.play + ' Seguir'; }
           return;
         }
         lectorParar();
@@ -2932,7 +2933,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
         texto.querySelectorAll('.frase').forEach(sp => { (grupos[sp.dataset.u] = grupos[sp.dataset.u] || { spans: [], bloque: sp.dataset.b }).spans.push(sp); });
         lector.unidades = Object.keys(grupos).sort((a, b) => a - b).map(k => grupos[k]);
         lector.i = 0; lector.activo = true; lector.pausado = false; lector.caja = caja;
-        play.textContent = '⏸ Pausa'; stop.hidden = false;
+        play.innerHTML = ICO.pausa + ' Pausa'; stop.hidden = false;
         lectorDecir();
       };
       stop.onclick = () => { lector.i = 0; lectorParar(); };
@@ -3223,6 +3224,11 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
   const flechaCiclo = '<div class="ciclo-flecha" aria-hidden="true"><svg viewBox="0 0 20 22" width="18" height="20"><path d="M10 21 V4" stroke="#101010" stroke-width="2.6"/><path d="M3 10 L10 2 L17 10 Z" fill="#101010"/></svg></div>';
   // Flecha hacia abajo: el ciclo se lee de arriba (meta) abajo (a → b → c → d)
+  const ICO = {
+    play: '<svg class="ico" viewBox="0 0 16 16" aria-hidden="true"><path d="M4.5 2.5v11l9-5.5z" fill="currentColor"/></svg>',
+    pausa: '<svg class="ico" viewBox="0 0 16 16" aria-hidden="true"><rect x="3.5" y="2.5" width="3.2" height="11" rx="1" fill="currentColor"/><rect x="9.3" y="2.5" width="3.2" height="11" rx="1" fill="currentColor"/></svg>',
+    parar: '<svg class="ico" viewBox="0 0 16 16" aria-hidden="true"><rect x="3" y="3" width="10" height="10" rx="1.5" fill="currentColor"/></svg>'
+  };
   const flechaAbajo = '<div class="ciclo-flecha" aria-hidden="true"><svg viewBox="0 0 20 22" width="18" height="20"><path d="M10 1 V18" stroke="#101010" stroke-width="2.6"/><path d="M3 12 L10 20 L17 12 Z" fill="#101010"/></svg></div>';
 
   // "No volver a mostrar": desde el ciclo se va directo al destino de esa sección
@@ -4636,7 +4642,7 @@ lo que haces cada día es lo que vas a ser.`;
     if(musica.id === 'oficial'){ try { if(musica.pausada) sintonia.pause(); else sintonia.play(); } catch(e){} }
     else musicaOrden(musica.pausada ? 'pauseVideo' : 'playVideo');
     const b = document.querySelector('#musicaBarra .musica-pausa');
-    if(b){ b.textContent = musica.pausada ? '▶' : '⏸'; b.setAttribute('aria-label', musica.pausada ? 'Seguir con la música' : 'Pausar la música'); }
+    if(b){ b.innerHTML = musica.pausada ? ICO.play : ICO.pausa; b.setAttribute('aria-label', musica.pausada ? 'Seguir con la música' : 'Pausar la música'); }
     const o = document.querySelector('#musicaBarra .musica-onda'); if(o) o.classList.toggle('quieta', musica.pausada);
   }
 
@@ -4659,8 +4665,8 @@ lo que haces cada día es lo que vas a ser.`;
       + (musica.porFormulario
         ? '<label class="musica-vol"><span aria-hidden="true">🔈</span><input type="range" min="0" max="100" step="5" value="' + musicaVolumen() + '" aria-label="Volumen de la música"><span aria-hidden="true">🔊</span></label>'
         : '<span class="musica-sonando">' + escapeAttr(c.titulo) + '</span>')
-      + '<button type="button" class="musica-parar musica-pausa" aria-label="Pausar la música">⏸</button>'
-      + '<button type="button" class="musica-parar" aria-label="Parar la música">⏹</button>';
+      + '<button type="button" class="musica-parar musica-pausa" aria-label="Pausar la música">' + ICO.pausa + '</button>'
+      + '<button type="button" class="musica-parar" aria-label="Parar la música">' + ICO.parar + '</button>';
     barra.querySelector('.musica-pausa').onclick = musicaPausar;
     // Volumen: se aplica al cargar el vídeo y al mover la barra (se recuerda para la próxima vez)
     const fr = barra.querySelector('iframe');
@@ -4675,25 +4681,25 @@ lo que haces cada día es lo que vas a ser.`;
     renderBackTopbar('🎵 Música motivacional');
     app.querySelector('#btnVolver').onclick = () => { state.view = 'utilidades'; window.scrollTo(0,0); render(); };
     const caja = el(`<div class="musica-lista">
-        <button type="button" class="musica-oficial" id="btnSintonia">🎵 <b>Música oficial de Metas Amables</b><small class="musica-oficial-sub"></small><span class="musica-oficial-play">▶</span></button>
+        <button type="button" class="musica-oficial" id="btnSintonia">🎵 <b>Música oficial de Metas Amables</b><small class="musica-oficial-sub"></small><span class="musica-oficial-play">${ICO.play}</span></button>
         <div class="musica-letra" role="group" aria-label="Música oficial con letra o sin letra">
           <button type="button" data-letra="0">🎼 Sin letra</button><button type="button" data-letra="1">🎤 Con letra</button>
         </div>
         <details class="musica-letra-texto"><summary>📝 Ver la letra de «Riega tu meta»</summary><p>${escapeAttr(LETRA_RIEGA).replace(/\n/g, '<br>')}</p></details>
-        <p class="musica-ayuda">Elige una música y sigue usando la app: sonará mientras tanto. Para pararla, toca ⏹ abajo.</p>
+        <p class="musica-ayuda">Elige una música y sigue usando la app: sonará mientras tanto. Para pararla, toca ${ICO.parar} abajo.</p>
         <details class="ciencia musica-ciencia"><summary>🔬 ¿Por qué música mientras practicas?</summary>
           <p>Escuchar una música agradable mientras haces tu práctica funciona como un <b>reforzador</b>: tu cerebro asocia la conducta con algo placentero y, poco a poco, le apetece más repetirla.</p>
           <p>Es lo que James Clear llama <b>«hazlo atractivo»</b> y lo que BJ Fogg describe como unir el hábito a una <b>emoción positiva</b>. Además, la música marca el momento («cuando suena esta música, practico»), y eso ayuda a que se convierta en costumbre.</p>
           <p>Truco: elige siempre la misma música para la misma práctica. Será su «señal».</p>
         </details>
         ${MODULOS_MUSICA.map(m => { const lista = CANCIONES.filter(c => c.modulo === m.id);
-          return '<h3 class="musica-modulo">' + m.nombre + '</h3>' + (lista.length ? lista.map((c, n) => '<button type="button" class="musica-cancion' + (c.id === musica.id ? ' sonando' : '') + (n > 0 && !tienePlan('guias') ? ' con-corona' : '') + '" data-id="' + c.id + '">' + (n > 0 && !tienePlan('guias') ? '<span class="corona">👑</span>' : '') + '<span class="musica-icono">' + (c.id === musica.id ? '🔊' : '▶️') + '</span><span>' + escapeAttr(c.titulo) + '</span></button>').join('') : '<p class="musica-pronto">Muy pronto</p>'); }).join('')}
+          return '<h3 class="musica-modulo">' + m.nombre + '</h3>' + (lista.length ? lista.map((c, n) => '<button type="button" class="musica-cancion' + (c.id === musica.id ? ' sonando' : '') + (n > 0 && !tienePlan('guias') ? ' con-corona' : '') + '" data-id="' + c.id + '">' + (n > 0 && !tienePlan('guias') ? '<span class="corona">👑</span>' : '') + '<span class="musica-icono">' + (c.id === musica.id ? '🔊' : ICO.play) + '</span><span>' + escapeAttr(c.titulo) + '</span></button>').join('') : '<p class="musica-pronto">Muy pronto</p>'); }).join('')}
       </div>`).firstElementChild;
     app.appendChild(caja);
     const bSint = caja.querySelector('#btnSintonia');
     const pintarSint = () => {
       const letra = musicaConLetra();
-      bSint.querySelector('.musica-oficial-play').textContent = musica.id === 'oficial' ? '⏹' : '▶';
+      bSint.querySelector('.musica-oficial-play').innerHTML = musica.id === 'oficial' ? ICO.parar : ICO.play;
       bSint.querySelector('.musica-oficial-sub').textContent = letra ? '🎤 Con letra: «Riega tu meta»' : '🎼 Sin letra';
       caja.querySelectorAll('.musica-letra button').forEach(b => b.classList.toggle('activo', (b.dataset.letra === '1') === letra));
       caja.querySelector('.musica-letra-texto').hidden = !letra;
@@ -5148,7 +5154,7 @@ lo que haces cada día es lo que vas a ser.`;
         <div class="theme-toggle-row">${TONOS.map(t => `<button class="theme-toggle-btn ${t.v === tono ? 'active' : ''}" data-tono="${t.v}">${t.txt}</button>`).join('')}</div>
         <p style="font-weight:700;margin:14px 0 6px;font-size:14px">Velocidad</p>
         <div class="theme-toggle-row">${VELOCIDADES.map(v => `<button class="theme-toggle-btn ${v === vel ? 'active' : ''}" data-vel="${v}">${String(v).replace('.', ',')}x</button>`).join('')}</div>
-        <button class="btn btn-yes" id="btnProbarVoz" style="text-align:center;margin-top:14px">▶ Probar voz</button>
+        <button class="btn btn-yes" id="btnProbarVoz" style="text-align:center;margin-top:14px">${ICO.play} Probar voz</button>
         <div class="voz-ayuda">
           <button type="button" class="btn btn-no" id="btnAyudaVoz" style="text-align:center;margin-top:14px">📱 ¿Tu voz suena igual? Cómo mejorarla</button>
         </div>
@@ -5328,7 +5334,7 @@ lo que haces cada día es lo que vas a ser.`;
             <div class="duo-contenido">
               <div class="guia-lector">
                 <button type="button" class="lector-btn" data-acc="play">🔊 Oír</button>
-                <button type="button" class="lector-btn lector-stop" data-acc="stop" aria-label="Parar" title="Parar" hidden>⏹</button>
+                <button type="button" class="lector-btn lector-stop" data-acc="stop" aria-label="Parar" title="Parar" hidden>${ICO.parar}</button>
                 <button type="button" class="lector-btn lector-vel" data-acc="vel">⏩ 1x</button>
                 <button type="button" class="lector-btn lector-sub" data-acc="sub">🖍 Subrayar</button>
               </div>
@@ -8063,7 +8069,7 @@ lo que haces cada día es lo que vas a ser.`;
     const boton = (txt, cls, color) => '<button type="button" class="panel-link-btn ' + cls + '" style="width:100%;border:none;cursor:pointer;background:' + color + ';margin:6px 0 0">' + txt + '</button>';
     const pintar = (estado, url) => {
       if(estado === 'inicio') zona.innerHTML = boton('🎙 Grabar mi nota', 'voz-rec', '#7B5FB8');
-      else if(estado === 'grabando') zona.innerHTML = '<p class="voz-tiempo" style="text-align:center;font-weight:700;color:#C0392B;margin:0">● Grabando… 0:00</p>' + boton('⏹ Parar', 'voz-parar', '#555');
+      else if(estado === 'grabando') zona.innerHTML = '<p class="voz-tiempo" style="text-align:center;font-weight:700;color:#C0392B;margin:0">● Grabando… 0:00</p>' + boton(ICO.parar + ' Parar', 'voz-parar', '#555');
       else if(estado === 'listo') zona.innerHTML = '<audio controls src="' + url + '" style="width:100%"></audio>' + boton('✓ Guardar mi nota', 'voz-guardar', '#6B9362') + boton('↺ Volver a grabar', 'voz-rec', '#9A9A9A');
       else if(estado === 'guardado') zona.innerHTML = boton('✓ Nota guardada', 'voz-ver', '#7B5FB8') + '<div class="voz-detalle" hidden><div class="voz-cerrado">' + candadoSVG() + '<div><b>Nota guardada y cerrada</b><span>Se abrirá el lunes ' + proximo.getDate() + ' de ' + monthNamesEs[proximo.getMonth()] + '.</span></div></div>' + '</div>';
       const r = zona.querySelector('.voz-rec'); if(r) r.onclick = grabar;
@@ -8661,7 +8667,7 @@ lo que haces cada día es lo que vas a ser.`;
     const b = document.createElement('button');
     b.type = 'button'; b.className = 'btn-dictar';
     b.style.cssText = 'display:flex;align-items:center;gap:6px;margin:8px 0 0 auto;padding:8px 14px;border-radius:99px;border:2px solid #6B9362;background:#fff;color:#4E7446;font-weight:700;font-size:15px;cursor:pointer';
-    const pintar = on => { b.innerHTML = on ? '⏹️ Parar' : '🎤 Dictar'; b.style.background = on ? '#EEF6E9' : '#fff'; };
+    const pintar = on => { b.innerHTML = on ? ICO.parar + ' Parar' : '🎤 Dictar'; b.style.background = on ? '#EEF6E9' : '#fff'; };
     pintar(false);
     b.onclick = () => {
       if(dictadoActivo){ try { dictadoActivo.stop(); } catch(e){} return; }
@@ -9427,4 +9433,4 @@ lo que haces cada día es lo que vas a ser.`;
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V12.12 · App Metas Amables · 2026-10-11 17:55==== -->
+<!-- ==== Fin del index V12.13 · App Metas Amables · 2026-10-11 18:23==== -->
