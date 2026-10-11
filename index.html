@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V12.29 · App Metas Amables · 2026-10-11 20:22==== -->
+<!-- ==== index V12.30 · App Metas Amables · 2026-10-11 20:23==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1264,9 +1264,9 @@ body.riego-abierto{overflow:hidden}
 .planta-regar{border:none;cursor:pointer;width:100%;background:#4F9A5A !important;color:#fff !important;font-weight:800}
 .dc{position:relative;aspect-ratio:1;box-sizing:border-box;border:1.5px solid #E4DFD3;border-radius:0;background:#fff;display:flex;align-items:center;justify-content:center;padding:0;margin:0;font:inherit;color:#2B2B2B}
 button.dc{cursor:pointer}button.dc:disabled{cursor:default}
-.dc.con-ent{border-width:4px}.dc[data-e="1"]{box-shadow:0 0 0 1px #BDB8AA}
+.dc.con-ent{border-width:1.5px}.dc[data-e="1"]{box-shadow:0 0 0 1px #BDB8AA}
 .dc-c{width:92%;aspect-ratio:1;box-sizing:border-box;border-radius:50%;border:1.5px solid #E4DFD3;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1;font:700 clamp(12px,3.8vw,17px) Karla,sans-serif;color:#2B2B2B}
-.dc.con-ent .dc-c{width:96%}
+.dc.con-ent .dc-c{width:88%}
 .dc-tic{display:flex;align-items:center;gap:1px;margin-top:1px;font:800 clamp(8px,2.4vw,11px) Karla,sans-serif}.dc-tic svg{width:clamp(12px,3.6vw,17px);height:auto}
 .dc.con-clima .dc-c,.dc.hecho .dc-c{border-color:transparent}.dc.hecho .dc-c{color:#fff}
 .dc.hoy .dc-c b{font-weight:900;text-decoration:underline 2px;text-underline-offset:2px}.dc.futuro{opacity:.35}
@@ -2125,7 +2125,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V12.29';
+  const APP_VERSION = 'V12.30';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -4115,7 +4115,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
     { v: 'V12.29', f: '11 de octubre de 2026', n: [
-      'En el calendario, los círculos son más grandes, el mes ocupa todo el ancho y una <b>tilde</b> te dice qué días hiciste tu práctica.' ] },
+      'En el calendario, los círculos son más grandes, el mes ocupa todo el ancho, el cuadrado se rellena con el gris de tu entorno y una <b>tilde</b> te dice qué días hiciste tu práctica.' ] },
     { v: 'V12.28', f: '11 de octubre de 2026', n: [
       'En <b>Registros amables</b>, cada parte (clima, entorno y práctica) tiene su propio marco, y tu disparador o un consejo sale justo debajo de tu práctica.' ] },
     { v: 'V12.27', f: '11 de octubre de 2026', n: [
@@ -7219,7 +7219,7 @@ lo que haces cada día es lo que vas a ser.`;
     const futuro = d > hoy, x = futuro ? { veces: 0, clima: null, ent: 0 } : datosDia(d);
     const fondo = x.clima ? fondoAbono(x.clima) : x.veces ? '#6B9362' : '';
     const cls = 'dc' + (x.ent ? ' con-ent' : '') + (x.clima ? ' con-clima' : x.veces ? ' hecho' : '') + (+d === +hoy ? ' hoy' : '') + (futuro ? ' futuro' : '');
-    return '<' + etiqueta + ' class="' + cls + '"' + (atributos || '') + ' data-e="' + x.ent + '"' + (x.ent ? ' style="border-color:' + colorEntorno(x.ent) + '"' : '') + '>'
+    return '<' + etiqueta + ' class="' + cls + '"' + (atributos || '') + ' data-e="' + x.ent + '"' + (x.ent ? ' style="background:' + colorEntorno(x.ent) + ';border-color:' + colorEntorno(x.ent) + '"' : '') + '>'
       + '<span class="dc-c"' + (fondo ? ' style="background:' + fondo + '"' : '') + '><b>' + d.getDate() + '</b>'
       + (x.veces ? '<span class="dc-tic">' + TIC_DIA + (x.veces > 1 ? '×' + x.veces : '') + '</span>' : '') + '</span></' + etiqueta + '>';
   }
@@ -9647,4 +9647,4 @@ lo que haces cada día es lo que vas a ser.`;
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V12.29 · App Metas Amables · 2026-10-11 20:22==== -->
+<!-- ==== Fin del index V12.30 · App Metas Amables · 2026-10-11 20:23==== -->
