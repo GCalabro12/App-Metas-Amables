@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V12.60 · App Metas Amables · 2026-10-11 23:05==== -->
+<!-- ==== index V12.61 · App Metas Amables · 2026-10-11 23:21==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1020,6 +1020,12 @@ body.theme-dark .ayuda-fila,body.theme-dark .ayuda-preg summary,body.theme-dark 
 body.theme-dark .ayuda-preg{background:#26262c}
 .reflexion-capa{position:fixed;inset:0;z-index:9600;overflow-y:auto;display:flex;flex-direction:column;align-items:center;text-align:center;padding:calc(70px + env(safe-area-inset-top)) 26px calc(28px + env(safe-area-inset-bottom));color:#fff;
   background:repeating-linear-gradient(135deg,rgba(255,255,255,.07) 0 3px,transparent 3px 26px),#1F63DB;font-family:Karla,sans-serif}
+.reflexion-capa.fin-verde{background:repeating-linear-gradient(135deg,rgba(255,255,255,.07) 0 3px,transparent 3px 26px),#3E7D2B}
+.rf-nota{font-size:15px;font-weight:600;opacity:.9}
+.rf-puntos{display:flex;justify-content:center;gap:8px;margin:0 0 14px}.rf-puntos span{width:9px;height:9px;border-radius:50%;background:rgba(255,255,255,.4)}.rf-puntos span.on{background:#fff}
+.ps-fin{border-color:#9FC38C;background:#F1F8EC}
+.historial-logros{border:2px solid #9FC38C;background:#F1F8EC;margin:0 0 14px}
+.historial-logros h3{margin:0 0 8px;font-size:17px}.historial-logros li{margin:0 0 6px}
 .rf-x{position:absolute;top:calc(18px + env(safe-area-inset-top));left:18px;background:none;border:0;color:#fff;font-size:28px;cursor:pointer}
 .rf-tit{font-size:34px;line-height:1.15;margin:0 0 auto;font-weight:800;text-shadow:0 2px 8px rgba(0,0,0,.2)}
 .rf-tx{margin:30px 0;font-size:19px;font-weight:700;line-height:1.45;text-shadow:0 1px 6px rgba(0,0,0,.2)}
@@ -2185,7 +2191,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V12.60';
+  const APP_VERSION = 'V12.61';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -4363,6 +4369,9 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
+    { v: 'V12.61', f: '11 de octubre de 2026', n: [
+      'En <b>Compromiso y práctica</b>, debajo de tu contrato, nuevo botón <b>«Meta lograda o sin interés»</b>. Si la lograste, te felicitamos, la guardamos en tu historial y puedes sembrar una meta nueva. Si perdiste el interés, te acompañamos para elegir otra.',
+      'Si vuelves a la app tras 5 días o más sin entrar, Prácti te pregunta si tu meta sigue teniendo interés para ti.' ] },
     { v: 'V12.60', f: '11 de octubre de 2026', n: [
       'En el <b>modo minimalista</b> tampoco sale el recuadro del juego al final de Inicio.' ] },
     { v: 'V12.59', f: '11 de octubre de 2026', n: [
@@ -5901,6 +5910,9 @@ lo que haces cada día es lo que vas a ser.`;
       const t = e.changedTouches && e.changedTouches[0]; if(!t) return;
       const dx = t.clientX - x0, dy = t.clientY - y0; x0 = null;
       if(Math.abs(dx) < 70 || Math.abs(dx) < Math.abs(dy) * 1.8 || Date.now() - t0 > 800) return;
+      // Pantallas grandes (pausa de reflexión, meta lograda o sin interés): deslizar pasa de pantalla; nunca mueve lo de debajo
+      const rfc = document.querySelector('.reflexion-capa');
+      if(rfc){ const f = dx < 0 ? rfc._sig : rfc._ant; if(typeof f === 'function') f(); return; }
       // Registros amables abierto: deslizar a cualquier lado vuelve a Metas Amables (como su botón); si hay otra ventana encima, no se toca
       const registros = document.querySelector('.riego-capa');
       if(registros){
@@ -6131,6 +6143,7 @@ lo que haces cada día es lo que vas a ser.`;
     if(avisoPlay) app.appendChild(avisoPlay);
     // Se cumple el plazo de su meta (1 o 2 meses): «¿La conseguiste?»
     const avisoPlazo = (state.me && state.view === 'panel' && !state.panelSub) ? tarjetaPlazoMeta() : null;
+    if(state.me && state.view === 'panel' && !state.panelSub){ try { if(reflexionPendiente() && !sessionStorage.getItem('ma_reflexion_vista')){ sessionStorage.setItem('ma_reflexion_vista', '1'); setTimeout(abrirReflexion, 600); } } catch(e){} }
     if(avisoPlazo) app.appendChild(avisoPlazo);
     if(state.me && state.view === 'panel' && !state.panelSub && puedeNotaMes() && !modoMinimal()){
       const ep = estadoPosit(), clave = 'posit_visto_' + state.me + '_' + (ep.p ? (ep.p.mes || ep.p.trimestre) : '');
@@ -7283,6 +7296,12 @@ lo que haces cada día es lo que vas a ser.`;
         sonidoTing(); state.view = 'contrato'; window.scrollTo(0,0); render();
       };
       app.appendChild(contrato);
+      // Meta lograda o sin interés: ventana con las dos opciones
+      if(metaHechaYa()){
+        const fin = el('<button type="button" class="card ps-reto ps-fin"><span class="ps-reto-ico">🏁</span><span><b>Meta lograda o sin interés</b><small>¿Ya lograste tu meta o has perdido el interés por ella?</small></span><span class="opcion-flecha">›</span></button>').firstElementChild;
+        fin.onclick = () => abrirFinMeta('elegir');
+        app.appendChild(fin);
+      }
       // Lunes de compromiso con el grupo (solo Plan Guías + Grupo), en su recuadro
       if(registraLunes()){
         const lunes = el('<div class="card ps-recuadro"><p style="font-weight:700;margin:0 0 4px">✍️ Lunes de compromiso con el grupo</p><p style="margin:0 0 8px">' + (registroPendienteEstaSemana() ? 'Aún no has hecho tu compromiso de esta semana.' : 'Próximo: ' + textoProximoLunes() + '.') + '</p><button type="button" class="panel-link-btn" style="width:100%;border:none;cursor:pointer;background:#E39A9A">Ir al lunes de compromiso</button></div>');
@@ -7526,7 +7545,10 @@ lo que haces cada día es lo que vas a ser.`;
     const g = historialPracticas();
     const corta = d => d.getDate() + ' ' + d.toLocaleDateString('es-ES', { month: 'short' }).replace('.', '') + ' ' + d.getFullYear();
     const caja = el('<div class="historial"></div>').firstElementChild;
-    caja.innerHTML = '<p class="historial-intro">Todas las prácticas que has trabajado, de la más reciente a la más antigua.</p>'
+    const logros = (((state.gamifica && state.gamifica.datosFormulario) || {}).metasLogradas || []).slice().reverse();
+    const fechaL = t => /^\d{4}-\d{2}-\d{2}/.test(t || '') ? corta(new Date(t.slice(0, 10) + 'T12:00:00')) : '';
+    caja.innerHTML = (logros.length ? '<div class="card historial-logros"><h3>🏆 Metas logradas</h3><ul>' + logros.map(x => '<li><b>' + escapeAttr(x.meta || '') + '</b>' + (fechaL(x.logrado) ? ' · lograda el ' + fechaL(x.logrado) : '') + '</li>').join('') + '</ul></div>' : '')
+      + '<p class="historial-intro">Todas las prácticas que has trabajado, de la más reciente a la más antigua.</p>'
       + (g.length ? g.map((x, i) => '<div class="card historial-item' + (i === 0 ? ' actual' : '') + '">'
           + (i === 0 ? '<span class="historial-etiqueta">Ahora</span>' : '')
           + '<p class="historial-practica">' + (x.practica ? escapeAttr(x.practica) : 'La práctica de tu guía') + '</p>'
@@ -8327,7 +8349,7 @@ lo que haces cada día es lo que vas a ser.`;
       if(sessionStorage.getItem('ma_visita_hecha')) return;
       sessionStorage.setItem('ma_visita_hecha', '1');
       const k = 'ma_visita_' + state.me, prev = Number(localStorage.getItem(k) || 0), ahora = Date.now();
-      if(prev && ahora - prev >= 5 * 86400000) localStorage.setItem('ma_ausencia_' + state.me, String(ahora));
+      if(prev && ahora - prev >= 5 * 86400000){ localStorage.setItem('ma_ausencia_' + state.me, String(ahora)); localStorage.setItem('ma_ausencia_dias_' + state.me, String(Math.floor((ahora - prev) / 86400000))); }
       localStorage.setItem(k, String(ahora));
     } catch(e){}
   }
@@ -8349,6 +8371,77 @@ lo que haces cada día es lo que vas a ser.`;
     if(desde && ahora - desde < 6 * 86400000) return false;
     return sin >= 6;
   }
+  // ===== Meta lograda o sin interés (idea de Gustavo, 11-10-2026) =====
+  // Se abre desde «Compromiso y práctica» (y, para «sin interés», desde la pausa de reflexión). Pantallas grandes, poco texto en cada una.
+  // Lograda: se felicita, se guarda en el historial (Worker /meta-plazo) y se invita al formulario de una meta nueva (no cuenta como cambio).
+  // Sin interés: dos pantallas de consuelo y, según el plan, el formulario (5 minutos) o los planes.
+  function puedeCambiarMeta(){ return tienePlan('guias') && limiteMetaIntentos() - metaIntentosUsados() > 0; }
+  function abrirFinMeta(empezar){
+    document.querySelectorAll('.reflexion-capa').forEach(x => x.remove());
+    const meta = String(((state.gamifica && state.gamifica.datosFormulario) || {}).metaTexto || textosCiclo().meta || '').trim();
+    const capa = document.createElement('div'); capa.className = 'reflexion-capa';
+    const cerrar = () => capa.remove();
+    const avisar = (conseguida, motivo, siguiente) => api('/meta-plazo', { conseguida, motivo, siguiente }).then(r => {
+      if(r && r.datosFormulario && state.gamifica) state.gamifica.datosFormulario = r.datosFormulario;
+    }).catch(() => {});
+    const alFormulario = (sinCambio) => {
+      cerrar();
+      try { if(sinCambio) localStorage.setItem('meta_sin_cambio_' + state.me, '1'); localStorage.removeItem(fmClave()); } catch(e){}
+      abrirFormularioMeta();
+    };
+    // Una pantalla: título, texto y botones [texto, acción, ¿es «Siguiente»?]; puntos si va en serie; deslizar también pasa
+    const pantalla = (titulo, texto, botones, opc) => {
+      opc = opc || {};
+      capa.classList.toggle('fin-verde', !!opc.verde);
+      capa.innerHTML = '<button type="button" class="rf-x" aria-label="Cerrar">✕</button><h2 class="rf-tit">' + titulo + '</h2><div class="rf-tx">' + texto + '</div>'
+        + (opc.puntos ? '<div class="rf-puntos">' + Array.from({ length: opc.puntos[1] }, (x, n) => '<span' + (n === opc.puntos[0] ? ' class="on"' : '') + '></span>').join('') + '</div>' : '')
+        + '<div class="rf-botones">' + botones.map((b, i) => '<button type="button" class="rf-boton' + (i ? ' rf-sec' : '') + '" data-i="' + i + '">' + b[0] + '</button>').join('') + '</div>';
+      capa.querySelector('.rf-x').onclick = cerrar;
+      capa.querySelectorAll('.rf-boton').forEach(btn => btn.onclick = () => botones[Number(btn.dataset.i)][1]());
+      capa._sig = opc.sig || null; capa._ant = opc.ant || null;
+      capa.scrollTop = 0;
+    };
+    const elegir = () => pantalla('¿Cómo va tu meta?',
+      (meta ? '<p class="rf-meta">«' + escapeAttr(meta) + '»</p>' : '') + '<p>Cuéntanos qué ha pasado.</p>',
+      [['🏆 Ya logré mi meta', logro1], ['💭 He perdido el interés', interes1], ['Volver', cerrar]]);
+    // --- Meta lograda ---
+    const logro1 = () => {
+      avisar(true, 'lograda', 'Meta lograda (desde Compromiso y práctica)');
+      // Mientras no llegue la respuesta, la meta ya se ve en el historial
+      try {
+        const d = state.gamifica && state.gamifica.datosFormulario;
+        if(d && meta){ const l = Array.isArray(d.metasLogradas) ? d.metasLogradas : (d.metasLogradas = []); if(!l.some(x => x.meta === meta && x.desde === (d.fechaMeta || ''))) l.push({ meta, desde: d.fechaMeta || '', logrado: hoyISO() }); }
+      } catch(e){}
+      try { launchConfetti(); sonidoLogro(); } catch(e){}
+      pantalla('¡Enhorabuena! 🎉',
+        '<p>Has logrado tu meta. Date un momento para celebrarlo: lo has conseguido tú.</p><p>La guardamos en tu <b>historial</b>, en «Metas logradas».</p>',
+        [['Siguiente →', logro2]], { verde: true, puntos: [0, 2], sig: logro2 });
+    };
+    const logro2 = () => pantalla('¿Y ahora?',
+      '<p>Puedes sembrar <b>una meta nueva</b> para lo que queda de trimestre.</p><p>Rellenar el formulario solo lleva unos 5 minutos.</p><p class="rf-nota">Una meta lograda no cuenta como cambio de meta.</p>',
+      [['Ir al formulario de mi nueva meta', () => alFormulario(true)], ['Ahora no', cerrar]], { verde: true, puntos: [1, 2], ant: () => pantalla('¡Enhorabuena! 🎉', '<p>Has logrado tu meta. Date un momento para celebrarlo: lo has conseguido tú.</p><p>La guardamos en tu <b>historial</b>, en «Metas logradas».</p>', [['Siguiente →', logro2]], { verde: true, puntos: [0, 2], sig: logro2 }) });
+    // --- Sin interés ---
+    const interes1 = () => pantalla('Es normal',
+      '<p>La vida es compleja y va cambiando.</p><p>Muchas veces surgen <b>otras metas</b> por el camino, imprevistos o necesidades nuevas que nos hacen cambiar el rumbo.</p><p>No pasa nada.</p>',
+      [['Siguiente →', interes2]], { puntos: [0, 2], sig: interes2 });
+    const interes2 = () => pantalla('Escúchate',
+      '<p>No tienes que mantener a la fuerza la meta que definiste.</p><p>Elegir lo que de verdad te importa hoy <b>también es avanzar</b>.</p><p>Te invitamos a elegir una meta nueva, con un hábito que te motive ahora.</p>',
+      [['Elegir una meta nueva', nueva], ['Mejor sigo con la mía', cerrar]], { puntos: [1, 2], ant: interes1 });
+    const nueva = () => {
+      if(!tienePlan('guias')) return pantalla('Tu plan no permite cambiar de meta',
+        '<p>En el Plan Libre, la meta se define una vez por trimestre.</p><p>Con el <b>Plan Guías</b> puedes cambiarla hasta 2 veces por trimestre, y recibes una guía nueva.</p>',
+        [['👑 Ver los planes', () => { cerrar(); irAPlanes(); }], ['Volver', interes2]], { ant: interes2 });
+      if(!puedeCambiarMeta()) return pantalla('Ya cambiaste tu meta este trimestre',
+        '<p>Has usado los cambios de meta de este trimestre.</p><p>Si lo necesitas, escríbenos por WhatsApp y lo vemos juntos.</p>',
+        [['Entendido', cerrar]], { ant: interes2 });
+      pantalla('Tu nueva meta',
+        '<p>¿Quieres rellenar <b>ahora</b> el formulario?</p><p>Solo lleva unos 5 minutos y tendrás tu nueva meta definida: para todo el trimestre o más corta (1 o 2 meses).</p>',
+        [['Rellenar el formulario ahora', () => { avisar(false, 'sinInteres', 'Ha perdido el interés: rellena una meta nueva'); alFormulario(false); }], ['Más tarde', cerrar]], { ant: interes2 });
+    };
+    ({ elegir, sinInteres: interes1 }[empezar] || elegir)();
+    document.body.appendChild(capa);
+  }
+
   function abrirReflexion(){
     document.querySelectorAll('.reflexion-capa').forEach(x => x.remove());
     const meta = String(((state.gamifica && state.gamifica.datosFormulario) || {}).metaTexto || textosCiclo().meta || '').trim();
@@ -8362,18 +8455,17 @@ lo que haces cada día es lo que vas a ser.`;
       capa.querySelector('.rf-x').onclick = cerrar;
       capa.querySelectorAll('.rf-boton').forEach(btn => btn.onclick = () => botones[Number(btn.dataset.i)][1]());
     };
+    let diasFuera = 0;
+    try { const au = Number(localStorage.getItem('ma_ausencia_' + state.me) || 0); if(au && Date.now() - au < 2 * 86400000) diasFuera = Number(localStorage.getItem('ma_ausencia_dias_' + state.me) || 0); } catch(e){}
     const inicio = () => pantalla('Una pausa para tu meta',
-      '<p>' + (sin >= 6 && sin < 99 ? 'Hace ' + sin + ' días que no marcas tu práctica.' : 'Hace unos días que no te vemos por aquí.') + ' No pasa nada: a veces la vida se complica.</p>'
-      + (meta ? '<p class="rf-meta">«' + escapeAttr(meta) + '»</p>' : '')
-      + '<p><b>¿Es realmente significativa para ti la meta que te planteaste?</b></p>'
-      + '<p>Puede que ahora las cosas hayan cambiado y tengas otra más importante. No tienes por qué seguir con lo que te planteaste antes si ahora ya no te motiva.</p>',
-      [['Sí, sigue siendo importante', siImportante], ['Quiero plantearme otra meta', cambiarla], ['Prefiero hablarlo con Prácti', () => { responder('practi'); cerrar(); state.prevView = state.view; state.view = 'habla'; window.scrollTo(0,0); render(); }]]);
+      '<p>' + (diasFuera >= 5 ? 'Llevas ' + diasFuera + ' días sin entrar.' : sin >= 6 && sin < 99 ? 'Hace ' + sin + ' días que no marcas tu práctica.' : 'Hace unos días que no te vemos por aquí.') + ' No pasa nada: a veces la vida se complica.</p>'
+      + (meta ? '<p>La meta que te habías propuesto es esta:</p><p class="rf-meta">«' + escapeAttr(meta) + '»</p>' : '')
+      + '<p><b>¿Sigue teniendo interés para ti?</b></p>',
+      [['Sí, sigue siendo importante', siImportante], ['Ya no me interesa', cambiarla]].concat(modoMinimal() ? [] : [['Prefiero hablarlo con Prácti', () => { responder('practi'); cerrar(); state.prevView = state.view; state.view = 'habla'; window.scrollTo(0,0); render(); }]]));
     const siImportante = () => { responder('si'); pantalla('¡Seguimos!',
       '<p>- Un paso pequeño -</p><p>Hoy no hace falta hacerlo todo: <b>haz solo 2 minutos de tu práctica</b> y márcala. Lo importante es volver a empezar.</p><p>Recuerda por qué la elegiste: tu yo del futuro te lo agradecerá.</p>',
       [['¡Entendido!', () => { cerrar(); state.prevView = state.view; state.view = 'practicaSemanal'; window.scrollTo(0,0); render(); }]]); };
-    const cambiarla = () => { responder('cambiar'); pantalla('Cambiar de meta está bien',
-      '<p>- Escúchate -</p><p>Elegir lo que de verdad te importa ahora también es avanzar.</p><p>Te invitamos a <b>rellenar de nuevo el formulario de tu meta</b> con lo que hoy te motiva. ' + (tienePlan('guias') ? 'Recibirás una guía nueva para tu nueva meta.' : '') + '</p><p>Tu progreso del viaje se guarda.</p>',
-      [['Rellenar el formulario de mi nueva meta', () => { cerrar(); try { localStorage.removeItem(fmClave()); } catch(e){} abrirFormularioMeta(); }], ['Mejor sigo con la mía', siImportante]]); };
+    const cambiarla = () => { responder('cambiar'); cerrar(); abrirFinMeta('sinInteres'); };   // «ya no me interesa»: el flujo de meta sin interés (mira el plan)
     inicio();
     document.body.appendChild(capa);
   }
@@ -9359,7 +9451,7 @@ lo que haces cada día es lo que vas a ser.`;
         <p style="font-size:12px;color:var(--ink-soft);margin:8px 0 0">La meta nueva no cuenta como cambio de meta.</p>`;
       card.querySelector('#plazoNueva').onclick = async () => {
         await responder(true, 'Quiere una meta nueva'); plazoPaso = null;
-        try { localStorage.removeItem(fmClave()); } catch(e){}
+        try { localStorage.setItem('meta_sin_cambio_' + state.me, '1'); localStorage.removeItem(fmClave()); } catch(e){}
         abrirFormularioMeta();
       };
       card.querySelector('#plazoSeguir').onclick = async () => { await responder(true, 'Sigue afianzándola'); plazoPaso = null; render(); };
@@ -9858,7 +9950,11 @@ lo que haces cada día es lo que vas a ser.`;
           const dfm = Object.assign({}, state.gamifica.datosFormulario || {});
           dfm.plazo = fm.r['1502404995'] || ''; dfm.metaTexto = (fm.r['785855484'] || fm.r['649833281'] || '').slice(0, 300); dfm.fechaMeta = iso; delete dfm.plazoRespondido;
           state.gamifica.datosFormulario = dfm;
-          try { localStorage.setItem(claveMetaIntentos(), String(metaIntentosUsados() + 1)); localStorage.removeItem(fmClave()); } catch(err){}
+          try {
+            const sinCambio = localStorage.getItem('meta_sin_cambio_' + state.me) === '1';   // tras lograr la meta: no cuenta como cambio
+            if(!sinCambio) localStorage.setItem(claveMetaIntentos(), String(metaIntentosUsados() + 1));
+            localStorage.removeItem('meta_sin_cambio_' + state.me); localStorage.removeItem(fmClave());
+          } catch(err){}
           fm.enviado = true; window.scrollTo(0,0); render();
         } catch(err){
           b.disabled = false; b.textContent = 'Enviar mi meta 🚀';
@@ -10154,4 +10250,4 @@ lo que haces cada día es lo que vas a ser.`;
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V12.60 · App Metas Amables · 2026-10-11 23:05==== -->
+<!-- ==== Fin del index V12.61 · App Metas Amables · 2026-10-11 23:21==== -->
