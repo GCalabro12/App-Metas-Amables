@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V12.57 · App Metas Amables · 2026-10-11 22:59==== -->
+<!-- ==== index V12.58 · App Metas Amables · 2026-10-11 23:00==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1305,7 +1305,7 @@ body.riego-abierto{overflow:hidden}
 .simp-nav{display:flex;gap:10px}.simp-nav .btn{flex:1;text-align:center}
 .simp-estado{margin:10px 0 0;font-size:14px;color:#5E6B55;text-align:center}
 html.modo-minimal body,html.modo-minimal .riego-capa{background:#fff!important}
-html.modo-minimal .practi-inicio,html.modo-minimal .practi-bocadillo,html.modo-minimal .hablar-practi-btn{display:none!important}   /* sin Prácti saludando, sin bocadillos y sin «Quiero hablar con Prácti» */
+html.modo-minimal .practi-inicio,html.modo-minimal .practi-bocadillo,html.modo-minimal .hablar-practi-btn,html.modo-minimal #nivelBadgeBtn,html.modo-minimal #progNivel{display:none!important}   /* sin Prácti saludando, sin bocadillos y sin «Quiero hablar con Prácti» */
 .modo-switch-fila{width:100%;display:flex;justify-content:flex-end;margin:0 0 4px}
 .modo-switch{display:flex;align-items:center;gap:8px;padding:4px 4px 4px 12px;border:1px solid var(--border);border-radius:20px;background:#fff;font:700 13px Karla,sans-serif;color:#2F4A22;cursor:pointer}
 .ms-pista{position:relative;width:40px;height:22px;border-radius:11px;background:#639922;transition:background .25s}
@@ -2185,7 +2185,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V12.57';
+  const APP_VERSION = 'V12.58';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -3332,6 +3332,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     });
     return desde ? [...dias].filter(x => x >= desde).length : dias.size;
   }
+  // Los regalos que se ven: en el modo minimalista no hay juego, así que el día 15 no lleva regalo
+  function premiosReto(){ if(!modoMinimal()) return RETO_PREMIOS; const o = { ...RETO_PREMIOS }; delete o[15]; return o; }
   function premioRetoDesbloqueado(id){
     const dia = Number(Object.keys(RETO_PREMIOS).find(k => RETO_PREMIOS[k].id === id));
     return diasRegistradosReto() >= dia;
@@ -3348,7 +3350,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     const pos = i => { const fila = Math.floor(i / 5), col = i % 5; return [fila === 1 ? xs[4 - col] : xs[col], ys[fila]]; };
     let s = '<svg class="reto-camino" viewBox="0 0 320 250"><path d="M40 44 H280 A42 42 0 0 1 280 128 H40 A42 42 0 0 0 40 212 H280" fill="none" stroke="#E6DCC6" stroke-width="7" stroke-linecap="round"/>';
     for(let i = 0; i < RETO_DIAS; i++){
-      const [x, y] = pos(i), dia = i + 1, hecho = dia <= n, hoy = dia === n, premio = RETO_PREMIOS[dia];
+      const [x, y] = pos(i), dia = i + 1, hecho = dia <= n, hoy = dia === n, premio = premiosReto()[dia];
       s += (hoy ? '<circle cx="' + x + '" cy="' + y + '" r="23" fill="#F2B32B" opacity=".3"/>' : '')
         + '<circle cx="' + x + '" cy="' + y + '" r="17" fill="' + (hecho ? '#F2B32B' : '#F4EFE4') + '" stroke="' + (hecho ? '#C98A00' : '#D8CFBC') + '" stroke-width="2.5"/>'
         + '<text x="' + x + '" y="' + (y + 5.5) + '" text-anchor="middle" font-family="Karla,Arial,sans-serif" font-size="15" font-weight="800" fill="' + (hecho ? '#fff' : '#9A9180') + '">' + dia + '</text>'
@@ -3398,8 +3400,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
   function abrirRetoDia(n, soloVer){
     document.querySelectorAll('.reto-capa').forEach(x => x.remove());
-    const premio = RETO_PREMIOS[n];
-    const siguiente = Object.keys(RETO_PREMIOS).map(Number).find(d => d > n);
+    const premio = premiosReto()[n];
+    const siguiente = Object.keys(premiosReto()).map(Number).find(d => d > n);
     const tit = n >= RETO_DIAS ? '¡Reto completado!' : '¡Has completado tu día ' + n + '!';
     let tx = '';
     if(n === 1) tx = '<p>Muchas personas que empiezan un hábito nuevo lo dejan en las dos primeras semanas. Por eso te propongo un reto: <b>registra tu día durante 15 días</b>.</p><p>No hace falta que sean seguidos: puedes descansar algún día entremedias. Cada 5 días te espera un regalo.</p>';
@@ -3408,7 +3410,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     const capa = el('<div class="reto-capa" role="dialog" aria-label="Reto de 15 días"><div class="reto-card">'
       + '<div class="reto-cab">' + practiCartelHTML(n, 140) + '</div>'
       + '<div class="reto-cuerpo"><h2>' + tit + '</h2>' + tx + caminoRetoSVG(n) + '<p class="reto-info" hidden></p>'
-      + (premio && !(modoMinimal() && premio.id === 'juego') ? '<button type="button" class="reto-btn reto-premio-btn">' + premio.ico + ' ' + premio.boton + '</button>' : '')
+      + (premio ? '<button type="button" class="reto-btn reto-premio-btn">' + premio.ico + ' ' + premio.boton + '</button>' : '')
       + '<button type="button" class="reto-btn ' + (premio ? 'reto-sec' : '') + ' reto-ok">' + (n === 1 ? '¡Acepto el reto!' : 'Continuar') + '</button></div></div></div>').firstElementChild;
     document.body.appendChild(capa);
     try { activarPracti(capa); moverCartelConPracti(capa); } catch(e){}
@@ -4361,6 +4363,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
+    { v: 'V12.58', f: '11 de octubre de 2026', n: [
+      'En el <b>modo minimalista</b> tampoco salen las insignias, y en el camino del reto de 15 días ya no aparece el regalo del juego.' ] },
     { v: 'V12.57', f: '11 de octubre de 2026', n: [
       'En el <b>modo minimalista</b> ya no sale Prácti saludando ni sus bocadillos de mensajes.' ] },
     { v: 'V12.56', f: '11 de octubre de 2026', n: [
@@ -4516,7 +4520,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
         + '<p>Lo demás (música, frases, juegos…) son ayudas: puedes usarlas o no.</p>'],
       ['¿Te abruma? Prueba el modo minimalista',
         '<p>Si sientes que la app te abruma con tanta información y pantallas, puedes activar el <b>modo minimalista</b>. Se quitan:</p>'
-        + '<ul><li>Utilidades (frases, música, formación, Habla con Prácti y el juego),</li><li>Prácti saludando y sus bocadillos,</li><li>las notas a tu yo del futuro,</li><li>el recordatorio en el calendario del móvil,</li><li>y el fondo de imagen: todo queda en blanco.</li></ul>'
+        + '<ul><li>Utilidades (frases, música, formación, Habla con Prácti y el juego),</li><li>Prácti saludando y sus bocadillos,</li><li>las insignias,</li><li>las notas a tu yo del futuro,</li><li>el recordatorio en el calendario del móvil,</li><li>y el fondo de imagen: todo queda en blanco.</li></ul>'
         + '<p>Lo importante sigue igual: tu meta, tu guía, tus registros y tu grupo.</p>'
         + '<p><b>Siempre puedes volver al modo normal</b> con el interruptor que verás arriba a la derecha.</p>']
     ];
@@ -10142,4 +10146,4 @@ lo que haces cada día es lo que vas a ser.`;
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V12.57 · App Metas Amables · 2026-10-11 22:59==== -->
+<!-- ==== Fin del index V12.58 · App Metas Amables · 2026-10-11 23:00==== -->
