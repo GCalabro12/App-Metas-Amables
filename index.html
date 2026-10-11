@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V12.63 · App Metas Amables · 2026-10-11 23:43==== -->
+<!-- ==== index V12.64 · App Metas Amables · 2026-10-11 23:45==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2216,7 +2216,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V12.63';
+  const APP_VERSION = 'V12.64';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -4222,6 +4222,15 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       { tit: 'Práctica en pausa', img: mini('#55657F', '#fff', '⏸️'),
         cuando: 'Desde «Meta lograda, sin interés o en pausa», o al marcar un entorno de visitas/viaje o enfermedad. Pregunta hasta cuándo (1 semana, 15 días, 1 mes o una fecha). Después sale en grande en Inicio.',
         abrir: () => abrirPausa('', true) },
+      { tit: 'Inicio: práctica en pausa', img: mini('#EEF2F8', '#33415C', '⏸️'),
+        cuando: 'Arriba en Inicio, mientras dura la pausa: «Práctica en pausa hasta…», con «Retomar mi práctica ahora» y «Cambiar la fecha».',
+        abrir: () => { const d = new Date(); vistaPreviaTarjeta('Inicio: práctica en pausa', tarjetaPausa({ hasta: isoLocal(new Date(d.getFullYear(), d.getMonth(), d.getDate() + 14)) }).outerHTML); } },
+      { tit: 'Inicio: tu pausa ha terminado', img: mini('#EEF2F8', '#33415C', '▶️'),
+        cuando: 'Arriba en Inicio, cuando ya pasó la fecha de la pausa y la persona aún no la ha retomado: «¿Retomamos tu práctica?», con «Alargar la pausa».',
+        abrir: () => { const d = new Date(); vistaPreviaTarjeta('Inicio: tu pausa ha terminado', tarjetaPausa({ hasta: isoLocal(new Date(d.getFullYear(), d.getMonth(), d.getDate() - 1)), terminada: true }).outerHTML); } },
+      { tit: 'Hoy, sé amable contigo (con la pausa)', img: mini('linear-gradient(180deg,#9AA59A 0 45%,#EEF5E6 45%)', '#55657F', '⏸️'),
+        cuando: 'Al marcar el entorno «Visitas, viaje, salida…» o «Enfermo, imposibilitado»: la hoja amable trae además «Poner mi práctica en pausa».',
+        abrir: () => abrirHojaAmable('entorno', true) },
       { tit: 'Tiempo de cosecha', img: mini('#fff', '#6B9362', '🧺'),
         cuando: 'En Inicio, cuando se cumple el plazo de la meta (1 o 2 meses desde el formulario): «¿Has podido cosecharla?».',
         abrir: () => vistaPreviaTarjeta('Tiempo de cosecha', '<div class="card" style="border:2px solid #6B9362;text-align:center">' + practiHTML('pizarra', '', 90)
@@ -8530,8 +8539,8 @@ lo que haces cada día es lo que vas a ser.`;
     document.body.appendChild(capa);
   }
   // En Inicio: «Práctica en pausa hasta…» en grande (o, si ya terminó, «¿Retomamos?»)
-  function tarjetaPausa(){
-    const pz = pausaActual(), fin = !pz && pausaTerminada();
+  function tarjetaPausa(demo){   // demo: { hasta, terminada } para la vista previa del panel admin
+    const pz = demo ? (demo.terminada ? null : demo) : pausaActual(), fin = demo ? (demo.terminada ? demo : null) : !pz && pausaTerminada();
     if(!pz && !fin) return null;
     const c = el(pz
       ? '<div class="card pausa-card"><p class="pausa-tit">⏸️ Práctica en pausa</p><p class="pausa-hasta">hasta el ' + fechaBonita(pz.hasta) + '</p><p>Descansa y cuídate. Cada semana te recordaremos por WhatsApp que está en pausa. Cuando te vaya bien, la retomas.</p>'
@@ -10426,4 +10435,4 @@ lo que haces cada día es lo que vas a ser.`;
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V12.63 · App Metas Amables · 2026-10-11 23:43==== -->
+<!-- ==== Fin del index V12.64 · App Metas Amables · 2026-10-11 23:45==== -->
