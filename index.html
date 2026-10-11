@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V12.16 · App Metas Amables · 2026-10-11 18:34==== -->
+<!-- ==== index V12.17 · App Metas Amables · 2026-10-11 18:35==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1135,7 +1135,7 @@ body.riego-abierto{overflow:hidden}
 .abonar-eje{margin:2px 0;font-size:12px;color:#6A6A60}.abonar-lados{display:flex;justify-content:space-between;width:min(300px,82vw);margin:2px auto 8px;font-size:12px;color:#6A6A60}
 .clima-fila{display:flex;align-items:center;justify-content:center;gap:4px}
 .clima-lado{writing-mode:vertical-rl;font-size:12.5px;color:#6A6A60;white-space:nowrap}.clima-lado.izq{transform:rotate(180deg)}
-.clima-sol{position:relative;flex:none;width:min(300px,74vw);aspect-ratio:1;margin:4px auto;padding:8.5%;box-sizing:border-box;color:var(--rayo,#F6C94A);transition:color .3s}
+.clima-sol{position:relative;flex:none;width:min(300px,74vw);aspect-ratio:1;margin:4px auto;padding:6%;box-sizing:border-box;color:var(--rayo,#F6C94A);transition:color .3s}
 .clima-rayos{position:absolute;left:0;top:0;width:100%;height:100%;fill:currentColor}
 .clima-disco{position:relative;width:100%;height:100%;border-radius:50%;overflow:hidden;box-shadow:0 0 0 4px rgba(255,255,255,.9),0 4px 14px rgba(0,0,0,.12)}
 .clima-disco.rejilla{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:3px;background:#fff}
@@ -2083,7 +2083,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V12.16';
+  const APP_VERSION = 'V12.17';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -8296,13 +8296,13 @@ lo que haces cada día es lo que vas a ser.`;
   const RAYOS_SOL = (() => {
     const pt = (r, a) => (50 + r * Math.cos(a)).toFixed(2) + ',' + (50 + r * Math.sin(a)).toFixed(2);
     let s = '';
-    for(let k = 0; k < 20; k++){ const a = k * Math.PI / 10 - Math.PI / 2, w = Math.PI / 20; s += '<polygon points="' + pt(41, a - w) + ' ' + pt(49, a) + ' ' + pt(41, a + w) + '"/>'; }   // bases tocándose, picos cortos
+    for(let k = 0; k < 20; k++){ const a = k * Math.PI / 10 - Math.PI / 2, w = Math.PI / 20; s += '<polygon points="' + pt(44, a - w) + ' ' + pt(49.5, a) + ' ' + pt(44, a + w) + '"/>'; }   // bases tocándose, picos cortos
     return '<svg class="clima-rayos" viewBox="0 0 100 100" aria-hidden="true">' + s + '</svg>';
   })();
   function crearMacetaAbonar(alGuardar){
     let sel = abonoDeHoy(), modo = sel.length ? 'ver' : 'grid', guardado = sel.length > 0;
     const caja = el('<div class="abonar"><p class="abonar-tit">☀️ El clima de hoy</p><p class="abonar-sub">Tus emociones son el clima de tu meta: no se eligen, se observan. <b>¿Cómo te sientes hoy?</b></p>'
-      + '<p class="abonar-eje">⚡ Más energía</p><div class="clima-fila"><span class="clima-lado izq">← Desagradable</span><div class="clima-sol">' + RAYOS_SOL + '<div class="clima-disco"></div></div><span class="clima-lado der">Agradable →</span></div><p class="abonar-eje">🔋 Menos energía</p>'
+      + '<p class="abonar-eje">⚡ Más energía</p><div class="clima-fila"><span class="clima-lado izq">Desagradable</span><div class="clima-sol">' + RAYOS_SOL + '<div class="clima-disco"></div></div><span class="clima-lado der">Agradable</span></div><p class="abonar-eje">🔋 Menos energía</p>'
       + '<div class="abonar-acciones"></div><p class="abonar-msg"></p></div>').firstElementChild;
     const maceta = caja.querySelector('.clima-disco'), sol = caja.querySelector('.clima-sol'), acc = caja.querySelector('.abonar-acciones'), msg = caja.querySelector('.abonar-msg');
     const pintar = () => {
@@ -9462,4 +9462,4 @@ lo que haces cada día es lo que vas a ser.`;
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V12.16 · App Metas Amables · 2026-10-11 18:34==== -->
+<!-- ==== Fin del index V12.17 · App Metas Amables · 2026-10-11 18:35==== -->
