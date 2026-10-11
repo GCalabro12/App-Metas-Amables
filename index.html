@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V11.100 · App Metas Amables · 2026-10-11 02:09==== -->
+<!-- ==== index V12.01 · App Metas Amables · 2026-10-11 02:19==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1191,7 +1191,8 @@ body.riego-abierto{overflow:hidden}
 .ritual-op{padding:9px 6px;line-height:1.25;border:2px solid #F2C14E;border-radius:12px;background:#fff;font:700 14.5px Karla,sans-serif;color:#7A5200;cursor:pointer}
 .ritual-otro{display:flex;gap:8px;margin-top:8px}.ritual-otro input{flex:1;min-width:0;padding:9px 12px;border:1px solid #E2D3A8;border-radius:10px;font:inherit;font-size:14.5px;background:#fff}
 .ritual-otro button{padding:9px 14px;border:0;border-radius:10px;background:#F2C14E;color:#2B1B00;font:800 14px Karla,sans-serif;cursor:pointer}
-.ritual-guia{display:block;width:100%;margin:0 0 8px;padding:11px 14px;border:0;border-radius:12px;background:#F2C14E;color:#2B1B00;font:800 15px Karla,sans-serif;cursor:pointer}
+.ritual-sub{font-size:12px;color:#7A5200;opacity:.85;margin:0 0 8px}
+  .ritual-guia{display:block;width:100%;margin:0 0 8px;padding:11px 14px;border:0;border-radius:12px;background:#F2C14E;color:#2B1B00;font:800 15px Karla,sans-serif;cursor:pointer}
 .ritual-cambiar{background:none;border:0;padding:0;color:#7A5200;text-decoration:underline;font:600 13.5px Karla,sans-serif;cursor:pointer}
 .planta-meta{display:block;margin:3px 0 0;font:italic 600 14.5px/1.35 Lora,serif;color:#4F7A43}
 .util-nov{display:flex;align-items:center;gap:10px;width:100%;margin:14px 0 0;padding:12px 16px;border:2px solid #101010;border-radius:16px;background:#FFF6DC;font:inherit;color:#101010;text-align:left;cursor:pointer}.util-nov b{display:block;font-size:16px}.util-nov small{display:block;color:var(--ink-soft);font-size:13px}.util-nov .opcion-flecha{margin-left:auto;font-size:22px}
@@ -2052,7 +2053,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V11.100';
+  const APP_VERSION = 'V12.01';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -4027,6 +4028,9 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
+    { v: 'V12.01', f: '11 de octubre de 2026', n: [
+      'En Inicio, <b>Tu práctica de esta semana</b>: el ejercicio que te propone tu guía y su objetivo, tu disparador («Cuando…, haré…») y el botón <b>Descripción completa</b>, que abre la guía en «Tu práctica de la semana». Ya no se pregunta a qué hora la harás: un hábito se hace siempre en el mismo momento, justo después de algo que ya haces.',
+      'En <b>Mi calendario de prácticas</b>, cada día hecho es una <b>maceta</b> (del color de tu emoción si ese día abonaste), sin la marca ✓.' ] },
     { v: 'V11.99', f: '11 de octubre de 2026', n: [
       '<b>🌿 Abona tu meta</b>: regar es practicar; abonar es conocer cómo te sientes. Elige una o dos emociones en la maceta (energía alta o baja, agradable o desagradable) y su intensidad. Puedes abonar aunque hoy no hayas regado.',
       'En «¿Qué días la hiciste?», cada día es una <b>maceta pequeña</b> del color de tu emoción, con las veces que hiciste la práctica dentro.' ] },
@@ -7028,6 +7032,10 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       const fila = lista().find(c => c.week === weekShort(lunesDe(d)));
       return fila ? (leerDias(fila.diasHechos)[letraDe(d)] || 0) : 0;   // veces de ese día (0 = no)
     };
+    const abonoEl = d => {   // color de «Abona tu meta» de ese día, si lo registró
+      const fila = lista().find(c => c.week === weekShort(lunesDe(d)));
+      try { return fondoAbono(leerAbonos(fila && fila.abonos)[letraDe(d)]); } catch(e){ return ''; }
+    };
     const pintar = (msg) => {
       const y = calDiarioMes.getFullYear(), m = calDiarioMes.getMonth();
       const huecos = (new Date(y, m, 1).getDay() + 6) % 7;
@@ -7037,7 +7045,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       for(let n = 1; n <= dias; n++){
         const d = new Date(y, m, n), futuro = d > hoy, h = !futuro && hechoEl(d);
         if(h){ total++; totalVeces += h; }
-        celdas += `<button type="button" class="cd-dia${h ? ' hecho' : ''}${+d === +hoy ? ' hoy' : ''}" data-n="${n}" ${futuro ? 'disabled' : soloVer ? 'tabindex="-1"' : ''} aria-pressed="${!!h}">${n}<i>${h ? (h > 1 ? '×' + h : '✓') : ''}</i></button>`;
+        const ab = h ? abonoEl(d) : '';
+        celdas += `<button type="button" class="cd-dia${h ? ' hecho' : ''}${ab ? ' abonado' : ''}${+d === +hoy ? ' hoy' : ''}" data-n="${n}" ${futuro ? 'disabled' : soloVer ? 'tabindex="-1"' : ''} aria-pressed="${!!h}">${h ? '<span class="cd-maceta"' + (ab ? ' style="background:' + ab + '"' : '') + '></span>' : ''}<b>${n}</b><i>${h > 1 ? '×' + h : ''}</i></button>`;
       }
       const puedeAtras = new Date(y, m - 1, 1) >= minMes, puedeAdelante = new Date(y, m + 1, 1) <= hoy;
       card.innerHTML = `
@@ -7048,13 +7057,19 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
           .cal-diario .cd-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center}
           .cal-diario .cd-sem{font-size:12px;font-weight:700;color:var(--ink-soft)}
           .cal-diario .cd-dia{position:relative;aspect-ratio:1;border:1px solid var(--border);border-radius:8px;background:var(--card, #fff);font-size:13px;color:var(--ink);cursor:pointer;padding:0;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1}
-          .cal-diario .cd-dia i{font-style:normal;font-weight:700;font-size:14px;height:14px;color:#fff}
-          .cal-diario .cd-dia.hecho{background:#6B9362;border-color:#6B9362;color:#fff}
+          .cal-diario .cd-dia b{position:relative;font-weight:400}
+          .cal-diario .cd-dia i{position:relative;font-style:normal;font-weight:700;font-size:11px;height:11px;color:#fff}
+          .cal-diario .cd-dia.hecho{background:transparent;border-color:transparent;color:#fff}
+          .cal-diario .cd-dia.hecho b{font-weight:800;margin-top:2px}
+          .cal-diario .cd-maceta{position:absolute;inset:1px 2px 2px;background:#6B9362;clip-path:polygon(0 0,100% 0,100% 24%,90% 24%,78% 100%,22% 100%,10% 24%,0 24%)}
+          .cal-diario .cd-dia.abonado{color:#2B2B2B}
+          .cal-diario .cd-dia.abonado i{color:#2B2B2B}
+          .cal-diario .cd-dia.hecho.hoy{border:2px solid var(--honey)}
           .cal-diario .cd-dia.hoy{border:2px solid var(--honey)}
           .cal-diario .cd-dia:disabled{opacity:.35;cursor:default}
         </style>
         <p style="margin:0 0 4px;font-size:16px"><b>📅 Mi calendario de prácticas</b></p>
-        <p style="font-size:13px;color:var(--ink-soft);margin:0 0 10px">Aquí se van guardando los días que marcas como hechos (✓ una vez, ×3 tres veces…).</p>
+        <p style="font-size:13px;color:var(--ink-soft);margin:0 0 10px">Cada día que haces tu práctica aparece como una maceta (×3 si la hiciste tres veces). Si ese día abonaste, la maceta toma el color de cómo te sentías.</p>
         <div class="cd-cab"><button type="button" class="cd-atras" ${puedeAtras ? '' : 'disabled'} aria-label="Mes anterior">‹</button><b>${monthNamesEs[m].charAt(0).toUpperCase() + monthNamesEs[m].slice(1)} ${y}</b><button type="button" class="cd-adelante" ${puedeAdelante ? '' : 'disabled'} aria-label="Mes siguiente">›</button></div>
         <div class="cd-grid">${DIAS_SEMANA.map(l => '<span class="cd-sem">' + l + '</span>').join('')}${celdas}</div>
         ${resumenSemanasMes(y, m)}
@@ -7980,39 +7995,57 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     vozDescargar(isoLocal(lunes)).then(url => { if(url && !rec) pintar('guardado'); }).catch(() => {});
     return card;
   }
-  // ===== Minuto de la mañana (idea de HabitatZero): hasta las 12, si aún no has regado, decides CUÁNDO harás hoy tu práctica =====
-  // Es la intención de implementación de la historia 1: con el momento decidido, cuesta mucho menos hacerla
-  function claveRitual(){ return 'ritual_' + state.me + '_' + hoyISO(); }
-  const MOMENTOS_RITUAL = [['☀️ Al levantarme', 'al levantarte'], ['🍽 Después de comer', 'después de comer'], ['🌇 Por la tarde', 'por la tarde']];
+  // ===== Tu práctica de esta semana (Inicio, mientras hoy no la hayas regado) =====
+  // No se pregunta «¿cuándo la harás hoy?»: un hábito se hace siempre en el mismo momento, justo después de
+  // un disparador (otro hábito que ya tienes). Se muestra la receta de la historia de ciencia 1, si la hay.
+  // La práctica que propone la guía para esta semana: «🌟 Ejercicio de la semana: …» y «🎯 Objetivo de la práctica: …»
+  // (no confundir con la meta de la persona). Si la semana no es de su plan, no se muestra.
+  function practicaDeLaGuia(){
+    const semanas = parseGuiaSemanas(state.guiaTexto);
+    if(!semanas.length) return null;
+    let i = semanas.findIndex(esSemanaActual);
+    if(i === -1) semanas.forEach((b, k) => { if(semanaDesbloqueada(b)) i = k; });
+    if(i === -1) return null;
+    const b = semanas[i];
+    if(!tienePlan('guias') && b.weekNum !== 1 && i !== 0) return null;
+    const limpiar = s => String(s || '').replace(/\*\*|__/g, '').replace(/^[\s:*_-]+/, '').replace(/\s+/g, ' ').trim();
+    const lineas = b.text.split('\n');
+    const tras = re => {
+      const k = lineas.findIndex(l => re.test(l)); if(k === -1) return '';
+      let resto = limpiar(lineas[k].replace(re, ''));
+      for(let j = k + 1; !resto && j < lineas.length && j < k + 4; j++){ if(/^\s*#/.test(lineas[j])) break; resto = limpiar(lineas[j]); }
+      return resto;
+    };
+    let ejercicio = tras(/^.*?ejercicio de la semana\s*:?\s*(\*\*)?\s*:?/i);
+    let objetivo = tras(/^.*?objetivo de la pr[aá]ctica\s*:?\s*(\*\*)?\s*:?/i);
+    if(!ejercicio && !objetivo) objetivo = tras(/^\s*#+\s*tu pr[aá]ctica de la semana\s*/i);
+    if(!ejercicio && !objetivo) return null;
+    if(objetivo.length > 260) objetivo = objetivo.slice(0, 257).replace(/\s+\S*$/, '') + '…';
+    const nombres = [...guiaPorCapitulos(b.text).html.matchAll(/data-nombre="([^"]*)"/g)].map(x => x[1]);
+    return { ejercicio, objetivo, clave: b.year + '-' + (b.monthIdx + 1) + '-s' + b.weekNum,
+             cap: nombres.findIndex(n => /pr[aá]ctica de la semana/i.test(n)) };
+  }
+  function claveRitual(){ return 'ritual_' + state.me + '_' + hoyISO(); }   // (antiguo «momento del día»; ya no se pregunta)
   function tarjetaMinutoManana(){
     if(!state.me || diaHechoFecha(new Date()) > 0) return null;
-    let elegido = ''; try { elegido = localStorage.getItem(claveRitual()) || ''; } catch(e){}
-    if(!elegido && new Date().getHours() >= 12) return null;
-    const practica = String(textosCiclo().practica || '').trim();
+    const pg = practicaDeLaGuia();
+    let receta = ''; try { receta = recetaTexto(historiaGuardada('brecha')); } catch(e){}
     const c = document.createElement('div'); c.className = 'card ritual-card';
-    const pintar = () => {
-      if(elegido){
-        // Ya decidido: se muestra la práctica de la semana (la de la guía) y un acceso a la guía completa
-        c.innerHTML = '<p class="ritual-tit">🏃 Tu práctica de esta semana</p>'
-          + (practica ? '<p class="ritual-practica">«' + escapeAttr(practica) + '»</p>' : '<p class="ritual-tx">Tu guía semanal te explica la práctica de esta semana.</p>')
-          + '<p class="ritual-tx">☀️ Hoy la harás <b>' + escapeAttr(elegido) + '</b>.</p>'
-          + '<button type="button" class="ritual-guia">📖 Descripción completa</button><button type="button" class="ritual-cambiar">Cambiar el momento</button>';
-        c.querySelector('.ritual-guia').onclick = () => { state.prevView = 'panel'; state.view = 'practicas'; window.scrollTo(0, 0); render(); };
-        c.querySelector('.ritual-cambiar').onclick = () => { elegido = ''; try { localStorage.removeItem(claveRitual()); } catch(e){} pintar(); };
-        return;
-      }
-      c.innerHTML = '<p class="ritual-tit">☀️ Tu minuto de la mañana</p>'
-        + (practica ? '<p class="ritual-practica">«' + escapeAttr(practica.length > 90 ? practica.slice(0, 89) + '…' : practica) + '»</p>' : '')
-        + '<p class="ritual-tx"><b>¿Cuándo la harás hoy?</b></p>'
-        + '<div class="ritual-ops">' + MOMENTOS_RITUAL.map(m => '<button type="button" class="ritual-op" data-m="' + m[1] + '">' + m[0] + '</button>').join('') + '</div>'
-        + '<div class="ritual-otro"><input type="text" maxlength="60" placeholder="Otro momento: después del café…" aria-label="Otro momento"><button type="button">OK</button></div>';
-      const elegir = m => { m = String(m || '').trim(); if(!m) return; elegido = m; try { localStorage.setItem(claveRitual(), m); } catch(e){} try { sonidoTing(); } catch(e){} pintar(); };
-      c.querySelectorAll('.ritual-op').forEach(b => b.onclick = () => elegir(b.dataset.m));
-      const inp = c.querySelector('.ritual-otro input');
-      c.querySelector('.ritual-otro button').onclick = () => elegir(inp.value);
-      inp.onkeydown = ev => { if(ev.key === 'Enter') elegir(inp.value); };
+    // La guía es el tutor (el palo) de la planta: la sostiene para que crezca recta y no se tuerza
+    c.innerHTML = '<p class="ritual-tit">🎋 Tu práctica de esta semana</p>'
+      + '<p class="ritual-sub">Tu guía es el <b>tutor</b> de tu planta: la sostiene para que crezca recta y no se tuerza.</p>'
+      + (pg ? (pg.ejercicio ? '<p class="ritual-practica">' + escapeAttr(pg.ejercicio) + '</p>' : '')
+            + (pg.objetivo ? '<p class="ritual-tx">🎯 ' + escapeAttr(pg.objetivo) + '</p>' : '')
+            : '<p class="ritual-tx">Tu guía semanal te explica la práctica de esta semana.</p>')
+      + (receta ? '<p class="ritual-tx">🔗 <b>Tu disparador:</b> ' + escapeAttr(receta) + '</p>'
+                : '<p class="ritual-tx">🔗 Hazla siempre en el mismo momento, <b>justo después de algo que ya haces cada día</b> (por ejemplo, después del café). <button type="button" class="ritual-cambiar ritual-receta">Elegir mi disparador</button></p>')
+      + '<button type="button" class="ritual-guia">📖 Descripción completa</button>';
+    c.querySelector('.ritual-guia').onclick = () => {
+      // Abre la guía de esta semana directamente en el capítulo «Tu práctica de la semana»
+      if(pg && pg.cap >= 0) (window._capGuia = window._capGuia || {})[pg.clave] = pg.cap;
+      state.prevView = 'panel'; state.view = 'practicas'; window.scrollTo(0, 0); render();
     };
-    pintar();
+    const r = c.querySelector('.ritual-receta'); if(r) r.onclick = () => abrirHistoria('brecha');
     return c;
   }
 
@@ -9281,4 +9314,4 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V11.100 · App Metas Amables · 2026-10-11 02:09==== -->
+<!-- ==== Fin del index V12.01 · App Metas Amables · 2026-10-11 02:19==== -->
