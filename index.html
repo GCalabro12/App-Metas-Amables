@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V12.52 · App Metas Amables · 2026-10-11 22:39==== -->
+<!-- ==== index V12.53 · App Metas Amables · 2026-10-11 22:45==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1290,6 +1290,21 @@ body.riego-abierto{overflow:hidden}
   .ritual-guia{display:block;width:100%;margin:0 0 8px;padding:11px 14px;border:0;border-radius:12px;background:#F2C14E;color:#2B1B00;font:800 15px Karla,sans-serif;cursor:pointer}
 .ritual-cambiar{background:none;border:0;padding:0;color:#7A5200;text-decoration:underline;font:600 13.5px Karla,sans-serif;cursor:pointer}
 .planta-meta{display:block;margin:3px 0 0;font:italic 600 14.5px/1.35 Lora,serif;color:#4F7A43}
+/* La simplicidad voluntaria (Utilidades) y el modo minimalista */
+.simp-card{padding:20px 20px 18px}
+.simp-card h3{margin:0 0 12px;font:700 21px Lora,serif;color:#2F4A22;text-align:center}
+.simp-card p,.simp-card li{font-size:16px;line-height:1.55;color:#2B2B2B}
+.simp-card p{margin:0 0 12px}
+.simp-card ul{margin:0 0 12px;padding-left:20px}.simp-card li{margin:0 0 6px}
+.simp-card .simp-pieza{display:flex;gap:10px;align-items:flex-start;margin:0 0 10px}
+.simp-card .simp-letra{flex:0 0 26px;height:26px;border-radius:50%;background:#2F4A22;color:#fff;font:800 15px/26px Karla,sans-serif;text-align:center}
+.simp-card .simp-planes{font:inherit;color:#5B3FA8;font-weight:800;text-decoration:underline;background:none;border:0;padding:0;cursor:pointer}
+.simp-puntos{display:flex;justify-content:center;gap:8px;margin:4px 0 14px}
+.simp-puntos span{width:9px;height:9px;border-radius:50%;background:#D8D2C4}.simp-puntos span.on{background:#2F4A22}
+.simp-nav{display:flex;gap:10px}.simp-nav .btn{flex:1;text-align:center}
+.simp-estado{margin:10px 0 0;font-size:14px;color:#5E6B55;text-align:center}
+html.modo-minimal .viaje-paso.ahora .viaje-punto,html.modo-minimal .riego-escena img,html.modo-minimal .riego-mariposa,html.modo-minimal .riego-sol,html.modo-minimal .practi-balanceo .practi-hueco.quieto,html.modo-minimal #practiQuieto{animation:none!important}
+html.modo-minimal .riego-brillo,html.modo-minimal .pajaro-vuela,html.modo-minimal .pajaro-vuelve{display:none!important}
 .util-nov{display:flex;align-items:center;gap:10px;width:100%;margin:14px 0 0;padding:12px 16px;border:2px solid #101010;border-radius:16px;background:#FFF6DC;font:inherit;color:#101010;text-align:left;cursor:pointer}.util-nov b{display:block;font-size:16px}.util-nov small{display:block;color:var(--ink-soft);font-size:13px}.util-nov .opcion-flecha{margin-left:auto;font-size:22px}
 .nov-lista{display:block}.nov-ver{margin:0 0 14px;padding:14px 16px}.nov-ver h3{margin:0 0 2px;font:700 18px Lora,serif;color:#2F5A23}.nov-ver .nov-fecha{display:block;margin:0 0 8px;font-size:13px;color:var(--ink-soft)}.nov-ver ul{margin:0;padding-left:20px}.nov-ver li{margin:0 0 6px;line-height:1.45}
 .alta-marchita{position:relative;width:200px;height:213px;margin:0 auto}.alta-marchita img{position:absolute;left:0;top:0;width:200px;height:auto;opacity:0;animation-duration:6s;animation-timing-function:ease;animation-iteration-count:infinite}
@@ -2164,7 +2179,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V12.52';
+  const APP_VERSION = 'V12.53';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -3126,7 +3141,19 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   });
 
   // ---- Animaciones de cada resultado ----
+  // ===== Modo minimalista (Utilidades → La simplicidad voluntaria). Se guarda en este móvil; siempre se puede volver al normal =====
+  function modoMinimal(){ try { return localStorage.getItem('modo_minimal') === '1'; } catch(e){ return false; } }
+  function ponerModoMinimal(si){
+    try { if(si) localStorage.setItem('modo_minimal', '1'); else localStorage.removeItem('modo_minimal'); } catch(e){}
+    document.documentElement.classList.toggle('modo-minimal', !!si);
+    if(si){ try { if(sintoniaSonando()) apagarSintoniaSuave(800); } catch(e){} }
+    try { destruirPracti(); } catch(e){}
+    render();
+  }
+  try { if(modoMinimal()) document.documentElement.classList.add('modo-minimal'); } catch(e){}
+
   function lanzarAnimacion(tipo){
+    if(modoMinimal()) return;
     if(tipo === 'confeti') return launchConfetti();
     if(tipo === 'pajaro') return lanzarPajaro();
     if(tipo === 'nubes') return lanzarNubes();
@@ -3169,6 +3196,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
   function launchConfetti(){
+    if(modoMinimal()) return;
     const colors = ['#E8002C','#C9942D','#F9C22D','#3F5D45','#1A1A1A'];
     const container = document.createElement('div');
     container.style.cssText = 'position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:9999;';
@@ -3360,6 +3388,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       + '<button type="button" class="reto-btn reto-ok">Continuar</button></div></div></div>').firstElementChild;
     document.body.appendChild(capa);
     try { activarPracti(capa); moverCartelConPracti(capa); } catch(e){}
+    try { launchConfetti(); musicaCartel(); } catch(e){}
     capa.querySelector('.reto-ok').onclick = () => capa.remove();
   }
   function abrirRetoDia(n, soloVer){
@@ -3378,7 +3407,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       + '<button type="button" class="reto-btn ' + (premio ? 'reto-sec' : '') + ' reto-ok">' + (n === 1 ? '¡Acepto el reto!' : 'Continuar') + '</button></div></div></div>').firstElementChild;
     document.body.appendChild(capa);
     try { activarPracti(capa); moverCartelConPracti(capa); } catch(e){}
-    if(!soloVer){ try { launchConfetti(); } catch(e){} }
+    try { launchConfetti(); musicaCartel(); } catch(e){}   // siempre que sale el número: confeti y un poco de música
     const cerrar = () => capa.remove();
     capa.querySelector('.reto-ok').onclick = cerrar;
     // La «?» de cada regalo explica cuál es
@@ -3404,6 +3433,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     const nm = diasRegistradosMeta(), km = 'dias_meta_visto_' + state.me, fm = fechaMetaActual();
     let vm = 0; try { const [f, v] = String(localStorage.getItem(km) || '').split('|'); if(f === fm) vm = Number(v) || 0; } catch(e){}
     if(nm > vm){ try { localStorage.setItem(km, fm + '|' + nm); } catch(e){} }
+    if(modoMinimal()){ if(n > visto){ try { localStorage.setItem(k, String(n)); } catch(e){} } return; }
     if(n > visto && n <= RETO_DIAS){ try { localStorage.setItem(k, String(n)); } catch(e){} abrirRetoDia(n); return; }   // el reto (una sola vez en la vida)
     if(n > visto){ try { localStorage.setItem(k, String(n)); } catch(e){} }
     if(n > RETO_DIAS && nm > vm) abrirDiasMeta(nm);   // reto ya hecho: solo el cartel con los días de esta meta
@@ -3425,7 +3455,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       let jugando = false, sonido = true;
       try{ jugando = !!(ifr.contentWindow && ifr.contentWindow.__jugando); }catch(e){}
       try{ sonido = localStorage.getItem('practi_musica') !== '0'; }catch(e){}
-      if(jugando && sonido){ if(!sintoniaSonando()) sonarSintonia(0, 0.5); }
+      if(jugando && sonido){ if(!sintoniaSonando()) sonarSintoniaPedida(0, 0.5); }
       else if(sintoniaSonando()) pararSintonia();
     }, 300);
     document.body.appendChild(ov);
@@ -3654,7 +3684,15 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     const v0 = sintonia.volume, fin = Date.now() + ms;
     sintoniaReloj = setInterval(() => { const queda = fin - Date.now(); if(queda <= 0) pararSintonia(); else sintonia.volume = Math.max(0, v0 * queda / ms); }, 100);
   }
-  function sonarSintonia(segundos, volumen, conLetra){
+  let musicaPedida = false;
+  function sonarSintoniaPedida(segundos, volumen, conLetra){ musicaPedida = true; try { sonarSintonia(segundos, volumen, conLetra); } finally { musicaPedida = false; } }
+  // Cartel del reto y de los días registrados: un trocito de la música oficial (unos 3,5 s) que entra poco a poco y se apaga suave
+  function musicaCartel(){
+    if(sintoniaSonando() || (typeof musica !== 'undefined' && musica && musica.id)) return;   // no corta la música que ya suena
+    sonarSintonia(3.5, 0.6, false, 900, 1500);
+  }
+  function sonarSintonia(segundos, volumen, conLetra, entradaMs, salidaMs){
+    if(modoMinimal() && !musicaPedida) return;
     try{
       const vol = volumen || 0.8;
       // Con letra solo desde Música; los saludos de Prácti, el juego y la planta usan siempre la instrumental
@@ -3663,14 +3701,17 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       else if(!decodeURIComponent(sintonia.src).endsWith(archivo)){ sintonia.pause(); sintonia.src = archivo; }
       pararSintonia();
       if(typeof musica !== 'undefined' && musica && musica.id && typeof musicaPoner === 'function'){ try{ musicaPoner(null); }catch(e){} }
-      sintonia.currentTime = 0; sintonia.volume = vol; sintonia.loop = !segundos; sintonia.play().catch(() => {});
+      sintonia.currentTime = 0; sintonia.volume = entradaMs ? 0 : vol; sintonia.loop = !segundos; sintonia.play().catch(() => {});
       if(!segundos) return;                          // entera y en bucle (desde Música)
-      const fin = Date.now() + segundos * 1000;
-      sintoniaReloj = setInterval(() => {           // se apaga suave al final
-        const queda = fin - Date.now();
-        if(queda <= 0){ pararSintonia(); }
-        else if(queda < 2000){ sintonia.volume = Math.max(0, vol * queda / 2000); }
-      }, 100);
+      const ini = Date.now(), fin = ini + segundos * 1000, salida = salidaMs || 2000;
+      sintoniaReloj = setInterval(() => {           // entra poco a poco (si se pide) y se apaga suave al final
+        const ahora = Date.now(), queda = fin - ahora;
+        if(queda <= 0){ pararSintonia(); return; }
+        let v = vol;
+        if(entradaMs && ahora - ini < entradaMs) v = vol * (ahora - ini) / entradaMs;
+        if(queda < salida) v = Math.min(v, vol * queda / salida);
+        sintonia.volume = Math.max(0, Math.min(1, v));
+      }, 50);
     }catch(e){}
   }
   function activarReacciones(raiz){
@@ -3772,7 +3813,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     }
     const L = window.lottie || window.bodymovin;
     if(!L || !raiz) return;
-    const quieto = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const quieto = modoMinimal() || (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
     raiz.querySelectorAll('.practi[data-practi]:not(.activo)').forEach(nodo => {
       const datos = PRACTI_ANIM[nodo.getAttribute('data-practi')];
       if(!datos) return;
@@ -4293,7 +4334,11 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       + tarjeta('frases', 'Frases motivadoras', 'Elige un fondo y compártela', '<span class="util-mini-frase" style="background:center/cover url(' + FONDOS_FOTOS.practi + ')"></span>')
       + tarjeta('musica', 'Música motivacional', 'Música para acompañarte mientras usas la app', practiHTML('guitarra', '🎸', 120));
     app.appendChild(caja);
-    // Al final de todo, más pequeños: el recorrido guiado y las novedades de cada versión
+    // Al final de todo, más pequeños: la simplicidad voluntaria, el recorrido guiado y las novedades de cada versión
+    const simp = el('<button type="button" class="util-nov" style="background:#EEF5E6"><span style="font-size:26px">🍃</span><span><b>Metas Amables: la simplicidad voluntaria</b><small>'
+      + (modoMinimal() ? 'Modo minimalista activado · aquí puedes volver al normal' : 'Por qué la app es sencilla, y el modo minimalista') + '</small></span><span class="opcion-flecha">›</span></button>').firstElementChild;
+    simp.onclick = () => { state.simpPag = 0; state.view = 'simplicidad'; window.scrollTo(0,0); render(); };
+    app.appendChild(simp);
     const guia = el('<button type="button" class="util-nov" style="background:#E9F4E4"><span style="font-size:26px">🧭</span><span><b>¿Cómo se usa la app?</b><small>Un recorrido rápido por Inicio, paso a paso</small></span><span class="opcion-flecha">›</span></button>').firstElementChild;
     guia.onclick = () => { state.view = 'panel'; state.panelSub = null; window.scrollTo(0,0); render(); setTimeout(iniciarTour, 700); };
     app.appendChild(guia);
@@ -4313,8 +4358,10 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
-    { v: 'V12.45', f: '11 de octubre de 2026', n: [
-      '<b>Reto de 15 días</b>: cada día que registras algo, Prácti te lo celebra y se ilumina tu camino. Cada 5 días hay un regalo: el día 5, la canción con letra; el día 10, la nota a tu yo del próximo mes (para cualquier plan); el día 15, el juego «Salta la valla con Prácti».' ] },
+    { v: 'V12.53', f: '11 de octubre de 2026', n: [
+      'En Utilidades, <b>Metas Amables: la simplicidad voluntaria</b>: por qué la app es sencilla, qué es el minimalismo y cuáles son las piezas fundamentales para tu meta.',
+      'Nuevo <b>modo minimalista</b>: sin sonidos al registrar, sin animaciones y sin confeti ni ventanas de celebración. Siempre puedes volver al modo normal.',
+      'Cada vez que Prácti te enseña su cartel con tus días, cae confeti y suena un trocito de la música de Metas Amables.' ] },
     { v: 'V12.52', f: '11 de octubre de 2026', n: [
       '<b>Prácti sujeta su cartel</b> por dos asas, y el cartel sube y baja con él.',
       'Cuando terminas el reto de 15 días, al registrar cada día nuevo Prácti te enseña <b>cuántos días llevas con tu meta actual</b>. Con cada meta nueva, el contador vuelve a empezar.' ] },
@@ -4322,6 +4369,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       '<b>Hoy, sé amable contigo.</b> Si marcas un clima difícil (enfado, estrés, cansancio…) o un entorno complicado (poco tiempo, visitas, viaje, enfermedad), te recordamos que no tienes ninguna necesidad de hacer tu práctica ese día si no puedes o no te apetece.' ] },
     { v: 'V12.49', f: '11 de octubre de 2026', n: [
       '<b>¿Has olvidado tu contraseña?</b> Ahora puedes recuperarla tú: escribe tu email y te llega un código de 6 cifras para poner una nueva.' ] },
+    { v: 'V12.45', f: '11 de octubre de 2026', n: [
+      '<b>Reto de 15 días</b>: cada día que registras algo, Prácti te lo celebra y se ilumina tu camino. Cada 5 días hay un regalo: el día 5, la canción con letra; el día 10, la nota a tu yo del próximo mes (para cualquier plan); el día 15, el juego «Salta la valla con Prácti».' ] },
     { v: 'V12.39', f: '11 de octubre de 2026', n: [
       'Sonidos nuevos al registrar: un <b>arpa</b> cuando registras tu práctica, una <b>kalimba</b> con tu clima y una <b>marimba</b> con tu entorno.' ] },
     { v: 'V12.37', f: '11 de octubre de 2026', n: [
@@ -4433,6 +4482,49 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       'Botón <b>🔊 Oír</b> para escuchar la guía.',
       'La valoración de la guía, solo al final.' ] }
   ];
+  // ===== Metas Amables: la simplicidad voluntaria (idea de Gustavo, 11-10-2026). Páginas con «Siguiente» y, al final, el modo minimalista =====
+  function renderSimplicidad(){
+    renderBackTopbar('🍃 La simplicidad voluntaria');
+    app.querySelector('#btnVolver').onclick = () => { state.simpPag = 0; state.view = 'utilidades'; window.scrollTo(0,0); render(); };
+    const min = modoMinimal();
+    const PAGS = [
+      ['Vivir con lo esencial',
+        '<p>La <b>simplicidad voluntaria</b> es elegir vivir con menos para dejar sitio a lo que de verdad importa. No es privarte de nada: es decidir, con calma, en qué pones tu tiempo, tu atención y tu energía.</p>'
+        + '<p>El <b>minimalismo</b> va en la misma línea: quitar lo que sobra (cosas, compromisos, ruido, pantallas) para quedarte con lo que te hace bien. Menos cosas que atender, más espacio para vivir.</p>'
+        + '<p>Puedes probarlo poco a poco: ordenar un cajón, pasar una tarde sin móvil o decir «no» a algo que no te aporta.</p>'],
+      ['Una app que no quiere atraparte',
+        '<p>Metas Amables está hecha con esa misma idea. <b>No quiere distraerte</b> con muchas imágenes ni sonidos, y no es un videojuego.</p>'
+        + '<p>No pretende que pases más tiempo en el móvil, sino que <b>vivas más en la vida real</b>: entras, registras en un minuto y vuelves a lo tuyo.</p>'
+        + '<p>Por eso nuestro lema es <i>«Sin distracciones. Solo tu meta.»</i></p>'],
+      ['Un motivador para tus metas importantes',
+        '<p>Metas Amables pretende ser eso: <b>un motivador para alcanzar las metas que de verdad te importan</b>. Para tu meta del trimestre hay cuatro piezas fundamentales:</p>'
+        + '<div class="simp-pieza"><span class="simp-letra">a</span><span><b>El formulario de tu meta:</b> eliges qué quieres conseguir y por qué.</span></div>'
+        + '<div class="simp-pieza"><span class="simp-letra">b</span><span><b>Tu guía de esta semana:</b> el ejercicio que te sostiene, como el tutor sostiene a la planta.</span></div>'
+        + '<div class="simp-pieza"><span class="simp-letra">c</span><span><b>Registrar</b> cada día tu clima, tu entorno y tu práctica.</span></div>'
+        + '<div class="simp-pieza"><span class="simp-letra">d</span><span><b>Los grupos de apoyo</b> <span style="white-space:nowrap">(<button type="button" class="simp-planes">Plan Guías + Grupo</button>)</span>: personas que caminan contigo.</span></div>'
+        + '<p>Lo demás (música, frases, juegos…) son ayudas: puedes usarlas o no.</p>'],
+      ['¿Te abruma? Prueba el modo minimalista',
+        '<p>Si sientes que la app te abruma con tanta información, sonidos y pantallas, puedes activar el <b>modo minimalista</b>:</p>'
+        + '<ul><li>sin sonidos al registrar,</li><li>Prácti y las animaciones quietos,</li><li>sin confeti ni ventanas de celebración.</li></ul>'
+        + '<p>Lo importante sigue igual: tu meta, tu guía, tus registros y tu grupo.</p>'
+        + '<p><b>Siempre puedes volver al modo normal</b> desde aquí mismo: Utilidades → La simplicidad voluntaria.</p>']
+    ];
+    const i = Math.max(0, Math.min(PAGS.length - 1, state.simpPag || 0)), ultima = i === PAGS.length - 1;
+    const card = el('<div class="card simp-card"><h3>' + PAGS[i][0] + '</h3>' + PAGS[i][1]
+      + '<div class="simp-puntos">' + PAGS.map((x, n) => '<span' + (n === i ? ' class="on"' : '') + '></span>').join('') + '</div>'
+      + (ultima ? '<button type="button" class="btn btn-yes simp-modo" style="text-align:center;width:100%;margin:0 0 10px">' + (min ? 'Volver al modo normal' : 'Activar el modo minimalista') + '</button>' : '')
+      + '<div class="simp-nav">' + (i > 0 ? '<button type="button" class="btn simp-ant">← Anterior</button>' : '')
+      + (!ultima ? '<button type="button" class="btn btn-yes simp-sig">Siguiente →</button>' : '') + '</div>'
+      + (ultima ? '<p class="simp-estado">' + (min ? '✓ Ahora usas el modo minimalista.' : 'Ahora usas el modo normal.') + '</p>' : '') + '</div>').firstElementChild;
+    app.appendChild(card);
+    const ir = n => { state.simpPag = n; window.scrollTo(0, 0); render(); };
+    const sig = card.querySelector('.simp-sig'), ant = card.querySelector('.simp-ant'), modo = card.querySelector('.simp-modo'), planes = card.querySelector('.simp-planes');
+    if(sig) sig.onclick = () => ir(i + 1);
+    if(ant) ant.onclick = () => ir(i - 1);
+    if(planes) planes.onclick = irAPlanes;
+    if(modo) modo.onclick = () => { ponerModoMinimal(!min); try { avisoBreve(min ? 'Has vuelto al modo normal' : '🍃 Modo minimalista activado'); } catch(e){} };
+  }
+
   function renderNovedades(){
     renderBackTopbar('✨ Novedades de la app');
     app.querySelector('#btnVolver').onclick = () => { state.view = 'utilidades'; window.scrollTo(0,0); render(); };
@@ -4956,7 +5048,7 @@ lo que haces cada día es lo que vas a ser.`;
     let barra = document.getElementById('musicaBarra');
     if(!id){ if(barra) barra.remove(); if(state.view === 'musica') render(); return; }
     // La música oficial de la app suena con el reproductor propio (en bucle), pero con la misma barra
-    if(id === 'oficial'){ if(barra) barra.innerHTML = ''; sonarSintonia(0, 0, musicaConLetra()); }
+    if(id === 'oficial'){ if(barra) barra.innerHTML = ''; sonarSintoniaPedida(0, 0, musicaConLetra()); }
     musica.id = id;
     const c = id === 'oficial' ? { titulo: musicaConLetra() ? 'Riega tu meta (con letra)' : 'Música oficial de Metas Amables' } : (CANCIONES.find(x => x.id === id) || { titulo: 'Música' });
     if(!barra){
@@ -5956,6 +6048,7 @@ lo que haces cada día es lo que vas a ser.`;
     if(state.view === 'habla'){ renderHabla(); if(state.menuOpen) renderMenuOverlay(); return; }
     if(state.view === 'musica'){ renderMusica(); if(state.menuOpen) renderMenuOverlay(); return; }
     if(state.view === 'novedades'){ renderNovedades(); if(state.menuOpen) renderMenuOverlay(); return; }
+    if(state.view === 'simplicidad'){ renderSimplicidad(); if(state.menuOpen) renderMenuOverlay(); return; }
     if(state.view === 'ayuda'){ renderAyuda(); if(state.menuOpen) renderMenuOverlay(); return; }
     if(state.view === 'viaje'){ renderViaje(); if(state.menuOpen) renderMenuOverlay(); return; }
     if(state.view === 'progreso'){ renderProgreso(); if(state.menuOpen) renderMenuOverlay(); return; }
@@ -7728,6 +7821,7 @@ lo que haces cada día es lo que vas a ser.`;
     return inp;
   }
   function notaCelebra(A, dest, midi, t, dur, o){
+    if(modoMinimal()) return;   // en el modo minimalista no suenan arpa, kalimba, marimba ni fanfarrias
     const f = 440 * Math.pow(2, (midi - 69) / 12), t0 = A.currentTime + t;
     (o.p || [[1, 1]]).forEach(([m, a, dec]) => {
       const osc = A.createOscillator(), g = A.createGain();
@@ -8696,7 +8790,7 @@ lo que haces cada día es lo que vas a ser.`;
     // Los otros días de la semana están abajo, en «4 · Cómo vas esta semana»
     capa.querySelector('.riego-cal').onclick = () => { const s = capa.querySelector('.rp-semana'); if(s) s.scrollIntoView({ behavior: 'smooth', block: 'start' }); };
     const son = capa.querySelector('.riego-son');
-    son.onclick = () => { if(sintoniaSonando()){ apagarSintoniaSuave(800); son.textContent = '🔈'; } else { sonarSintonia(0, 0.5); son.textContent = '🔊'; } };
+    son.onclick = () => { if(sintoniaSonando()){ apagarSintoniaSuave(800); son.textContent = '🔈'; } else { sonarSintoniaPedida(0, 0.5); son.textContent = '🔊'; } };
     const ok = capa.querySelector('.riego-ok');
     if(!hecho && e.anim) try { animarPlanta(capa.querySelector('.riego-img'), e.anim, true); } catch(err){}
     if(hecho){ ok.disabled = true; return; }
@@ -10012,4 +10106,4 @@ lo que haces cada día es lo que vas a ser.`;
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V12.52 · App Metas Amables · 2026-10-11 22:39==== -->
+<!-- ==== Fin del index V12.53 · App Metas Amables · 2026-10-11 22:45==== -->
