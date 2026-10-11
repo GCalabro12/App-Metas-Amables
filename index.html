@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V12.30 · App Metas Amables · 2026-10-11 20:23==== -->
+<!-- ==== index V12.31 · App Metas Amables · 2026-10-11 20:24==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1268,8 +1268,8 @@ button.dc{cursor:pointer}button.dc:disabled{cursor:default}
 .dc-c{width:92%;aspect-ratio:1;box-sizing:border-box;border-radius:50%;border:1.5px solid #E4DFD3;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1;font:700 clamp(12px,3.8vw,17px) Karla,sans-serif;color:#2B2B2B}
 .dc.con-ent .dc-c{width:88%}
 .dc-tic{display:flex;align-items:center;gap:1px;margin-top:1px;font:800 clamp(8px,2.4vw,11px) Karla,sans-serif}.dc-tic svg{width:clamp(12px,3.6vw,17px);height:auto}
-.dc.con-clima .dc-c,.dc.hecho .dc-c{border-color:transparent}.dc.hecho .dc-c{color:#fff}
-.dc.hoy .dc-c b{font-weight:900;text-decoration:underline 2px;text-underline-offset:2px}.dc.futuro{opacity:.35}
+.dc.con-clima .dc-c,.dc.hecho .dc-c{border:0}.dc.hecho .dc-c{color:#fff}
+.dc.hoy .dc-c b{font-weight:900}.dc.futuro{opacity:.35}
 .cv-mes.card,.cal-diario.card{padding-left:2px;padding-right:2px;margin-left:-8px;margin-right:-8px}
 .cv-mes .cv-titulo,.cv-mes .cd-semanas,.cal-diario > p,.cal-diario .cd-cab,.cal-diario .cd-semanas,.cal-diario .cd-msg{padding-left:10px;padding-right:10px}
 .cv-mes .cd-grid,.cal-diario .cd-grid{gap:2px !important}
@@ -2125,7 +2125,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V12.30';
+  const APP_VERSION = 'V12.31';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -7221,7 +7221,7 @@ lo que haces cada día es lo que vas a ser.`;
     const cls = 'dc' + (x.ent ? ' con-ent' : '') + (x.clima ? ' con-clima' : x.veces ? ' hecho' : '') + (+d === +hoy ? ' hoy' : '') + (futuro ? ' futuro' : '');
     return '<' + etiqueta + ' class="' + cls + '"' + (atributos || '') + ' data-e="' + x.ent + '"' + (x.ent ? ' style="background:' + colorEntorno(x.ent) + ';border-color:' + colorEntorno(x.ent) + '"' : '') + '>'
       + '<span class="dc-c"' + (fondo ? ' style="background:' + fondo + '"' : '') + '><b>' + d.getDate() + '</b>'
-      + (x.veces ? '<span class="dc-tic">' + TIC_DIA + (x.veces > 1 ? '×' + x.veces : '') + '</span>' : '') + '</span></' + etiqueta + '>';
+      + (x.veces ? '<span class="dc-tic">' + TIC_DIA + '</span>' : '') + '</span></' + etiqueta + '>';
   }
   function resumenSemanasMes(y, m){
     // Los lunes de este mes y su registro (la semana se guarda como «6-12 oct 2026»)
@@ -7292,7 +7292,7 @@ lo que haces cada día es lo que vas a ser.`;
           .cal-diario .cd-dia:disabled{opacity:.35;cursor:default}
         </style>
         <p style="margin:0 0 4px;font-size:16px"><b>📅 Mi calendario de prácticas</b></p>
-        <p style="font-size:13px;color:var(--ink-soft);margin:0 0 10px">Cada día es un cuadrado: el borde es tu entorno (blanco, día tranquilo; gris claro, poco tiempo; gris, visitas, viaje o salida; gris oscuro, enfermo), el círculo tu clima (verde si solo regaste) y la tilde, que hiciste tu práctica (×3 si fueron tres veces). En blanco, los días sin registro.</p>
+        <p style="font-size:13px;color:var(--ink-soft);margin:0 0 10px">Cada día es un cuadrado: el borde es tu entorno (blanco, día tranquilo; gris claro, poco tiempo; gris, visitas, viaje o salida; gris oscuro, enfermo), el círculo tu clima (verde si solo regaste) y la tilde, que hiciste tu práctica. En blanco, los días sin registro.</p>
         <div class="cd-cab"><button type="button" class="cd-atras" ${puedeAtras ? '' : 'disabled'} aria-label="Mes anterior">‹</button><b>${monthNamesEs[m].charAt(0).toUpperCase() + monthNamesEs[m].slice(1)} ${y}</b><button type="button" class="cd-adelante" ${puedeAdelante ? '' : 'disabled'} aria-label="Mes siguiente">›</button></div>
         <div class="cd-grid">${DIAS_SEMANA.map(l => '<span class="cd-sem">' + l + '</span>').join('')}${celdas}</div>
         ${resumenSemanasMes(y, m)}
@@ -9647,4 +9647,4 @@ lo que haces cada día es lo que vas a ser.`;
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V12.30 · App Metas Amables · 2026-10-11 20:23==== -->
+<!-- ==== Fin del index V12.31 · App Metas Amables · 2026-10-11 20:24==== -->
