@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V12.32 · App Metas Amables · 2026-10-11 20:29==== -->
+<!-- ==== index V12.33 · App Metas Amables · 2026-10-11 20:34==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1178,6 +1178,7 @@ body.riego-abierto{overflow:hidden}
 .riego-capa .abonar,.riego-capa .rp-seccion,.riego-capa .entorno.rp-marco{border:2px solid rgba(169,50,38,.35);box-shadow:0 4px 14px rgba(0,0,0,.06)}
 .riego-capa .entorno.rp-marco{width:min(420px,100%);max-width:none;margin:16px auto 0;padding:16px 12px 14px;border-radius:20px;background:rgba(255,255,255,.88);text-align:center;box-sizing:border-box}
 .riego-capa .abonar,.riego-capa .rp-seccion{margin-top:16px}
+.riego-capa .rp-semana{width:min(420px,100%);margin:16px auto 0;box-sizing:border-box;border:2px solid rgba(169,50,38,.35);border-radius:20px;background:rgba(255,255,255,.92);text-align:left}
 .rp-seccion .riego-consejo{margin:4px auto 0;padding:0;background:none;font-size:13.5px;line-height:1.35;color:#5A5A50}
 .rp-practica{margin:2px 0 0;font:italic 700 clamp(18px,5vw,21px)/1.3 Lora,serif;color:#4F7A43}
 .rp-seccion .riego-escena{margin:10px auto 4px;width:min(240px,64vw)}
@@ -1194,7 +1195,11 @@ body.riego-abierto{overflow:hidden}
 .panel-badge > span:last-child{text-transform:uppercase;letter-spacing:.04em;font-weight:800}
 .viaje-paso .viaje-tx b{text-transform:uppercase;letter-spacing:.03em;font-size:15px}
 .av-card{padding:12px 16px}.av-cab{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}.av-cab .av-tit{white-space:nowrap}
-.ps-en-dias{margin:4px 0 10px;padding:0 0 10px;border-bottom:1px solid #EFE6E2}.ps-en-dias .ps-practica{font-size:17px}.av-fila{display:flex;align-items:center;gap:10px}.av-tit{flex:1;font-weight:700;cursor:pointer}.av-flecha{font-size:13px;color:var(--ink-soft)}.av-estado{font-size:13px;color:var(--ink-soft)}
+.ps-en-dias{margin:4px 0 10px;padding:0 0 10px;border-bottom:1px solid #EFE6E2}
+.ps-registra .ps-en-dias{border-bottom:0;padding-bottom:0}.rec-abrir{display:flex;align-items:center;justify-content:space-between;width:100%;padding:10px 12px;border:2px solid #E2DDD0;border-radius:12px;background:#fff;font:700 15px Karla,sans-serif;color:var(--ink);cursor:pointer;text-align:left}
+.rec-abrir span{font-size:13px;color:var(--ink-soft)}.rec-cuerpo{margin-top:10px}
+.ps-reg-tit{margin:0 0 6px;font-size:16px;font-weight:700}
+.ps-reg-btn{display:block;width:100%;padding:14px;border:0;border-radius:14px;background:#C0392B;color:#fff;font:800 18px Karla,sans-serif;cursor:pointer;box-shadow:0 4px 12px rgba(192,57,43,.25)}.ps-en-dias .ps-practica{font-size:17px}.av-fila{display:flex;align-items:center;gap:10px}.av-tit{flex:1;font-weight:700;cursor:pointer}.av-flecha{font-size:13px;color:var(--ink-soft)}.av-estado{font-size:13px;color:var(--ink-soft)}
 .av-switch{position:relative;flex:none;width:50px;height:28px;padding:0;border:0;border-radius:14px;background:#C9C9C9;cursor:pointer;transition:background .2s}.av-switch span{position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.3);transition:left .2s}.av-switch.on{background:#8E2B2B}.av-switch.on span{left:25px}
 .av-detalle p{margin:8px 0 6px;font-size:14px;line-height:1.45}
 .av-lista{margin:0 0 8px;padding:0 0 0 22px;font-size:14px;line-height:1.45}.av-lista li{margin:0 0 6px}
@@ -2128,7 +2133,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V12.32';
+  const APP_VERSION = 'V12.33';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -4117,6 +4122,9 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
+    { v: 'V12.33', f: '11 de octubre de 2026', n: [
+      'En <b>Compromiso y práctica</b>, el botón <b>Registra</b> abre Registros amables: tu clima, tu entorno, tu práctica y, al final, cómo vas esta semana.',
+      '«¿Te lo recuerdo cada día?» se despliega al tocarlo, y el botón dice «Poner recordatorio en el calendario del móvil».' ] },
     { v: 'V12.32', f: '11 de octubre de 2026', n: [
       'En <b>Registra tu práctica</b>, los días de la semana tienen el mismo diseño que el calendario del mes: cuadrado del entorno, círculo del clima, número del día y tilde.' ] },
     { v: 'V12.29', f: '11 de octubre de 2026', n: [
@@ -6864,7 +6872,9 @@ lo que haces cada día es lo que vas a ser.`;
         ));
       // Se pueden marcar los días desde el primer momento, aunque aún no haya registro.
       // La meta del trimestre (y el compromiso semanal) van dentro de «Registra tu práctica»
-      const tDias = tarjetaDias(estaSemana, '<div class="ps-en-dias">' + bloqueMeta + cuerpo + '</div>');
+      const tDias = el('<div class="card dias-card ps-registra"><p class="ps-reg-tit">💧 Registra tu práctica</p><div class="ps-en-dias">' + bloqueMeta + cuerpo + '</div>'
+        + '<button type="button" class="ps-reg-btn">💧 Registra</button></div>').firstElementChild;
+      tDias.querySelector('.ps-reg-btn').onclick = () => abrirMomentoRiego();   // clima, entorno, práctica y cómo vas esta semana
       app.appendChild(tDias);
       try { app.appendChild(tarjetaAvisosMovil()); } catch(e){ console.error('Avisos:', e); }
       // El calendario y el historial, en un recuadro aparte (debajo del recordatorio); cada uno abre su pantalla
@@ -7153,7 +7163,7 @@ lo que haces cada día es lo que vas a ser.`;
     if(!dias) return '';
     return dias + (dias === 1 ? ' día' : ' días') + (veces > dias ? ' · ' + veces + ' veces' : '');
   }
-  function tarjetaDias(estaSemana, extraHTML){
+  function tarjetaDias(estaSemana, extraHTML, titulo){
     const hoy = (new Date().getDay() + 6) % 7;   // 0 = lunes
     let veces = leerDias(estaSemana && estaSemana.diasHechos);
     const abonosSem = leerAbonos(estaSemana && estaSemana.abonos), entSem = leerEntornos(estaSemana && estaSemana.abonos);
@@ -7164,7 +7174,7 @@ lo que haces cada día es lo que vas a ser.`;
     card.appendChild(cont);
     const pintar = () => {
       cont.innerHTML = `
-        <p style="margin:0 0 4px;font-size:16px;display:flex;align-items:center;gap:8px"><svg class="icono-regar" viewBox="0 0 44 30" width="38" height="26" aria-hidden="true"><g stroke="#2B2B2B" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"><path d="M6 10 a5 5 0 0 1 8 0" fill="none"/><rect x="3" y="10" width="13" height="11" rx="2.5" fill="#7B3FB0"/><path d="M4 14.5 h11" stroke="#fff" stroke-width="1.8"/><path d="M16 13 L24 9" stroke="#7B3FB0" stroke-width="3.2"/><path d="M29 21 h12 l-1.8 8 h-8.4 z" fill="#C9942D"/><path d="M35 21 V13" fill="none" stroke="#3E7A2E" stroke-width="2"/><path d="M35 16 q-6 -5 -7 -1 q2 3 7 1z" fill="#6BAE4F"/><path d="M35 13.5 q6 -6 7 -1.5 q-2 3.2 -7 1.5z" fill="#6BAE4F"/></g><g fill="#4FA3E3"><circle cx="25.5" cy="12.5" r="1.3"/><circle cx="27" cy="16" r="1.3"/><circle cx="25" cy="18.5" r="1.2"/></g></svg><b>Registra tu práctica</b></p>
+        <p style="margin:0 0 4px;font-size:16px;display:flex;align-items:center;gap:8px"><svg class="icono-regar" viewBox="0 0 44 30" width="38" height="26" aria-hidden="true"><g stroke="#2B2B2B" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"><path d="M6 10 a5 5 0 0 1 8 0" fill="none"/><rect x="3" y="10" width="13" height="11" rx="2.5" fill="#7B3FB0"/><path d="M4 14.5 h11" stroke="#fff" stroke-width="1.8"/><path d="M16 13 L24 9" stroke="#7B3FB0" stroke-width="3.2"/><path d="M29 21 h12 l-1.8 8 h-8.4 z" fill="#C9942D"/><path d="M35 21 V13" fill="none" stroke="#3E7A2E" stroke-width="2"/><path d="M35 16 q-6 -5 -7 -1 q2 3 7 1z" fill="#6BAE4F"/><path d="M35 13.5 q6 -6 7 -1.5 q-2 3.2 -7 1.5z" fill="#6BAE4F"/></g><g fill="#4FA3E3"><circle cx="25.5" cy="12.5" r="1.3"/><circle cx="27" cy="16" r="1.3"/><circle cx="25" cy="18.5" r="1.2"/></g></svg><b>${titulo || 'Registra tu práctica'}</b></p>
         ${extraHTML || ''}
         <p style="font-size:13px;color:var(--ink-soft);margin:0 0 10px">${registraLunes() ? 'Opcional. Toca el día y elige cuántas veces lo hiciste; el lunes tu cierre saldrá ya rellenado.' : 'Toca el día y elige cuántas veces hiciste tu práctica (del 1 al 9).'}</p>
         <div class="dias-fila">${DIAS_SEMANA.map((d, i) => {
@@ -7349,12 +7359,15 @@ lo que haces cada día es lo que vas a ser.`;
     const caja = document.createElement('div');
     caja.style.cssText = 'border-top:1px solid var(--border);margin-top:14px;padding-top:12px';
     caja.innerHTML = `
-      <p style="margin:0 0 6px;font-size:15px"><b>⏰ ¿Te lo recuerdo cada día?</b></p>
+      <button type="button" class="rec-abrir">⏰ ¿Te lo recuerdo cada día? <span>▾</span></button>
+      <div class="rec-cuerpo" hidden>
       <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
         <label style="font-size:14px">A las <input type="time" class="rec-hora" value="08:00" style="font-size:16px;padding:6px 8px;border:1px solid var(--border);border-radius:8px"></label>
-        <button type="button" class="panel-link-btn rec-btn" style="border:0;cursor:pointer;margin:0;flex:1;min-width:160px">Poner recordatorio →</button>
+        <button type="button" class="panel-link-btn rec-btn" style="border:0;cursor:pointer;margin:0;flex:1;min-width:160px">Poner recordatorio en el calendario del móvil</button>
       </div>
-      <p style="font-size:12px;color:var(--ink-soft);margin:6px 0 0">Se crea un aviso diario en el calendario de tu móvil. Puedes quitarlo cuando quieras desde el propio calendario.</p>`;
+      <p style="font-size:12px;color:var(--ink-soft);margin:6px 0 0">Se crea un aviso diario en el calendario de tu móvil. Puedes quitarlo cuando quieras desde el propio calendario.</p>
+      </div>`;
+    caja.querySelector('.rec-abrir').onclick = () => { const cu = caja.querySelector('.rec-cuerpo'); cu.hidden = !cu.hidden; caja.querySelector('.rec-abrir span').textContent = cu.hidden ? '▾' : '▴'; };
     caja.querySelector('.rec-btn').onclick = () => {
       const [hh, mm] = (caja.querySelector('.rec-hora').value || '08:00').split(':').map(Number);
       const lista = state.checkins[state.me] || [];
@@ -8344,7 +8357,7 @@ lo que haces cada día es lo que vas a ser.`;
       + '<div class="riego-escena"><span class="riego-sol"></span><span class="riego-mariposa">🦋</span><span class="riego-brillo b1"></span><span class="riego-brillo b2"></span><span class="riego-brillo b3"></span>'
       + '<img class="riego-img" src="' + (hecho ? imgRegando(3) : e.img) + '" alt=""></div>'
       + '<button type="button" class="riego-ok rp-check' + (hecho ? ' on' : '') + '"><span class="rp-caja">' + TIC_CASILLA + '</span><span class="rp-txt">' + (hecho ? 'Hoy ya hice mi práctica' : 'Hoy hice mi práctica') + '</span></button>'
-      + '<button type="button" class="riego-cal">Marcar otro día en el calendario</button></div></div>').firstElementChild;
+      + '<button type="button" class="riego-cal">Marcar otro día de esta semana</button></div></div>').firstElementChild;
     document.body.appendChild(capa);
     document.body.classList.add('riego-abierto');
     // Lo primero es saber cómo está tu clima; después, registrar si hiciste tu práctica
@@ -8354,12 +8367,24 @@ lo que haces cada día es lo que vas a ser.`;
       const ent = clima.querySelector('.entorno');
       if(ent){ ent.classList.add('rp-marco'); capa.insertBefore(ent, rp); }   // 2 · entorno, en su propio marco
     } catch(e){}
+    // 4 · Cómo vas esta semana (los días y el recordatorio diario), al final
+    const ponerSemana = () => {
+      try {
+        const lista = (state.checkins && state.checkins[state.me]) || [];
+        const sem = tarjetaDias(lista.find(c => c.week === currentWeekShort), '', '4 · Cómo vas esta semana');
+        sem.classList.add('rp-semana');
+        const vieja = capa.querySelector('.rp-semana');
+        if(vieja) vieja.replaceWith(sem); else capa.appendChild(sem);
+      } catch(e){ console.error('Semana:', e); }
+    };
+    ponerSemana();
     const quitar = () => { capa.remove(); document.body.classList.remove('riego-abierto'); try { apagarSintoniaSuave(1200); } catch(err){} };
     // ✕ e «Ir a Metas Amables» hacen lo mismo: cerrar y volver a Inicio
     const cerrar = () => { quitar(); state.view = 'panel'; state.panelSub = null; window.scrollTo(0, 0); render(); };
     capa.querySelector('.riego-cerrar').onclick = cerrar;
     capa.querySelector('.riego-ir').onclick = cerrar;
-    capa.querySelector('.riego-cal').onclick = () => { quitar(); irCalendario(); };
+    // Los otros días de la semana están abajo, en «4 · Cómo vas esta semana»
+    capa.querySelector('.riego-cal').onclick = () => { const s = capa.querySelector('.rp-semana'); if(s) s.scrollIntoView({ behavior: 'smooth', block: 'start' }); };
     const son = capa.querySelector('.riego-son');
     son.onclick = () => { if(sintoniaSonando()){ apagarSintoniaSuave(800); son.textContent = '🔈'; } else { sonarSintonia(0, 0.5); son.textContent = '🔊'; } };
     const ok = capa.querySelector('.riego-ok');
@@ -8376,6 +8401,7 @@ lo que haces cada día es lo que vas a ser.`;
       capa.querySelector('.riego-cal').remove();
       const volver = el('<button type="button" class="riego-volver">Volver a Inicio</button>').firstElementChild;
       volver.onclick = cerrar; ok.after(volver);
+      ponerSemana();
       // Prácti riega y la planta crece: en el mismo hueco de la animación de antes, o en lugar del dibujo
       const img = capa.querySelector('.riego-img'), caja = capa.querySelector('.riego-escena .planta-anim');
       try { if(caja) animarPlantaEn(caja, 'practi-crece.json', true); else if(img){ img.src = imgRegando(3); animarPlanta(img, 'practi-crece.json', true); } } catch(err){}
@@ -9658,4 +9684,4 @@ lo que haces cada día es lo que vas a ser.`;
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V12.32 · App Metas Amables · 2026-10-11 20:29==== -->
+<!-- ==== Fin del index V12.33 · App Metas Amables · 2026-10-11 20:34==== -->
