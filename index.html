@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V12.26 · App Metas Amables · 2026-10-11 20:12==== -->
+<!-- ==== index V12.27 · App Metas Amables · 2026-10-11 20:15==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2119,7 +2119,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V12.26';
+  const APP_VERSION = 'V12.27';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -4108,6 +4108,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
+    { v: 'V12.27', f: '11 de octubre de 2026', n: [
+      'Tu clima se <b>guarda solo</b> al tocar el sol, igual que el entorno: ya no hace falta pulsar «Guardar».' ] },
     { v: 'V12.26', f: '11 de octubre de 2026', n: [
       'La ventana de las 20:00 se llama ahora <b>Registros amables</b>: 1, tu clima de hoy; 2, tu entorno de hoy; y 3, tu práctica de hoy, con una casilla para marcar que la hiciste.',
       'En los calendarios, cada día es un <b>cuadrado</b>: el borde es tu entorno, el círculo tu clima y dentro, el número del día. Más grandes y sin la marca ✓.',
@@ -8460,7 +8462,7 @@ lo que haces cada día es lo que vas a ser.`;
               if(sel.some(x => x.id === e.id)) sel = sel.filter(x => x.id !== e.id);
               else if(sel.length < 2) sel.push({ id: e.id, i: 'b' });
               else sel[1] = { id: e.id, i: 'b' };
-              guardado = false; modo = sel.length ? 'ver' : 'grid'; msg.textContent = ''; pintar();
+              modo = sel.length ? 'ver' : 'grid'; pintar(); guardarAuto();
             };
             q.appendChild(b);
           });
@@ -8480,24 +8482,31 @@ lo que haces cada día es lo que vas a ser.`;
           + '<span class="abonar-int"><button type="button" data-i="b">Baja</button><button type="button" data-i="a">Alta</button></span>';
         parte.querySelectorAll('[data-i]').forEach(b => {
           b.style.color = c.txt; if(b.dataset.i === x.i) b.classList.add('on');
-          b.onclick = () => { sel[n].i = b.dataset.i; guardado = false; msg.textContent = ''; pintar(); };
+          b.onclick = () => { sel[n].i = b.dataset.i; pintar(); guardarAuto(); };
         });
         maceta.appendChild(parte);
       });
-      const g = document.createElement('button'); g.type = 'button'; g.className = 'abonar-guardar' + (guardado ? ' hecho' : '');
-      g.textContent = guardado ? '✓ Clima guardado' : '☀️ Guardar mi clima';
-      g.onclick = async () => {
-        g.disabled = true; g.textContent = 'Guardando…';
-        try { await guardarAbonoHoy(sel); guardado = true; try { sonidoTing(); } catch(e){} msg.textContent = 'Gracias por mirarte por dentro: conocer tu clima te ayuda a cuidar tu meta 🌱'; pintar(); if(alGuardar) alGuardar(sel); }
-        catch(e){ g.disabled = false; g.textContent = '☀️ Guardar mi clima'; msg.textContent = 'No se pudo guardar. Revisa tu conexión e inténtalo de nuevo.'; }
-      };
-      acc.appendChild(g);
+      // (ya no hay botón de guardar: el clima se guarda solo al tocar el sol)
       const fila2 = document.createElement('div'); fila2.className = 'abonar-fila2';
       if(sel.length < 2) fila2.appendChild(boton('＋ Añadir otra emoción', () => { modo = 'grid'; pintar(); }));
-      fila2.appendChild(boton('Cambiar', () => { sel = []; guardado = false; modo = 'grid'; msg.textContent = ''; pintar(); }));
+      fila2.appendChild(boton('Cambiar', () => { sel = []; modo = 'grid'; pintar(); guardarAuto(); }));
       acc.appendChild(fila2);
     };
     function boton(t, f){ const b = document.createElement('button'); b.type = 'button'; b.className = 'abonar-sec'; b.textContent = t; b.onclick = f; return b; }
+    // El clima se guarda solo, un momento después de tocar el sol (si se tocan varias cosas seguidas, se guarda una vez)
+    let relojGuardar = null, primeraVez = true;
+    function guardarAuto(){
+      clearTimeout(relojGuardar); msg.textContent = 'Guardando…';
+      relojGuardar = setTimeout(async () => {
+        const copia = sel.map(x => ({ ...x }));
+        try {
+          await guardarAbonoHoy(copia);
+          msg.textContent = copia.length ? '✓ Clima guardado' : 'Clima quitado';
+          if(copia.length && primeraVez){ primeraVez = false; try { sonidoTing(); } catch(e){} }
+          if(alGuardar) alGuardar(copia);
+        } catch(e){ msg.textContent = 'No se pudo guardar. Revisa tu conexión e inténtalo de nuevo.'; }
+      }, 700);
+    }
     pintar();
     // Entorno: se guarda al tocarlo (otra vez para quitarlo)
     let ent = entornoDeHoy();
@@ -9620,4 +9629,4 @@ lo que haces cada día es lo que vas a ser.`;
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V12.26 · App Metas Amables · 2026-10-11 20:12==== -->
+<!-- ==== Fin del index V12.27 · App Metas Amables · 2026-10-11 20:15==== -->
