@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V12.56 · App Metas Amables · 2026-10-11 22:57==== -->
+<!-- ==== index V12.57 · App Metas Amables · 2026-10-11 22:59==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1305,6 +1305,7 @@ body.riego-abierto{overflow:hidden}
 .simp-nav{display:flex;gap:10px}.simp-nav .btn{flex:1;text-align:center}
 .simp-estado{margin:10px 0 0;font-size:14px;color:#5E6B55;text-align:center}
 html.modo-minimal body,html.modo-minimal .riego-capa{background:#fff!important}
+html.modo-minimal .practi-inicio,html.modo-minimal .practi-bocadillo,html.modo-minimal .hablar-practi-btn{display:none!important}   /* sin Prácti saludando, sin bocadillos y sin «Quiero hablar con Prácti» */
 .modo-switch-fila{width:100%;display:flex;justify-content:flex-end;margin:0 0 4px}
 .modo-switch{display:flex;align-items:center;gap:8px;padding:4px 4px 4px 12px;border:1px solid var(--border);border-radius:20px;background:#fff;font:700 13px Karla,sans-serif;color:#2F4A22;cursor:pointer}
 .ms-pista{position:relative;width:40px;height:22px;border-radius:11px;background:#639922;transition:background .25s}
@@ -2184,7 +2185,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V12.56';
+  const APP_VERSION = 'V12.57';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -4360,10 +4361,12 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
+    { v: 'V12.57', f: '11 de octubre de 2026', n: [
+      'En el <b>modo minimalista</b> ya no sale Prácti saludando ni sus bocadillos de mensajes.' ] },
     { v: 'V12.56', f: '11 de octubre de 2026', n: [
       'En <b>La simplicidad voluntaria</b>, desliza el dedo para pasar de página: a la izquierda, la siguiente; a la derecha, la anterior.' ] },
     { v: 'V12.55', f: '11 de octubre de 2026', n: [
-      'El <b>modo minimalista</b> quita pantallas: Utilidades y el juego, las notas a tu yo del futuro y el recordatorio del calendario, y deja el fondo en blanco. Los sonidos y las celebraciones se quedan. Para volver al modo normal, usa el interruptor de arriba a la derecha.' ] },
+      'El <b>modo minimalista</b> quita pantallas: Utilidades y el juego, las notas a tu yo del futuro, el recordatorio del calendario, y Prácti saludando con sus bocadillos; y deja el fondo en blanco. Los sonidos y las celebraciones se quedan. Para volver al modo normal, usa el interruptor de arriba a la derecha.' ] },
     { v: 'V12.54', f: '11 de octubre de 2026', n: [
       'En <b>Registros amables</b>, abajo del todo hay también un botón para volver a Metas Amables, igual que arriba. Y si deslizas el dedo a la izquierda o a la derecha, también vuelves.' ] },
     { v: 'V12.53', f: '11 de octubre de 2026', n: [
@@ -4513,7 +4516,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
         + '<p>Lo demás (música, frases, juegos…) son ayudas: puedes usarlas o no.</p>'],
       ['¿Te abruma? Prueba el modo minimalista',
         '<p>Si sientes que la app te abruma con tanta información y pantallas, puedes activar el <b>modo minimalista</b>. Se quitan:</p>'
-        + '<ul><li>Utilidades (frases, música, formación, Habla con Prácti y el juego),</li><li>las notas a tu yo del futuro,</li><li>el recordatorio en el calendario del móvil,</li><li>y el fondo de imagen: todo queda en blanco.</li></ul>'
+        + '<ul><li>Utilidades (frases, música, formación, Habla con Prácti y el juego),</li><li>Prácti saludando y sus bocadillos,</li><li>las notas a tu yo del futuro,</li><li>el recordatorio en el calendario del móvil,</li><li>y el fondo de imagen: todo queda en blanco.</li></ul>'
         + '<p>Lo importante sigue igual: tu meta, tu guía, tus registros y tu grupo.</p>'
         + '<p><b>Siempre puedes volver al modo normal</b> con el interruptor que verás arriba a la derecha.</p>']
     ];
@@ -10139,4 +10142,4 @@ lo que haces cada día es lo que vas a ser.`;
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V12.56 · App Metas Amables · 2026-10-11 22:57==== -->
+<!-- ==== Fin del index V12.57 · App Metas Amables · 2026-10-11 22:59==== -->
