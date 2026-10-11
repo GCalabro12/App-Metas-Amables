@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V12.65 · App Metas Amables · 2026-10-11 23:53==== -->
+<!-- ==== index V12.66 · App Metas Amables · 2026-10-11 23:57==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2215,7 +2215,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V12.65';
+  const APP_VERSION = 'V12.66';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -4211,40 +4211,42 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   const cerrarVistaPrevia = () => document.querySelectorAll('.pf-previa-capa').forEach(x => x.remove());
   // Desde una vista previa, ir de verdad a la pantalla siguiente (sin guardar nada por el camino)
   function irDesdeVistaPrevia(fn, aviso){ cerrarVistaPrevia(); document.querySelectorAll('.reflexion-capa,.amable-capa,.reto-capa').forEach(x => x.remove()); if(aviso) setTimeout(() => avisoBreve(aviso), 300); fn(); }
+  // Apartados de la lista, en el orden del recorrido de la persona
+  const GRUPOS_ESPORADICAS = [['alta', '👋 Al inscribirse'], ['registro', '💧 Compromiso y registro'], ['pausa', '⏸️ Práctica en pausa'], ['meta', '🎯 Tu meta: pausa para pensar, cosecha y cambios'], ['futuro', '🔮 Notas a tu yo del futuro']];
   function pantallasEsporadicas(){
     const metaTxt = String(((state.gamifica && state.gamifica.datosFormulario) || {}).metaTexto || 'Tu meta del trimestre');
     return [
-      { tit: 'Una pausa para tu meta', img: mini('#1F63DB', '#fff', '⏸️'),
+      { grupo: 'meta', tit: 'Una pausa para tu meta', img: mini('#1F63DB', '#fff', '⏸️'),
         cuando: 'Al volver tras 5 días o más sin entrar, o con 6 días sin marcar la práctica. Sale sola en Inicio (y en el Viaje); después no vuelve en 7 días.',
         abrir: () => abrirReflexion(true) },
-      { tit: 'Hoy, sé amable contigo', img: mini('linear-gradient(180deg,#9AA59A 0 45%,#EEF5E6 45%)', '#3B6D11', '🍃'),
+      { grupo: 'registro', tit: 'Hoy, sé amable contigo', img: mini('linear-gradient(180deg,#9AA59A 0 45%,#EEF5E6 45%)', '#3B6D11', '🍃'),
         cuando: 'Al marcar un clima difícil (enfadado, estresado, preocupado, desmotivado, cansado) o un entorno complicado (poco tiempo, visitas, enfermo). Una vez al día.',
         abrir: () => abrirHojaAmable('clima', true) },
-      { tit: 'Reto de 15 días (cartel del día)', img: mini('linear-gradient(160deg,#FFE7B8,#E7DBFF)', '#5B3FA8', '🪧'),
+      { grupo: 'registro', tit: 'Reto de 15 días (cartel del día)', img: mini('linear-gradient(160deg,#FFE7B8,#E7DBFF)', '#5B3FA8', '🪧'),
         cuando: 'Al cerrar Registros amables (o marcar un día del calendario) cuando hay un día registrado nuevo, del día 1 al 15. Una vez en la vida.',
         abrir: () => abrirRetoDia(8, true) },
-      { tit: 'Días registrados con tu meta', img: mini('linear-gradient(160deg,#FFE7B8,#FFD3D8)', '#2F5F93', '23'),
+      { grupo: 'registro', tit: 'Días registrados con tu meta', img: mini('linear-gradient(160deg,#FFE7B8,#FFD3D8)', '#2F5F93', '23'),
         cuando: 'Después del reto (día 16 en adelante): cada día registrado nuevo. Cuenta los días desde la meta actual y vuelve a 1 con cada meta nueva.',
         abrir: () => abrirDiasMeta(23) },
-      { tit: 'Meta lograda o sin interés', img: mini('#3E7D2B', '#fff', '🏁'),
+      { grupo: 'meta', tit: 'Meta lograda o sin interés', img: mini('#3E7D2B', '#fff', '🏁'),
         cuando: 'Desde el botón de Compromiso y práctica, o con «Ya no me interesa» en la pausa para tu meta. En la vista previa no se guarda nada.',
         abrir: () => abrirFinMeta('elegir', true) },
-      { tit: 'Práctica en pausa', img: mini('#55657F', '#fff', '⏸️'),
+      { grupo: 'pausa', tit: 'Práctica en pausa', img: mini('#55657F', '#fff', '⏸️'),
         cuando: 'Desde «Meta lograda, sin interés o en pausa», o al marcar un entorno de visitas/viaje o enfermedad. Pregunta hasta cuándo (1 semana, 15 días, 1 mes o una fecha). Después sale en grande en Inicio.',
         abrir: () => abrirPausa('', true) },
-      { tit: 'Inicio: práctica en pausa', img: mini('#EEF2F8', '#33415C', '⏸️'),
+      { grupo: 'pausa', tit: 'Inicio: práctica en pausa', img: mini('#EEF2F8', '#33415C', '⏸️'),
         cuando: 'Arriba en Inicio, mientras dura la pausa: «Práctica en pausa hasta…», con «Retomar mi práctica ahora» y «Cambiar la fecha».',
         abrir: () => { const d = new Date(); vistaPreviaTarjeta('Inicio: práctica en pausa', tarjetaPausa({ hasta: isoLocal(new Date(d.getFullYear(), d.getMonth(), d.getDate() + 14)) })); } },
-      { tit: 'Inicio: tu pausa ha terminado', img: mini('#EEF2F8', '#33415C', '▶️'),
+      { grupo: 'pausa', tit: 'Inicio: tu pausa ha terminado', img: mini('#EEF2F8', '#33415C', '▶️'),
         cuando: 'Arriba en Inicio, cuando ya pasó la fecha de la pausa y la persona aún no la ha retomado: «¿Retomamos tu práctica?», con «Alargar la pausa».',
         abrir: () => { const d = new Date(); vistaPreviaTarjeta('Inicio: tu pausa ha terminado', tarjetaPausa({ hasta: isoLocal(new Date(d.getFullYear(), d.getMonth(), d.getDate() - 1)), terminada: true })); } },
-      { tit: 'Hoy, sé amable contigo (con la pausa)', img: mini('linear-gradient(180deg,#9AA59A 0 45%,#EEF5E6 45%)', '#55657F', '⏸️'),
+      { grupo: 'pausa', tit: 'Hoy, sé amable contigo (con la pausa)', img: mini('linear-gradient(180deg,#9AA59A 0 45%,#EEF5E6 45%)', '#55657F', '⏸️'),
         cuando: 'Al marcar el entorno «Visitas, viaje, salida…» o «Enfermo, imposibilitado»: la hoja amable trae además «Poner mi práctica en pausa».',
         abrir: () => abrirHojaAmable('entorno', true) },
-      { tit: 'Tiempo de cosecha', img: mini('#fff', '#6B9362', '🧺'),
+      { grupo: 'meta', tit: 'Tiempo de cosecha', img: mini('#fff', '#6B9362', '🧺'),
         cuando: 'En Inicio, cuando se cumple el plazo de la meta (1 o 2 meses desde el formulario): «¿Has terminado tu práctica?». Los botones funcionan: prueba «¡Sí, la conseguí!» o «Todavía no».',
         abrir: () => vistaPreviaTarjeta('Tiempo de cosecha', tarjetaPlazoMeta({ paso: null })) },
-      { tit: 'Nota de tu yo de hace un mes', img: mini('#FFF8DC', '#8A6A1E', '📝'),
+      { grupo: 'futuro', tit: 'Nota de tu yo de hace un mes', img: mini('#FFF8DC', '#8A6A1E', '📝'),
         cuando: 'En Inicio, el día que se puede abrir la nota que la persona se escribió el mes pasado (Plan Guías o regalo del día 10 del reto).',
         abrir: () => {
           const t = el('<div class="card carta-aviso" style="border-color:#E2C79A;background:#FFF8DC"><p style="font-weight:800;margin:0 0 6px">📝 Tienes una nota de tu yo de hace un mes</p>'
@@ -4252,7 +4254,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
           t.querySelector('button').onclick = () => irDesdeVistaPrevia(() => { state.prevView = 'panelFac'; state.view = 'posit'; window.scrollTo(0, 0); render(); }, 'Vista previa: la pantalla de la nota');
           vistaPreviaTarjeta('Nota de tu yo de hace un mes', t);
         } },
-      { tit: 'Bienvenida al registrarse (5 pantallas)', img: mini('#fff', '#7A1C6A', '👋'),
+      { grupo: 'alta', tit: 'Bienvenida al registrarse (5 pantallas)', img: mini('#fff', '#7A1C6A', '👋'),
         cuando: 'Solo la primera vez, nada más crear la cuenta: bienvenida, metas que se marchitan, regar cada día, avisos de las 20:00 y sembrar la meta. Los botones funcionan; al acabar vuelves al panel.',
         abrir: () => { state.altaPrueba = true; state.altaPaso = 1; state.view = 'bienvenidaAlta'; window.scrollTo(0, 0); render(); } }
     ];
@@ -4339,7 +4341,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     if(esCuentaPruebas()) h += plegable('moderador', '🛠️ Moderador · entrar como', '<p class="pf-gris" style="margin:0 0 8px;font-size:13.5px">Entra con otra cuenta de prueba para ver la app con ese plan.</p><div class="pf-mod-cuentas">'
       + CUENTAS_PRUEBA.map(([cuenta, t]) => '<button type="button" class="mod-cuenta' + (state.me === cuenta ? ' on' : '') + '" data-cuenta="' + escapeAttr(cuenta) + '">' + t + '</button>').join('') + '</div>', false);
     h += plegable('esporadicas', '👁️ Pantallas de acceso esporádico', '<p class="pf-gris" style="margin:0 0 10px;font-size:13.5px">Salen solo en momentos concretos. Toca una para verla tal como la ve la persona (sin guardar nada).</p>'
-      + pantallasEsporadicas().map((x, i) => '<button type="button" class="card pf-pantalla" data-esporadica="' + i + '">' + x.img + '<span class="pf-pantalla-tx"><b>' + x.tit + '</b><small>' + x.cuando + '</small><em>Ver la pantalla ›</em></span></button>').join(''), false);
+      + GRUPOS_ESPORADICAS.map(([g, titulo]) => '<p class="pf-sub" style="margin:14px 0 8px">' + titulo + '</p>' + pantallasEsporadicas().map((x, i) => x.grupo !== g ? '' : '<button type="button" class="card pf-pantalla" data-esporadica="' + i + '">' + x.img + '<span class="pf-pantalla-tx"><b>' + x.tit + '</b><small>' + x.cuando + '</small><em>Ver la pantalla ›</em></span></button>').join('')).join(''), false);
     // Resumen: cada cifra se toca para ver quiénes son
     const gente = d.personas || [], lunes = isoLocal(lunesHoy);
     const nuevas = gente.filter(x => x.alta && x.alta >= lunes);
@@ -10457,4 +10459,4 @@ lo que haces cada día es lo que vas a ser.`;
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V12.65 · App Metas Amables · 2026-10-11 23:53==== -->
+<!-- ==== Fin del index V12.66 · App Metas Amables · 2026-10-11 23:57==== -->
