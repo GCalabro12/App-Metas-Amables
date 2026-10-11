@@ -29,7 +29,7 @@ self.addEventListener('fetch', e => {
 // «Tu meta tiene sed»: llega a las 20:00 si aún no has marcado tu práctica de hoy
 self.addEventListener('push', e => {
   e.waitUntil(self.registration.showNotification('🥀 Tu meta tiene sed', {
-    body: 'Aún estás a tiempo: haz tu práctica de hoy y márcala en la app. Un pequeño paso basta 🌱',
+    body: 'Aún estás a tiempo: haz tu práctica de hoy y márcala en la app. Y abona tu meta: ¿cómo te sientes hoy? 🌿',
     icon: 'icon-192.png', badge: 'badge-96.png', image: 'aviso-planta-sed.jpg', tag: 'planta', renotify: true, data: { url: './?regar=1' }
   }));
 });
