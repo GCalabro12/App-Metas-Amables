@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V12.19 · App Metas Amables · 2026-10-11 18:36==== -->
+<!-- ==== index V12.20 · App Metas Amables · 2026-10-11 18:37==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2083,7 +2083,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V12.19';
+  const APP_VERSION = 'V12.20';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -4073,7 +4073,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
     { v: 'V12.14', f: '11 de octubre de 2026', n: [
-      '<b>☀️ El clima de hoy</b> (antes «Abona tu meta»): tus emociones son el clima de tu meta. Elige cómo te sientes en un <b>sol partido en cuatro quesitos</b>: arriba más energía, abajo menos; a la izquierda lo desagradable y a la derecha lo agradable.',
+      '<b>☀️ Tu clima de hoy</b> (antes «Abona tu meta»): tus emociones son el clima de tu meta. Elige cómo te sientes en un <b>sol partido en cuatro quesitos</b>: arriba más energía, abajo menos; a la izquierda lo desagradable y a la derecha lo agradable.',
       'En los calendarios, cada día es ahora un <b>redondel</b> del color de tu clima.',
       'En <b>Música</b>, el recuadro de la música oficial tiene dos botones de play: <b>Sin letra</b> y <b>Con letra</b>.' ] },
     { v: 'V12.12', f: '11 de octubre de 2026', n: [
@@ -8301,7 +8301,7 @@ lo que haces cada día es lo que vas a ser.`;
   })();
   function crearMacetaAbonar(alGuardar){
     let sel = abonoDeHoy(), modo = sel.length ? 'ver' : 'grid', guardado = sel.length > 0;
-    const caja = el('<div class="abonar"><p class="abonar-tit">☀️ El clima de hoy</p><p class="abonar-sub">Tus emociones son el clima de tu meta: no se eligen, se observan. <b>¿Cómo te sientes hoy?</b></p>'
+    const caja = el('<div class="abonar"><p class="abonar-tit">☀️ Tu clima de hoy</p><p class="abonar-sub">Tus emociones son el clima de tu meta: no se eligen, se observan. <b>¿Cómo te sientes hoy?</b></p>'
       + '<p class="abonar-eje">Más energía</p><div class="clima-fila"><span class="clima-lado izq">Desagradable</span><div class="clima-sol">' + RAYOS_SOL + '<div class="clima-disco"></div></div><span class="clima-lado der">Agradable</span></div><p class="abonar-eje">Menos energía</p>'
       + '<div class="abonar-acciones"></div><p class="abonar-msg"></p></div>').firstElementChild;
     const maceta = caja.querySelector('.clima-disco'), sol = caja.querySelector('.clima-sol'), acc = caja.querySelector('.abonar-acciones'), msg = caja.querySelector('.abonar-msg');
@@ -8438,7 +8438,7 @@ lo que haces cada día es lo que vas a ser.`;
       const hoyAb = abonoDeHoy();
       // Botón con forma de maceta marrón; si hoy ya abonó, toma el color de su emoción
       const maceta = '<svg viewBox="0 0 20 20" aria-hidden="true"><g stroke="#B7791F" stroke-width="1.6" stroke-linecap="round"><path d="M10 1.5v2.5M10 16v2.5M1.5 10h2.5M16 10h2.5M4 4l1.8 1.8M14.2 14.2L16 16M4 16l1.8-1.8M14.2 5.8L16 4"/></g><circle cx="10" cy="10" r="4.2" fill="#F6C94A" stroke="#B7791F" stroke-width="1.2"/></svg>';
-      const ab = el('<button type="button" class="planta-abonar' + (hoyAb.length ? ' abonado' : '') + '"' + (hoyAb.length ? ' style="background:' + fondoAbono(hoyAb) + '"' : '') + '>' + maceta + '<span>' + (hoyAb.length ? 'Tu clima de hoy: ' + hoyAb.map(x => nombreEmocion(emoPorId(x.id))).join(' y ') : 'El clima de hoy: ¿cómo te sientes?') + '</span></button>').firstElementChild;
+      const ab = el('<button type="button" class="planta-abonar' + (hoyAb.length ? ' abonado' : '') + '"' + (hoyAb.length ? ' style="background:' + fondoAbono(hoyAb) + '"' : '') + '>' + maceta + '<span>' + (hoyAb.length ? 'Tu clima de hoy: ' + hoyAb.map(x => nombreEmocion(emoPorId(x.id))).join(' y ') : 'Tu clima de hoy: ¿cómo te sientes?') + '</span></button>').firstElementChild;
       ab.onclick = () => abrirMomentoRiego(true);
       t.querySelector('.planta-tx').appendChild(ab);
     } catch(e){}
@@ -9462,4 +9462,4 @@ lo que haces cada día es lo que vas a ser.`;
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V12.19 · App Metas Amables · 2026-10-11 18:36==== -->
+<!-- ==== Fin del index V12.20 · App Metas Amables · 2026-10-11 18:37==== -->
