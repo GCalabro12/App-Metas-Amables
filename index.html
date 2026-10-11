@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V12.64 · App Metas Amables · 2026-10-11 23:45==== -->
+<!-- ==== index V12.65 · App Metas Amables · 2026-10-11 23:53==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1277,7 +1277,6 @@ body.riego-abierto{overflow:hidden}
 .pf-previa-capa{position:fixed;inset:0;z-index:9650;background:rgba(20,30,20,.55);display:flex;align-items:center;justify-content:center;padding:16px}
 .pf-previa-caja{width:min(440px,100%);max-height:90vh;overflow:auto;background:var(--bg);border-radius:18px;padding:14px}
 .pf-previa-caja .pf-previa-tit{margin:0 0 10px;font-size:13px;font-weight:800;color:#3F6338;text-transform:uppercase;letter-spacing:.04em}
-.pf-previa-caja .card button{pointer-events:none}
 .pf-seccion{font:700 17px Lora,serif;margin:18px 0 8px;color:#3F6338}
 .pf-sub{font-weight:800;font-size:14px;margin:12px 0 6px;color:#3F6338}
 .pf-tarea{border-left:4px solid #6B9362;padding:12px 14px;margin-bottom:10px}
@@ -2216,7 +2215,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V12.64';
+  const APP_VERSION = 'V12.65';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -2463,7 +2462,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   // Bienvenida tras crear la cuenta, en dos pantallas; con "Siguiente" se llega al panel
   function renderBienvenidaAlta(){
     let marca = '1';
-    try{ marca = localStorage.getItem('ma_alta_' + state.me) || '1'; if(localStorage.getItem('tour_' + state.me) !== 'visto') localStorage.setItem('tour_' + state.me, 'pendiente'); }catch(e){}
+    try{ marca = localStorage.getItem('ma_alta_' + state.me) || '1'; if(!state.altaPrueba && localStorage.getItem('tour_' + state.me) !== 'visto') localStorage.setItem('tour_' + state.me, 'pendiente'); }catch(e){}
     const nombre = String(state.me || '').split(' ')[0];
     const paso = [1, 2, 3, 4, 5].includes(state.altaPaso) ? state.altaPaso : 1;
     // La música oficial suena al ver crecer la planta (pantalla 3) mientras se esté en ella; al pasar de pantalla se apaga suave
@@ -2477,7 +2476,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       + '<linearGradient id="altaK2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6B2A9E"/><stop offset="1" stop-color="#3A1460"/></linearGradient></defs>'
       + '<path d="M0 90 C 200 20, 420 50, 600 75 S 880 20, 1024 50 V220 H0 Z" fill="url(#altaK1)" opacity=".9"/>'
       + '<path d="M0 150 C 240 95, 470 130, 660 115 S 920 100, 1024 120 V220 H0 Z" fill="url(#altaK2)"/></svg>';
-    let html = '<div class="alta-onb"><div class="alta-dentro"><div style="text-align:center;margin-bottom:6px">'
+    let html = '<div class="alta-onb"><div class="alta-dentro">' + (state.altaPrueba ? '<p style="text-align:center;margin:0 0 8px;font-size:13px;font-weight:700;color:#3F6338">👁️ Vista previa del moderador · <button type="button" class="link-quiet" id="btnAltaSalir" style="padding:0">Salir</button></p>' : '') + '<div style="text-align:center;margin-bottom:6px">'
       + (paso === 2 ? '<div class="alta-marchita"><img src="' + imgPlanta('sed') + '" alt=""><img src="' + imgPlanta('mustia') + '" alt=""><img src="' + imgPlanta('seca') + '" alt=""></div>'
         : paso === 3 ? '<div class="alta-crece"><img src="' + imgRegando(1) + '" alt=""></div>'
         : paso === 4 ? '<div class="alta-crece"><img src="' + imgPlanta('sed') + '" alt=""></div>'
@@ -2523,10 +2522,13 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     app.appendChild(nodo);
     sig.onclick = () => {
       if(paso < 5){ state.altaPaso = paso + 1; }
+      else if(state.altaPrueba){ state.altaPrueba = false; state.altaPaso = null; state.view = 'panelFac'; }
       else { try{ localStorage.removeItem('ma_alta_' + state.me); }catch(e){} state.altaPaso = null; state.view = 'panel'; state.panelSub = null; }
       window.scrollTo(0,0); render();
     };
     if(atras) atras.onclick = () => { state.altaPaso = Math.max(1, paso - 1); window.scrollTo(0,0); render(); };
+    const salir = app.querySelector('#btnAltaSalir');
+    if(salir) salir.onclick = () => { if(state.sintoniaAlta){ state.sintoniaAlta = false; apagarSintoniaSuave(800); } state.altaPrueba = false; state.altaPaso = null; state.view = 'panelFac'; window.scrollTo(0,0); render(); };
     const bAv = app.querySelector('#btnAltaAvisos');
     if(bAv) bAv.onclick = async () => { bAv.disabled = true; if(await activarAvisosPlanta()){ state.altaPaso = 5; window.scrollTo(0,0); render(); } else bAv.disabled = false; };
     // Pantalla 3: Prácti riega y la planta crece (animación)
@@ -4194,13 +4196,21 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
   // ===== Pantallas de acceso esporádico: las que solo salen en momentos concretos. Desde el panel se pueden ver cuando se quiera =====
   function mini(fondo, color, emoji){ return '<span class="pf-mini" style="background:' + fondo + ';color:' + color + '">' + emoji + '<i></i><i class="c"></i><i></i></span>'; }
-  function vistaPreviaTarjeta(titulo, html){
-    const capa = el('<div class="pf-previa-capa"><div class="pf-previa-caja"><p class="pf-previa-tit">👁️ Vista previa · ' + titulo + '</p>' + html
-      + '<button type="button" class="pf-btn" style="width:100%;margin-top:6px">Cerrar</button></div></div>').firstElementChild;
-    capa.onclick = ev => { if(ev.target === capa || ev.target.closest('.pf-btn')) capa.remove(); };
+  // contenido: un elemento (con sus botones funcionando, en modo vista previa) o un texto HTML
+  function vistaPreviaTarjeta(titulo, contenido){
+    document.querySelectorAll('.pf-previa-capa').forEach(x => x.remove());
+    const capa = el('<div class="pf-previa-capa"><div class="pf-previa-caja"><p class="pf-previa-tit">👁️ Vista previa · ' + titulo + '</p><div class="pf-previa-hueco"></div>'
+      + '<button type="button" class="pf-btn pf-previa-cerrar" style="width:100%;margin-top:6px">Cerrar</button></div></div>').firstElementChild;
+    const hueco = capa.querySelector('.pf-previa-hueco');
+    if(typeof contenido === 'string') hueco.innerHTML = contenido; else hueco.appendChild(contenido);
+    capa.onclick = ev => { if(ev.target === capa || ev.target.closest('.pf-previa-cerrar')) capa.remove(); };
     document.body.appendChild(capa);
     try { activarPracti(capa); } catch(e){}
+    return capa;
   }
+  const cerrarVistaPrevia = () => document.querySelectorAll('.pf-previa-capa').forEach(x => x.remove());
+  // Desde una vista previa, ir de verdad a la pantalla siguiente (sin guardar nada por el camino)
+  function irDesdeVistaPrevia(fn, aviso){ cerrarVistaPrevia(); document.querySelectorAll('.reflexion-capa,.amable-capa,.reto-capa').forEach(x => x.remove()); if(aviso) setTimeout(() => avisoBreve(aviso), 300); fn(); }
   function pantallasEsporadicas(){
     const metaTxt = String(((state.gamifica && state.gamifica.datosFormulario) || {}).metaTexto || 'Tu meta del trimestre');
     return [
@@ -4224,22 +4234,27 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
         abrir: () => abrirPausa('', true) },
       { tit: 'Inicio: práctica en pausa', img: mini('#EEF2F8', '#33415C', '⏸️'),
         cuando: 'Arriba en Inicio, mientras dura la pausa: «Práctica en pausa hasta…», con «Retomar mi práctica ahora» y «Cambiar la fecha».',
-        abrir: () => { const d = new Date(); vistaPreviaTarjeta('Inicio: práctica en pausa', tarjetaPausa({ hasta: isoLocal(new Date(d.getFullYear(), d.getMonth(), d.getDate() + 14)) }).outerHTML); } },
+        abrir: () => { const d = new Date(); vistaPreviaTarjeta('Inicio: práctica en pausa', tarjetaPausa({ hasta: isoLocal(new Date(d.getFullYear(), d.getMonth(), d.getDate() + 14)) })); } },
       { tit: 'Inicio: tu pausa ha terminado', img: mini('#EEF2F8', '#33415C', '▶️'),
         cuando: 'Arriba en Inicio, cuando ya pasó la fecha de la pausa y la persona aún no la ha retomado: «¿Retomamos tu práctica?», con «Alargar la pausa».',
-        abrir: () => { const d = new Date(); vistaPreviaTarjeta('Inicio: tu pausa ha terminado', tarjetaPausa({ hasta: isoLocal(new Date(d.getFullYear(), d.getMonth(), d.getDate() - 1)), terminada: true }).outerHTML); } },
+        abrir: () => { const d = new Date(); vistaPreviaTarjeta('Inicio: tu pausa ha terminado', tarjetaPausa({ hasta: isoLocal(new Date(d.getFullYear(), d.getMonth(), d.getDate() - 1)), terminada: true })); } },
       { tit: 'Hoy, sé amable contigo (con la pausa)', img: mini('linear-gradient(180deg,#9AA59A 0 45%,#EEF5E6 45%)', '#55657F', '⏸️'),
         cuando: 'Al marcar el entorno «Visitas, viaje, salida…» o «Enfermo, imposibilitado»: la hoja amable trae además «Poner mi práctica en pausa».',
         abrir: () => abrirHojaAmable('entorno', true) },
       { tit: 'Tiempo de cosecha', img: mini('#fff', '#6B9362', '🧺'),
-        cuando: 'En Inicio, cuando se cumple el plazo de la meta (1 o 2 meses desde el formulario): «¿Has podido cosecharla?».',
-        abrir: () => vistaPreviaTarjeta('Tiempo de cosecha', '<div class="card" style="border:2px solid #6B9362;text-align:center">' + practiHTML('pizarra', '', 90)
-          + '<p style="font-weight:700;margin:8px 0 4px">🧺 Tiempo de cosecha: se cumple el plazo de tu meta</p><p style="margin:0 0 12px">«' + escapeAttr(metaTxt) + '»<br>¿Has podido cosecharla?</p>'
-          + '<button type="button" class="btn btn-yes" style="text-align:center">¡Sí, la conseguí! 🧺🎉</button><button type="button" class="btn btn-no" style="text-align:center;margin-top:8px">Todavía no</button></div>') },
+        cuando: 'En Inicio, cuando se cumple el plazo de la meta (1 o 2 meses desde el formulario): «¿Has terminado tu práctica?». Los botones funcionan: prueba «¡Sí, la conseguí!» o «Todavía no».',
+        abrir: () => vistaPreviaTarjeta('Tiempo de cosecha', tarjetaPlazoMeta({ paso: null })) },
       { tit: 'Nota de tu yo de hace un mes', img: mini('#FFF8DC', '#8A6A1E', '📝'),
         cuando: 'En Inicio, el día que se puede abrir la nota que la persona se escribió el mes pasado (Plan Guías o regalo del día 10 del reto).',
-        abrir: () => vistaPreviaTarjeta('Nota de tu yo de hace un mes', '<div class="card carta-aviso" style="border-color:#E2C79A;background:#FFF8DC"><p style="font-weight:800;margin:0 0 6px">📝 Tienes una nota de tu yo de hace un mes</p>'
-          + '<button type="button" class="panel-link-btn" style="width:100%">Abrir mi nota</button></div>') }
+        abrir: () => {
+          const t = el('<div class="card carta-aviso" style="border-color:#E2C79A;background:#FFF8DC"><p style="font-weight:800;margin:0 0 6px">📝 Tienes una nota de tu yo de hace un mes</p>'
+            + '<button type="button" class="panel-link-btn" style="width:100%">Abrir mi nota</button></div>').firstElementChild;
+          t.querySelector('button').onclick = () => irDesdeVistaPrevia(() => { state.prevView = 'panelFac'; state.view = 'posit'; window.scrollTo(0, 0); render(); }, 'Vista previa: la pantalla de la nota');
+          vistaPreviaTarjeta('Nota de tu yo de hace un mes', t);
+        } },
+      { tit: 'Bienvenida al registrarse (5 pantallas)', img: mini('#fff', '#7A1C6A', '👋'),
+        cuando: 'Solo la primera vez, nada más crear la cuenta: bienvenida, metas que se marchitan, regar cada día, avisos de las 20:00 y sembrar la meta. Los botones funcionan; al acabar vuelves al panel.',
+        abrir: () => { state.altaPrueba = true; state.altaPaso = 1; state.view = 'bienvenidaAlta'; window.scrollTo(0, 0); render(); } }
     ];
   }
   // Moderador · entrar como: sus cuentas de prueba (Libre / Guías / Gustavo) sin contraseña
@@ -8547,8 +8562,8 @@ lo que haces cada día es lo que vas a ser.`;
         + '<button type="button" class="btn btn-yes pz-retomar" style="text-align:center">▶️ Retomar mi práctica ahora</button><button type="button" class="link-quiet pz-cambiar" style="display:block;margin:10px auto 0">Cambiar la fecha</button></div>'
       : '<div class="card pausa-card"><p class="pausa-tit">▶️ Tu pausa ha terminado</p><p class="pausa-hasta">el ' + fechaBonita(fin.hasta) + '</p><p>¿Retomamos tu práctica, poco a poco? Con 2 minutos hoy ya vale.</p>'
         + '<button type="button" class="btn btn-yes pz-retomar" style="text-align:center">▶️ Retomar mi práctica</button><button type="button" class="link-quiet pz-cambiar" style="display:block;margin:10px auto 0">Alargar la pausa</button></div>').firstElementChild;
-    c.querySelector('.pz-retomar').onclick = retomarPractica;
-    c.querySelector('.pz-cambiar').onclick = () => abrirPausa((pz || fin).motivo || '');
+    c.querySelector('.pz-retomar').onclick = demo ? () => { cerrarVistaPrevia(); avisoBreve('Vista previa: la pausa se quita y vuelve su práctica normal'); } : retomarPractica;
+    c.querySelector('.pz-cambiar').onclick = () => { if(demo) cerrarVistaPrevia(); abrirPausa((pz || fin).motivo || '', !!demo); };
     return c;
   }
 
@@ -8567,7 +8582,7 @@ lo que haces cada día es lo que vas a ser.`;
     }).catch(() => {});
     const alFormulario = (sinCambio) => {
       cerrar();
-      if(prueba){ avisoBreve('Vista previa: aquí se abriría el formulario de meta'); return; }
+      if(prueba){ irDesdeVistaPrevia(abrirFormularioMeta, 'Vista previa: este es el formulario (si no lo envías, no cambia nada)'); return; }
       try { if(sinCambio) localStorage.setItem('meta_sin_cambio_' + state.me, '1'); localStorage.removeItem(fmClave()); } catch(e){}
       abrirFormularioMeta();
     };
@@ -8612,7 +8627,7 @@ lo que haces cada día es lo que vas a ser.`;
     const nueva = () => {
       if(!tienePlan('guias')) return pantalla('Tu plan no permite cambiar de meta',
         '<p>En el Plan Libre, la meta se define una vez por trimestre.</p><p>Con el <b>Plan Guías</b> puedes cambiarla hasta 2 veces por trimestre, y recibes una guía nueva.</p>',
-        [['👑 Ver los planes', () => { cerrar(); if(!prueba) irAPlanes(); }], ['Volver', interes2]], { ant: interes2 });
+        [['👑 Ver los planes', () => { cerrar(); irAPlanes(); }], ['Volver', interes2]], { ant: interes2 });
       if(!puedeCambiarMeta() && !prueba) return pantalla('Ya cambiaste tu meta este trimestre',
         '<p>Has usado los cambios de meta de este trimestre.</p><p>Si lo necesitas, escríbenos por WhatsApp y lo vemos juntos.</p>',
         [['Entendido', cerrar]], { ant: interes2 });
@@ -9608,26 +9623,31 @@ lo que haces cada día es lo que vas a ser.`;
     t.querySelector('details').addEventListener('toggle', ev => { if(ev.target.open && typeof sonarSintonia === 'function') sonarSintonia(15, 0.5); });
     t.querySelector('button').onclick = () => { try { localStorage.setItem(clave, '1'); } catch(e){} t.remove(); };
     return t;
-  }  function tarjetaPlazoMeta(){
+  }
+  // prueba: { paso } para la vista previa del panel admin (no guarda nada y sigue de verdad a la pantalla siguiente)
+  function tarjetaPlazoMeta(prueba){
     const d = (state.gamifica && state.gamifica.datosFormulario) || {};
     const vence = vencimientoMeta();
-    if(!vence || (!plazoPaso && (Date.now() < vence.getTime() || (d.plazoRespondido && d.plazoRespondido >= d.fechaMeta)))) return null;
+    if(!prueba && (!vence || (!plazoPaso && (Date.now() < vence.getTime() || (d.plazoRespondido && d.plazoRespondido >= d.fechaMeta))))) return null;
+    const paso = prueba ? prueba.paso : plazoPaso;
+    const ir = nuevo => { if(prueba){ prueba.paso = nuevo; card.replaceWith(tarjetaPlazoMeta(prueba)); } else { plazoPaso = nuevo; render(); } };
     const card = document.createElement('div');
     card.className = 'card';
     card.style.cssText = 'border:2px solid #6B9362;text-align:center';
     const meta = d.metaTexto ? '«' + escapeAttr(d.metaTexto.length > 120 ? d.metaTexto.slice(0, 119) + '…' : d.metaTexto) + '»' : 'tu meta';
     const responder = async (conseguida, siguiente) => {
+      if(prueba) return;
       try { const r = await api('/meta-plazo', { conseguida, siguiente }); if(r.datosFormulario && state.gamifica) state.gamifica.datosFormulario = r.datosFormulario; } catch(e){}
     };
-    if(!plazoPaso){
+    if(!paso){
       card.innerHTML = `${practiHTML('pizarra', '', 90)}
-        <p style="font-weight:700;margin:8px 0 4px">🧺 Tiempo de cosecha: se cumple el plazo de tu meta (${escapeAttr(d.plazo)})</p>
-        <p style="margin:0 0 12px">${meta}<br>¿Has podido cosecharla?</p>
+        <p style="font-weight:700;margin:8px 0 4px">🧺 Tiempo de cosecha: se cumple el plazo de tu meta (${escapeAttr(d.plazo || (prueba ? '1 mes' : ''))})</p>
+        <p style="margin:0 0 12px">${meta}<br>¿Has terminado tu práctica?</p>
         <button type="button" class="btn btn-yes" id="plazoSi" style="text-align:center">¡Sí, la conseguí! 🧺🎉</button>
         <button type="button" class="btn btn-no" id="plazoNo" style="text-align:center;margin-top:8px">Todavía no</button>`;
-      card.querySelector('#plazoSi').onclick = () => { plazoPaso = 'si'; try { launchConfetti(); sonidoLogro(); } catch(e){} render(); };
-      card.querySelector('#plazoNo').onclick = () => { plazoPaso = 'no'; render(); };
-    } else if(plazoPaso === 'si'){
+      card.querySelector('#plazoSi').onclick = () => { try { launchConfetti(); sonidoLogro(); } catch(e){} ir('si'); };
+      card.querySelector('#plazoNo').onclick = () => ir('no');
+    } else if(paso === 'si'){
       card.innerHTML = `${practiHTML('celebracion', '', 100)}
         <p style="font-weight:700;margin:8px 0 4px">¡Buena cosecha! 🧺🏆</p>
         <p style="margin:0 0 12px">Te queda trimestre por delante. ¿Qué quieres hacer?</p>
@@ -9635,19 +9655,21 @@ lo que haces cada día es lo que vas a ser.`;
         <button type="button" class="btn btn-no" id="plazoSeguir" style="text-align:center;margin-top:8px">Seguir afianzándola</button>
         <p style="font-size:12px;color:var(--ink-soft);margin:8px 0 0">La meta nueva no cuenta como cambio de meta.</p>`;
       card.querySelector('#plazoNueva').onclick = async () => {
+        if(prueba){ irDesdeVistaPrevia(abrirFormularioMeta, 'Vista previa: este es el formulario de la meta nueva (si no lo envías, no cambia nada)'); return; }
         await responder(true, 'Quiere una meta nueva'); plazoPaso = null;
         try { localStorage.setItem('meta_sin_cambio_' + state.me, '1'); localStorage.removeItem(fmClave()); } catch(e){}
         abrirFormularioMeta();
       };
-      card.querySelector('#plazoSeguir').onclick = async () => { await responder(true, 'Sigue afianzándola'); plazoPaso = null; render(); };
+      card.querySelector('#plazoSeguir').onclick = async () => { if(prueba){ cerrarVistaPrevia(); avisoBreve('Vista previa: el recuadro desaparece y sigue con su meta'); return; } await responder(true, 'Sigue afianzándola'); plazoPaso = null; render(); };
     } else {
       card.innerHTML = `${practiHTML('animo', '', 90)}
         <p style="font-weight:700;margin:8px 0 4px">No pasa nada 🌱</p>
         <p style="margin:0 0 12px">Cada meta tiene su ritmo: algunas tardan más en dar fruto. Sigue regándola con tu guía o, si lo prefieres, ajusta tu meta.</p>
         <button type="button" class="btn btn-yes" id="plazoGuia" style="text-align:center">Seguir con mi guía</button>
         <button type="button" class="btn btn-no" id="plazoAjustar" style="text-align:center;margin-top:8px">Ajustar mi meta</button>`;
-      card.querySelector('#plazoGuia').onclick = async () => { await responder(false, 'Sigue con su guía'); plazoPaso = null; render(); };
+      card.querySelector('#plazoGuia').onclick = async () => { if(prueba){ irDesdeVistaPrevia(() => { state.view = 'practicas'; window.scrollTo(0, 0); render(); }, 'Vista previa: el recuadro desaparece y sigue con su guía'); return; } await responder(false, 'Sigue con su guía'); plazoPaso = null; render(); };
       card.querySelector('#plazoAjustar').onclick = async () => {
+        if(prueba){ irDesdeVistaPrevia(abrirFormularioMeta, 'Vista previa: así ajusta su meta (si no lo envías, no cambia nada)'); return; }
         await responder(false, 'Quiere ajustar su meta'); plazoPaso = null;
         try { localStorage.removeItem(fmClave()); } catch(e){}
         abrirFormularioMeta();
@@ -10435,4 +10457,4 @@ lo que haces cada día es lo que vas a ser.`;
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V12.64 · App Metas Amables · 2026-10-11 23:45==== -->
+<!-- ==== Fin del index V12.65 · App Metas Amables · 2026-10-11 23:53==== -->
