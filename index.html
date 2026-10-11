@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V12.53 · App Metas Amables · 2026-10-11 22:45==== -->
+<!-- ==== index V12.54 · App Metas Amables · 2026-10-11 22:51==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1139,6 +1139,7 @@ body.riego-abierto{overflow:hidden}
 .riego-sol{position:absolute;top:-20px;right:-16px;width:66px;height:66px;border-radius:50%;background:radial-gradient(circle,#FFE680 0%,#FFD24A 58%,rgba(255,210,74,0) 72%);z-index:2;animation:riego-sol 6s ease-in-out infinite}
 @keyframes riego-sol{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
 .riego-consejo{max-width:420px;margin:12px auto 18px;padding:12px 16px;border-radius:16px;background:rgba(255,255,255,.82);font-size:16px;line-height:1.45}
+.riego-ir-abajo{display:block;margin:20px auto 6px;height:46px;padding:0 24px;border-radius:23px;border:2px solid #2F5A23;background:rgba(255,255,255,.9);font:800 15px Karla,sans-serif;color:#2F5A23;cursor:pointer}
 .riego-ok{width:min(420px,100%);padding:16px;border:0;border-radius:18px;background:#4F9A5A;color:#fff;font:800 18px Karla,sans-serif;cursor:pointer;box-shadow:0 6px 18px rgba(79,154,90,.35)}
 .riego-ok:disabled{opacity:.75;cursor:default}
 .abonar{width:min(420px,100%);margin:22px auto 0;padding:16px 12px 14px;border-radius:20px;background:rgba(255,255,255,.88);text-align:center}
@@ -2179,7 +2180,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V12.53';
+  const APP_VERSION = 'V12.54';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -4358,6 +4359,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
+    { v: 'V12.54', f: '11 de octubre de 2026', n: [
+      'En <b>Registros amables</b>, abajo del todo hay también un botón para volver a Metas Amables, igual que arriba. Y si deslizas el dedo a la izquierda o a la derecha, también vuelves.' ] },
     { v: 'V12.53', f: '11 de octubre de 2026', n: [
       'En Utilidades, <b>Metas Amables: la simplicidad voluntaria</b>: por qué la app es sencilla, qué es el minimalismo y cuáles son las piezas fundamentales para tu meta.',
       'Nuevo <b>modo minimalista</b>: sin sonidos al registrar, sin animaciones y sin confeti ni ventanas de celebración. Siempre puedes volver al modo normal.',
@@ -5873,7 +5876,7 @@ lo que haces cada día es lo que vas a ser.`;
     document.addEventListener('touchstart', e => {
       const t = e.touches && e.touches[0];
       if(!t || e.touches.length > 1 || e.target.closest('input, textarea, select, [contenteditable], .no-deslizar')
-         || ['utilidades', 'frases', 'habla', 'musica'].includes(state.view)){ x0 = null; return; }
+         || (['utilidades', 'frases', 'habla', 'musica'].includes(state.view) && !document.querySelector('.riego-capa'))){ x0 = null; return; }
       x0 = t.clientX; y0 = t.clientY; t0 = Date.now();
     }, { passive: true });
     document.addEventListener('touchend', e => {
@@ -5881,6 +5884,12 @@ lo que haces cada día es lo que vas a ser.`;
       const t = e.changedTouches && e.changedTouches[0]; if(!t) return;
       const dx = t.clientX - x0, dy = t.clientY - y0; x0 = null;
       if(Math.abs(dx) < 70 || Math.abs(dx) < Math.abs(dy) * 1.8 || Date.now() - t0 > 800) return;
+      // Registros amables abierto: deslizar a cualquier lado vuelve a Metas Amables (como su botón); si hay otra ventana encima, no se toca
+      const registros = document.querySelector('.riego-capa');
+      if(registros){
+        if(!document.querySelector('.amable-capa, .reto-capa')){ const b = registros.querySelector('.riego-cerrar'); if(b) b.click(); }
+        return;
+      }
       if(!state.me || state.menuOpen || ['loading','pick'].includes(state.view)) return;
       // Bienvenida tras el alta: izquierda = siguiente pantalla, derecha = anterior (1 ↔ 2 ↔ 3)
       if(state.view === 'bienvenidaAlta'){
@@ -8782,11 +8791,15 @@ lo que haces cada día es lo que vas a ser.`;
       } catch(e){ console.error('Semana:', e); }
     };
     ponerSemana();
+    // Abajo del todo, el mismo «Ir a Metas Amables» que arriba (la semana se repinta en su sitio, así que este botón sigue el último)
+    const irAbajo = el('<button type="button" class="riego-ir-abajo">← Volver a Metas Amables</button>').firstElementChild;
+    capa.appendChild(irAbajo);
     const quitar = () => { capa.remove(); document.body.classList.remove('riego-abierto'); try { apagarSintoniaSuave(1200); } catch(err){} setTimeout(() => { try { comprobarReto(); } catch(err){} }, 350); };
     // ✕ e «Ir a Metas Amables» hacen lo mismo: cerrar y volver a Inicio
     const cerrar = () => { quitar(); state.view = 'panel'; state.panelSub = null; window.scrollTo(0, 0); render(); };
     capa.querySelector('.riego-cerrar').onclick = cerrar;
     capa.querySelector('.riego-ir').onclick = cerrar;
+    irAbajo.onclick = cerrar;
     // Los otros días de la semana están abajo, en «4 · Cómo vas esta semana»
     capa.querySelector('.riego-cal').onclick = () => { const s = capa.querySelector('.rp-semana'); if(s) s.scrollIntoView({ behavior: 'smooth', block: 'start' }); };
     const son = capa.querySelector('.riego-son');
@@ -10106,4 +10119,4 @@ lo que haces cada día es lo que vas a ser.`;
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V12.53 · App Metas Amables · 2026-10-11 22:45==== -->
+<!-- ==== Fin del index V12.54 · App Metas Amables · 2026-10-11 22:51==== -->
