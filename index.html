@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V11.99 · App Metas Amables · 2026-10-11 02:07==== -->
+<!-- ==== index V11.100 · App Metas Amables · 2026-10-11 02:09==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1191,6 +1191,7 @@ body.riego-abierto{overflow:hidden}
 .ritual-op{padding:9px 6px;line-height:1.25;border:2px solid #F2C14E;border-radius:12px;background:#fff;font:700 14.5px Karla,sans-serif;color:#7A5200;cursor:pointer}
 .ritual-otro{display:flex;gap:8px;margin-top:8px}.ritual-otro input{flex:1;min-width:0;padding:9px 12px;border:1px solid #E2D3A8;border-radius:10px;font:inherit;font-size:14.5px;background:#fff}
 .ritual-otro button{padding:9px 14px;border:0;border-radius:10px;background:#F2C14E;color:#2B1B00;font:800 14px Karla,sans-serif;cursor:pointer}
+.ritual-guia{display:block;width:100%;margin:0 0 8px;padding:11px 14px;border:0;border-radius:12px;background:#F2C14E;color:#2B1B00;font:800 15px Karla,sans-serif;cursor:pointer}
 .ritual-cambiar{background:none;border:0;padding:0;color:#7A5200;text-decoration:underline;font:600 13.5px Karla,sans-serif;cursor:pointer}
 .planta-meta{display:block;margin:3px 0 0;font:italic 600 14.5px/1.35 Lora,serif;color:#4F7A43}
 .util-nov{display:flex;align-items:center;gap:10px;width:100%;margin:14px 0 0;padding:12px 16px;border:2px solid #101010;border-radius:16px;background:#FFF6DC;font:inherit;color:#101010;text-align:left;cursor:pointer}.util-nov b{display:block;font-size:16px}.util-nov small{display:block;color:var(--ink-soft);font-size:13px}.util-nov .opcion-flecha{margin-left:auto;font-size:22px}
@@ -2051,7 +2052,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V11.99';
+  const APP_VERSION = 'V11.100';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -7991,7 +7992,12 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     const c = document.createElement('div'); c.className = 'card ritual-card';
     const pintar = () => {
       if(elegido){
-        c.innerHTML = '<p class="ritual-tit">☀️ Ya lo has decidido</p><p class="ritual-tx">Hoy harás tu práctica <b>' + escapeAttr(elegido) + '</b>. Cuando llegue ese momento, solo tienes que hacerla 🌱</p><button type="button" class="ritual-cambiar">Cambiar el momento</button>';
+        // Ya decidido: se muestra la práctica de la semana (la de la guía) y un acceso a la guía completa
+        c.innerHTML = '<p class="ritual-tit">🏃 Tu práctica de esta semana</p>'
+          + (practica ? '<p class="ritual-practica">«' + escapeAttr(practica) + '»</p>' : '<p class="ritual-tx">Tu guía semanal te explica la práctica de esta semana.</p>')
+          + '<p class="ritual-tx">☀️ Hoy la harás <b>' + escapeAttr(elegido) + '</b>.</p>'
+          + '<button type="button" class="ritual-guia">📖 Descripción completa</button><button type="button" class="ritual-cambiar">Cambiar el momento</button>';
+        c.querySelector('.ritual-guia').onclick = () => { state.prevView = 'panel'; state.view = 'practicas'; window.scrollTo(0, 0); render(); };
         c.querySelector('.ritual-cambiar').onclick = () => { elegido = ''; try { localStorage.removeItem(claveRitual()); } catch(e){} pintar(); };
         return;
       }
@@ -9275,4 +9281,4 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V11.99 · App Metas Amables · 2026-10-11 02:07==== -->
+<!-- ==== Fin del index V11.100 · App Metas Amables · 2026-10-11 02:09==== -->
