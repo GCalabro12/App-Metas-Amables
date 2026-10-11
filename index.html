@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V12.20 · App Metas Amables · 2026-10-11 18:37==== -->
+<!-- ==== index V12.21 · App Metas Amables · 2026-10-11 18:39==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1142,6 +1142,7 @@ body.riego-abierto{overflow:hidden}
 .clima-q{display:flex;flex-direction:column;justify-content:center;gap:4px;padding:8px}
 .clima-q.izq{align-items:flex-end;padding-left:2%;padding-right:6px}.clima-q.der{align-items:flex-start;padding-right:2%;padding-left:6px}
 .clima-q .abonar-em{font-size:12.5px;padding:4px 8px}
+.clima-q.der.alto{align-items:center;padding:20% 12% 4% 4%}
 .clima-q.alto{padding-top:20%}.clima-q.bajo{padding-bottom:20%}
 .clima-disco.elegida{display:flex}
 .clima-disco .abonar-parte{padding:0 6px}
@@ -2083,7 +2084,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V12.20';
+  const APP_VERSION = 'V12.21';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -8301,7 +8302,7 @@ lo que haces cada día es lo que vas a ser.`;
   })();
   function crearMacetaAbonar(alGuardar){
     let sel = abonoDeHoy(), modo = sel.length ? 'ver' : 'grid', guardado = sel.length > 0;
-    const caja = el('<div class="abonar"><p class="abonar-tit">☀️ Tu clima de hoy</p><p class="abonar-sub">Tus emociones son el clima de tu meta: no se eligen, se observan. <b>¿Cómo te sientes hoy?</b></p>'
+    const caja = el('<div class="abonar"><p class="abonar-tit">☀️ Tu clima de hoy</p><p class="abonar-sub">Aunque no eliges tus emociones, ellas influyen en tu meta. <b>¿Cómo te sientes hoy?</b></p>'
       + '<p class="abonar-eje">Más energía</p><div class="clima-fila"><span class="clima-lado izq">Desagradable</span><div class="clima-sol">' + RAYOS_SOL + '<div class="clima-disco"></div></div><span class="clima-lado der">Agradable</span></div><p class="abonar-eje">Menos energía</p>'
       + '<div class="abonar-acciones"></div><p class="abonar-msg"></p></div>').firstElementChild;
     const maceta = caja.querySelector('.clima-disco'), sol = caja.querySelector('.clima-sol'), acc = caja.querySelector('.abonar-acciones'), msg = caja.querySelector('.abonar-msg');
@@ -9462,4 +9463,4 @@ lo que haces cada día es lo que vas a ser.`;
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V12.20 · App Metas Amables · 2026-10-11 18:37==== -->
+<!-- ==== Fin del index V12.21 · App Metas Amables · 2026-10-11 18:39==== -->
