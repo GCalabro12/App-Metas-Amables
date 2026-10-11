@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V12.13 · App Metas Amables · 2026-10-11 18:23==== -->
+<!-- ==== index V12.14 · App Metas Amables · 2026-10-11 18:31==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -891,11 +891,11 @@ body.con-fondo-nivel{background:#fff}
 body.con-fondo-nivel::before{content:"";position:fixed;inset:0;z-index:-1;background:linear-gradient(var(--velo-nivel,rgba(255,255,255,.55)),var(--velo-nivel,rgba(255,255,255,.55))),var(--fondo-nivel) center/cover no-repeat}
 .musica-oficial{display:grid;grid-template-columns:auto 1fr auto;grid-template-rows:auto auto;column-gap:10px;align-items:center;width:100%;text-align:left;background:linear-gradient(135deg,#FFF3C4,#FFD9E6);border:2px solid #101010;border-radius:16px;padding:12px 14px;margin:0 0 12px;font:inherit;color:var(--ink);cursor:pointer;box-shadow:0 3px 0 #101010}
 .musica-oficial b{grid-column:2;grid-row:1 / span 2}.musica-oficial small{grid-column:2;font-size:13px;opacity:.75}
-#btnSintonia b{grid-row:1}#btnSintonia .musica-oficial-sub{grid-row:2}
-.musica-letra{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:-4px 0 10px}
+.musica-oficial-caja{display:block;cursor:default}.musica-oficial-tit{margin:0 0 10px}
+.musica-letra{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:0}
 .musica-letra button{padding:9px 6px;border:2px solid #101010;border-radius:12px;background:#fff;font:700 14.5px Karla,sans-serif;color:var(--ink);cursor:pointer}
 .musica-letra button.activo{background:#101010;color:#fff}
-.musica-letra-texto{margin:0 0 12px;border:1px solid rgba(0,0,0,.12);border-radius:12px;background:rgba(255,255,255,.75);padding:8px 12px}
+.musica-letra-texto{margin:10px 0 0;border:1px solid rgba(0,0,0,.12);border-radius:12px;background:rgba(255,255,255,.75);padding:8px 12px}
 .musica-letra-texto summary{cursor:pointer;font-weight:700}.musica-letra-texto p{margin:8px 0 2px;font-size:14.5px;line-height:1.5}
 .ico{display:inline-block;width:1em;height:1em;vertical-align:-0.125em;flex:none}
 .musica-oficial-play{grid-column:3;grid-row:1 / span 2;width:40px;height:40px;border-radius:50%;background:#101010;color:#fff;display:flex;align-items:center;justify-content:center;font-size:16px}
@@ -1133,6 +1133,14 @@ body.riego-abierto{overflow:hidden}
 .abonar{width:min(420px,100%);margin:22px auto 0;padding:16px 12px 14px;border-radius:20px;background:rgba(255,255,255,.88);text-align:center}
 .abonar-tit{margin:0;font:700 20px Lora,serif;color:#2F5A23}.abonar-sub{margin:4px 0 8px;font-size:14.5px;color:#3F4A38}
 .abonar-eje{margin:2px 0;font-size:12px;color:#6A6A60}.abonar-lados{display:flex;justify-content:space-between;width:min(300px,82vw);margin:2px auto 8px;font-size:12px;color:#6A6A60}
+.clima-sol{width:min(300px,80vw);aspect-ratio:1;margin:4px auto;padding:13px;border-radius:50%;box-sizing:border-box;background:repeating-conic-gradient(var(--rayo,#F6C94A) 0 7deg,transparent 7deg 15deg);transition:background .3s}
+.clima-disco{width:100%;height:100%;border-radius:50%;overflow:hidden;box-shadow:0 0 0 4px rgba(255,255,255,.9),0 4px 14px rgba(0,0,0,.12)}
+.clima-disco.rejilla{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:3px;background:#fff}
+.clima-q{display:flex;flex-direction:column;justify-content:center;gap:4px;padding:8px}
+.clima-q.izq{align-items:flex-end;padding-left:14%}.clima-q.der{align-items:flex-start;padding-right:14%}
+.clima-q.alto{padding-top:20%}.clima-q.bajo{padding-bottom:20%}
+.clima-disco.elegida{display:flex}
+.clima-disco .abonar-parte{padding:0 6px}
 .abonar-pot{width:min(320px,86vw);margin:0 auto}.abonar-borde{height:20px;border-radius:7px;background:#B4B2A9;transition:background .3s}
 .abonar-maceta{width:94%;margin:-1px auto 0;height:210px;clip-path:polygon(0 0,100% 0,80% 100%,20% 100%);background:#D3D1C7}
 .abonar-maceta.rejilla{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1.15fr 1fr}
@@ -1146,7 +1154,7 @@ body.riego-abierto{overflow:hidden}
 .abonar-guardar{width:100%;max-width:320px;padding:13px;border:0;border-radius:16px;background:#6B9362;color:#fff;font:800 16px Karla,sans-serif;cursor:pointer}.abonar-guardar.hecho{background:#3B6D11}
 .abonar-fila2{display:flex;gap:14px}.abonar-sec{background:none;border:0;color:#2F5A23;text-decoration:underline;font:600 14px Karla,sans-serif;cursor:pointer}
 .abonar-msg{margin:8px 0 0;font-size:13.5px;color:#3F4A38;min-height:0}
-.planta-abonar{display:flex;align-items:center;justify-content:center;gap:7px;width:100%;margin:8px 0 0;padding:9px 9% 10px;border:0;border-radius:0;background:linear-gradient(#7E4A1E 0 5px,#9C6430 5px);color:#fff;font:700 13.5px/1.25 Karla,sans-serif;cursor:pointer;text-align:center;clip-path:polygon(0 0,100% 0,93% 100%,7% 100%)}
+.planta-abonar{display:flex;align-items:center;justify-content:center;gap:7px;width:100%;margin:8px 0 0;padding:9px 12px;border:2px solid #F0C44C;border-radius:999px;background:#FFF6D6;color:#5A3D00;font:700 13.5px/1.25 Karla,sans-serif;cursor:pointer;text-align:center}
 .planta-abonar.abonado{color:#2B2B2B}
 .planta-abonar svg{width:20px;height:20px;flex:none}
 .riego-cal{margin:12px 0 0;background:none;border:0;color:#2F5A23;text-decoration:underline;font:600 14.5px Karla,sans-serif;cursor:pointer}
@@ -1465,7 +1473,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   .dia-btn.hecho{background:#4C8C4A;border-color:#4C8C4A;color:#fff}
   .dia-btn:disabled{opacity:.35;cursor:default}
   .dia-tick{font-size:16px;line-height:1;min-height:16px}
-  .dia-maceta{width:30px;height:22px;margin-top:3px;clip-path:polygon(0 0,100% 0,80% 100%,20% 100%);background:#E9E3D3;display:flex;align-items:center;justify-content:center}
+  .dia-maceta{width:26px;height:26px;margin-top:3px;border-radius:50%;background:#E9E3D3;display:flex;align-items:center;justify-content:center}
   .dia-btn.hecho .dia-maceta{background:#F5F1E6}
   .dia-maceta .dia-tick{font-size:14px;min-height:0;color:#2B2B2B;font-weight:800}
   .chispa{position:fixed;width:10px;height:10px;border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);animation:chispa 1.3s cubic-bezier(.15,.7,.3,1) forwards}
@@ -2071,7 +2079,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V12.13';
+  const APP_VERSION = 'V12.14';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -2445,7 +2453,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     try { if(pushPosible() && Notification.permission === 'granted' && !pushActivo() && localStorage.getItem('push_off_' + state.me) !== '1') activarAvisosPlanta(true); } catch(e){}
     try { if(new URLSearchParams(location.search).get('regar') === '1'){ history.replaceState(null, '', location.pathname); if(diaHechoFecha(new Date()) === 0) setTimeout(abrirMomentoRiego, 700); else setTimeout(() => avisoBreve('🌱 Hoy ya has regado tu meta'), 700); } } catch(e){}
     // Accesos directos del icono (dejarlo pulsado): «Abonar» y «Mi guía»
-    try { if(new URLSearchParams(location.search).get('abonar') === '1'){ history.replaceState(null, '', location.pathname); setTimeout(() => abrirMomentoRiego(true), 700); } } catch(e){}
+    try { const qs = new URLSearchParams(location.search); if(qs.get('abonar') === '1' || qs.get('clima') === '1'){ history.replaceState(null, '', location.pathname); setTimeout(() => abrirMomentoRiego(true), 700); } } catch(e){}
     try { if(new URLSearchParams(location.search).get('guia') === '1'){ history.replaceState(null, '', location.pathname);
       setTimeout(() => { const b = document.querySelector('.guia-semana .ritual-guia') || document.querySelector('[data-ir="s3"]'); if(b) b.click(); }, 900); } } catch(e){}
     // Enlace del resumen de Telegram (?panel=1): abre «Panel de control admin Metas A.»
@@ -4060,6 +4068,10 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
+    { v: 'V12.14', f: '11 de octubre de 2026', n: [
+      '<b>☀️ El clima de hoy</b> (antes «Abona tu meta»): tus emociones son el clima de tu meta. Elige cómo te sientes en un <b>sol partido en cuatro quesitos</b>: arriba más energía, abajo menos; a la izquierda lo desagradable y a la derecha lo agradable.',
+      'En los calendarios, cada día es ahora un <b>redondel</b> del color de tu clima.',
+      'En <b>Música</b>, el recuadro de la música oficial tiene dos botones de play: <b>Sin letra</b> y <b>Con letra</b>.' ] },
     { v: 'V12.12', f: '11 de octubre de 2026', n: [
       'En <b>Utilidades → Música</b>, la música oficial de Metas Amables se puede escuchar <b>sin letra</b> o <b>con letra</b>: «Riega tu meta», la canción de la app, con la misma melodía. Toca «Ver la letra» para cantarla.' ] },
     { v: 'V12.07', f: '11 de octubre de 2026', n: [
@@ -4681,11 +4693,13 @@ lo que haces cada día es lo que vas a ser.`;
     renderBackTopbar('🎵 Música motivacional');
     app.querySelector('#btnVolver').onclick = () => { state.view = 'utilidades'; window.scrollTo(0,0); render(); };
     const caja = el(`<div class="musica-lista">
-        <button type="button" class="musica-oficial" id="btnSintonia">🎵 <b>Música oficial de Metas Amables</b><small class="musica-oficial-sub"></small><span class="musica-oficial-play">${ICO.play}</span></button>
-        <div class="musica-letra" role="group" aria-label="Música oficial con letra o sin letra">
-          <button type="button" data-letra="0">🎼 Sin letra</button><button type="button" data-letra="1">🎤 Con letra</button>
+        <div class="musica-oficial musica-oficial-caja" id="btnSintonia">
+          <p class="musica-oficial-tit">🎵 <b>Música oficial de Metas Amables</b></p>
+          <div class="musica-letra" role="group" aria-label="Música oficial con letra o sin letra">
+            <button type="button" data-letra="0" data-txt="Sin letra"></button><button type="button" data-letra="1" data-txt="Con letra"></button>
+          </div>
+          <details class="musica-letra-texto"><summary>📝 Ver la letra de «Riega tu meta»</summary><p>${escapeAttr(LETRA_RIEGA).replace(/\n/g, '<br>')}</p></details>
         </div>
-        <details class="musica-letra-texto"><summary>📝 Ver la letra de «Riega tu meta»</summary><p>${escapeAttr(LETRA_RIEGA).replace(/\n/g, '<br>')}</p></details>
         <p class="musica-ayuda">Elige una música y sigue usando la app: sonará mientras tanto. Para pararla, toca ${ICO.parar} abajo.</p>
         <details class="ciencia musica-ciencia"><summary>🔬 ¿Por qué música mientras practicas?</summary>
           <p>Escuchar una música agradable mientras haces tu práctica funciona como un <b>reforzador</b>: tu cerebro asocia la conducta con algo placentero y, poco a poco, le apetece más repetirla.</p>
@@ -4696,19 +4710,21 @@ lo que haces cada día es lo que vas a ser.`;
           return '<h3 class="musica-modulo">' + m.nombre + '</h3>' + (lista.length ? lista.map((c, n) => '<button type="button" class="musica-cancion' + (c.id === musica.id ? ' sonando' : '') + (n > 0 && !tienePlan('guias') ? ' con-corona' : '') + '" data-id="' + c.id + '">' + (n > 0 && !tienePlan('guias') ? '<span class="corona">👑</span>' : '') + '<span class="musica-icono">' + (c.id === musica.id ? '🔊' : ICO.play) + '</span><span>' + escapeAttr(c.titulo) + '</span></button>').join('') : '<p class="musica-pronto">Muy pronto</p>'); }).join('')}
       </div>`).firstElementChild;
     app.appendChild(caja);
-    const bSint = caja.querySelector('#btnSintonia');
+    const sonandoOficial = () => musica.id === 'oficial' ? (musicaConLetra() ? '1' : '0') : null;
     const pintarSint = () => {
-      const letra = musicaConLetra();
-      bSint.querySelector('.musica-oficial-play').innerHTML = musica.id === 'oficial' ? ICO.parar : ICO.play;
-      bSint.querySelector('.musica-oficial-sub').textContent = letra ? '🎤 Con letra: «Riega tu meta»' : '🎼 Sin letra';
-      caja.querySelectorAll('.musica-letra button').forEach(b => b.classList.toggle('activo', (b.dataset.letra === '1') === letra));
-      caja.querySelector('.musica-letra-texto').hidden = !letra;
+      caja.querySelectorAll('.musica-letra button').forEach(b => {
+        const on = sonandoOficial() === b.dataset.letra;
+        b.classList.toggle('activo', on);
+        b.innerHTML = (on ? ICO.parar : ICO.play) + ' ' + b.dataset.txt;
+        b.setAttribute('aria-label', (on ? 'Parar: ' : 'Escuchar: ') + b.dataset.txt);
+      });
+      caja.querySelector('.musica-letra-texto').hidden = !musicaConLetra();
     };
     pintarSint();
-    bSint.onclick = () => { musicaPoner(musica.id === 'oficial' ? null : 'oficial'); pintarSint(); };
     caja.querySelectorAll('.musica-letra button').forEach(b => b.onclick = () => {
+      if(sonandoOficial() === b.dataset.letra){ musicaPoner(null); pintarSint(); return; }   // la que suena: se para
       try { localStorage.setItem('musica_letra', b.dataset.letra); } catch(e){}
-      if(musica.id === 'oficial') musicaPoner('oficial');   // si ya sonaba, cambia a la otra versión
+      musicaPoner('oficial');                                                               // si sonaba la otra, cambia
       pintarSint();
     });
     caja.querySelectorAll('.musica-cancion').forEach(b => b.onclick = () => {
@@ -7169,7 +7185,7 @@ lo que haces cada día es lo que vas a ser.`;
           .cal-diario .cd-dia i{position:relative;font-style:normal;font-weight:700;font-size:11px;height:11px;color:#fff}
           .cal-diario .cd-dia.hecho{color:#fff}
           .cal-diario .cd-dia.hecho b{font-weight:800;margin-top:2px}
-          .cal-diario .cd-maceta{position:absolute;inset:3px 2px 2px;background:#ECE6D6;clip-path:polygon(0 0,100% 0,86% 100%,14% 100%)}
+          .cal-diario .cd-maceta{position:absolute;inset:2px;border-radius:50%;background:#ECE6D6}
           .cal-diario .cd-dia.hecho .cd-maceta{background:#6B9362}
           .cal-diario .cd-dia.hoy:not(.hecho) .cd-maceta{background:#F8DE9A}
           .cal-diario .cd-dia.abonado{color:#2B2B2B}
@@ -7178,7 +7194,7 @@ lo que haces cada día es lo que vas a ser.`;
           .cal-diario .cd-dia:disabled{opacity:.35;cursor:default}
         </style>
         <p style="margin:0 0 4px;font-size:16px"><b>📅 Mi calendario de prácticas</b></p>
-        <p style="font-size:13px;color:var(--ink-soft);margin:0 0 10px">Cada día que haces tu práctica aparece como una maceta (×3 si la hiciste tres veces). Si ese día abonaste, la maceta toma el color de cómo te sentías.</p>
+        <p style="font-size:13px;color:var(--ink-soft);margin:0 0 10px">Cada día que haces tu práctica aparece como un redondel verde (×3 si la hiciste tres veces). Si ese día miraste tu clima, el redondel toma el color de cómo te sentías.</p>
         <div class="cd-cab"><button type="button" class="cd-atras" ${puedeAtras ? '' : 'disabled'} aria-label="Mes anterior">‹</button><b>${monthNamesEs[m].charAt(0).toUpperCase() + monthNamesEs[m].slice(1)} ${y}</b><button type="button" class="cd-adelante" ${puedeAdelante ? '' : 'disabled'} aria-label="Mes siguiente">›</button></div>
         <div class="cd-grid">${DIAS_SEMANA.map(l => '<span class="cd-sem">' + l + '</span>').join('')}${celdas}</div>
         ${resumenSemanasMes(y, m)}
@@ -8270,19 +8286,21 @@ lo que haces cada día es lo que vas a ser.`;
   }
   // La maceta con los cuatro cuadrantes: arriba (la parte ancha) más energía, abajo menos; izquierda desagradable, derecha agradable.
   // Al tocar una emoción la maceta toma su color y la palabra sale en el centro; con dos, mitad y mitad.
+  // El clima de hoy: las emociones son el clima de tu meta (no se eligen, se observan). Un sol partido en cuatro quesitos:
+  // arriba más energía, abajo menos; izquierda desagradable, derecha agradable. Con dos emociones, el sol va mitad y mitad.
   function crearMacetaAbonar(alGuardar){
     let sel = abonoDeHoy(), modo = sel.length ? 'ver' : 'grid', guardado = sel.length > 0;
-    const caja = el('<div class="abonar"><p class="abonar-tit">🌿 Abona tu meta</p><p class="abonar-sub">Conocer lo que sientes también la hace crecer. <b>¿Cómo te sientes hoy?</b></p>'
-      + '<p class="abonar-eje">⚡ Más energía</p><div class="abonar-pot"><div class="abonar-borde"></div><div class="abonar-maceta"></div></div><p class="abonar-eje">🔋 Menos energía</p>'
+    const caja = el('<div class="abonar"><p class="abonar-tit">☀️ El clima de hoy</p><p class="abonar-sub">Tus emociones son el clima de tu meta: no se eligen, se observan. <b>¿Cómo te sientes hoy?</b></p>'
+      + '<p class="abonar-eje">⚡ Más energía</p><div class="clima-sol"><div class="clima-disco"></div></div><p class="abonar-eje">🔋 Menos energía</p>'
       + '<p class="abonar-lados"><span>← Desagradable</span><span>Agradable →</span></p><div class="abonar-acciones"></div><p class="abonar-msg"></p></div>').firstElementChild;
-    const maceta = caja.querySelector('.abonar-maceta'), borde = caja.querySelector('.abonar-borde'), acc = caja.querySelector('.abonar-acciones'), msg = caja.querySelector('.abonar-msg');
+    const maceta = caja.querySelector('.clima-disco'), sol = caja.querySelector('.clima-sol'), acc = caja.querySelector('.abonar-acciones'), msg = caja.querySelector('.abonar-msg');
     const pintar = () => {
       maceta.innerHTML = ''; acc.innerHTML = '';
       if(modo === 'grid'){
-        maceta.className = 'abonar-maceta rejilla'; borde.style.background = '#B4B2A9';
+        maceta.className = 'clima-disco rejilla'; sol.style.setProperty('--rayo', '#F6C94A');
         [['tension', 'izq alto'], ['vital', 'der alto'], ['agot', 'izq bajo'], ['calma', 'der bajo']].forEach(([k, cl]) => {
           const c = EMO_CUAD[k], q = document.createElement('div');
-          q.className = 'abonar-q ' + cl; q.style.background = c.claro;
+          q.className = 'clima-q ' + cl; q.style.background = c.claro;
           EMOCIONES.filter(e => e.c === k).forEach(e => {
             const b = document.createElement('button'); b.type = 'button'; b.className = 'abonar-em' + (sel.some(x => x.id === e.id) ? ' activa' : '');
             b.textContent = nombreEmocion(e); b.style.color = c.txt;
@@ -8299,9 +8317,9 @@ lo que haces cada día es lo que vas a ser.`;
         if(sel.length) acc.appendChild(boton('Volver a mi emoción', () => { modo = 'ver'; pintar(); }));
         return;
       }
-      // Ver: la maceta del color de la emoción (o mitad y mitad), la palabra en el centro y su intensidad
-      maceta.className = 'abonar-maceta elegida';
-      borde.style.background = EMO_CUAD[emoPorId(sel[0].id).c].borde;
+      // Ver: el sol del color de la emoción (o mitad y mitad), la palabra en el centro y su intensidad
+      maceta.className = 'clima-disco elegida';
+      sol.style.setProperty('--rayo', EMO_CUAD[emoPorId(sel[0].id).c].fuerte);
       sel.forEach((x, n) => {
         const e = emoPorId(x.id), c = EMO_CUAD[e.c], parte = document.createElement('div');
         parte.className = 'abonar-parte'; parte.style.background = colorEmo(x);
@@ -8315,11 +8333,11 @@ lo que haces cada día es lo que vas a ser.`;
         maceta.appendChild(parte);
       });
       const g = document.createElement('button'); g.type = 'button'; g.className = 'abonar-guardar' + (guardado ? ' hecho' : '');
-      g.textContent = guardado ? '✓ Meta abonada' : '🌿 Guardar mi abono';
+      g.textContent = guardado ? '✓ Clima guardado' : '☀️ Guardar mi clima';
       g.onclick = async () => {
         g.disabled = true; g.textContent = 'Guardando…';
-        try { await guardarAbonoHoy(sel); guardado = true; try { sonidoTing(); } catch(e){} msg.textContent = 'Gracias por mirarte por dentro: así también crece tu meta 🌱'; pintar(); if(alGuardar) alGuardar(sel); }
-        catch(e){ g.disabled = false; g.textContent = '🌿 Guardar mi abono'; msg.textContent = 'No se pudo guardar. Revisa tu conexión e inténtalo de nuevo.'; }
+        try { await guardarAbonoHoy(sel); guardado = true; try { sonidoTing(); } catch(e){} msg.textContent = 'Gracias por mirarte por dentro: conocer tu clima te ayuda a cuidar tu meta 🌱'; pintar(); if(alGuardar) alGuardar(sel); }
+        catch(e){ g.disabled = false; g.textContent = '☀️ Guardar mi clima'; msg.textContent = 'No se pudo guardar. Revisa tu conexión e inténtalo de nuevo.'; }
       };
       acc.appendChild(g);
       const fila2 = document.createElement('div'); fila2.className = 'abonar-fila2';
@@ -8408,8 +8426,8 @@ lo que haces cada día es lo que vas a ser.`;
     try {
       const hoyAb = abonoDeHoy();
       // Botón con forma de maceta marrón; si hoy ya abonó, toma el color de su emoción
-      const maceta = '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3.5 7.5h13l-2 10h-9z" fill="#E8B47A" stroke="#4A2A0E" stroke-width="1.3" stroke-linejoin="round"/><path d="M2 4.5h16v3H2z" fill="#D69A5C" stroke="#4A2A0E" stroke-width="1.3" stroke-linejoin="round"/></svg>';
-      const ab = el('<button type="button" class="planta-abonar' + (hoyAb.length ? ' abonado' : '') + '"' + (hoyAb.length ? ' style="background:' + fondoAbono(hoyAb) + '"' : '') + '>' + maceta + '<span>' + (hoyAb.length ? 'Hoy te sientes: ' + hoyAb.map(x => nombreEmocion(emoPorId(x.id))).join(' y ') : 'Abona tu meta: ¿cómo te sientes hoy?') + '</span></button>').firstElementChild;
+      const maceta = '<svg viewBox="0 0 20 20" aria-hidden="true"><g stroke="#B7791F" stroke-width="1.6" stroke-linecap="round"><path d="M10 1.5v2.5M10 16v2.5M1.5 10h2.5M16 10h2.5M4 4l1.8 1.8M14.2 14.2L16 16M4 16l1.8-1.8M14.2 5.8L16 4"/></g><circle cx="10" cy="10" r="4.2" fill="#F6C94A" stroke="#B7791F" stroke-width="1.2"/></svg>';
+      const ab = el('<button type="button" class="planta-abonar' + (hoyAb.length ? ' abonado' : '') + '"' + (hoyAb.length ? ' style="background:' + fondoAbono(hoyAb) + '"' : '') + '>' + maceta + '<span>' + (hoyAb.length ? 'Tu clima de hoy: ' + hoyAb.map(x => nombreEmocion(emoPorId(x.id))).join(' y ') : 'El clima de hoy: ¿cómo te sientes?') + '</span></button>').firstElementChild;
       ab.onclick = () => abrirMomentoRiego(true);
       t.querySelector('.planta-tx').appendChild(ab);
     } catch(e){}
@@ -9433,4 +9451,4 @@ lo que haces cada día es lo que vas a ser.`;
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V12.13 · App Metas Amables · 2026-10-11 18:23==== -->
+<!-- ==== Fin del index V12.14 · App Metas Amables · 2026-10-11 18:31==== -->
