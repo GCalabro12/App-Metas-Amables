@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V12.27 · App Metas Amables · 2026-10-11 20:15==== -->
+<!-- ==== index V12.28 · App Metas Amables · 2026-10-11 20:17==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1175,6 +1175,10 @@ body.riego-abierto{overflow:hidden}
 .planta-abonar.abonado{color:#2B2B2B}
 .planta-abonar svg{width:20px;height:20px;flex:none}
 .rp-seccion{width:min(420px,100%);margin:22px auto 0;padding:16px 12px 14px;border-radius:20px;background:rgba(255,255,255,.88);text-align:center;box-sizing:border-box}
+.riego-capa .abonar,.riego-capa .rp-seccion,.riego-capa .entorno.rp-marco{border:2px solid rgba(169,50,38,.35);box-shadow:0 4px 14px rgba(0,0,0,.06)}
+.riego-capa .entorno.rp-marco{width:min(420px,100%);max-width:none;margin:16px auto 0;padding:16px 12px 14px;border-radius:20px;background:rgba(255,255,255,.88);text-align:center;box-sizing:border-box}
+.riego-capa .abonar,.riego-capa .rp-seccion{margin-top:16px}
+.rp-seccion .riego-consejo{margin:4px auto 0;padding:0;background:none;font-size:13.5px;line-height:1.35;color:#5A5A50}
 .rp-practica{margin:2px 0 0;font:italic 700 clamp(18px,5vw,21px)/1.3 Lora,serif;color:#4F7A43}
 .rp-seccion .riego-escena{margin:10px auto 4px;width:min(240px,64vw)}
 .rp-check{display:flex;align-items:center;justify-content:center;gap:12px;width:100%;max-width:340px;margin:4px auto 0;padding:13px 16px;border:2px solid #4F9A5A;border-radius:14px;background:#fff;font:800 17px Karla,sans-serif;color:#2F5A23;cursor:pointer}
@@ -2119,7 +2123,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V12.27';
+  const APP_VERSION = 'V12.28';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -4108,6 +4112,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
+    { v: 'V12.28', f: '11 de octubre de 2026', n: [
+      'En <b>Registros amables</b>, cada parte (clima, entorno y práctica) tiene su propio marco, y tu disparador o un consejo sale justo debajo de tu práctica.' ] },
     { v: 'V12.27', f: '11 de octubre de 2026', n: [
       'Tu clima se <b>guarda solo</b> al tocar el sol, igual que el entorno: ya no hace falta pulsar «Guardar».' ] },
     { v: 'V12.26', f: '11 de octubre de 2026', n: [
@@ -8316,15 +8322,20 @@ lo que haces cada día es lo que vas a ser.`;
       + '<h2 class="riego-tit">Registros amables</h2>'
       + '<div class="rp-seccion"><p class="abonar-tit">3 · 💧 Tu práctica de hoy</p>'
       + ((practica || meta) ? '<p class="rp-practica">«' + escapeAttr(practica || meta) + '»</p>' : '')
+      + '<p class="riego-consejo">' + escapeAttr(consejo) + '</p>'
       + '<div class="riego-escena"><span class="riego-sol"></span><span class="riego-mariposa">🦋</span><span class="riego-brillo b1"></span><span class="riego-brillo b2"></span><span class="riego-brillo b3"></span>'
       + '<img class="riego-img" src="' + (hecho ? imgRegando(3) : e.img) + '" alt=""></div>'
-      + '<p class="riego-consejo">' + escapeAttr(consejo) + '</p>'
       + '<button type="button" class="riego-ok rp-check' + (hecho ? ' on' : '') + '"><span class="rp-caja">' + TIC_CASILLA + '</span><span class="rp-txt">' + (hecho ? 'Hoy ya hice mi práctica' : 'Hoy hice mi práctica') + '</span></button>'
       + '<button type="button" class="riego-cal">Marcar otro día en el calendario</button></div></div>').firstElementChild;
     document.body.appendChild(capa);
     document.body.classList.add('riego-abierto');
     // Lo primero es saber cómo está tu clima; después, registrar si hiciste tu práctica
-    try { capa.insertBefore(crearMacetaAbonar(null, true), capa.querySelector('.rp-seccion')); } catch(e){}
+    try {
+      const clima = crearMacetaAbonar(null, true), rp = capa.querySelector('.rp-seccion');
+      capa.insertBefore(clima, rp);
+      const ent = clima.querySelector('.entorno');
+      if(ent){ ent.classList.add('rp-marco'); capa.insertBefore(ent, rp); }   // 2 · entorno, en su propio marco
+    } catch(e){}
     const quitar = () => { capa.remove(); document.body.classList.remove('riego-abierto'); try { apagarSintoniaSuave(1200); } catch(err){} };
     // ✕ e «Ir a Metas Amables» hacen lo mismo: cerrar y volver a Inicio
     const cerrar = () => { quitar(); state.view = 'panel'; state.panelSub = null; window.scrollTo(0, 0); render(); };
@@ -9629,4 +9640,4 @@ lo que haces cada día es lo que vas a ser.`;
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V12.27 · App Metas Amables · 2026-10-11 20:15==== -->
+<!-- ==== Fin del index V12.28 · App Metas Amables · 2026-10-11 20:17==== -->
