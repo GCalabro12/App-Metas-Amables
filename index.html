@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V12.46 · App Metas Amables · 2026-10-11 21:31==== -->
+<!-- ==== index V12.47 · App Metas Amables · 2026-10-11 21:34==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1188,7 +1188,8 @@ body.riego-abierto{overflow:hidden}
 .reto-cuerpo h2{margin:0 0 8px;font:700 24px Lora,serif;color:#5B3FA8}
 .reto-cuerpo p{margin:0 0 8px;font-size:15.5px;line-height:1.45;color:#2B2B2B;text-align:left}
 .reto-cuerpo .reto-premio{text-align:center;font-size:16.5px}.reto-cuerpo .reto-falta{text-align:center;color:#7A6A50;font-size:14px}
-.reto-camino{display:block;width:100%;max-width:330px;margin:6px auto 10px}
+.reto-camino{display:block;width:100%;max-width:330px;margin:6px auto 10px;overflow:visible}.reto-regalo{cursor:pointer}
+.reto-cuerpo .reto-info{margin:-4px 0 8px;padding:10px 12px;border-radius:12px;background:#F1ECFC;color:#3E2A7A;font-size:14.5px;text-align:center}
 .reto-btn{display:block;width:100%;margin:8px 0 0;padding:13px;border:0;border-radius:12px;background:#C0392B;color:#fff;font:800 17px Karla,sans-serif;cursor:pointer}
 .reto-btn.reto-sec{background:#fff;color:#A93226;border:2px solid #E3B4AE}
 .rp-seccion{width:min(420px,100%);margin:22px auto 0;padding:16px 12px 14px;border-radius:20px;background:rgba(255,255,255,.88);text-align:center;box-sizing:border-box}
@@ -2151,7 +2152,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V12.46';
+  const APP_VERSION = 'V12.47';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -3271,13 +3272,17 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   function caminoRetoSVG(n){
     const xs = [40, 100, 160, 220, 280], ys = [44, 128, 212];
     const pos = i => { const fila = Math.floor(i / 5), col = i % 5; return [fila === 1 ? xs[4 - col] : xs[col], ys[fila]]; };
-    let s = '<svg class="reto-camino" viewBox="0 0 320 250" aria-hidden="true"><path d="M40 44 H280 A42 42 0 0 1 280 128 H40 A42 42 0 0 0 40 212 H280" fill="none" stroke="#E6DCC6" stroke-width="7" stroke-linecap="round"/>';
+    let s = '<svg class="reto-camino" viewBox="0 0 320 250"><path d="M40 44 H280 A42 42 0 0 1 280 128 H40 A42 42 0 0 0 40 212 H280" fill="none" stroke="#E6DCC6" stroke-width="7" stroke-linecap="round"/>';
     for(let i = 0; i < RETO_DIAS; i++){
       const [x, y] = pos(i), dia = i + 1, hecho = dia <= n, hoy = dia === n, premio = RETO_PREMIOS[dia];
       s += (hoy ? '<circle cx="' + x + '" cy="' + y + '" r="23" fill="#F2B32B" opacity=".3"/>' : '')
         + '<circle cx="' + x + '" cy="' + y + '" r="17" fill="' + (hecho ? '#F2B32B' : '#F4EFE4') + '" stroke="' + (hecho ? '#C98A00' : '#D8CFBC') + '" stroke-width="2.5"/>'
         + '<text x="' + x + '" y="' + (y + 5.5) + '" text-anchor="middle" font-family="Karla,Arial,sans-serif" font-size="15" font-weight="800" fill="' + (hecho ? '#fff' : '#9A9180') + '">' + dia + '</text>'
-        + (premio ? '<text x="' + (x + 15) + '" y="' + (y - 14) + '" text-anchor="middle" font-size="16">' + (hecho ? premio.ico : '🎁') + '</text>' : '');
+        + (premio ? '<g class="reto-regalo" data-dia="' + dia + '" role="button" tabindex="0" aria-label="¿Qué regalo hay el día ' + dia + '?">'
+          + '<circle cx="' + (x + 19) + '" cy="' + (y - 19) + '" r="17" fill="transparent"/>'
+          + '<text x="' + (x + 15) + '" y="' + (y - 14) + '" text-anchor="middle" font-size="16">' + (hecho ? premio.ico : '🎁') + '</text>'
+          + '<circle cx="' + (x + 28) + '" cy="' + (y - 27) + '" r="7.5" fill="#5B3FA8" stroke="#fff" stroke-width="1.5"/>'
+          + '<text x="' + (x + 28) + '" y="' + (y - 23.3) + '" text-anchor="middle" font-family="Karla,Arial,sans-serif" font-size="11" font-weight="800" fill="#fff">?</text></g>' : '');
     }
     return s + '</svg>';
   }
@@ -3292,7 +3297,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     if(siguiente) tx += '<p class="reto-falta">Te ' + (siguiente - n === 1 ? 'falta 1 día' : 'faltan ' + (siguiente - n) + ' días') + ' para tu próximo regalo 🎁</p>';
     const capa = el('<div class="reto-capa" role="dialog" aria-label="Reto de 15 días"><div class="reto-card">'
       + '<div class="reto-cab"><div class="reto-practi"><span class="reto-cartel">' + n + '</span>' + practiHTML('celebracion', '🎉', 120) + '</div></div>'
-      + '<div class="reto-cuerpo"><h2>' + tit + '</h2>' + tx + caminoRetoSVG(n)
+      + '<div class="reto-cuerpo"><h2>' + tit + '</h2>' + tx + caminoRetoSVG(n) + '<p class="reto-info" hidden></p>'
       + (premio ? '<button type="button" class="reto-btn reto-premio-btn">' + premio.ico + ' ' + premio.boton + '</button>' : '')
       + '<button type="button" class="reto-btn ' + (premio ? 'reto-sec' : '') + ' reto-ok">' + (n === 1 ? '¡Acepto el reto!' : 'Continuar') + '</button></div></div></div>').firstElementChild;
     document.body.appendChild(capa);
@@ -3300,6 +3305,12 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     try { launchConfetti(); } catch(e){}
     const cerrar = () => capa.remove();
     capa.querySelector('.reto-ok').onclick = cerrar;
+    // La «?» de cada regalo explica cuál es
+    const info = capa.querySelector('.reto-info');
+    capa.querySelectorAll('.reto-regalo').forEach(g => {
+      const ver = () => { const d = Number(g.dataset.dia), pr = RETO_PREMIOS[d]; info.innerHTML = pr.ico + ' <b>Día ' + d + ':</b> ' + (n >= d ? 'ya tienes ' : 'desbloquearás ') + pr.tit + '.'; info.hidden = false; };
+      g.onclick = ver; g.onkeydown = ev => { if(ev.key === 'Enter' || ev.key === ' '){ ev.preventDefault(); ver(); } };
+    });
     const pb = capa.querySelector('.reto-premio-btn');
     if(pb) pb.onclick = () => {
       cerrar();
@@ -9853,4 +9864,4 @@ lo que haces cada día es lo que vas a ser.`;
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V12.46 · App Metas Amables · 2026-10-11 21:31==== -->
+<!-- ==== Fin del index V12.47 · App Metas Amables · 2026-10-11 21:34==== -->
