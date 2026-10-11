@@ -26,10 +26,10 @@ self.addEventListener('fetch', e => {
   );
 });
 
-// «Tu meta tiene sed»: llega a las 20:00 si aún no has marcado tu práctica de hoy
+// Aviso de las 20:00 si aún no has marcado tu práctica de hoy: primero tu clima, después registrar la práctica
 self.addEventListener('push', e => {
-  e.waitUntil(self.registration.showNotification('🥀 Tu meta tiene sed', {
-    body: 'Aún estás a tiempo: haz tu práctica de hoy y márcala en la app. Y mira tu clima de hoy: ¿cómo te sientes? ☀️',
+  e.waitUntil(self.registration.showNotification('☀️ ¿Cómo está tu clima hoy?', {
+    body: 'Primero mira cómo te sientes y después registra si hiciste tu práctica. Aún estás a tiempo de regar tu meta 🌱',
     icon: 'icon-192.png', badge: 'badge-96.png', image: 'aviso-planta-sed.jpg', tag: 'planta', renotify: true, data: { url: './?regar=1' }
   }));
 });
