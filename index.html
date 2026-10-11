@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V12.34 · App Metas Amables · 2026-10-11 20:39==== -->
+<!-- ==== index V12.35 · App Metas Amables · 2026-10-11 20:43==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1107,6 +1107,10 @@ body.theme-dark .guia-progreso{background:var(--surface)}
 .planta-card .planta-meta{margin:6px 0 4px;font:italic 700 20px/1.3 Lora,serif;color:#4F7A43}
 .planta-estado-tx{margin:4px 0 10px;font-size:14.5px;line-height:1.4}
 .planta-fila{display:flex;gap:12px;align-items:center}
+.planta-card[role="button"]{cursor:pointer}.planta-ir{margin-left:auto;font:400 26px Karla,sans-serif;color:#A93226}
+.planta-reg{display:inline-block;margin:0 0 6px;padding:9px 16px;border-radius:999px;background:#C0392B;color:#fff;font:800 17px Karla,sans-serif}
+.planta-reg.hecho{background:#E8F3E2;color:#2F5A23}
+.planta-reg-lista{margin:0;font-size:14px;line-height:1.4;color:#5A4A48}
 .planta-ver{display:block;margin:10px auto 0;padding:4px 8px;border:0;background:none;color:#A93226;font:700 14px Karla,sans-serif;cursor:pointer}
 .planta-card .planta-tx b{color:#A93226}.planta-estado{font-weight:700;color:#A93226}.planta-fig{position:relative;flex:none;display:block}.planta-fig img,.planta-fig .planta-anim{display:block;position:relative;z-index:1;mix-blend-mode:multiply;background:transparent !important}.planta-tutor{position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none;z-index:0}.planta-tutor.planta-lazo{z-index:2}.planta-card img{width:112px;height:auto;flex:none;border-radius:14px;background:#fff}
 .planta-tx{flex:1;min-width:0}.planta-tx b{display:block;font:700 18px Lora,serif;color:#2F5A23}.planta-tx p{margin:4px 0 10px;font-size:14.5px;line-height:1.4}
@@ -2133,7 +2137,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V12.34';
+  const APP_VERSION = 'V12.35';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -4123,6 +4127,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
+    { v: 'V12.35', f: '11 de octubre de 2026', n: [
+      'En Inicio, la tarjeta <b>c · Compromiso y práctica</b> se toca entera para entrar, y te dice si hoy te falta registrar. Con registrar tu clima, tu entorno o tu práctica ya vale.' ] },
     { v: 'V12.34', f: '11 de octubre de 2026', n: [
       'El ciclo de Inicio va ahora con letras: <b>a</b> Formulario de meta, <b>b</b> Tu guía de esta semana, <b>c</b> Compromiso y práctica y <b>d</b> Grupo de apoyo. Cada paso lleva su icono con su letra.' ] },
     { v: 'V12.33', f: '11 de octubre de 2026', n: [
@@ -6204,7 +6210,7 @@ lo que haces cada día es lo que vas a ser.`;
         const huecoB = opciones.querySelector('.hueco-planta');
         if(huecoB){
           let tp = null; try { tp = tarjetaPlanta(() => irDestino('sB')); } catch(e){}
-          if(tp){ if(act('b')) tp.classList.add('actual'); huecoB.replaceWith(tp); }
+          if(tp){ if(act('b') && !registradoHoy()) tp.classList.add('actual'); huecoB.replaceWith(tp); }
           else huecoB.outerHTML = botonB;
         }
         opciones.querySelectorAll('.opcion-inicio').forEach(btn => { btn.onclick = () => irDestino(btn.getAttribute('data-ir')); });
@@ -8638,6 +8644,10 @@ lo que haces cada día es lo que vas a ser.`;
       return an;
     } catch(e){ console.warn('No se pudo cargar ' + archivo, e); return null; }
   }
+  // ¿Hoy ya registró algo? (clima, entorno o práctica: cualquiera vale)
+  function registradoHoy(){
+    try { return abonoDeHoy().length > 0 || entornoDeHoy() > 0 || diaHechoFecha(new Date()) > 0; } catch(e){ return false; }
+  }
   function tarjetaPlanta(alVer){
     if(!state.me) return null;
     const e = estadoPlanta();
@@ -8648,29 +8658,17 @@ lo que haces cada día es lo que vas a ser.`;
     const tutor = '<svg class="planta-tutor" viewBox="0 0 600 640" aria-hidden="true"><rect x="390" y="150" width="16" height="302" rx="2" fill="#D8B26A" stroke="#8A6A2E" stroke-width="3"/>'
       + '<path d="M390 240 h16 M390 320 h16 M390 400 h16" stroke="#8A6A2E" stroke-width="3"/></svg>';
     const lazo = '<svg class="planta-tutor planta-lazo" viewBox="0 0 600 640" aria-hidden="true"><path d="M350 404 q26 -11 52 0 q-26 11 -52 0z" fill="none" stroke="#3E7A2E" stroke-width="5"/></svg>';
-    const t = el('<div class="card planta-card ciclo-b"><b class="planta-tit"><span class="planta-tit-ico">' + iconoCiclo('b') + '</span>Compromiso y práctica</b>'
+    // Paso c en Inicio: la tarjeta entera lleva a «Compromiso y práctica». Sin botones: solo dice si hoy ya registraste algo
+    // (con el clima, el entorno o la práctica ya vale)
+    const hoyAb = abonoDeHoy(), hoyEnt = entornoDeHoy(), hoyPr = diaHechoFecha(new Date()) > 0, reg = registradoHoy();
+    const estadoReg = reg
+      ? '<p class="planta-reg hecho">✓ Hoy ya has registrado</p><p class="planta-reg-lista">' + [hoyAb.length ? '☀️ tu clima' : '', hoyEnt ? 'tu entorno' : '', hoyPr ? '💧 tu práctica' : ''].filter(Boolean).join(' · ') + '</p>'
+      : '<p class="planta-reg">💧 Registra</p><p class="planta-reg-lista">Te falta registrar tu clima, tu entorno o tu práctica.</p>';
+    const t = el('<div class="card planta-card ciclo-b" role="button" tabindex="0"><b class="planta-tit"><span class="planta-tit-ico">' + iconoCiclo('b') + '</span>Compromiso y práctica<span class="planta-ir">›</span></b>'
       + (mt ? '<span class="planta-meta">🌱 «' + escapeAttr(mt) + '»</span>' : '')
-      + '<p class="planta-estado-tx"><span class="planta-estado">' + e.tit + (/[.!?]$/.test(e.tit) ? '' : '.') + '</span> ' + e.tx + '</p>'
       + '<div class="planta-fila"><span class="planta-fig" title="El tutor de tu planta es tu guía semanal">' + tutor + '<img src="' + e.img + '" alt="">' + lazo + '</span>'
-      + '<div class="planta-tx">' + (e.boton ? '<button type="button" class="panel-link-btn planta-regar">' + e.boton + '</button>' : '') + '</div></div>'
-      + (alVer ? '<button type="button" class="planta-ver">Ver mi compromiso y calendario ›</button>' : '') + '</div>').firstElementChild;
-    const ver = t.querySelector('.planta-ver'); if(ver) ver.onclick = alVer;
-    const b = t.querySelector('.planta-regar'); if(b) b.onclick = () => abrirMomentoRiego();
-    // Abonar: contar cómo te sientes (se puede aunque hoy no hayas regado)
-    try {
-      const hoyAb = abonoDeHoy();
-      // Botón con forma de maceta marrón; si hoy ya abonó, toma el color de su emoción
-      const maceta = '<svg viewBox="0 0 20 20" aria-hidden="true"><g stroke="#B7791F" stroke-width="1.6" stroke-linecap="round"><path d="M10 1.5v2.5M10 16v2.5M1.5 10h2.5M16 10h2.5M4 4l1.8 1.8M14.2 14.2L16 16M4 16l1.8-1.8M14.2 5.8L16 4"/></g><circle cx="10" cy="10" r="4.2" fill="#F6C94A" stroke="#B7791F" stroke-width="1.2"/></svg>';
-      const ab = el('<button type="button" class="planta-abonar' + (hoyAb.length ? ' abonado' : '') + '"' + (hoyAb.length ? ' style="background:' + fondoAbono(hoyAb) + '"' : '') + '>' + maceta + '<span>' + (hoyAb.length ? 'Tu clima de hoy: ' + hoyAb.map(x => nombreEmocion(emoPorId(x.id))).join(' y ') : 'Tu clima de hoy: ¿cómo te sientes?') + '</span></button>').firstElementChild;
-      ab.onclick = () => abrirMomentoRiego(true);
-      const tx = t.querySelector('.planta-tx'), reg = tx.querySelector('.planta-regar');
-      if(reg) tx.insertBefore(ab, reg); else tx.appendChild(ab);   // el clima va antes que registrar la práctica
-    } catch(e){}
-    if(pushPosible() && !pushActivo()){
-      const av = el('<button type="button" class="planta-avisar">🔔 Avísame si se me olvida regarla</button>').firstElementChild;
-      av.onclick = () => abrirGuiaAvisos(() => { if(pushActivo()) av.remove(); });
-      t.querySelector('.planta-tx').appendChild(av);
-    }
+      + '<div class="planta-tx">' + estadoReg + '</div></div></div>').firstElementChild;
+    if(alVer){ t.onclick = alVer; t.onkeydown = ev => { if(ev.key === 'Enter' || ev.key === ' '){ ev.preventDefault(); alVer(); } }; }
     // El primer momento del día en que ya está regada: «crece»; si venía de varios días sin agua, «revive»
     try {
       if(diasSinPractica() === 0){
@@ -9686,4 +9684,4 @@ lo que haces cada día es lo que vas a ser.`;
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V12.34 · App Metas Amables · 2026-10-11 20:39==== -->
+<!-- ==== Fin del index V12.35 · App Metas Amables · 2026-10-11 20:43==== -->
