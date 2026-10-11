@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V12.48 · App Metas Amables · 2026-10-11 21:40==== -->
+<!-- ==== index V12.49 · App Metas Amables · 2026-10-11 22:15==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2154,7 +2154,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V12.48';
+  const APP_VERSION = 'V12.49';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -2488,6 +2488,31 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       state.loginError = mensajeError(e, 'No se pudo cambiar (revisa tu conexión)');
       render();
     }
+  }
+
+  // «He olvidado mi contraseña»: código de 6 cifras por email
+  async function pedirCodigoRecuperar(email){
+    email = String(email || '').trim();
+    state.olvidoEmail = email;
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ state.loginError = 'Escribe el email de tu cuenta'; render(); return; }
+    state.loginError = 'Enviando…'; render();
+    try {
+      await api('/recuperar/pedir', { email });
+      state.loginError = ''; state.olvidoPaso = 2; render();
+    } catch(e){ state.loginError = mensajeError(e, 'No se pudo enviar el código. Revisa tu conexión e inténtalo de nuevo.'); render(); }
+  }
+  async function cambiarConCodigo(codigo, nueva){
+    codigo = String(codigo || '').replace(/\D/g, ''); nueva = String(nueva || '').trim();
+    if(codigo.length !== 6){ state.loginError = 'Escribe el código de 6 cifras'; render(); return; }
+    if(nueva.length < 3){ state.loginError = 'La nueva contraseña debe tener al menos 3 caracteres'; render(); return; }
+    state.loginError = 'Comprobando…'; render();
+    try {
+      const r = await api('/recuperar/cambiar', { email: state.olvidoEmail, codigo, nueva });
+      guardarSesion(r.token); state.loginError = ''; state.olvidoPaso = 1; state.loginView = 'login';
+      try { localStorage.setItem('ma_user', r.nombre); } catch(e){}
+      pickMe(r.nombre);
+      setTimeout(() => { try { avisoBreve('🔑 Contraseña nueva guardada'); } catch(e){} }, 800);
+    } catch(e){ state.loginError = mensajeError(e, 'No se pudo cambiar. Revisa tu conexión e inténtalo de nuevo.'); render(); }
   }
 
   async function ensureCheckins(name){
@@ -4239,6 +4264,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   const NOVEDADES = [
     { v: 'V12.45', f: '11 de octubre de 2026', n: [
       '<b>Reto de 15 días</b>: cada día que registras algo, Prácti te lo celebra y se ilumina tu camino. Cada 5 días hay un regalo: el día 5, la canción con letra; el día 10, la nota a tu yo del próximo mes (para cualquier plan); el día 15, el juego «Salta la valla con Prácti».' ] },
+    { v: 'V12.49', f: '11 de octubre de 2026', n: [
+      '<b>¿Has olvidado tu contraseña?</b> Ahora puedes recuperarla tú: escribe tu email y te llega un código de 6 cifras para poner una nueva.' ] },
     { v: 'V12.39', f: '11 de octubre de 2026', n: [
       'Sonidos nuevos al registrar: un <b>arpa</b> cuando registras tu práctica, una <b>kalimba</b> con tu clima y una <b>marimba</b> con tu entorno.' ] },
     { v: 'V12.37', f: '11 de octubre de 2026', n: [
@@ -5305,7 +5332,7 @@ lo que haces cada día es lo que vas a ser.`;
       ['¿Qué es el Viaje?', 'Son los pasos de tu trimestre, uno detrás de otro: tu meta, tu guía, tu compromiso, tus notas… y al final, tu meta alcanzada. El paso que toca ahora se mueve para que lo veas.'],
       ['¿Cómo cambio la voz de Prácti?', 'En <b>Ajustes → Voz de Prácti</b> eliges voz, tono y velocidad. Si no te suena bien, mira <a href="#" data-ir="ayudaVoz">cómo cambiar la voz del móvil</a>.'],
       ['¿Cómo cambio de plan o lo cancelo?', 'En <b>Perfil y Ajustes → Tu plan</b> ves los planes. Para cancelar o cualquier duda con un pago, escríbenos por WhatsApp y lo resolvemos contigo.'],
-      ['He olvidado mi contraseña', 'Escríbenos por WhatsApp (botón de abajo) y te ayudamos a recuperarla. Si la recuerdas y quieres cambiarla, usa <b>«Cambiar mi contraseña»</b>.'],
+      ['He olvidado mi contraseña', 'En la pantalla de entrada, pulsa <b>«¿Has olvidado tu contraseña?»</b>: escribe tu email y te llegará un código de 6 cifras para poner una nueva. Si no te llega, escríbenos por WhatsApp (botón de abajo).'],
       ['¿Dónde están mis datos?', 'Tus registros se guardan de forma privada y solo los ve tu facilitador para acompañarte. En la Declaración de privacidad tienes todos los detalles.']
     ];
     const caja = el('<div class="ayuda"><h1 class="viaje-titulo" style="text-align:center">Centro de ayuda</h1>'
@@ -6109,7 +6136,35 @@ lo que haces cada día es lo que vas a ser.`;
       `));
       app.appendChild(el(cienciaHTML()));
 
-      if(state.loginView === 'changepass'){
+      if(state.loginView === 'olvido'){
+        const paso = state.olvidoPaso || 1;
+        const estilo = "width:100%;border:1px solid var(--border);border-radius:10px;padding:12px;font-family:'Karla';font-size:15px;margin-bottom:12px;background:#FCFCF9;box-sizing:border-box";
+        app.appendChild(el('<h1>¿Has olvidado tu contraseña?</h1><p class="lead">' + (paso === 1
+          ? 'Escribe el email de tu cuenta y te enviaremos un código de 6 cifras para poner una contraseña nueva.'
+          : 'Te hemos enviado un código a <b>' + escapeAttr(state.olvidoEmail || '') + '</b>. Si no lo ves en unos segundos, mira en la carpeta de spam.') + '</p>'));
+        const f = document.createElement('div'); f.className = 'card';
+        f.innerHTML = paso === 1
+          ? '<label class="note-label">Tu email</label><input type="email" id="olvidoEmail" autocomplete="email" inputmode="email" placeholder="tu@email.com" value="' + escapeAttr(state.olvidoEmail || '') + '" style="' + estilo + '">'
+            + '<button class="btn btn-yes" id="btnOlvido1" style="text-align:center">Enviarme el código</button>'
+          : '<label class="note-label">Código de 6 cifras</label><input type="text" id="olvidoCodigo" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="123456" style="' + estilo + ';font-size:22px;letter-spacing:6px;text-align:center">'
+            + '<label class="note-label">Nueva contraseña</label><input type="password" id="olvidoNueva" autocomplete="new-password" placeholder="Escribe la nueva" style="' + estilo + '">'
+            + '<button class="btn btn-yes" id="btnOlvido2" style="text-align:center">Guardar y entrar</button>'
+            + '<button type="button" class="link-quiet" id="olvidoOtra" style="margin-top:10px">Volver a enviar el código</button>';
+        if(state.loginError) f.insertAdjacentHTML('beforeend', '<div style="color:#B94A3A;font-size:13px;margin-top:8px">' + escapeAttr(state.loginError) + '</div>');
+        app.appendChild(f);
+        if(paso === 1){
+          const inp = f.querySelector('#olvidoEmail');
+          f.querySelector('#btnOlvido1').onclick = () => pedirCodigoRecuperar(inp.value);
+          inp.addEventListener('keydown', e => { if(e.key === 'Enter'){ e.preventDefault(); pedirCodigoRecuperar(inp.value); } });
+        } else {
+          f.querySelector('#btnOlvido2').onclick = () => cambiarConCodigo(f.querySelector('#olvidoCodigo').value, f.querySelector('#olvidoNueva').value);
+          f.querySelector('#olvidoOtra').onclick = () => { state.olvidoPaso = 1; state.loginError = ''; render(); };
+        }
+        const volver = document.createElement('button');
+        volver.className = 'link-quiet'; volver.textContent = '← Volver a iniciar sesión';
+        volver.onclick = () => { state.loginView = 'login'; state.olvidoPaso = 1; state.loginError = ''; render(); };
+        app.appendChild(volver);
+      } else if(state.loginView === 'changepass'){
         // Pantalla de cambio de contraseña
         app.appendChild(el(`<h1>Cambiar contraseña</h1><p class="lead">Escribe tu nombre, tu contraseña actual y la nueva.</p>`));
         const formCard = document.createElement('div');
@@ -6193,6 +6248,11 @@ lo que haces cada día es lo que vas a ser.`;
         changeLink.className = 'link-quiet';
         changeLink.textContent = 'Cambiar contraseña';
         changeLink.onclick = () => { state.loginView='changepass'; state.loginError=''; state.savedMsg=''; render(); };
+        const olvidoLink = document.createElement('button');
+        olvidoLink.className = 'link-quiet';
+        olvidoLink.textContent = '¿Has olvidado tu contraseña?';
+        olvidoLink.onclick = () => { state.loginView = 'olvido'; state.olvidoPaso = 1; state.loginError = ''; state.savedMsg = ''; render(); };
+        app.appendChild(olvidoLink);
         app.appendChild(changeLink);
       }
       }
@@ -9874,4 +9934,4 @@ lo que haces cada día es lo que vas a ser.`;
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V12.48 · App Metas Amables · 2026-10-11 21:40==== -->
+<!-- ==== Fin del index V12.49 · App Metas Amables · 2026-10-11 22:15==== -->
