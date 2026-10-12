@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V12.67 · App Metas Amables · 2026-10-12 00:06==== -->
+<!-- ==== index V12.68 · App Metas Amables · 2026-10-12 02:20==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1018,28 +1018,27 @@ a.ayuda-fila{display:flex;align-items:center;gap:14px}
 .ayuda-acceso small{display:block;font-size:13px;color:var(--ink-soft)}
 body.theme-dark .ayuda-fila,body.theme-dark .ayuda-preg summary,body.theme-dark .ayuda-h2{color:#C9C2FF}
 body.theme-dark .ayuda-preg{background:#26262c}
-.reflexion-capa{position:fixed;inset:0;z-index:9600;overflow-y:auto;display:flex;flex-direction:column;align-items:center;text-align:center;padding:calc(70px + env(safe-area-inset-top)) 26px calc(28px + env(safe-area-inset-bottom));color:#fff;
-  background:repeating-linear-gradient(135deg,rgba(255,255,255,.07) 0 3px,transparent 3px 26px),#1F63DB;font-family:Karla,sans-serif}
-.reflexion-capa.fin-pausa{background:repeating-linear-gradient(135deg,rgba(255,255,255,.07) 0 3px,transparent 3px 26px),#55657F}
-.rf-fecha{display:block;margin:6px auto 0;font:700 20px Karla,sans-serif;padding:12px 14px;border-radius:14px;border:0;width:100%;max-width:300px;box-sizing:border-box}
+/* Pantallas grandes (pausa para tu meta, meta lograda o sin interés, práctica en pausa): mismo estilo que la bienvenida, blanco con las colinas moradas abajo */
+.reflexion-capa{position:fixed;inset:0;z-index:9600;overflow-y:auto;display:flex;flex-direction:column;align-items:center;text-align:center;padding:calc(64px + env(safe-area-inset-top)) 24px calc(150px + env(safe-area-inset-bottom));color:#2B2B2B;
+  background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1024 220' preserveAspectRatio='none'%3E%3Cdefs%3E%3ClinearGradient id='a' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%23C04A8E'/%3E%3Cstop offset='1' stop-color='%237A1C6A'/%3E%3C/linearGradient%3E%3ClinearGradient id='b' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%236B2A9E'/%3E%3Cstop offset='1' stop-color='%233A1460'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath d='M0 90 C 200 20, 420 50, 600 75 S 880 20, 1024 50 V220 H0 Z' fill='url%28%23a%29' opacity='.9'/%3E%3Cpath d='M0 150 C 240 95, 470 130, 660 115 S 920 100, 1024 120 V220 H0 Z' fill='url%28%23b%29'/%3E%3C/svg%3E") center bottom / 100% 130px no-repeat local;font-family:Karla,sans-serif}
+.rf-fecha{display:block;margin:6px auto 0;font:700 18px Karla,sans-serif;padding:12px 14px;border-radius:14px;border:2px solid #CFC6DD;width:100%;max-width:300px;box-sizing:border-box}
 .pausa-card{border:3px solid #7A8CA8;background:#EEF2F8;text-align:center}
 .pausa-card .pausa-tit{margin:0;font:800 26px Karla,sans-serif;color:#33415C}
 .pausa-card .pausa-hasta{margin:4px 0 10px;font:700 19px Lora,serif;color:#33415C}
 .pausa-card p{font-size:15.5px;line-height:1.5}
-.reflexion-capa.fin-verde{background:repeating-linear-gradient(135deg,rgba(255,255,255,.07) 0 3px,transparent 3px 26px),#3E7D2B}
-.rf-nota{font-size:15px;font-weight:600;opacity:.9}
-.rf-puntos{display:flex;justify-content:center;gap:8px;margin:0 0 14px}.rf-puntos span{width:9px;height:9px;border-radius:50%;background:rgba(255,255,255,.4)}.rf-puntos span.on{background:#fff}
+.rf-nota{font-size:14.5px;color:#6B6B6B}
+.rf-puntos{display:flex;justify-content:center;gap:8px;margin:0 0 14px}.rf-puntos span{width:9px;height:9px;border-radius:50%;background:#E2DCEB}.rf-puntos span.on{background:#7B5FB8}
 .ps-fin{border-color:#9FC38C;background:#F1F8EC}
 .historial-logros{border:2px solid #9FC38C;background:#F1F8EC;margin:0 0 14px}
 .historial-logros h3{margin:0 0 8px;font-size:17px}.historial-logros li{margin:0 0 6px}
-.rf-x{position:absolute;top:calc(18px + env(safe-area-inset-top));left:18px;background:none;border:0;color:#fff;font-size:28px;cursor:pointer}
-.rf-tit{font-size:34px;line-height:1.15;margin:0 0 auto;font-weight:800;text-shadow:0 2px 8px rgba(0,0,0,.2)}
-.rf-tx{margin:30px 0;font-size:19px;font-weight:700;line-height:1.45;text-shadow:0 1px 6px rgba(0,0,0,.2)}
+.rf-x{position:absolute;top:calc(18px + env(safe-area-inset-top));left:18px;background:none;border:0;color:#6B6B6B;font-size:26px;cursor:pointer}
+.rf-tit{font:600 26px/1.25 Lora,serif;margin:0 0 auto;color:#2B2B2B}
+.rf-tx{margin:24px 0;font-size:17px;font-weight:400;line-height:1.5;color:#333;max-width:440px}
 .rf-tx p{margin:0 0 14px}
-.rf-meta{font-family:Lora,serif;font-style:italic;font-size:20px;background:rgba(255,255,255,.12);border-radius:14px;padding:12px 14px}
+.rf-meta{font-family:Lora,serif;font-style:italic;font-size:18px;background:#F4EFFA;color:#3E2A7A;border-radius:14px;padding:12px 14px}
 .rf-botones{width:100%;max-width:440px;display:flex;flex-direction:column;gap:10px;margin-top:auto}
-.rf-boton{width:100%;padding:16px;border:0;border-radius:18px;background:#FFD60A;color:#111;font:700 19px Karla,sans-serif;cursor:pointer}
-.rf-boton.rf-sec{background:rgba(255,255,255,.15);color:#fff;border:2px solid rgba(255,255,255,.6)}
+.rf-boton{width:100%;padding:14px;border:0;border-radius:999px;background:#7B5FB8;color:#fff;font:800 17px Karla,sans-serif;cursor:pointer;box-shadow:0 3px 0 #4F3A86}
+.rf-boton.rf-sec{background:#fff;color:#4F3A86;border:2px solid #CFC6DD;box-shadow:none}
 .guia-ancha{background:#fff;margin:0 -20px;padding:14px 18px 24px;border-top:1px solid rgba(0,0,0,.06);border-bottom:1px solid rgba(0,0,0,.06)}
 @media (min-width: 900px){.guia-ancha{margin:0 -32px;padding:18px 32px 28px}}
 body.theme-dark .guia-ancha{background:var(--surface)}
@@ -2215,7 +2214,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V12.67';
+  const APP_VERSION = 'V12.68';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -4216,7 +4215,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   function pantallasEsporadicas(){
     const metaTxt = String(((state.gamifica && state.gamifica.datosFormulario) || {}).metaTexto || 'Tu meta del trimestre');
     return [
-      { grupo: 'meta', tit: 'Una pausa para tu meta', img: mini('#1F63DB', '#fff', '⏸️'),
+      { grupo: 'meta', tit: 'Una pausa para tu meta', img: mini('linear-gradient(180deg,#fff 72%,#7A1C6A 72%)', '#4F3A86', '⏸️'),
         cuando: 'Al volver tras 5 días o más sin entrar, o con 6 días sin marcar la práctica. Sale sola en Inicio (y en el Viaje); después no vuelve en 7 días.',
         abrir: () => abrirReflexion(true) },
       { grupo: 'registro', tit: 'Hoy, sé amable contigo', img: mini('linear-gradient(180deg,#9AA59A 0 45%,#EEF5E6 45%)', '#3B6D11', '🍃'),
@@ -4228,10 +4227,10 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       { grupo: 'registro', tit: 'Días registrados con tu meta', img: mini('linear-gradient(160deg,#FFE7B8,#FFD3D8)', '#2F5F93', '23'),
         cuando: 'Después del reto (día 16 en adelante): cada día registrado nuevo. Cuenta los días desde la meta actual y vuelve a 1 con cada meta nueva.',
         abrir: () => abrirDiasMeta(23) },
-      { grupo: 'meta', tit: 'Meta lograda o sin interés', img: mini('#3E7D2B', '#fff', '🏁'),
+      { grupo: 'meta', tit: 'Meta lograda o sin interés', img: mini('linear-gradient(180deg,#fff 72%,#7A1C6A 72%)', '#4F3A86', '🏁'),
         cuando: 'Desde el botón de Compromiso y práctica, o con «Ya no me interesa» en la pausa para tu meta. En la vista previa no se guarda nada.',
         abrir: () => abrirFinMeta('elegir', true) },
-      { grupo: 'pausa', tit: 'Práctica en pausa', img: mini('#55657F', '#fff', '⏸️'),
+      { grupo: 'pausa', tit: 'Práctica en pausa', img: mini('linear-gradient(180deg,#fff 72%,#7A1C6A 72%)', '#4F3A86', '⏸️'),
         cuando: 'Desde «Meta lograda, sin interés o en pausa», o al marcar un entorno de visitas/viaje o enfermedad. Pregunta hasta cuándo (1 semana, 15 días, 1 mes o una fecha). Después sale en grande en Inicio.',
         abrir: () => abrirPausa('', true) },
       { grupo: 'pausa', tit: 'Inicio: práctica en pausa', img: mini('#EEF2F8', '#33415C', '⏸️'),
@@ -4504,6 +4503,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
+    { v: 'V12.68', f: '12 de octubre de 2026', n: [
+      'Las pantallas de <b>Una pausa para tu meta</b>, <b>Meta lograda o sin interés</b> y <b>Práctica en pausa</b> tienen ahora el estilo de la bienvenida: fondo blanco con las colinas moradas abajo y letra más tranquila.' ] },
     { v: 'V12.63', f: '11 de octubre de 2026', n: [
       '<b>Práctica en pausa</b>: si estás enfermo, de viaje o en una temporada complicada, puedes poner tu práctica en pausa una semana, 15 días, un mes o hasta la fecha que elijas. En Inicio verás «Práctica en pausa hasta…», y cada semana te recordaremos por WhatsApp que está en pausa.' ] },
     { v: 'V12.61', f: '11 de octubre de 2026', n: [
@@ -10463,4 +10464,4 @@ lo que haces cada día es lo que vas a ser.`;
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V12.67 · App Metas Amables · 2026-10-12 00:06==== -->
+<!-- ==== Fin del index V12.68 · App Metas Amables · 2026-10-12 02:20==== -->
