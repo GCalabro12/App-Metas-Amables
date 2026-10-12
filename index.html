@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V12.97 · App Metas Amables · 2026-10-12 20:35==== -->
+<!-- ==== index V12.98 · App Metas Amables · 2026-10-12 20:39==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -901,8 +901,10 @@ body.con-fondo-vivo .saludo-inicio > div:not(.practi-inicio){color:#FFFFFF !impo
 body.con-fondo-vivo .pie-derechos, body.con-fondo-vivo .pie-derechos a{color:#CFC3F5}
 body.con-fondo-vivo .ciclo-flecha path{stroke:#FFFFFF}
 body.con-fondo-vivo .ciclo-flecha path[fill]{fill:#FFFFFF}
-.fondo-vivo{position:fixed;inset:0;z-index:-1;pointer-events:none}
-.fondo-vivo svg{display:block;width:100%;height:100%}
+.fondo-vivo{position:fixed;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(#2B1E78,#4632A6 40%,#7650BE 72%,#B8679E)}
+.fondo-vivo svg{display:block;position:absolute;left:0;width:100%}
+.fondo-vivo .fv-cielo{top:0;height:100%}
+.fondo-vivo .fv-suelo{bottom:0;height:30vh}
 body.con-fondo-nivel::before{content:"";position:fixed;inset:0;z-index:-1;background:linear-gradient(var(--velo-nivel,rgba(255,255,255,.55)),var(--velo-nivel,rgba(255,255,255,.55))),var(--fondo-nivel) center/cover no-repeat}
 .musica-oficial{display:grid;grid-template-columns:auto 1fr auto;grid-template-rows:auto auto;column-gap:10px;align-items:center;width:100%;text-align:left;background:linear-gradient(135deg,#FFF3C4,#FFD9E6);border:2px solid #101010;border-radius:16px;padding:12px 14px;margin:0 0 12px;font:inherit;color:var(--ink);cursor:pointer;box-shadow:0 3px 0 #101010}
 .musica-oficial b{grid-column:2;grid-row:1 / span 2}.musica-oficial small{grid-column:2;font-size:13px;opacity:.75}
@@ -2262,7 +2264,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V12.97';
+  const APP_VERSION = 'V12.98';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -9741,51 +9743,60 @@ lo que haces cada día es lo que vas a ser.`;
   document.addEventListener('visibilitychange', () => { if(document.visibilityState !== 'visible' && montanaSonando()){ clearInterval(relojMontana); musicaMontana.pause(); } });
   function insigniaMontana(){ try { return BADGE_SCALE[datosMontana().nivel]; } catch(e){ return BADGE_SCALE[0]; } }
   // La planta: un tutor y una trepadora; cada semana, una hoja (o un hueco). paso = alto de cada semana; etiquetas = poner «Oct 1»…
-  // Fondo vivo de Inicio: el paisaje de la montaña, sin la montaña. Cielo oscuro de amanecer (para que contrasten los recuadros), el sol que sale,
-  // nubes, pájaros que aletean, algún avión, montañas lejanas y, abajo, colinas y pinos del color del nivel, con luciérnagas
+  // Fondo vivo de Inicio: el paisaje de la montaña, sin la montaña. Cielo oscuro de amanecer (para que contrasten los recuadros).
+  // Dos capas, para que se vea igual en móviles estrechos y en pantallas anchas o plegables:
+  // el cielo va anclado arriba (estrellas, sol, nubes, gaviotas, avión y luciérnagas por los bordes) y el paisaje, abajo
+  // (montañas lejanas, colinas y pinos del color del nivel)
   function fondoInicioSVG(nivel){
     const C = [['#A84D68', '#8C3D57', '#D06A80', '#A54A61'], ['#B07A2C', '#8F6222', '#D59A3E', '#A6762A'], ['#B05C38', '#90482B', '#D4794B', '#A35834'],
       ['#3B7C65', '#2E6352', '#55A07E', '#3A7860'], ['#6A4FAD', '#543B90', '#8A6CCB', '#6449A5']][nivel == null ? 0 : nivel];
     const ARRIBA = 'M-14 -6 Q-7 -9 0 1 Q7 -9 14 -6 Q7 -3 0 4 Q-7 -3 -14 -6 Z', ABAJO = 'M-14 6 Q-7 -1 0 1 Q7 -1 14 6 Q7 2 0 4 Q-7 2 -14 6 Z';
-    const pajaro = (dx, dy, e, t) => '<g transform="translate(' + dx + ' ' + dy + ') scale(' + e + ')"><path d="' + ARRIBA + '" fill="#E2D9FF"><animate attributeName="d" dur="' + t + 's" repeatCount="indefinite" values="' + ARRIBA + ';' + ABAJO + ';' + ARRIBA + '" calcMode="spline" keyTimes="0;.5;1" keySplines=".45 0 .55 1;.45 0 .55 1"/></path></g>';
+    const gaviota = (dx, dy, e, t) => '<g transform="translate(' + dx + ' ' + dy + ') scale(' + e + ')"><path d="' + ARRIBA + '" fill="#E2D9FF"><animate attributeName="d" dur="' + t + 's" repeatCount="indefinite" values="' + ARRIBA + ';' + ABAJO + ';' + ARRIBA + '" calcMode="spline" keyTimes="0;.5;1" keySplines=".45 0 .55 1;.45 0 .55 1"/></path></g>';
+    const luciernaga = (x, y, k) => '<g class="fi-vaga v' + (k % 3) + '" style="animation-delay:-' + (k * 1.7).toFixed(1) + 's"><g class="fi-luz" style="animation-delay:-' + (k * 0.8).toFixed(1) + 's"><circle cx="' + x + '" cy="' + y + '" r="9" fill="url(#fiLuz)"/><circle cx="' + x + '" cy="' + y + '" r="2" fill="#FFFBE0"/></g></g>';
     const pino = (x, y, e) => '<path d="M' + x + ' ' + (y - 26 * e) + ' L' + (x - 9 * e) + ' ' + y + ' L' + (x + 9 * e) + ' ' + y + ' Z" fill="' + C[2] + '"/><path d="M' + x + ' ' + (y - 26 * e) + ' L' + x + ' ' + y + ' L' + (x + 9 * e) + ' ' + y + ' Z" fill="' + C[3] + '"/>';
-    return '<svg viewBox="0 0 400 800" preserveAspectRatio="xMidYMax slice" aria-hidden="true">'
-      + '<defs><linearGradient id="fiCielo" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2B1E78"/><stop offset=".4" stop-color="#4632A6"/><stop offset=".7" stop-color="#7650BE"/><stop offset="1" stop-color="#B8679E"/></linearGradient>'
-      + '<radialGradient id="fiHalo"><stop offset="0" stop-color="#FFEBB5" stop-opacity=".9"/><stop offset="1" stop-color="#FFD9A0" stop-opacity="0"/></radialGradient>'
-      + '<linearGradient id="fiEstela" x1="12" y1="0" x2="120" y2="0" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#FFFFFF" stop-opacity=".9"/><stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/></linearGradient>'
-      + '<radialGradient id="fiLuz"><stop offset="0" stop-color="#FFF6B0"/><stop offset=".35" stop-color="#FFE45C" stop-opacity=".7"/><stop offset="1" stop-color="#FFD24D" stop-opacity="0"/></radialGradient></defs>'
-      + '<style>.fi-sol{animation:fiSale 6s cubic-bezier(.2,.7,.3,1) both}.fi-halo{transform-box:fill-box;transform-origin:center;animation:fiLate 5s ease-in-out infinite}.fi-rayos{transform-origin:318px 320px;animation:fiGira 90s linear infinite}'
-      + '.fi-nube{animation:fiNube 24s ease-in-out infinite alternate}.fi-vuelo{animation:fiVuelo 32s linear infinite}.fi-vuelo.b{animation-duration:44s;animation-delay:-22s}'
-      + '.fi-avion{animation:fiAvion 55s linear 6s infinite;transform:translate(470px,92px)}.fi-luz{animation:fiLuz 2.8s ease-in-out infinite}.fi-vaga{animation:fiVaga 11s ease-in-out infinite alternate}'
+    const estilo = '<style>.fi-sol{animation:fiSale 6s cubic-bezier(.2,.7,.3,1) both}.fi-halo{transform-box:fill-box;transform-origin:center;animation:fiLate 5s ease-in-out infinite}.fi-rayos{transform-origin:350px 235px;animation:fiGira 90s linear infinite}'
+      + '.fi-nube{animation:fiNube 24s ease-in-out infinite alternate}.fi-vuelo{animation:fiVuelo 32s linear infinite}.fi-vuelo.b{animation:fiVueloB 40s linear infinite;animation-delay:-14s}.fi-vuelo.c{animation:fiVuelo 46s linear infinite;animation-delay:-30s}.fi-vuelo.d{animation:fiVueloB 36s linear infinite;animation-delay:-6s}'
+      + '.fi-avion{animation:fiAvion 55s linear 6s infinite;transform:translate(470px,92px)}.fi-luz{animation:fiLuz 2.8s ease-in-out infinite}'
+      + '.fi-vaga.v0{animation:fiVaga0 9s ease-in-out infinite alternate}.fi-vaga.v1{animation:fiVaga1 11s ease-in-out infinite alternate}.fi-vaga.v2{animation:fiVaga2 13s ease-in-out infinite alternate}'
       + '@keyframes fiSale{from{transform:translateY(90px)}to{transform:translateY(0)}}@keyframes fiLate{0%,100%{opacity:.7;transform:scale(1)}50%{opacity:1;transform:scale(1.08)}}@keyframes fiGira{to{transform:rotate(360deg)}}'
-      + '@keyframes fiNube{from{transform:translateX(-30px)}to{transform:translateX(30px)}}@keyframes fiVuelo{0%{transform:translate(-60px,260px)}50%{transform:translate(200px,225px)}100%{transform:translate(470px,250px)}}'
+      + '@keyframes fiNube{from{transform:translateX(-30px)}to{transform:translateX(30px)}}'
+      + '@keyframes fiVuelo{0%{transform:translate(-60px,0)}50%{transform:translate(200px,-30px)}100%{transform:translate(470px,-10px)}}@keyframes fiVueloB{0%{transform:translate(470px,0)}50%{transform:translate(200px,-24px)}100%{transform:translate(-60px,-6px)}}'
       + '@keyframes fiAvion{0%{transform:translate(470px,92px)}40%,100%{transform:translate(-140px,74px)}}@keyframes fiLuz{0%,100%{opacity:.3}50%{opacity:1}}'
-      + '@keyframes fiVaga{0%{transform:translate(0,0)}33%{transform:translate(12px,-10px)}66%{transform:translate(-8px,-18px)}100%{transform:translate(8px,-4px)}}'
-      + '@media (prefers-reduced-motion:reduce){.fi-sol,.fi-halo,.fi-rayos,.fi-nube,.fi-vuelo,.fi-avion,.fi-luz,.fi-vaga{animation:none}}</style>'
-      + '<rect width="400" height="800" fill="url(#fiCielo)"/>'
+      + '@keyframes fiVaga0{0%{transform:translate(0,0)}33%{transform:translate(10px,-12px)}66%{transform:translate(-6px,-22px)}100%{transform:translate(8px,-6px)}}@keyframes fiVaga1{0%{transform:translate(0,0)}33%{transform:translate(-10px,-8px)}66%{transform:translate(6px,-18px)}100%{transform:translate(-12px,4px)}}@keyframes fiVaga2{0%{transform:translate(0,0)}33%{transform:translate(8px,10px)}66%{transform:translate(-8px,-12px)}100%{transform:translate(4px,-20px)}}'
+      + '@media (prefers-reduced-motion:reduce){.fi-sol,.fi-halo,.fi-rayos,.fi-nube,.fi-vuelo,.fi-avion,.fi-luz,.fi-vaga{animation:none}}</style>';
+    const defs = '<defs><radialGradient id="fiHalo"><stop offset="0" stop-color="#FFE3A0" stop-opacity=".9"/><stop offset="1" stop-color="#FFC27A" stop-opacity="0"/></radialGradient>'
+      + '<linearGradient id="fiEstela" x1="12" y1="0" x2="120" y2="0" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#FFFFFF" stop-opacity=".9"/><stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/></linearGradient>'
+      + '<radialGradient id="fiLuz"><stop offset="0" stop-color="#FFF6B0"/><stop offset=".35" stop-color="#FFE45C" stop-opacity=".7"/><stop offset="1" stop-color="#FFD24D" stop-opacity="0"/></radialGradient></defs>';
+    const cielo = '<svg class="fv-cielo" viewBox="0 0 400 800" preserveAspectRatio="xMidYMin slice" aria-hidden="true">' + defs + estilo
       // Estrellas que titilan
-      + [[30, 40], [90, 90], [150, 30], [220, 70], [270, 24], [370, 60], [40, 200], [120, 250], [200, 180], [360, 230], [80, 380], [240, 420]].map(([x, y], k) => '<circle class="fi-luz" cx="' + x + '" cy="' + y + '" r="' + (k % 3 ? 1.2 : 1.8) + '" fill="#FFFFFF" style="animation-delay:-' + (k * 0.7).toFixed(1) + 's"/>').join('')
-      // El sol que sale, con rayos que giran despacio
-      + '<g class="fi-sol"><g class="fi-rayos" opacity=".3">' + Array.from({ length: 12 }, (x, k) => { const a = k * Math.PI / 6, r2 = k % 2 ? 92 : 118; return '<line x1="' + (318 + Math.cos(a) * 52).toFixed(1) + '" y1="' + (320 + Math.sin(a) * 52).toFixed(1) + '" x2="' + (318 + Math.cos(a) * r2).toFixed(1) + '" y2="' + (320 + Math.sin(a) * r2).toFixed(1) + '" stroke="#FFD98A" stroke-width="' + (k % 2 ? 2 : 3.5) + '" stroke-linecap="round"/>'; }).join('') + '</g>'
-      + '<circle class="fi-halo" cx="318" cy="320" r="105" fill="url(#fiHalo)"/><circle cx="318" cy="320" r="36" fill="#FFCF73"/><circle cx="309" cy="310" r="11" fill="#FFF6D8" opacity=".6"/></g>'
+      + [[30, 40], [90, 90], [150, 30], [220, 70], [270, 24], [370, 60], [40, 200], [120, 250], [200, 180], [300, 140], [80, 380], [240, 420], [380, 330]].map(([x, y], k) => '<circle class="fi-luz" cx="' + x + '" cy="' + y + '" r="' + (k % 3 ? 1.2 : 1.8) + '" fill="#FFFFFF" style="animation-delay:-' + (k * 0.7).toFixed(1) + 's"/>').join('')
+      // El sol que sale, más abajo y hacia el borde para que se vea también en pantallas anchas
+      + '<g class="fi-sol"><g class="fi-rayos" opacity=".3">' + Array.from({ length: 12 }, (x, k) => { const a = k * Math.PI / 6, r2 = k % 2 ? 84 : 108; return '<line x1="' + (350 + Math.cos(a) * 46).toFixed(1) + '" y1="' + (235 + Math.sin(a) * 46).toFixed(1) + '" x2="' + (350 + Math.cos(a) * r2).toFixed(1) + '" y2="' + (235 + Math.sin(a) * r2).toFixed(1) + '" stroke="#FFD98A" stroke-width="' + (k % 2 ? 2 : 3.5) + '" stroke-linecap="round"/>'; }).join('') + '</g>'
+      + '<circle class="fi-halo" cx="350" cy="235" r="95" fill="url(#fiHalo)"/><circle cx="350" cy="235" r="32" fill="#FFCF73"/><circle cx="342" cy="226" r="10" fill="#FFF6D8" opacity=".6"/></g>'
       // Nubes alargadas
-      + '<g class="fi-nube"><rect x="30" y="290" width="120" height="10" rx="5" fill="#F3C6E6" opacity=".35" transform="skewX(-25)"/><rect x="70" y="306" width="70" height="7" rx="3.5" fill="#F3C6E6" opacity=".28" transform="skewX(-25)"/></g>'
-      + '<g class="fi-nube" style="animation-delay:-12s"><rect x="250" y="300" width="110" height="9" rx="4.5" fill="#F3C6E6" opacity=".3" transform="skewX(-25)"/></g>'
-      + '<g class="fi-nube" style="animation-delay:-6s"><rect x="60" y="420" width="90" height="8" rx="4" fill="#F3C6E6" opacity=".25" transform="skewX(-25)"/></g>'
+      + '<g class="fi-nube"><rect x="30" y="150" width="120" height="10" rx="5" fill="#F3C6E6" opacity=".35" transform="skewX(-25)"/><rect x="70" y="166" width="70" height="7" rx="3.5" fill="#F3C6E6" opacity=".28" transform="skewX(-25)"/></g>'
+      + '<g class="fi-nube" style="animation-delay:-12s"><rect x="250" y="310" width="110" height="9" rx="4.5" fill="#F3C6E6" opacity=".3" transform="skewX(-25)"/></g>'
+      + '<g class="fi-nube" style="animation-delay:-6s"><rect x="60" y="440" width="90" height="8" rx="4" fill="#F3C6E6" opacity=".25" transform="skewX(-25)"/></g>'
       // Un avión de vez en cuando, con su estela
       + '<g class="fi-avion"><line x1="12" y1="0" x2="120" y2="0" stroke="url(#fiEstela)" stroke-width="2.4" stroke-linecap="round"/>'
       + '<path d="M-10 0 Q-9 -2.6 -4 -2.6 L9 -2 Q12 -1 12 0 Q12 1 9 1.6 L-4 2.2 Q-9 2.2 -10 0 Z" fill="#F6F1FF"/><path d="M0 -1 L5 -9 L8 -9 L6 -1 Z M1 1.5 L6 8 L8.5 8 L6.5 1.5 Z M8 -2 L11 -6 L12.5 -6 L11.5 -1 Z" fill="#D9CCF7"/></g>'
-      // Pájaros que aletean
-      + '<g class="fi-vuelo">' + pajaro(0, 0, 0.7, 0.9) + pajaro(-24, 12, 0.55, 0.8) + '</g><g class="fi-vuelo b">' + pajaro(0, -60, 0.5, 1) + '</g>'
-      // Montañas lejanas con nieve y, delante, colinas y pinos del color del nivel
-      + '<path d="M0 640 L60 590 L110 612 L180 540 L230 590 L290 552 L350 598 L400 570 V800 H0 Z" fill="#5B45AE"/>'
-      + '<path d="M180 540 L168 556 L180 552 L192 558 Z M290 552 L281 564 L290 561 L299 565 Z" fill="#FFFFFF" opacity=".9"/>'
-      + '<path d="M0 690 Q90 660 190 684 T400 672 V800 H0 Z" fill="' + C[0] + '"/>'
-      + pino(40, 690, 1) + pino(64, 694, 0.8) + pino(338, 682, 1.1) + pino(362, 688, 0.85) + pino(212, 686, 0.7)
-      + '<path d="M0 742 Q110 716 220 738 T400 728 V800 H0 Z" fill="' + C[1] + '" opacity=".75"/>'
-      // Tres luciérnagas abajo
-      + [[70, 716], [210, 740], [330, 706]].map(([x, y], k) => '<g class="fi-vaga" style="animation-delay:-' + (k * 3) + 's"><g class="fi-luz" style="animation-delay:-' + (k * 0.9) + 's"><circle cx="' + x + '" cy="' + y + '" r="9" fill="url(#fiLuz)"/><circle cx="' + x + '" cy="' + y + '" r="2" fill="#FFFBE0"/></g></g>').join('')
+      // Gaviotas a distintas alturas, en los dos sentidos (se ven sobre todo por los bordes)
+      + '<g transform="translate(0 120)"><g class="fi-vuelo">' + gaviota(0, 0, 0.7, 0.9) + gaviota(-24, 12, 0.55, 0.8) + '</g></g>'
+      + '<g transform="translate(0 290)"><g class="fi-vuelo b">' + gaviota(0, 0, 0.6, 1) + gaviota(22, 10, 0.5, 0.85) + '</g></g>'
+      + '<g transform="translate(0 470)"><g class="fi-vuelo c">' + gaviota(0, 0, 0.65, 0.95) + '</g></g>'
+      + '<g transform="translate(0 620)"><g class="fi-vuelo d">' + gaviota(0, 0, 0.55, 0.9) + gaviota(20, 12, 0.45, 0.8) + '</g></g>'
+      // Luciérnagas que vagan por los dos bordes
+      + [[12, 160], [388, 210], [16, 300], [384, 380], [10, 450], [390, 520], [14, 600], [386, 660]].map(([x, y], k) => luciernaga(x, y, k)).join('')
       + '</svg>';
+    const suelo = '<svg class="fv-suelo" viewBox="0 -60 400 260" preserveAspectRatio="xMidYMax slice" aria-hidden="true">' + estilo
+      + '<path d="M0 60 L60 10 L110 32 L180 -40 L230 10 L290 -28 L350 18 L400 -10 V200 H0 Z" fill="#5B45AE"/>'
+      + '<path d="M180 -40 L168 -24 L180 -28 L192 -22 Z M290 -28 L281 -16 L290 -19 L299 -15 Z" fill="#FFFFFF" opacity=".9"/>'
+      + '<path d="M0 110 Q90 80 190 104 T400 92 V200 H0 Z" fill="' + C[0] + '"/>'
+      + pino(40, 110, 1) + pino(64, 114, 0.8) + pino(338, 102, 1.1) + pino(362, 108, 0.85) + pino(212, 106, 0.7)
+      + '<path d="M0 162 Q110 136 220 158 T400 148 V200 H0 Z" fill="' + C[1] + '" opacity=".75"/>'
+      + [[70, 136], [210, 160], [330, 126]].map(([x, y], k) => luciernaga(x, y, k + 8)).join('')
+      + '</svg>';
+    return cielo + suelo;
   }
   // Fondo de «Tu planta de este trimestre»: la planta crece en un bancal de la montaña. Alrededor, lo que usa quien la cuida:
   // la regadera (que gotea), un saco de tierra de abono con su pala, macetas de barro y un frasco de semillas.
@@ -11200,4 +11211,4 @@ lo que haces cada día es lo que vas a ser.`;
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V12.97 · App Metas Amables · 2026-10-12 20:35==== -->
+<!-- ==== Fin del index V12.98 · App Metas Amables · 2026-10-12 20:39==== -->
