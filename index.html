@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V12.79 · App Metas Amables · 2026-10-12 17:13==== -->
+<!-- ==== index V12.80 · App Metas Amables · 2026-10-12 17:19==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1351,6 +1351,10 @@ html.modo-minimal .practi-inicio,html.modo-minimal .practi-bocadillo,html.modo-m
 .mont-son{flex:none;border:1px solid #CFC6DD;background:#fff;border-radius:999px;padding:5px 12px;font:700 13px Karla,sans-serif;color:#4F3A86;cursor:pointer}
 .mont-sub{margin:0 0 10px;font-size:14px;color:var(--ink-soft)}
 .mont-svg{display:block;width:100%;height:auto;border-radius:12px}
+.mont-foto{position:relative;border-radius:14px;overflow:hidden;background:#BFD8F2}
+.mont-foto img{display:block;width:100%;height:auto}
+.mont-foto svg{position:absolute;inset:0;width:100%;height:100%}
+.planta-fondo{background:linear-gradient(rgba(255,252,245,.82),rgba(255,252,245,.45) 45%,rgba(255,252,245,.15)),url(fondo-planta.jpg) center bottom/cover no-repeat}
 .mont-ley{display:flex;flex-wrap:wrap;gap:6px 12px;margin:8px 0 0;font-size:12.5px;color:var(--ink-soft)}
 .mont-ley span{display:inline-flex;align-items:center;gap:5px}.mont-ley i{display:inline-block;width:12px;height:12px;border-radius:3px}
 .mont-ley span.on{color:var(--ink);font-weight:800}
@@ -1358,7 +1362,7 @@ html.modo-minimal .practi-inicio,html.modo-minimal .practi-bocadillo,html.modo-m
 .planta-fila svg{flex:0 0 auto}
 .planta-tx b{display:block;font-size:16px}.planta-tx small{display:block;font-size:13.5px;color:var(--ink-soft);margin-top:3px;line-height:1.4}
 .planta-tx em{display:block;font-style:normal;font-size:13px;font-weight:800;color:#3B6D11;margin-top:6px}
-.planta-inicio{cursor:pointer;width:100%;text-align:left;font:inherit;color:inherit;border:2px solid #C0DD97;background:#F6FAF0}
+.planta-inicio{cursor:pointer;width:100%;text-align:left;font:inherit;color:inherit;border:2px solid #E2C79A;background:linear-gradient(90deg,rgba(255,252,245,.92),rgba(255,252,245,.55) 60%,rgba(255,252,245,.2)),url(fondo-planta.jpg) center 70%/cover no-repeat}
 .util-nov{display:flex;align-items:center;gap:10px;width:100%;margin:14px 0 0;padding:12px 16px;border:2px solid #101010;border-radius:16px;background:#FFF6DC;font:inherit;color:#101010;text-align:left;cursor:pointer}.util-nov b{display:block;font-size:16px}.util-nov small{display:block;color:var(--ink-soft);font-size:13px}.util-nov .opcion-flecha{margin-left:auto;font-size:22px}
 .nov-lista{display:block}.nov-ver{margin:0 0 14px;padding:14px 16px}.nov-ver h3{margin:0 0 2px;font:700 18px Lora,serif;color:#2F5A23}.nov-ver .nov-fecha{display:block;margin:0 0 8px;font-size:13px;color:var(--ink-soft)}.nov-ver ul{margin:0;padding-left:20px}.nov-ver li{margin:0 0 6px;line-height:1.45}
 .alta-marchita{position:relative;width:200px;height:213px;margin:0 auto}.alta-marchita img{position:absolute;left:0;top:0;width:200px;height:auto;opacity:0;animation-duration:6s;animation-timing-function:ease;animation-iteration-count:infinite}
@@ -2233,7 +2237,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V12.79';
+  const APP_VERSION = 'V12.80';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -4561,6 +4565,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
+    { v: 'V12.80', f: '12 de octubre de 2026', n: [
+      '<b>Mi montaña</b> es ahora la gran montaña de los cinco niveles: tus bancales están sobre sus caminos y un brillo te marca «Estás aquí». La planta del trimestre crece sobre las colinas doradas.' ] },
     { v: 'V12.79', f: '12 de octubre de 2026', n: [
       'Al abrir <b>Mi montaña</b> suena de fondo una versión tranquila de la música de Metas Amables. Con el botón 🎵 la quitas cuando quieras.' ] },
     { v: 'V12.78', f: '12 de octubre de 2026', n: [
@@ -9659,8 +9665,9 @@ lo que haces cada día es lo que vas a ser.`;
   }
   // Música de la montaña (versión tranquila de la música oficial, hecha en Suno): entra suave al abrir Progreso,
   // se apaga suave al salir, y el botón 🎵 la quita (se recuerda en el móvil)
-  let musicaMontana = null, relojMontana = null;
-  const montanaSinMusica = () => { try { return localStorage.getItem('montana_musica') === '0'; } catch(e){ return false; } };
+  // var y function (no let/const): render() las consulta ya en el primer pintado, antes de que el script llegue aquí
+  var musicaMontana = null, relojMontana = null;
+  function montanaSinMusica(){ try { return localStorage.getItem('montana_musica') === '0'; } catch(e){ return false; } }
   function fundirMontana(hacia, ms, alAcabar){
     if(!musicaMontana) return;
     clearInterval(relojMontana);
@@ -9680,7 +9687,7 @@ lo que haces cada día es lo que vas a ser.`;
     } catch(e){ return Promise.resolve(false); }
   }
   function pararMontana(ms){ if(musicaMontana && !musicaMontana.paused) fundirMontana(0, ms || 1200, () => musicaMontana.pause()); }
-  const montanaSonando = () => !!(musicaMontana && !musicaMontana.paused);
+  function montanaSonando(){ return !!(musicaMontana && !musicaMontana.paused); }
 
   document.addEventListener('visibilitychange', () => { if(document.visibilityState !== 'visible' && montanaSonando()){ clearInterval(relojMontana); musicaMontana.pause(); } });
   function insigniaMontana(){ try { return BADGE_SCALE[datosMontana().nivel]; } catch(e){ return BADGE_SCALE[0]; } }
@@ -9717,60 +9724,41 @@ lo que haces cada día es lo que vas a ser.`;
     s += '<rect x="' + (cx - (etiquetas ? 34 : 22)) + '" y="' + base + '" width="' + (etiquetas ? 68 : 44) + '" height="14" rx="4" fill="#8A5A1E"/></svg>';
     return s;
   }
-  // La montaña: 5 franjas de color (una por año) y 4 bancales por franja, en zigzag
+  // La montaña: la imagen de los 5 niveles (la de las insignias) y, encima, los 20 bancales sobre sus caminos:
+  // rojo (año 1), ámbar, naranja, verde y violeta, alternando el sentido de la subida cada año
+  const BANCALES_MONTANA = [[110, 1215], [300, 1245], [520, 1235], [690, 1060], [650, 890], [470, 985], [250, 995], [90, 880],
+    [150, 760], [330, 800], [520, 785], [640, 675], [575, 560], [440, 600], [300, 610], [175, 580], [270, 395], [420, 448], [545, 330], [400, 245]];
   function montanaSVG(d){
-    const franjas = [[40, 610, 640, 580, 500, 100], [100, 500, 580, 520, 390, 160], [160, 390, 520, 460, 280, 220], [220, 280, 460, 400, 170, 280]];
-    let s = '<svg class="mont-svg" viewBox="0 0 680 640" role="img" aria-label="Mi montaña: año ' + d.anio + ', bancal ' + (d.actual + 1) + ' de 20"><title>Mi montaña</title>'
-      + '<defs><linearGradient id="mtCielo" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#BFD8F2"/><stop offset=".55" stop-color="#F7DCE6"/><stop offset="1" stop-color="#FDEBCF"/></linearGradient>'
-      + '<radialGradient id="mtSol"><stop offset="0" stop-color="#FFF7D1"/><stop offset=".55" stop-color="#FFD873" stop-opacity=".9"/><stop offset="1" stop-color="#FFB547" stop-opacity="0"/></radialGradient>'
-      + '<linearGradient id="mtHaz" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFF4C2" stop-opacity=".55"/><stop offset="1" stop-color="#FFF4C2" stop-opacity="0"/></linearGradient></defs>'
-      + '<style>.mt-rayos{transform-origin:565px 115px;animation:mtGira 70s linear infinite}.mt-brillo{transform-origin:565px 115px;animation:mtLate 5s ease-in-out infinite}'
-      + '.mt-haz{animation:mtHazA 7s ease-in-out infinite}.mt-haz.b{animation-delay:-3.5s}.mt-nube{animation:mtNube 90s linear infinite}.mt-nube.b{animation-duration:130s;animation-delay:-60s}'
-      + '.mt-pajaro{animation:mtVuela 28s linear infinite}.mt-ala{transform-box:fill-box;transform-origin:center;animation:mtAla .45s ease-in-out infinite alternate}'
-      + '@keyframes mtGira{to{transform:rotate(360deg)}}@keyframes mtLate{0%,100%{opacity:.6;transform:scale(1)}50%{opacity:1;transform:scale(1.1)}}@keyframes mtHazA{0%,100%{opacity:.35}50%{opacity:.85}}'
-      + '@keyframes mtNube{from{transform:translateX(-260px)}to{transform:translateX(780px)}}@keyframes mtVuela{0%{transform:translate(-60px,190px)}50%{transform:translate(330px,140px)}100%{transform:translate(780px,170px)}}'
-      + '@keyframes mtAla{from{transform:scaleY(1)}to{transform:scaleY(-.5)}}@media (prefers-reduced-motion:reduce){.mt-rayos,.mt-brillo,.mt-haz,.mt-nube,.mt-pajaro,.mt-ala{animation:none}}</style>'
-      // Cielo, haces de luz y sol con destellos
-      + '<rect width="680" height="640" fill="url(#mtCielo)"/>'
-      + '<polygon class="mt-haz" points="565,115 250,640 360,640" fill="url(#mtHaz)"/><polygon class="mt-haz b" points="565,115 430,640 520,640" fill="url(#mtHaz)"/>'
-      + '<g class="mt-rayos" opacity=".55">' + Array.from({ length: 12 }, (x, k) => { const a = k * Math.PI / 6; return '<line x1="' + (565 + Math.cos(a) * 44).toFixed(1) + '" y1="' + (115 + Math.sin(a) * 44).toFixed(1) + '" x2="' + (565 + Math.cos(a) * (k % 2 ? 78 : 98)).toFixed(1) + '" y2="' + (115 + Math.sin(a) * (k % 2 ? 78 : 98)).toFixed(1) + '" stroke="#FFD25E" stroke-width="' + (k % 2 ? 2 : 3) + '" stroke-linecap="round"/>'; }).join('') + '</g>'
-      + '<circle class="mt-brillo" cx="565" cy="115" r="72" fill="url(#mtSol)"/><circle cx="565" cy="115" r="30" fill="#FFE27F"/><circle cx="556" cy="106" r="9" fill="#FFF3C4" opacity=".8"/>'
-      // Colinas lejanas
-      + '<path d="M0 520 C110 470 210 505 300 488 S520 455 680 495 V640 H0 Z" fill="#E4D6EF"/>';
-    franjas.forEach((f, k) => { s += '<polygon points="' + f[0] + ',' + f[1] + ' ' + f[2] + ',' + f[1] + ' ' + f[3] + ',' + f[4] + ' ' + f[5] + ',' + f[4] + '" fill="' + NIVELES_MONTANA[k].c + '"/>'; });
-    s += '<polygon points="280,170 400,170 340,60" fill="' + NIVELES_MONTANA[4].c + '"/>'
-      // Sombra de la ladera derecha, nieve en la cima y el contorno
-      + '<polygon points="340,60 640,610 340,610" fill="#3A2A5A" opacity=".07"/><polygon points="340,60 323,93 332,89 340,99 348,89 357,93" fill="#FFFFFF" opacity=".9"/>'
-      + '<polygon points="40,610 340,60 640,610" fill="none" stroke="#9C88CF" stroke-width="1"/>';
-    // Posiciones de los 20 bancales: cada año sube en diagonal, alternando derecha e izquierda
-    const pos = [];
-    const ys = [[590, 565, 540, 515], [480, 455, 430, 405], [370, 345, 320, 295], [260, 235, 210, 185], [150, 125, 100, 78]];
-    const xs = [[190, 290, 390, 490], [450, 377, 303, 230], [260, 313, 367, 420], [390, 357, 323, 290], [315, 330, 345, 340]];
-    const anchos = [50, 40, 32, 24, 16];
-    for(let a = 0; a < 5; a++) for(let t = 0; t < 4; t++) pos.push({ x: xs[a][t], y: ys[a][t], w: anchos[a] });
-    s += '<path d="M' + pos.map(p => p.x + ',' + p.y).join(' L') + '" fill="none" stroke="#7A6A9E" stroke-width="1.2" stroke-dasharray="4 4"/>';
-    pos.forEach((p, i) => {
-      const hecho = i < d.actual, ahora = i === d.actual;
-      s += '<rect x="' + (p.x - p.w / 2) + '" y="' + p.y + '" width="' + p.w + '" height="5" rx="2" fill="' + (hecho || ahora ? '#8A5A1E' : '#B49A78') + '"' + (ahora ? ' stroke="#D99A1E" stroke-width="2.5"' : '') + '/>';
-      if(hecho || ahora){
-        const b = d.bancal(i), alto = Math.max(6, Math.min(40, 6 + b.hojas * 2.6)) * (p.w / 50 + 0.4) / 1.4;
-        if(b.hojas){
-          s += '<line x1="' + p.x + '" y1="' + p.y + '" x2="' + p.x + '" y2="' + (p.y - alto) + '" stroke="#6B4A1A" stroke-width="1.6"/>';
-          const nh = Math.min(6, Math.ceil(b.hojas / 2));
-          for(let k = 0; k < nh; k++){ const yy = p.y - alto * (k + 0.6) / (nh + 0.2), ll = k % 2 ? 1 : -1; s += '<ellipse cx="' + (p.x + ll * 5) + '" cy="' + yy + '" rx="5" ry="3" fill="#4E7F2A"/>'; }
-          if(b.flores) s += '<circle cx="' + (p.x + 7) + '" cy="' + (p.y - alto) + '" r="3" fill="#E86A92"/>';
-        }
+    let s = '<div class="mont-foto"><img src="montana-niveles.jpg" alt="La montaña de los cinco niveles: rojo, ámbar, naranja, verde y violeta" loading="lazy">'
+      + '<svg viewBox="0 0 768 1376" role="img" aria-label="Mi montaña: año ' + d.anio + ', bancal ' + (d.actual + 1) + ' de 20"><title>Mi montaña</title>'
+      + '<defs><radialGradient id="mtSol"><stop offset="0" stop-color="#FFF8D8" stop-opacity=".95"/><stop offset=".5" stop-color="#FFE08A" stop-opacity=".45"/><stop offset="1" stop-color="#FFC24D" stop-opacity="0"/></radialGradient>'
+      + '<radialGradient id="mtNiebla"><stop offset="0" stop-color="#FFFFFF" stop-opacity=".75"/><stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/></radialGradient></defs>'
+      + '<style>.mt-brillo{transform-origin:292px 91px;animation:mtLate 5s ease-in-out infinite}.mt-rayos{transform-origin:292px 91px;animation:mtGira 90s linear infinite}'
+      + '.mt-nube{animation:mtNube 110s linear infinite}.mt-nube.b{animation-duration:150s;animation-delay:-70s}.mt-aqui{transform-box:fill-box;transform-origin:center;animation:mtAqui 2.4s ease-in-out infinite}'
+      + '@keyframes mtLate{0%,100%{opacity:.55;transform:scale(1)}50%{opacity:1;transform:scale(1.12)}}@keyframes mtGira{to{transform:rotate(360deg)}}'
+      + '@keyframes mtNube{from{transform:translateX(-320px)}to{transform:translateX(1100px)}}@keyframes mtAqui{0%,100%{transform:scale(1);opacity:.9}50%{transform:scale(1.35);opacity:.35}}'
+      + '@media (prefers-reduced-motion:reduce){.mt-brillo,.mt-rayos,.mt-nube,.mt-aqui{animation:none}}</style>'
+      // Destellos del sol y niebla que pasa despacio
+      + '<g class="mt-rayos" opacity=".35">' + Array.from({ length: 12 }, (x, k) => { const a = k * Math.PI / 6, r1 = 60, r2 = k % 2 ? 150 : 210; return '<line x1="' + (292 + Math.cos(a) * r1).toFixed(1) + '" y1="' + (91 + Math.sin(a) * r1).toFixed(1) + '" x2="' + (292 + Math.cos(a) * r2).toFixed(1) + '" y2="' + (91 + Math.sin(a) * r2).toFixed(1) + '" stroke="#FFF1B8" stroke-width="' + (k % 2 ? 3 : 5) + '" stroke-linecap="round"/>'; }).join('') + '</g>'
+      + '<circle class="mt-brillo" cx="292" cy="91" r="120" fill="url(#mtSol)"/>'
+      + '<g class="mt-nube"><ellipse cx="0" cy="230" rx="150" ry="34" fill="url(#mtNiebla)"/></g><g class="mt-nube b"><ellipse cx="0" cy="520" rx="190" ry="40" fill="url(#mtNiebla)"/></g>';
+    // Los bancales: los ya trabajados con su planta, el de ahora con un brillo, y los que faltan como puntos
+    BANCALES_MONTANA.forEach(([x, y], i) => {
+      if(i < d.actual){
+        const b = d.bancal(i);
+        s += '<g><circle cx="' + x + '" cy="' + y + '" r="17" fill="#FFFFFF" stroke="#3B6D11" stroke-width="3"/>'
+          + (b.hojas ? '<path d="M' + x + ' ' + (y + 9) + ' V' + (y - 8) + '" stroke="#3B6D11" stroke-width="2.5"/><ellipse cx="' + (x - 5) + '" cy="' + (y - 2) + '" rx="6" ry="3.5" fill="#4E7F2A" transform="rotate(25 ' + (x - 5) + ' ' + (y - 2) + ')"/><ellipse cx="' + (x + 5) + '" cy="' + (y - 7) + '" rx="6" ry="3.5" fill="#639922" transform="rotate(-25 ' + (x + 5) + ' ' + (y - 7) + ')"/>' : '<circle cx="' + x + '" cy="' + y + '" r="4" fill="#B49A78"/>')
+          + (b.flores ? '<circle cx="' + (x + 12) + '" cy="' + (y - 12) + '" r="5" fill="#E86A92" stroke="#fff" stroke-width="1.5"/>' : '') + '</g>';
+      } else if(i === d.actual){
+        s += '<circle class="mt-aqui" cx="' + x + '" cy="' + y + '" r="30" fill="#FFD25E" opacity=".9"/>'
+          + '<circle cx="' + x + '" cy="' + y + '" r="20" fill="#FFFFFF" stroke="#D99A1E" stroke-width="4"/>'
+          + '<path d="M' + x + ' ' + (y + 11) + ' V' + (y - 9) + '" stroke="#3B6D11" stroke-width="3"/><ellipse cx="' + (x - 6) + '" cy="' + (y - 1) + '" rx="7" ry="4" fill="#639922" transform="rotate(25 ' + (x - 6) + ' ' + (y - 1) + ')"/><ellipse cx="' + (x + 6) + '" cy="' + (y - 7) + '" rx="7" ry="4" fill="#639922" transform="rotate(-25 ' + (x + 6) + ' ' + (y - 7) + ')"/>'
+          + '<g transform="translate(' + x + ' ' + (y - 46) + ')"><rect x="-52" y="-17" width="104" height="30" rx="15" fill="#FFFFFF" stroke="#D99A1E" stroke-width="2.5"/><text x="0" y="5" text-anchor="middle" font-family="Karla,Arial,sans-serif" font-size="17" font-weight="800" fill="#7A4F00">Estás aquí</text></g>';
+      } else {
+        s += '<circle cx="' + x + '" cy="' + y + '" r="7" fill="#FFFFFF" opacity=".75" stroke="#7A6A9E" stroke-width="1.5"/>';
       }
     });
-    s += '<line x1="340" y1="72" x2="340" y2="50" stroke="#6B4A1A" stroke-width="1.5"/><polygon points="340,50 354,55 340,60" fill="#C0392B"/>';
-    if(d.actual < 20){ const p = pos[d.actual]; s += '<circle cx="' + p.x + '" cy="' + (p.y - 16) + '" r="8" fill="#FFFFFF" stroke="#D99A1E" stroke-width="2"/><circle cx="' + p.x + '" cy="' + (p.y - 16) + '" r="3" fill="#D99A1E"/>'; }
-    // Nubes que cruzan despacio, un pájaro y las colinas moradas delante (como en la bienvenida)
-    const nube = '<ellipse cx="0" cy="0" rx="36" ry="13"/><ellipse cx="22" cy="-9" rx="22" ry="14"/><ellipse cx="-20" cy="-5" rx="18" ry="10"/>';
-    s += '<g class="mt-nube"><g transform="translate(0 96)" fill="#FFFFFF" opacity=".92">' + nube + '</g></g>'
-      + '<g class="mt-nube b"><g transform="translate(0 215) scale(.8)" fill="#FFFFFF" opacity=".85">' + nube + '</g></g>'
-      + '<g class="mt-pajaro"><path class="mt-ala" d="M0 0 Q6 -7 12 0 Q18 -7 24 0" fill="none" stroke="#4A3A5A" stroke-width="2" stroke-linecap="round"/></g>'
-      + '<path d="M0 622 C170 604 330 628 500 609 S640 613 680 618 V640 H0 Z" fill="#C04A8E" opacity=".35"/><path d="M0 632 C200 622 420 640 680 628 V640 H0 Z" fill="#6B2A9E" opacity=".45"/>';
-    return s + '</svg>';
+    return s + '</svg></div>';
   }
   function leyendaMontana(d){
     return '<div class="mont-ley">' + BADGE_SCALE.map((b, k) => '<span' + (k === d.nivel ? ' class="on"' : '') + '><i style="background:' + NIVELES_MONTANA[k].c + '"></i>Año ' + (k + 1) + ' · ' + b.label + '</span>').join('') + '</div>';
@@ -9804,7 +9792,7 @@ lo que haces cada día es lo que vas a ser.`;
     const caja = el('<div class="progreso"><h1 class="viaje-titulo">Progreso</h1>'
       + (dm ? '<div class="card mont-card"><h2><span>⛰️ Mi montaña</span><button type="button" class="mont-son" id="montSon" aria-label="Música de la montaña">🎵 Música</button></h2><p class="mont-sub">Año ' + dm.anio + ' · ' + BADGE_SCALE[dm.nivel].label + ' · bancal ' + dm.enAnio + ' de 4 este año. Cada trimestre, tu meta queda plantada en un bancal y la siguiente sube un poco más.</p>'
         + montanaSVG(dm) + leyendaMontana(dm) + '</div>'
-        + '<div class="card mont-card"><h2>🌿 Tu planta de este trimestre</h2><p class="mont-sub">Una hoja por cada semana con algún registro: más grande cuantos más días registras, y con flor si cumples tu compromiso.</p><div style="display:flex;justify-content:center">' + plantaSVG(dm.bancal(dm.actual), 24, true) + '</div></div>' : '')
+        + '<div class="card mont-card planta-fondo"><h2>🌿 Tu planta de este trimestre</h2><p class="mont-sub">Una hoja por cada semana con algún registro: más grande cuantos más días registras, y con flor si cumples tu compromiso.</p><div style="display:flex;justify-content:center">' + plantaSVG(dm.bancal(dm.actual), 24, true) + '</div></div>' : '')
       + '<div class="progreso-grid">'
       + '<div class="progreso-dato"><b>' + racha + '</b><span>' + (racha === 1 ? 'día seguido' : 'días seguidos') + ' practicando</span></div>'
       + '<div class="progreso-dato"><b>' + semana + '/7</b><span>días esta semana</span></div>'
@@ -10804,4 +10792,4 @@ lo que haces cada día es lo que vas a ser.`;
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V12.79 · App Metas Amables · 2026-10-12 17:13==== -->
+<!-- ==== Fin del index V12.80 · App Metas Amables · 2026-10-12 17:19==== -->
