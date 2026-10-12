@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V13.09 · App Metas Amables · 2026-10-12 22:06==== -->
+<!-- ==== index V13.10 · App Metas Amables · 2026-10-12 22:07==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2277,7 +2277,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V13.09';
+  const APP_VERSION = 'V13.10';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -4617,7 +4617,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       'La pregunta del plazo dice ahora «¿Durante cuánto tiempo quieres hacer la práctica?».',
       'En el formulario, todo lo que tocas o eliges se marca en marrón, también la escala del 1 al 5.',
       'En «¿Cómo sabrás cada mes que has avanzado?», la primera opción es ahora «Si lo he logrado», para las metas concretas.',
-      'Al enviar tu meta, la música se para y suena una fanfarria de premio. Y cuando Prácti celebra, sus brazos van detrás del cuerpo.' ] },
+      'Al enviar tu meta, la música se para y suena una fanfarria de premio. Y cuando Prácti celebra, sus brazos van detrás del cuerpo.',
+      '«Tu perfil de partida» ya no repite lo que acabas de ver en el resumen: solo tus tres barras y una frase de ánimo.' ] },
     { v: 'V13.01', f: '12 de octubre de 2026', n: [
       'Al empezar tus <b>primeros 15 registros</b>, Prácti ya no habla de «reto»: te propone algo sencillo y le respondes «¡Vamos allá!».' ] },
     { v: 'V13.00', f: '12 de octubre de 2026', n: [
@@ -10768,19 +10769,12 @@ lo que haces cada día es lo que vas a ser.`;
     const fila = (titulo, ahoraTx, ahoraN, metaTx, metaN) => '<div class="pp-fila"><div><small>' + titulo + '</small><b>' + ahoraTx + '</b>' + barra(ahoraN, '#E39A9A') + '</div>'
       + '<div><small>' + titulo + '</small><b>' + metaTx + '</b>' + barra(metaN, '#6B9362') + '</div></div>';
     const nivel = n => ['Baja', 'Baja', 'Media', 'Buena', 'Muy buena'][n - 1] || 'Media';
-    const frenos = (multi['1748549848'] || []).map(x => x.replace(/\s*\(.*$|\s*«.*$/, ''));
-    const sabras = (multi['701895149'] || []);
-    const meta = String(r['785855484'] || r['649833281'] || '').trim();
-    const cortar = (t, n) => t.length > n ? t.slice(0, n - 1) + '…' : t;
     return '<div class="card pp"><h2 class="pp-titulo">🌱 Tu perfil de partida</h2>'
       + '<div class="pp-cab"><span class="pp-et ahora">Ahora</span><span class="pp-flecha">›››</span><span class="pp-et meta">Tu meta</span></div>'
       + fila('Capacidad para conseguirlo', nivel(esc), esc, 'Fuerte', 5)
       + fila('Confianza en ti', conf ? conf.replace('/a', '') : 'Por descubrir', confN, 'Sí, seguro', 5)
       + fila('Constancia', cons[0], cons[1], 'Hábito asentado', 5)
-      + (meta ? '<p class="pp-dato">🎯 <b>Tu meta' + (r['1502404995'] ? ' (' + escapeAttr(r['1502404995']) + ')' : '') + ':</b> ' + escapeAttr(cortar(meta, 160)) + '</p>' : '')
-      + (r['1015444619'] ? '<p class="pp-dato">⏰ <b>Tu tiempo:</b> ' + escapeAttr(r['1015444619']) + '</p>' : '')
-      + (frenos.length ? '<p class="pp-dato">🧱 <b>Lo que te suele frenar:</b> ' + escapeAttr(frenos.join(', ')) + '. Tu guía te dará herramientas para cada uno.</p>' : '')
-      + (sabras.length ? '<p class="pp-dato">🏆 <b>Sabrás que avanzas:</b> ' + escapeAttr(sabras.join(', ').toLowerCase()) + '.</p>' : '')
+      // Sin repetir la meta, el tiempo, los frenos ni cómo sabrás que avanzas: ya salen en el resumen de la pantalla anterior
       + '<p class="pp-animo">Este es tu punto de partida, no un examen. Paso a paso, con prácticas pequeñas y tu grupo, vamos a por ello. 💚</p></div>';
   }
 
@@ -11277,4 +11271,4 @@ lo que haces cada día es lo que vas a ser.`;
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V13.09 · App Metas Amables · 2026-10-12 22:06==== -->
+<!-- ==== Fin del index V13.10 · App Metas Amables · 2026-10-12 22:07==== -->
