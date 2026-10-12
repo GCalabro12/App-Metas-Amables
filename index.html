@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V13.03 · App Metas Amables · 2026-10-12 21:39==== -->
+<!-- ==== index V13.04 · App Metas Amables · 2026-10-12 21:42==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1639,6 +1639,9 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   [data-vista="panel"][data-sub=""] .card{ box-shadow:0 2px 14px rgba(60,40,100,.08); }
   [data-vista="formMeta"] .btn-yes{ border-color:#C9942D !important; color:#7A5410 !important; }
   [data-vista="formMeta"] .btn-yes:hover, [data-vista="formMeta"] .btn-yes:active, [data-vista="formMeta"] .btn-yes:focus{ background:#C9942D !important; color:#fff !important; }
+  /* «Siguiente →» del formulario: marrón liso (el de los bordes), para que no se confunda con los recuadros de las respuestas */
+  [data-vista="formMeta"] #fmSig{ background:#C9942D !important; border-color:#C9942D !important; color:#fff !important; font-weight:800; box-shadow:none; }
+  [data-vista="formMeta"] #fmSig:hover, [data-vista="formMeta"] #fmSig:active{ background:#AE7E22 !important; border-color:#AE7E22 !important; }
   [data-vista="practicaSemanal"] .dias-card{ border:2px solid #E39A9A; }
   [data-vista="checkin"] .card{ border:2px solid #93BF80; }
   [data-vista="checkin"] .btn-yes{ border-color:#6B9362 !important; }
@@ -2267,7 +2270,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V13.03';
+  const APP_VERSION = 'V13.04';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -4601,6 +4604,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
+    { v: 'V13.04', f: '12 de octubre de 2026', n: [
+      'En el formulario de tu meta, el botón <b>Siguiente</b> es ahora marrón liso, para distinguirlo de las respuestas.' ] },
     { v: 'V13.01', f: '12 de octubre de 2026', n: [
       'Al empezar tus <b>primeros 15 registros</b>, Prácti ya no habla de «reto»: te propone algo sencillo y le respondes «¡Vamos allá!».' ] },
     { v: 'V13.00', f: '12 de octubre de 2026', n: [
@@ -11239,4 +11244,4 @@ lo que haces cada día es lo que vas a ser.`;
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V13.03 · App Metas Amables · 2026-10-12 21:39==== -->
+<!-- ==== Fin del index V13.04 · App Metas Amables · 2026-10-12 21:42==== -->
