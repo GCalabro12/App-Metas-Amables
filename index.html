@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V13.15 · App Metas Amables · 2026-10-12 23:06==== -->
+<!-- ==== index V13.16 · App Metas Amables · 2026-10-12 23:11==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2277,7 +2277,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V13.15';
+  const APP_VERSION = 'V13.16';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -10966,7 +10966,7 @@ lo que haces cada día es lo que vas a ser.`;
           try { localStorage.setItem('ma_form_ts_' + state.me, String(Date.now())); } catch(e){}
           // Igual que lo guarda el Worker: plazo y meta, para el aviso de «¿La conseguiste?»
           const dfm = Object.assign({}, state.gamifica.datosFormulario || {});
-          dfm.plazo = fm.r['1502404995'] || ''; dfm.metaTexto = (fm.r['785855484'] || fm.r['649833281'] || '').slice(0, 300); dfm.fechaMeta = iso; delete dfm.plazoRespondido;
+          dfm.plazo = fm.r['1502404995'] || ''; dfm.metaTexto = (fm.r['785855484'] || fm.r['649833281'] || '').slice(0, 600); dfm.fechaMeta = iso; delete dfm.plazoRespondido;
           state.gamifica.datosFormulario = dfm;
           try {
             const sinCambio = localStorage.getItem('meta_sin_cambio_' + state.me) === '1';   // tras lograr la meta: no cuenta como cambio
@@ -11277,4 +11277,4 @@ lo que haces cada día es lo que vas a ser.`;
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V13.15 · App Metas Amables · 2026-10-12 23:06==== -->
+<!-- ==== Fin del index V13.16 · App Metas Amables · 2026-10-12 23:11==== -->
