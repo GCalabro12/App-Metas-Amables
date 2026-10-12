@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V12.99 · App Metas Amables · 2026-10-12 21:03==== -->
+<!-- ==== index V13.00 · App Metas Amables · 2026-10-12 21:24==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1212,7 +1212,7 @@ body.riego-abierto{overflow:hidden}
 .planta-abonar.abonado{color:#2B2B2B}
 .planta-abonar svg{width:20px;height:20px;flex:none}
 .ps-reto{display:flex;align-items:center;gap:12px;width:100%;text-align:left;cursor:pointer;border:2px solid #E2C79A;background:#FFF8E6;font:inherit;color:inherit}
-.ps-reto-ico{font-size:28px}.ps-reto b{display:block;font-size:16px}.ps-reto small{display:block;font-size:13.5px;color:var(--ink-soft);margin-top:2px}.ps-reto>span:nth-child(2){flex:1}
+.ps-reto-ico{flex:none}.ps-reto b{display:block;font-size:16px}.ps-reto small{display:block;font-size:13.5px;color:var(--ink-soft);margin-top:2px}.ps-reto>span:nth-child(2){flex:1}
 .amable-capa{position:fixed;inset:0;z-index:9750;background:rgba(30,20,10,.45);display:flex;align-items:flex-end;justify-content:center;animation:amable-fondo .25s ease-out}
 .amable-hoja{width:min(520px,100%);min-height:50vh;max-height:88vh;overflow:auto;box-sizing:border-box;border-radius:24px 24px 0 0;background:linear-gradient(180deg,#EEF5E6 0%,#FFFDF8 55%);box-shadow:0 -12px 40px rgba(0,0,0,.25);padding:10px 22px calc(22px + env(safe-area-inset-bottom));text-align:center;font-family:Karla,sans-serif;color:#1F3A18;animation:amable-sube .35s cubic-bezier(.2,.8,.3,1)}
 .amable-asa{width:44px;height:5px;border-radius:3px;background:#C9D8BC;margin:0 auto 6px}
@@ -1387,7 +1387,8 @@ html.modo-minimal .practi-inicio,html.modo-minimal .practi-bocadillo,html.modo-m
 .planta-fila svg{flex:0 0 auto}
 .planta-tx b{display:block;font-size:16px}.planta-tx small{display:block;font-size:13.5px;color:var(--ink-soft);margin-top:3px;line-height:1.4}
 .planta-tx em{display:block;font-style:normal;font-size:13px;font-weight:800;color:#3B6D11;margin-top:6px}
-.planta-inicio{cursor:pointer;width:100%;text-align:left;font:inherit;color:inherit;border:2px solid #E2C79A;background:linear-gradient(90deg,rgba(255,252,245,.92),rgba(255,252,245,.55) 60%,rgba(255,252,245,.2)),url(fondo-planta.jpg) center 70%/cover no-repeat}
+.planta-inicio{cursor:pointer;width:100%;text-align:left;font:inherit;color:inherit;border:0;background:linear-gradient(90deg,rgba(255,252,245,.92),rgba(255,252,245,.55) 60%,rgba(255,252,245,.2)),url(fondo-planta.jpg) center 70%/cover no-repeat}
+.planta-tit{display:block;margin:0 0 8px;font:700 clamp(14px,4.4vw,20px)/1.2 Lora,serif;letter-spacing:-.1px;color:#2F5A23;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .util-nov{display:flex;align-items:center;gap:10px;width:100%;margin:14px 0 0;padding:12px 16px;border:2px solid #101010;border-radius:16px;background:#FFF6DC;font:inherit;color:#101010;text-align:left;cursor:pointer}.util-nov b{display:block;font-size:16px}.util-nov small{display:block;color:var(--ink-soft);font-size:13px}.util-nov .opcion-flecha{margin-left:auto;font-size:22px}
 .nov-lista{display:block}.nov-ver{margin:0 0 14px;padding:14px 16px}.nov-ver h3{margin:0 0 2px;font:700 18px Lora,serif;color:#2F5A23}.nov-ver .nov-fecha{display:block;margin:0 0 8px;font-size:13px;color:var(--ink-soft)}.nov-ver ul{margin:0;padding-left:20px}.nov-ver li{margin:0 0 6px;line-height:1.45}
 .alta-marchita{position:relative;width:200px;height:213px;margin:0 auto}.alta-marchita img{position:absolute;left:0;top:0;width:200px;height:auto;opacity:0;animation-duration:6s;animation-timing-function:ease;animation-iteration-count:infinite}
@@ -2264,7 +2265,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V12.99';
+  const APP_VERSION = 'V13.00';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -2750,8 +2751,14 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   // Guarda el registro de una semana en la fila propia. El Worker la crea si no existe,
   // solo acepta los campos del registro y omite los que Airtable no reconozca.
+  // Los guardados de una misma semana van uno detrás de otro: si salían a la vez (p. ej. el día y el clima)
+  // y la fila aún no existía, el Worker creaba dos o tres filas de la misma semana
+  const colaSemana = {};
   async function guardarSemana(fields){
-    return api('/guardar', { semana: fields[AIR.fields.semana], campos: fields });
+    const sem = fields[AIR.fields.semana];
+    const turno = (colaSemana[sem] || Promise.resolve()).catch(() => {}).then(() => api('/guardar', { semana: sem, campos: fields }));
+    colaSemana[sem] = turno;
+    return turno;
   }
 
   // Plan del practicante: 'pago' si tiene Estado=Activo en Facturación, si no 'gratis'.
@@ -4592,6 +4599,9 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
+    { v: 'V13.00', f: '12 de octubre de 2026', n: [
+      'En Compromiso y práctica, el camino de tus <b>primeros 15 registros</b> tiene ahora su dibujito y un nombre más claro.',
+      'En Inicio, la tarjeta de tu planta lleva el título en una sola línea.' ] },
     { v: 'V12.96', f: '12 de octubre de 2026', n: [
       '<b>Inicio</b>, más moderno: recuadros sin borde sobre un cielo oscuro de amanecer con movimiento (estrellas, sol, nubes, pájaros y algún avión) y colinas del color de tu nivel.' ] },
     { v: 'V12.93', f: '12 de octubre de 2026', n: [
@@ -7549,8 +7559,11 @@ lo que haces cada día es lo que vas a ser.`;
       // Reto de 15 días: se puede abrir siempre para ver el camino y los regalos
       try {
         const nReto = diasRegistradosReto();
-        const reto = el('<button type="button" class="card ps-reto"><span class="ps-reto-ico">🎯</span><span><b>Tu reto de 15 días</b><small>'
-          + (nReto >= RETO_DIAS ? '¡Reto completado! Con tu meta actual llevas ' + diasRegistradosMeta() + ' días registrados.' : nReto ? 'Llevas ' + nReto + (nReto === 1 ? ' día' : ' días') + ' registrados de 15. Mira tu camino y tus regalos.' : 'Registra tu primer día para empezar el camino.') + '</small></span><span class="opcion-flecha">›</span></button>').firstElementChild;
+        // El dibujito: el mismo camino en S (5 · curva · 5 · curva · 5) que sale con el cartel, en pequeño, con lo recorrido en verde
+        const caminoMini = '<svg class="ps-reto-ico" viewBox="0 0 40 44" width="40" height="44" aria-hidden="true"><path d="M7 7 H33 A7.5 7.5 0 0 1 33 22 H7 A7.5 7.5 0 0 0 7 37 H33" fill="none" stroke="#D9C49A" stroke-width="4" stroke-linecap="round"/>'
+          + Array.from({ length: 15 }, (z, i) => { const f = i % 5, fila = Math.floor(i / 5), x = fila === 1 ? 33 - f * 6.5 : 7 + f * 6.5, y = 7 + fila * 15; return '<circle cx="' + x + '" cy="' + y + '" r="2.2" fill="' + (i < nReto ? '#6FAE4A' : '#FFFFFF') + '" stroke="' + (i < nReto ? '#4E8A32' : '#A8905F') + '" stroke-width="1.2"/>'; }).join('') + '</svg>';
+        const reto = el('<button type="button" class="card ps-reto">' + caminoMini + '<span><b>Tus primeros 15 registros</b><small>'
+          + (nReto >= RETO_DIAS ? '¡Completados! Con tu meta actual llevas ' + diasRegistradosMeta() + ' días registrados.' : nReto ? 'Llevas ' + nReto + ' de 15. Mira tu camino y tus regalos.' : 'Registra tu primer día para empezar el camino.') + '</small></span><span class="opcion-flecha">›</span></button>').firstElementChild;
         reto.onclick = () => abrirRetoDia(Math.max(1, Math.min(nReto, RETO_DIAS)), true);
         app.appendChild(reto);
       } catch(e){ console.error('Reto:', e); }
@@ -9802,13 +9815,14 @@ lo que haces cada día es lo que vas a ser.`;
   // la regadera (que gotea), un saco de tierra de abono con su pala, macetas de barro y un frasco de semillas.
   // Detrás, montañas y colinas en pastel. Se mueven: nubes, dos pájaros lejanos, una mariposa, tres luciérnagas,
   // una hormiga que sube por la maceta y baja por el otro lado, y una mariquita que cruza en diagonal. Va por debajo del texto y de la planta.
-  function escenaPlanta(nivel){
+  // Con «sencilla» (la tarjeta de Inicio) se queda solo el paisaje: sin los objetos ni los bichitos, para que se lea el texto
+  function escenaPlanta(nivel, sencilla){
     // Cada nivel, su paisaje: [colinas, líneas de las colinas, matorral, matorral 2, hierba, pino claro, pino oscuro]
     const PAISAJE = [['#F8DAD6', '#EFC1BB', '#EFB3AC', '#F3C3BD', '#D98E87', '#EE9A9A', '#D67A7A'], ['#FBEACB', '#F3D8A4', '#F3CF8E', '#F6DBA8', '#C99A4E', '#F0C25E', '#D9A43F'],
       ['#FBE0CA', '#F5C9A6', '#F4BC93', '#F7CBA9', '#C9784A', '#F4A673', '#DB844E'], ['#D9EEC9', '#C3E1AF', '#A9D9A0', '#B7DFA6', '#6FB585', '#7DBB86', '#5FA078'],
       ['#E8E0F8', '#D6CAF2', '#C9BAF0', '#D5C9F4', '#9A86D4', '#BBA6EE', '#9C85DA']][nivel == null ? 3 : nivel];
     const SUELO = [['#F6D2CD', '#E8ABA4', '#D98E87'], ['#FBE3B4', '#EDC680', '#D9A95A'], ['#F9CFAB', '#EDA97E', '#D98B5C'], ['#CBEBB2', '#A2D69A', '#8CC48A'], ['#DFD5F5', '#BCACE8', '#A28FD9']][nivel == null ? 3 : nivel];
-    return '<svg class="planta-escena" viewBox="0 0 400 520" preserveAspectRatio="xMidYMax slice" aria-hidden="true">'
+    const s = '<svg class="planta-escena" viewBox="0 0 400 520" preserveAspectRatio="xMidYMax slice" aria-hidden="true">'
       + '<defs><linearGradient id="peCielo" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFF8F0"/><stop offset=".45" stop-color="#FCE8EE"/><stop offset=".75" stop-color="#EDE3FA"/></linearGradient>'
       + '<radialGradient id="peLuzG"><stop offset="0" stop-color="#FFF6B0"/><stop offset=".35" stop-color="#FFE45C" stop-opacity=".7"/><stop offset="1" stop-color="#FFD24D" stop-opacity="0"/></radialGradient><radialGradient id="peSol"><stop offset="0" stop-color="#FFE7A6" stop-opacity=".95"/><stop offset="1" stop-color="#FFD9A0" stop-opacity="0"/></radialGradient>'
       + '<linearGradient id="peHierba" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="' + SUELO[0] + '"/><stop offset="1" stop-color="' + SUELO[1] + '"/></linearGradient>'
@@ -9835,11 +9849,14 @@ lo que haces cada día es lo que vas a ser.`;
       + '<path d="M0 424 Q90 394 180 416 T400 406 M0 438 Q90 410 180 430 T400 420" fill="none" stroke="' + PAISAJE[1] + '" stroke-width="2"/>'
       + [[106, 402], [124, 406], [278, 408], [296, 404], [20, 414], [250, 410]].map(([x, y]) => [x, y, PAISAJE[5], PAISAJE[6]]).map(([x, y, c, o]) => '<path d="M' + x + ' ' + (y - 22) + ' L' + (x - 8) + ' ' + (y + 4) + ' L' + (x + 8) + ' ' + (y + 4) + ' Z" fill="' + c + '"/><path d="M' + x + ' ' + (y - 22) + ' L' + x + ' ' + (y + 4) + ' L' + (x + 8) + ' ' + (y + 4) + ' Z" fill="' + o + '"/>').join('')
       + '<path d="M-10 472 Q0 446 22 450 Q30 434 50 444 Q64 440 70 458 Q74 470 60 474 Z" fill="' + PAISAJE[2] + '"/><path d="M410 470 Q404 444 384 448 Q376 434 358 444 Q346 444 344 460 Q342 470 356 472 Z" fill="' + PAISAJE[3] + '"/>'
+      + '<!--obj-->'
       // Un trocito de la tienda de campaña de Prácti, que asoma por la izquierda
       + '<g transform="translate(-8 480)"><path d="M-40 0 L42 -78 L118 0 Z" fill="#F6B98E"/><path d="M42 -78 L118 0 L58 0 Z" fill="#E39566"/><path d="M28 0 L46 -40 L64 0 Z" fill="#FFE7A8"/>'
       + '<path d="M118 0 L130 4" stroke="#9C7B5E" stroke-width="1.5"/></g>'
+      + '<!--/obj-->'
       // El bancal: la tierra, del color del nivel en que está, hasta abajo
       + '<path d="M0 468 Q100 458 200 466 T400 462 V520 H0 Z" fill="url(#peHierba)"/>'
+      + '<!--obj-->'
       // La regadera (a la izquierda), con gotas que caen del rociador
       + '<g transform="translate(74 400) scale(1.05)"><ellipse cx="38" cy="82" rx="30" ry="4" fill="#3A2A6E" opacity=".12"/>'
       + '<path d="M20 22 Q36 -4 52 22" fill="none" stroke="#5FAAD0" stroke-width="5" stroke-linecap="round"/>'
@@ -9863,10 +9880,12 @@ lo que haces cada día es lo que vas a ser.`;
       + '<path d="M4 18 L40 18 L35 52 L9 52 Z" fill="url(#peBarro)"/><rect x="1" y="12" width="42" height="8" rx="2" fill="#F2B49A"/>'
       + '<path d="M10 6 L34 6 L31 14 L13 14 Z" fill="url(#peBarro)" transform="rotate(-8 22 10)"/><rect x="8" y="1" width="28" height="6" rx="2" fill="#F2B49A" transform="rotate(-8 22 4)"/></g>'
       + [[22, 500, 1], [34, 503, 0.75]].map(([x, y, e]) => '<g transform="translate(' + x + ' ' + y + ') scale(' + e + ')"><rect x="-2.5" y="-10" width="5" height="10" rx="2" fill="#FFF3E2"/><path d="M-9 -9 Q0 -20 9 -9 Z" fill="#E9956E"/><circle cx="-3" cy="-12" r="1.4" fill="#FFFFFF"/><circle cx="3" cy="-11" r="1.1" fill="#FFFFFF"/></g>').join('')
+      + '<!--/obj-->'
       // Flores y matas de hierba que se mecen, delante, en el suelo libre (nunca encima de los objetos)
       + [[44, 512, '#FFE07A'], [236, 514, '#A9D8F5'], [330, 512, '#C9B3F2'], [126, 516, '#FFE07A']].map(([x, y, c], k) => '<g transform="translate(' + x + ' ' + y + ')"><g class="pe-hierba" style="animation-delay:-' + k + 's"><path d="M0 0 Q2 -9 0 -16" fill="none" stroke="' + PAISAJE[4] + '" stroke-width="1.6"/>'
         + [0, 72, 144, 216, 288].map(g => '<ellipse cx="0" cy="-19" rx="1.9" ry="3" fill="' + c + '" transform="rotate(' + g + ' 0 -16)"/>').join('') + '<circle cx="0" cy="-16" r="1.5" fill="#FFE27F"/></g></g>').join('')
       + [[150, 508], [250, 502], [300, 510], [70, 506], [388, 506]].map(([x, y], k) => '<g class="pe-hierba" style="animation-delay:-' + (k * 0.7) + 's"><path d="M' + x + ' ' + y + ' q-2 -8 -6 -11 M' + x + ' ' + y + ' q0 -10 1 -14 M' + x + ' ' + y + ' q3 -7 7 -10" fill="none" stroke="' + PAISAJE[4] + '" stroke-width="1.6" stroke-linecap="round"/></g>').join('')
+      + '<!--obj-->'
       // Una hormiga que sube por la maceta, la cruza por arriba y baja por el otro lado (mira siempre hacia donde camina)
       + '<g><g><ellipse cx="-3.4" cy="0" rx="2.2" ry="1.6" fill="#4A3426"/><ellipse cx="0" cy="0" rx="1.3" ry="1.1" fill="#4A3426"/><circle cx="2.4" cy="0" r="1.3" fill="#4A3426"/>'
       + '<path d="M-1 -1 L-2 -3 M0 -1 L0.5 -3.2 M1 -1 L2 -3 M-1 1 L-2 3 M0 1 L0.5 3.2 M1 1 L2 3 M3.4 -0.6 L5 -2 M3.4 0.6 L5 2" stroke="#4A3426" stroke-width=".6"/></g>'
@@ -9875,11 +9894,13 @@ lo que haces cada día es lo que vas a ser.`;
       + '<g><g><ellipse cx="0" cy="0" rx="3.6" ry="3" fill="#E5484D"/><path d="M-3.6 0 L3.6 0" stroke="#3A2A2A" stroke-width=".5"/><circle cx="4" cy="0" r="1.6" fill="#2E2626"/>'
       + '<circle cx="-1.6" cy="-1.3" r=".7" fill="#2E2626"/><circle cx="1" cy="-1.5" r=".6" fill="#2E2626"/><circle cx="-1.4" cy="1.4" r=".7" fill="#2E2626"/><circle cx="1.2" cy="1.3" r=".6" fill="#2E2626"/><ellipse cx="-.8" cy="-1.9" rx="1" ry=".5" fill="#FFFFFF" opacity=".5"/></g>'
       + '<animateMotion dur="26s" repeatCount="indefinite" rotate="auto" path="M150 528 L262 462 L290 470"/></g>'
+      + '<!--/obj-->'
       // Tres luciérnagas que vagan y se encienden y apagan
       + [[86, 380], [250, 330], [316, 430]].map(([x, y], k) => '<g class="pe-vaga v' + k + '"><g class="pe-luz" style="animation-delay:-' + (k * 0.9) + 's"><circle cx="' + x + '" cy="' + y + '" r="9" fill="url(#peLuzG)"/><circle cx="' + x + '" cy="' + y + '" r="2" fill="#FFFBE0"/></g></g>').join('')
       // Una mariposa que revolotea
       + '<g class="pe-mariposa"><g transform="scale(.9)"><path class="pe-ala" d="M0 0 C-8 -10 -14 -4 -10 2 C-14 6 -8 10 0 2 Z" fill="#F7A8CB"/><path class="pe-ala d" d="M0 0 C8 -10 14 -4 10 2 C14 6 8 10 0 2 Z" fill="#F7A8CB"/><ellipse cx="0" cy="1" rx="1.2" ry="4" fill="#6A4F8C"/></g></g>'
       + '</svg>';
+    return sencilla ? s.replace(/<!--obj-->[\s\S]*?<!--\/obj-->/g, '') : s;
   }
   function plantaSVG(b, paso, etiquetas){
     // En Inicio (sin etiquetas) solo se dibuja hasta la semana de ahora y dos más, para que la planta no quede con un palo vacío
@@ -10175,8 +10196,9 @@ lo que haces cada día es lo que vas a ser.`;
   function tarjetaPlantaInicio(){
     let d; try { d = datosMontana(); } catch(e){ return null; }
     const b = d.bancal(d.actual), hoy = b.semanas.find(s => s.hoy);
-    const c = el('<button type="button" class="card planta-inicio"><div class="planta-fila">' + plantaSVG(b, 11, false)
-      + '<span class="planta-tx"><b>🌿 Tu planta (meta) de este trimestre</b><small>' + b.hojas + (b.hojas === 1 ? ' hoja' : ' hojas') + (b.flores ? ' · ' + b.flores + (b.flores === 1 ? ' flor' : ' flores') : '')
+    // El título en una sola línea arriba, a todo lo ancho; debajo, la planta y los datos
+    const c = el('<button type="button" class="card planta-inicio"><b class="planta-tit">Tu planta (meta) de este trimestre</b><div class="planta-fila">' + plantaSVG(b, 11, false)
+      + '<span class="planta-tx"><small>' + b.hojas + (b.hojas === 1 ? ' hoja' : ' hojas') + (b.flores ? ' · ' + b.flores + (b.flores === 1 ? ' flor' : ' flores') : '')
       + (hoy ? '<br>Esta semana es <b style="display:inline">' + hoy.etiqueta + '</b>: ' + (hoy.dias ? (hoy.dias === 1 ? '1 día registrado' : hoy.dias + ' días registrados') : 'registra para que salga su hoja') : '') + '</small>'
       + '<em>Año ' + d.anio + ' · ' + BADGE_SCALE[d.nivel].label + ' · Ver mi montaña ›</em></span></div></button>').firstElementChild;
     c.onclick = () => { state.view = 'progreso'; window.scrollTo(0, 0); render(); };
@@ -11211,4 +11233,4 @@ lo que haces cada día es lo que vas a ser.`;
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V12.99 · App Metas Amables · 2026-10-12 21:03==== -->
+<!-- ==== Fin del index V13.00 · App Metas Amables · 2026-10-12 21:24==== -->
