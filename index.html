@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V13.05 · App Metas Amables · 2026-10-12 21:49==== -->
+<!-- ==== index V13.06 · App Metas Amables · 2026-10-12 21:54==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2272,7 +2272,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V13.05';
+  const APP_VERSION = 'V13.06';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -4608,7 +4608,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   const NOVEDADES = [
     { v: 'V13.04', f: '12 de octubre de 2026', n: [
       'En el formulario de tu meta, el botón <b>Siguiente</b> es ahora marrón liso, para distinguirlo de las respuestas.',
-      'Las respuestas largas crecen solas mientras escribes o dictas, y el cuadro ya no se pone en rojo (no había ningún límite).' ] },
+      'Las respuestas largas crecen solas mientras escribes o dictas, y el cuadro ya no se pone en rojo (no había ningún límite).',
+      'La pregunta del plazo dice ahora «¿Durante cuánto tiempo quieres hacer la práctica?».' ] },
     { v: 'V13.01', f: '12 de octubre de 2026', n: [
       'Al empezar tus <b>primeros 15 registros</b>, Prácti ya no habla de «reto»: te propone algo sencillo y le respondes «¡Vamos allá!».' ] },
     { v: 'V13.00', f: '12 de octubre de 2026', n: [
@@ -8248,7 +8249,7 @@ lo que haces cada día es lo que vas a ser.`;
       opciones: ['Un poco cada día (5 a 10 minutos)', '3 o 4 días a la semana (15 a 25 minutos)', 'Me da igual / una combinación de las dos'] },
     { id: '649833281', tipo: 'larga', titulo: '✍️ Explica en detalle lo que quieres lograr este trimestre', obligatoria: true, repreguntar: true,
       ayuda: 'Cuantos más detalles me des, más personalizada será tu guía. Ej.: «Quiero meditar 10 minutos cada mañana para estar más tranquilo en el trabajo» 💡' },
-    { id: '1502404995', tipo: 'opciones', titulo: '⏳ ¿En cuánto tiempo quieres conseguirlo?', obligatoria: true, opciones: ['1 mes', '2 meses', '3 meses o más'] },
+    { id: '1502404995', tipo: 'opciones', titulo: '⏳ ¿Durante cuánto tiempo quieres hacer la práctica?', obligatoria: true, opciones: ['1 mes', '2 meses', '3 meses o más'] },
     { id: '99842027', tipo: 'opciones', titulo: '🤔 Siendo sincero/a, ¿crees que puedes conseguirlo en ese tiempo?', obligatoria: true,
       opciones: ['Sí, seguro', 'Creo que sí', 'No estoy seguro/a'] },
     { id: '785855484', tipo: 'larga', titulo: '🎯 Ajustemos tu meta para que sea amable', soloSi: r => /No estoy|Seguramente no/.test(r['99842027'] || ''),
@@ -11251,4 +11252,4 @@ lo que haces cada día es lo que vas a ser.`;
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V13.05 · App Metas Amables · 2026-10-12 21:49==== -->
+<!-- ==== Fin del index V13.06 · App Metas Amables · 2026-10-12 21:54==== -->
