@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V12.92 · App Metas Amables · 2026-10-12 19:24==== -->
+<!-- ==== index V12.93 · App Metas Amables · 2026-10-12 19:31==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2245,7 +2245,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V12.92';
+  const APP_VERSION = 'V12.93';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -4573,8 +4573,10 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
+    { v: 'V12.93', f: '12 de octubre de 2026', n: [
+      'Tu planta se enrosca de verdad en la guía (por delante y por detrás) y sus flores son flores. El paisaje de alrededor tiene el color de tu nivel, y asoma la tienda de Prácti.' ] },
     { v: 'V12.89', f: '12 de octubre de 2026', n: [
-      'Tu planta, más grande y en su maceta: trepa por la guía, con los meses escritos, cada hoja nace del tallo con el número de su semana, y la tierra del bancal tiene el color de tu nivel.' ] },
+      'Tu planta, más grande y en su maceta: trepa por la guía, con los meses escritos, cada hoja nace del tallo, y la tierra del bancal tiene el color de tu nivel.' ] },
     { v: 'V12.88', f: '12 de octubre de 2026', n: [
       '<b>Tu montaña interior</b>: así se llama ahora tu montaña. Prácti acampa a tu lado: su tienda está junto al bancal donde estás. Y los árboles de cada nivel son pinos de su color.' ] },
     { v: 'V12.87', f: '12 de octubre de 2026', n: [
@@ -9715,6 +9717,10 @@ lo que haces cada día es lo que vas a ser.`;
   // Detrás, montañas y colinas en pastel. Se mueven: nubes, dos pájaros lejanos, una mariposa, tres luciérnagas,
   // una hormiga que sube por la maceta y baja por el otro lado, y una mariquita que cruza en diagonal. Va por debajo del texto y de la planta.
   function escenaPlanta(nivel){
+    // Cada nivel, su paisaje: [colinas, líneas de las colinas, matorral, matorral 2, hierba, pino claro, pino oscuro]
+    const PAISAJE = [['#F8DAD6', '#EFC1BB', '#EFB3AC', '#F3C3BD', '#D98E87', '#EE9A9A', '#D67A7A'], ['#FBEACB', '#F3D8A4', '#F3CF8E', '#F6DBA8', '#C99A4E', '#F0C25E', '#D9A43F'],
+      ['#FBE0CA', '#F5C9A6', '#F4BC93', '#F7CBA9', '#C9784A', '#F4A673', '#DB844E'], ['#D9EEC9', '#C3E1AF', '#A9D9A0', '#B7DFA6', '#6FB585', '#7DBB86', '#5FA078'],
+      ['#E8E0F8', '#D6CAF2', '#C9BAF0', '#D5C9F4', '#9A86D4', '#BBA6EE', '#9C85DA']][nivel == null ? 3 : nivel];
     const SUELO = [['#F6D2CD', '#E8ABA4', '#D98E87'], ['#FBE3B4', '#EDC680', '#D9A95A'], ['#F9CFAB', '#EDA97E', '#D98B5C'], ['#CBEBB2', '#A2D69A', '#8CC48A'], ['#DFD5F5', '#BCACE8', '#A28FD9']][nivel == null ? 3 : nivel];
     return '<svg class="planta-escena" viewBox="0 0 400 520" preserveAspectRatio="xMidYMax slice" aria-hidden="true">'
       + '<defs><linearGradient id="peCielo" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFF8F0"/><stop offset=".45" stop-color="#FCE8EE"/><stop offset=".75" stop-color="#EDE3FA"/></linearGradient>'
@@ -9735,21 +9741,25 @@ lo que haces cada día es lo que vas a ser.`;
       + '<g class="pe-nube"><rect x="30" y="200" width="90" height="8" rx="4" fill="#FFFFFF" opacity=".75" transform="skewX(-25)"/><rect x="60" y="212" width="50" height="6" rx="3" fill="#FFFFFF" opacity=".55" transform="skewX(-25)"/></g>'
       + '<g class="pe-nube" style="animation-delay:-9s"><rect x="250" y="250" width="70" height="6" rx="3" fill="#FFFFFF" opacity=".65" transform="skewX(-25)"/></g>'
       // Dos pájaros lejanos que aletean
-      + '<g class="pe-pajaros">' + [[0, 0, 0.8], [16, 8, 0.6]].map(([dx, dy, e]) => '<path transform="translate(' + dx + ' ' + dy + ') scale(' + e + ')" d="M-8 0 Q-4 -5 0 0 Q4 -5 8 0" fill="none" stroke="#8D7BC0" stroke-width="1.8" stroke-linecap="round"><animate attributeName="d" dur=".8s" repeatCount="indefinite" values="M-8 0 Q-4 -5 0 0 Q4 -5 8 0;M-8 2 Q-4 3 0 0 Q4 3 8 2;M-8 0 Q-4 -5 0 0 Q4 -5 8 0"/></path>').join('') + '</g>'
+      + (() => { const ARRIBA = 'M-14 -6 Q-7 -9 0 1 Q7 -9 14 -6 Q7 -3 0 4 Q-7 -3 -14 -6 Z', ABAJO = 'M-14 6 Q-7 -1 0 1 Q7 -1 14 6 Q7 2 0 4 Q-7 2 -14 6 Z';
+        return '<g class="pe-pajaros">' + [[0, 0, 0.55, 0.9], [-22, 10, 0.45, 0.8]].map(([dx, dy, e, t]) => '<g transform="translate(' + dx + ' ' + dy + ') scale(' + e + ')"><path d="' + ARRIBA + '" fill="#8D7BC0"><animate attributeName="d" dur="' + t + 's" repeatCount="indefinite" values="' + ARRIBA + ';' + ABAJO + ';' + ARRIBA + '" calcMode="spline" keyTimes="0;.5;1" keySplines=".45 0 .55 1;.45 0 .55 1"/></path></g>').join('') + '</g>'; })()
       // Montañas lejanas y colinas con bancales
       + '<path d="M0 360 L55 318 L100 338 L165 280 L215 326 L270 296 L330 330 L400 300 V470 H0 Z" fill="#E3D7F6"/>'
       + '<path d="M165 280 L152 296 L165 292 L176 298 Z M270 296 L261 308 L270 305 L279 309 Z" fill="#FFFFFF" opacity=".9"/>'
-      + '<path d="M0 410 Q90 378 180 402 T400 392 V470 H0 Z" fill="#D9EEC9"/>'
-      + '<path d="M0 424 Q90 394 180 416 T400 406 M0 438 Q90 410 180 430 T400 420" fill="none" stroke="#C3E1AF" stroke-width="2"/>'
-      + [[106, 402, '#F3C766', '#DAA43F'], [124, 406, '#F4A673', '#DB844E'], [278, 408, '#EE9A9A', '#D27474'], [296, 404, '#BBA6EE', '#9C85DA'], [20, 414, '#9ED39A', '#78B47A']].map(([x, y, c, o]) => '<path d="M' + x + ' ' + (y - 22) + ' L' + (x - 8) + ' ' + (y + 4) + ' L' + (x + 8) + ' ' + (y + 4) + ' Z" fill="' + c + '"/><path d="M' + x + ' ' + (y - 22) + ' L' + x + ' ' + (y + 4) + ' L' + (x + 8) + ' ' + (y + 4) + ' Z" fill="' + o + '"/>').join('')
-      + '<path d="M-10 472 Q0 446 22 450 Q30 434 50 444 Q64 440 70 458 Q74 470 60 474 Z" fill="#A9D9A0"/><path d="M410 470 Q404 444 384 448 Q376 434 358 444 Q346 444 344 460 Q342 470 356 472 Z" fill="#B7DFA6"/>'
+      + '<path d="M0 410 Q90 378 180 402 T400 392 V470 H0 Z" fill="' + PAISAJE[0] + '"/>'
+      + '<path d="M0 424 Q90 394 180 416 T400 406 M0 438 Q90 410 180 430 T400 420" fill="none" stroke="' + PAISAJE[1] + '" stroke-width="2"/>'
+      + [[106, 402], [124, 406], [278, 408], [296, 404], [20, 414], [250, 410]].map(([x, y]) => [x, y, PAISAJE[5], PAISAJE[6]]).map(([x, y, c, o]) => '<path d="M' + x + ' ' + (y - 22) + ' L' + (x - 8) + ' ' + (y + 4) + ' L' + (x + 8) + ' ' + (y + 4) + ' Z" fill="' + c + '"/><path d="M' + x + ' ' + (y - 22) + ' L' + x + ' ' + (y + 4) + ' L' + (x + 8) + ' ' + (y + 4) + ' Z" fill="' + o + '"/>').join('')
+      + '<path d="M-10 472 Q0 446 22 450 Q30 434 50 444 Q64 440 70 458 Q74 470 60 474 Z" fill="' + PAISAJE[2] + '"/><path d="M410 470 Q404 444 384 448 Q376 434 358 444 Q346 444 344 460 Q342 470 356 472 Z" fill="' + PAISAJE[3] + '"/>'
+      // Un trocito de la tienda de campaña de Prácti, que asoma por la izquierda
+      + '<g transform="translate(-8 480)"><path d="M-40 0 L42 -78 L118 0 Z" fill="#F6B98E"/><path d="M42 -78 L118 0 L58 0 Z" fill="#E39566"/><path d="M28 0 L46 -40 L64 0 Z" fill="#FFE7A8"/>'
+      + '<path d="M42 -78 V-96" stroke="#9C7B5E" stroke-width="2"/><path d="M42 -96 L58 -91 L42 -86 Z" fill="#E86A92"/><path d="M118 0 L130 4" stroke="#9C7B5E" stroke-width="1.5"/></g>'
       // El bancal: la tierra de arriba, del color del nivel en que está, y el muro de piedra delante
       + '<path d="M0 468 Q100 458 200 466 T400 462 V500 H0 Z" fill="url(#peHierba)"/>'
-      + '<rect x="0" y="496" width="400" height="24" fill="url(#peMuro)"/>'
-      + [[0, 498, 46], [50, 498, 52], [106, 498, 40], [150, 498, 58], [212, 498, 44], [260, 498, 54], [318, 498, 38], [360, 498, 44], [22, 509, 50], [78, 509, 44], [126, 509, 56], [186, 509, 48], [238, 509, 52], [294, 509, 46], [344, 509, 56]].map(([x, y, w]) => '<rect x="' + x + '" y="' + y + '" width="' + (w - 4) + '" height="9" rx="4" fill="#F4DCC0" opacity=".75"/>').join('')
+      + '<rect x="0" y="496" width="400" height="24" fill="#BFAE9A"/>'
+      + Array.from({ length: 26 }, (z, k) => { const fila = k % 2, x = Math.floor(k / 2) * 32 + (fila ? 16 : 0) - 10, w = 26 + (k * 7) % 9, y = 500 + fila * 10; return '<rect x="' + x + '" y="' + y + '" width="' + w + '" height="9" rx="4.5" fill="' + ['#E4D8C8', '#D9CBB8', '#EDE3D5'][k % 3] + '"/><rect x="' + (x + 3) + '" y="' + (y + 1.5) + '" width="' + (w * 0.4) + '" height="2" rx="1" fill="#FFFFFF" opacity=".5"/>'; }).join('')
       + '<path d="M0 496 Q100 490 200 495 T400 492" fill="none" stroke="' + SUELO[2] + '" stroke-width="3"/>'
       // La regadera (a la izquierda), con gotas que caen del rociador
-      + '<g transform="translate(8 392) scale(1.15)"><ellipse cx="38" cy="82" rx="30" ry="4" fill="#3A2A6E" opacity=".12"/>'
+      + '<g transform="translate(74 400) scale(1.05)"><ellipse cx="38" cy="82" rx="30" ry="4" fill="#3A2A6E" opacity=".12"/>'
       + '<path d="M20 22 Q36 -4 52 22" fill="none" stroke="#5FAAD0" stroke-width="5" stroke-linecap="round"/>'
       + '<path d="M60 44 L92 20" stroke="#6DB5D6" stroke-width="6" stroke-linecap="round"/><ellipse cx="95" cy="17" rx="6" ry="8.5" fill="#86C8E0" transform="rotate(-35 95 17)"/>'
       + '<path d="M12 28 Q12 20 20 20 L54 20 Q62 20 62 28 L58 74 Q58 80 52 80 L20 80 Q14 80 14 74 Z" fill="url(#peRegadera)"/>'
@@ -9765,17 +9775,16 @@ lo que haces cada día es lo que vas a ser.`;
       + '<path d="M6 78 Q0 44 10 16 Q32 8 54 14 Q66 44 60 78 Q33 84 6 78 Z" fill="url(#peSaco)"/>'
       + '<ellipse cx="32" cy="15" rx="22" ry="6" fill="#6B4428"/><circle cx="24" cy="13" r="1.5" fill="#8A5A36"/><circle cx="38" cy="14" r="1.8" fill="#8A5A36"/>'
       + '<rect x="16" y="36" width="32" height="22" rx="5" fill="#FFFFFF" opacity=".8"/><path d="M32 54 Q32 46 32 42 M32 48 Q25 46 24 40 Q30 40 32 46 M32 46 Q38 42 40 37 Q34 37 32 44" fill="#8CC48A" stroke="#6FAE73" stroke-width="1"/>'
-      + '<path d="M-10 82 Q8 66 26 82 Z" fill="#7A4A2A"/><path d="M-4 80 Q8 70 18 80" fill="none" stroke="#946038" stroke-width="2"/>'
-      + '<g transform="rotate(-25 6 70)"><rect x="4" y="44" width="4" height="22" rx="2" fill="#C99A6A"/><path d="M1 64 L11 64 L9 78 Q6 82 3 78 Z" fill="#B8C2D0"/></g></g>'
+      + '<g transform="rotate(20 40 10)"><rect x="38" y="-14" width="4" height="20" rx="2" fill="#C99A6A"/><path d="M35 4 L45 4 L43 16 Q40 20 37 16 Z" fill="#B8C2D0"/></g></g>'
       // Macetas de barro, una dentro de otra y otra tumbada
       + '<g transform="translate(350 424) scale(1.15)"><ellipse cx="22" cy="54" rx="24" ry="3.5" fill="#3A2A6E" opacity=".12"/>'
       + '<path d="M4 18 L40 18 L35 52 L9 52 Z" fill="url(#peBarro)"/><rect x="1" y="12" width="42" height="8" rx="2" fill="#F2B49A"/>'
       + '<path d="M10 6 L34 6 L31 14 L13 14 Z" fill="url(#peBarro)" transform="rotate(-8 22 10)"/><rect x="8" y="1" width="28" height="6" rx="2" fill="#F2B49A" transform="rotate(-8 22 4)"/></g>'
       + [[138, 486, 1], [150, 488, 0.75]].map(([x, y, e]) => '<g transform="translate(' + x + ' ' + y + ') scale(' + e + ')"><rect x="-2.5" y="-10" width="5" height="10" rx="2" fill="#FFF3E2"/><path d="M-9 -9 Q0 -20 9 -9 Z" fill="#F28BA8"/><circle cx="-3" cy="-12" r="1.4" fill="#FFFFFF"/><circle cx="3" cy="-11" r="1.1" fill="#FFFFFF"/></g>').join('')
       // Flores y matas de hierba que se mecen
-      + [[100, 470, '#FF9FC0'], [258, 466, '#FFC1D8'], [342, 470, '#FFB1A0'], [176, 472, '#C9B3F2']].map(([x, y, c], k) => '<g transform="translate(' + x + ' ' + y + ')"><g class="pe-hierba" style="animation-delay:-' + k + 's"><path d="M0 0 Q2 -9 0 -16" fill="none" stroke="#5FA97E" stroke-width="1.6"/>'
+      + [[100, 470, '#FF9FC0'], [342, 470, '#FFB1A0'], [176, 472, '#C9B3F2']].map(([x, y, c], k) => '<g transform="translate(' + x + ' ' + y + ')"><g class="pe-hierba" style="animation-delay:-' + k + 's"><path d="M0 0 Q2 -9 0 -16" fill="none" stroke="' + PAISAJE[4] + '" stroke-width="1.6"/>'
         + [0, 72, 144, 216, 288].map(g => '<ellipse cx="0" cy="-19" rx="1.9" ry="3" fill="' + c + '" transform="rotate(' + g + ' 0 -16)"/>').join('') + '<circle cx="0" cy="-16" r="1.5" fill="#FFE27F"/></g></g>').join('')
-      + [[140, 474], [236, 470], [280, 474], [12, 476], [388, 472]].map(([x, y], k) => '<g class="pe-hierba" style="animation-delay:-' + (k * 0.7) + 's"><path d="M' + x + ' ' + y + ' q-2 -8 -6 -11 M' + x + ' ' + y + ' q0 -10 1 -14 M' + x + ' ' + y + ' q3 -7 7 -10" fill="none" stroke="#6FB585" stroke-width="1.6" stroke-linecap="round"/></g>').join('')
+      + [[140, 474], [236, 470], [280, 474], [12, 476], [388, 472]].map(([x, y], k) => '<g class="pe-hierba" style="animation-delay:-' + (k * 0.7) + 's"><path d="M' + x + ' ' + y + ' q-2 -8 -6 -11 M' + x + ' ' + y + ' q0 -10 1 -14 M' + x + ' ' + y + ' q3 -7 7 -10" fill="none" stroke="' + PAISAJE[4] + '" stroke-width="1.6" stroke-linecap="round"/></g>').join('')
       // Una hormiga que sube por la maceta, la cruza por arriba y baja por el otro lado (mira siempre hacia donde camina)
       + '<g><g><ellipse cx="-3.4" cy="0" rx="2.2" ry="1.6" fill="#4A3426"/><ellipse cx="0" cy="0" rx="1.3" ry="1.1" fill="#4A3426"/><circle cx="2.4" cy="0" r="1.3" fill="#4A3426"/>'
       + '<path d="M-1 -1 L-2 -3 M0 -1 L0.5 -3.2 M1 -1 L2 -3 M-1 1 L-2 3 M0 1 L0.5 3.2 M1 1 L2 3 M3.4 -0.6 L5 -2 M3.4 0.6 L5 2" stroke="#4A3426" stroke-width=".6"/></g>'
@@ -9802,6 +9811,20 @@ lo que haces cada día es lo que vas a ser.`;
     // El tallo serpentea alrededor de la guía; tallo(y) dice por dónde pasa a esa altura, para que cada hoja nazca justo de él
     const amp = paso * (etiquetas ? 0.95 : 0.55);
     const tallo = y => { const d = base - y, k = Math.floor(d / paso), t = d / paso - k; return cx + 2 * t * (1 - t) * (k % 2 ? -1 : 1) * amp; };
+    // Cada semana cuenta en el mes de su jueves (donde cae la mayor parte), siempre dentro de los 3 meses del trimestre:
+    // así la guía muestra solo esos 3 meses
+    const qMeses = b.qi != null ? [0, 1, 2].map(k => (b.qi % 4) * 3 + k) : null;
+    const mesDe = (w, j) => {
+      if(!w.lunes) return -1;
+      const jue = new Date(w.lunes); jue.setDate(jue.getDate() + 3);
+      const m = jue.getMonth();
+      return !qMeses || qMeses.includes(m) ? m : (j < n / 2 ? qMeses[0] : qMeses[2]);
+    };
+    const meses = [];
+    b.semanas.forEach((w, j) => {
+      const m = mesDe(w, j);
+      if(!meses.length || meses[meses.length - 1].m !== m) meses.push({ m, desde: j, hasta: j }); else meses[meses.length - 1].hasta = j;
+    });
     let s = '<svg viewBox="0 0 ' + W + ' ' + H + '" width="' + W + '" height="' + H + '" role="img" aria-label="Tu planta del trimestre: ' + b.hojas + ' hojas"><title>Tu planta del trimestre</title>';
     // La maceta de barro, con su sombra y la tierra
     const pt = base - 1, borde = ph * 0.24;
@@ -9811,13 +9834,17 @@ lo que haces cada día es lo que vas a ser.`;
       + '<rect x="' + (cx - pw / 2) + '" y="' + pt + '" width="' + pw + '" height="' + borde + '" rx="' + (etiquetas ? 3 : 1.5) + '" fill="#F2A98C"/>'
       + '<path d="M' + (cx - pw * 0.34) + ' ' + (pt + borde + 3) + ' L' + (cx - pw * 0.28) + ' ' + (pt + ph - 3) + '" stroke="#FFFFFF" stroke-width="' + (etiquetas ? 3 : 1.5) + '" stroke-linecap="round" opacity=".35"/>'
       + '<ellipse cx="' + cx + '" cy="' + (pt + 1) + '" rx="' + (pw / 2 - 4) + '" ry="' + (etiquetas ? 3.5 : 1.8) + '" fill="#7A4A2A"/>';
+    // El tallo entero, por detrás de la guía (luego se repasan por delante los tramos que la cruzan, como una trepadora que se enrosca)
+    if(ultima >= 0){
+      let d = 'M' + cx + ' ' + base;
+      for(let y = base, k = 0; y > alto; y -= paso, k++){ const y2 = Math.max(alto, y - paso), t = (y - y2) / paso; d += ' Q' + (cx + (k % 2 ? -1 : 1) * amp * t) + ' ' + ((y + y2) / 2) + ' ' + (y2 === alto ? tallo(y2) : cx) + ' ' + y2; }
+      s += '<path d="' + d + '" fill="none" stroke="#3B6D11" stroke-width="' + (etiquetas ? 3.2 : 2) + '" stroke-linecap="round"/>';
+    }
     // La guía
     if(etiquetas){
       s += '<path d="M' + (cx - 8) + ' 13 L' + cx + ' 2 L' + (cx + 8) + ' 13 Z" fill="#DDBA8E"/><path d="M' + cx + ' 2 L' + (cx + 8) + ' 13 L' + (cx + 2) + ' 13 Z" fill="#C9A273" opacity=".7"/>'
         + '<rect x="' + (cx - 8) + '" y="12" width="16" height="' + (base - 11) + '" rx="2" fill="#DDBA8E"/><rect x="' + (cx + 2) + '" y="12" width="6" height="' + (base - 11) + '" rx="2" fill="#C9A273" opacity=".7"/>';
       // Los meses escritos en la guía, separados por una muesca
-      const meses = [];
-      b.semanas.forEach((w, j) => { const m = w.lunes ? w.lunes.getMonth() : -1; if(!meses.length || meses[meses.length - 1].m !== m) meses.push({ m, desde: j, hasta: j }); else meses[meses.length - 1].hasta = j; });
       meses.forEach((g, k) => {
         const yA = yDe(g.desde) + paso / 2, yB = yDe(g.hasta) - paso / 2, nombre = g.m < 0 ? '' : (yA - yB > 72 ? monthNamesEs[g.m] : MESES3[g.m].toLowerCase());
         if(k > 0) s += '<line x1="' + (cx - 8) + '" y1="' + yA + '" x2="' + (cx + 8) + '" y2="' + yA + '" stroke="#9C7448" stroke-width="1.5"/>';
@@ -9826,32 +9853,35 @@ lo que haces cada día es lo que vas a ser.`;
     } else {
       s += '<line x1="' + cx + '" y1="' + base + '" x2="' + cx + '" y2="14" stroke="#B08A5A" stroke-width="3" stroke-linecap="round"/>';
     }
+    // Por delante de la guía: uno de cada dos cruces del tallo, así se ve que se enrosca (pasa por delante, luego por detrás…)
+    if(ultima >= 0) for(let k = 1; base - k * paso - paso * 0.3 >= alto; k += 2){
+      const yN = base - k * paso, pts = [];
+      for(let q = 0; q <= 8; q++){ const y = yN + paso * 0.3 - q * paso * 0.6 / 8; pts.push(tallo(y).toFixed(1) + ',' + y.toFixed(1)); }
+      s += '<polyline points="' + pts.join(' ') + '" fill="none" stroke="#3B6D11" stroke-width="' + (etiquetas ? 3.2 : 2) + '" stroke-linecap="round"/>';
+    }
     // El cartelito «Guía» clavado en lo alto del palo
     if(etiquetas) s += '<rect x="' + (cx - 30) + '" y="19" width="60" height="25" rx="5" fill="#E9CB9E" stroke="#B98D5E" stroke-width="1.5"/>'
       + '<path d="M' + (cx - 26) + ' 25 Q' + (cx - 6) + ' 23 ' + (cx + 8) + ' 26 T' + (cx + 26) + ' 25 M' + (cx - 26) + ' 39 Q' + (cx - 4) + ' 41 ' + (cx + 12) + ' 38 T' + (cx + 26) + ' 39" fill="none" stroke="#D2AE7E" stroke-width="1"/>'
       + '<circle cx="' + (cx - 24) + '" cy="31.5" r="1.4" fill="#9C7448"/><circle cx="' + (cx + 24) + '" cy="31.5" r="1.4" fill="#9C7448"/>'
       + '<text x="' + cx + '" y="36.5" text-anchor="middle" font-family="Karla,Arial,sans-serif" font-size="14" font-weight="800" fill="#6E4C2C">Guía</text>';
-    // El tallo
-    if(ultima >= 0){
-      let d = 'M' + cx + ' ' + base;
-      for(let y = base, k = 0; y > alto; y -= paso, k++){ const y2 = Math.max(alto, y - paso), t = (y - y2) / paso; d += ' Q' + (cx + (k % 2 ? -1 : 1) * amp * t) + ' ' + ((y + y2) / 2) + ' ' + (y2 === alto ? tallo(y2) : cx) + ' ' + y2; }
-      s += '<path d="' + d + '" fill="none" stroke="#3B6D11" stroke-width="' + (etiquetas ? 3.2 : 2) + '" stroke-linecap="round"/>';
-    }
     // Las hojas: nacen del tallo, la semana 1 a la derecha, la 2 a la izquierda… Junto a cada una, el número de la semana del mes
     const esc = paso / 24, inc = 20 * Math.PI / 180;
     b.semanas.forEach((w, j) => {
-      const y = yDe(j), lado = j % 2 ? -1 : 1, sx = tallo(y), num = String(w.etiqueta || '').split(' ')[1] || '';
+      const y = yDe(j), lado = j % 2 ? -1 : 1, sx = tallo(y);
       if(w.dias > 0){
         const t = (w.dias >= 6 ? 13 : w.dias >= 3 ? 10 : 7) * 1.4, rx = t * esc + 1, ry = rx * 0.6, a = lado * rx * 2;
         const px = sx + a * Math.cos(inc), py = y - rx * 2 * Math.sin(inc);
         s += '<g transform="rotate(' + (lado * -20) + ' ' + sx.toFixed(1) + ' ' + y + ')"><path d="M' + sx.toFixed(1) + ' ' + y + ' C' + (sx + a * 0.3).toFixed(1) + ' ' + (y - ry * 1.3).toFixed(1) + ' ' + (sx + a * 0.8).toFixed(1) + ' ' + (y - ry * 1.1).toFixed(1) + ' ' + (sx + a).toFixed(1) + ' ' + y
           + ' C' + (sx + a * 0.8).toFixed(1) + ' ' + (y + ry * 1.1).toFixed(1) + ' ' + (sx + a * 0.3).toFixed(1) + ' ' + (y + ry * 1.3).toFixed(1) + ' ' + sx.toFixed(1) + ' ' + y + ' Z" fill="#639922"/>'
           + '<path d="M' + sx.toFixed(1) + ' ' + y + ' L' + (sx + a * 0.85).toFixed(1) + ' ' + y + '" stroke="#8FC35A" stroke-width="1"/></g>';
-        if(w.cumple) s += '<circle cx="' + px.toFixed(1) + '" cy="' + py.toFixed(1) + '" r="' + (3.2 * esc + 1.3) + '" fill="#E86A92" stroke="#fff" stroke-width="1"/>';
-        if(etiquetas && num) s += '<text x="' + (px + lado * 9).toFixed(1) + '" y="' + (py + 4).toFixed(1) + '" text-anchor="' + (lado < 0 ? 'end' : 'start') + '" font-family="Karla,Arial,sans-serif" font-size="12" font-weight="700" fill="#3B6D11" stroke="#FFFCF5" stroke-width="3" stroke-linejoin="round" paint-order="stroke">' + num + '</text>';
+        if(w.cumple){
+          const r = etiquetas ? 7 : 3.4;
+          s += '<g transform="translate(' + px.toFixed(1) + ' ' + py.toFixed(1) + ')">' + [0, 72, 144, 216, 288].map(g => '<ellipse cx="0" cy="' + (-r * 0.62).toFixed(1) + '" rx="' + (r * 0.42).toFixed(1) + '" ry="' + (r * 0.62).toFixed(1) + '" fill="#F58FB3" stroke="#E5689A" stroke-width=".6" transform="rotate(' + g + ')"/>').join('')
+            + '<circle r="' + (r * 0.32).toFixed(1) + '" fill="#FFD95E"/><circle cx="' + (-r * 0.1).toFixed(1) + '" cy="' + (-r * 0.1).toFixed(1) + '" r="' + (r * 0.12).toFixed(1) + '" fill="#FFF3B8"/></g>';
+        }
       } else if(w.hoy){
         s += '<circle cx="' + sx.toFixed(1) + '" cy="' + y + '" r="' + (5 * esc + 2) + '" fill="#FFFFFF" stroke="#D99A1E" stroke-width="2"/>';
-        if(etiquetas) s += '<text x="' + (sx + lado * 16).toFixed(1) + '" y="' + (y + 4) + '" text-anchor="' + (lado < 0 ? 'end' : 'start') + '" font-family="Karla,Arial,sans-serif" font-size="12" font-weight="700" fill="#8A5A00" stroke="#FFFCF5" stroke-width="3" stroke-linejoin="round" paint-order="stroke">' + (num ? num + ' · ' : '') + 'ahora</text>';
+        if(etiquetas) s += '<text x="' + (sx + lado * 16).toFixed(1) + '" y="' + (y + 4) + '" text-anchor="' + (lado < 0 ? 'end' : 'start') + '" font-family="Karla,Arial,sans-serif" font-size="12" font-weight="700" fill="#8A5A00" stroke="#FFFCF5" stroke-width="3" stroke-linejoin="round" paint-order="stroke">ahora</text>';
       } else if(w.futura){
         s += '<circle cx="' + cx + '" cy="' + y + '" r="' + (etiquetas ? 2.2 : 1.6) + '" fill="' + (etiquetas ? '#A9845A' : '#C9B38E') + '"/>';
       }
@@ -10088,7 +10118,7 @@ lo que haces cada día es lo que vas a ser.`;
     const caja = el('<div class="progreso"><div class="prog-cab"><h1 class="viaje-titulo">Progreso</h1>'
       + (dm ? '<div class="prog-vol"><button type="button" id="volMenos" aria-label="Bajar la música">−</button><input type="range" id="montVol" min="0" max="100" step="5" value="' + Math.round(volumenMontana() * 100) + '" aria-label="Volumen de la música de la montaña (a cero, sin música)"><button type="button" id="volMas" aria-label="Subir la música">+</button></div>' : '') + '</div>'
       + (dm ? ''
-        + '<div class="card mont-card planta-fondo">' + escenaPlanta(dm.nivel) + '<h2>🌿 Tu planta (meta) de este trimestre</h2><p class="mont-sub">Una hoja por cada semana con algún registro: más grande cuantos más días registras, y con flor si cumples tu compromiso. En la guía, los meses; junto a cada hoja, la semana.</p><div style="display:flex;justify-content:center;padding-bottom:10px">' + plantaSVG(dm.bancal(dm.actual), 30, true) + '</div></div>'
+        + '<div class="card mont-card planta-fondo">' + escenaPlanta(dm.nivel) + '<h2>🌿 Tu planta (meta) de este trimestre</h2><p class="mont-sub">Una hoja por cada semana con algún registro: más grande cuantos más días registras, y con flor si cumples tu compromiso. En la guía, los meses.</p><div style="display:flex;justify-content:center;padding-bottom:10px">' + plantaSVG(dm.bancal(dm.actual), 30, true) + '</div></div>'
         + '<div class="card mont-card"><h2>⛰️ Tu montaña interior</h2><p class="mont-sub">Año ' + dm.anio + ' · ' + BADGE_SCALE[dm.nivel].label + ' · bancal ' + dm.enAnio + ' de 4 este año. Cada trimestre, tu meta queda plantada en un bancal y la siguiente sube un poco más.</p>'
         + montanaSVG(dm) + leyendaMontana(dm) + '</div>' : '')
       + '<div class="progreso-grid">'
@@ -11099,4 +11129,4 @@ lo que haces cada día es lo que vas a ser.`;
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V12.92 · App Metas Amables · 2026-10-12 19:24==== -->
+<!-- ==== Fin del index V12.93 · App Metas Amables · 2026-10-12 19:31==== -->
