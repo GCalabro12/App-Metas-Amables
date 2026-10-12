@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V13.21 · App Metas Amables · 2026-10-12 23:50==== -->
+<!-- ==== index V13.22 · App Metas Amables · 2026-10-12 23:59==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1397,7 +1397,7 @@ html.modo-minimal .practi-inicio,html.modo-minimal .practi-bocadillo,html.modo-m
 .planta-inicio{cursor:pointer;width:100%;text-align:left;font:inherit;color:inherit;border:0;position:relative;overflow:hidden;background:#FFF8F0}
 .planta-inicio > :not(.planta-escena){position:relative;z-index:1}
 .planta-inicio .planta-tx{background:rgba(255,252,245,.82);border-radius:12px;padding:8px 10px}
-.planta-tit{display:block;margin:0 0 8px;font:700 clamp(14px,4.4vw,20px)/1.2 Lora,serif;letter-spacing:-.1px;color:#2F5A23;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.planta-inicio .planta-tit{display:block;margin:0 0 8px;font:700 clamp(14px,4.4vw,20px)/1.2 Lora,serif;letter-spacing:-.1px;color:#2F5A23;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .util-nov{display:flex;align-items:center;gap:10px;width:100%;margin:14px 0 0;padding:12px 16px;border:2px solid #101010;border-radius:16px;background:#FFF6DC;font:inherit;color:#101010;text-align:left;cursor:pointer}.util-nov b{display:block;font-size:16px}.util-nov small{display:block;color:var(--ink-soft);font-size:13px}.util-nov .opcion-flecha{margin-left:auto;font-size:22px}
 .nov-lista{display:block}.nov-ver{margin:0 0 14px;padding:14px 16px}.nov-ver h3{margin:0 0 2px;font:700 18px Lora,serif;color:#2F5A23}.nov-ver .nov-fecha{display:block;margin:0 0 8px;font-size:13px;color:var(--ink-soft)}.nov-ver ul{margin:0;padding-left:20px}.nov-ver li{margin:0 0 6px;line-height:1.45}
 .alta-marchita{position:relative;width:200px;height:213px;margin:0 auto}.alta-marchita img{position:absolute;left:0;top:0;width:200px;height:auto;opacity:0;animation-duration:6s;animation-timing-function:ease;animation-iteration-count:infinite}
@@ -2289,7 +2289,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V13.21';
+  const APP_VERSION = 'V13.22';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -2709,9 +2709,10 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       } } catch(e){}
     // Enlace de los emails (?planes=1): la pantalla de los planes
     try { if(new URLSearchParams(location.search).get('planes') === '1'){ history.replaceState(null, '', location.pathname); setTimeout(irAPlanes, 900); } } catch(e){}
-    // Enlace de los emails (?meta=1): el formulario de la meta, o su sección si ya está rellenado
-    try { if(new URLSearchParams(location.search).get('meta') === '1'){ history.replaceState(null, '', location.pathname);
-      setTimeout(() => { if(metaHechaYa()){ state.view = 'panel'; state.panelSub = 's4'; window.scrollTo(0, 0); render(); } else abrirFormularioMeta(); }, 900); } } catch(e){}
+    // Enlace de los emails (?meta=1): el formulario de la meta, o su sección si ya está rellenado.
+    // ?meta=seguir («Seguir con mi meta»): el formulario ya relleno con las respuestas del trimestre anterior
+    try { const pm = new URLSearchParams(location.search).get('meta'); if(pm === '1' || pm === 'seguir'){ history.replaceState(null, '', location.pathname);
+      setTimeout(() => { if(metaHechaYa()){ state.view = 'panel'; state.panelSub = 's4'; window.scrollTo(0, 0); render(); } else abrirFormularioMeta(pm === 'seguir'); }, 900); } } catch(e){}
     // Enlace del resumen de Telegram (?panel=1): abre «Panel de control admin Metas A.»
     try { if(new URLSearchParams(location.search).get('panel') === '1'){ history.replaceState(null, '', location.pathname); if(soyModerador()) abrirPanelFacilitador(); } } catch(e){}
     const list = state.checkins[state.me] || [];
@@ -4623,6 +4624,9 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
+    { v: 'V13.22', f: '12 de octubre de 2026', n: [
+      'Si al empezar un trimestre eliges <b>«Seguir con mi meta»</b>, el formulario se abre ya relleno con tus respuestas anteriores: solo tienes que repasarlas.',
+      'En Inicio, el título <b>Compromiso y práctica</b> vuelve a tener el mismo tamaño que los demás.' ] },
     { v: 'V13.21', f: '12 de octubre de 2026', n: [
       'Cuando empiezas una <b>meta nueva</b>, puedes volver a escribir tu contrato de compromiso y tus notas a tu yo del futuro (las que aún no se habían abierto).' ] },
     { v: 'V13.20', f: '12 de octubre de 2026', n: [
@@ -10928,7 +10932,7 @@ lo que haces cada día es lo que vas a ser.`;
     };
   }
 
-  function abrirFormularioMeta(){
+  function abrirFormularioMeta(seguir){
     let previo = null;
     try { previo = JSON.parse(localStorage.getItem(fmClave()) || 'null'); } catch(e){}
     if(!previo){
@@ -10936,6 +10940,7 @@ lo que haces cada día es lo que vas a ser.`;
       previo = { paso: 0, email: g.email || state.miCorreo || '', r: { '1139323880': d.nombre || state.me || '', '82527459': d.ciudad || '', '1313109576': d.genero || '', '838787571': d.edad || '' }, preguntado: {} };
       // Los datos personales que ya tenemos no se vuelven a preguntar (se envían igual)
       previo.saltar = FM_PREGUNTAS.filter(p => p.datos && String(previo.r[p.id] || '').trim()).map(p => p.id);
+      if(seguir && d.metaTexto) rellenarConMetaAnterior(previo, d);
     }
     state.fm = previo;
     // Música de fondo suave (se puede quitar; se recuerda la elección). No pisa la música que ya esté sonando.
@@ -10943,6 +10948,35 @@ lo que haces cada día es lo que vas a ser.`;
     if(quiere && !musica.id){ musica.porFormulario = true; musicaPoner(MUSICA_FORMULARIO); }
     state.prevView = state.view === 'formMeta' ? 'panel' : state.view;
     state.view = 'formMeta'; window.scrollTo(0,0); render();
+  }
+  // «Seguir con mi meta»: las respuestas del trimestre anterior (guardadas en Datos formulario) ya puestas; solo hay que repasarlas
+  function rellenarConMetaAnterior(f, d){
+    const m = d.motivacion || {}, P = id => FM_PREGUNTAS.find(p => p.id === id);
+    f.seguir = true;
+    f.r['1469069724'] = 'Voy a continuar con lo que estoy haciendo el trimestre anterior';
+    if(/^\d días? a la semana, .+ cada día$/.test(m.tiempo || '')) f.r['1015444619'] = m.tiempo;
+    f.r['649833281'] = d.metaTexto; f.preguntado['649833281'] = true;   // Prácti no vuelve a repreguntar la meta
+    if(P('1502404995').opciones.includes(d.plazo)) f.r['1502404995'] = d.plazo;
+    if(P('99842027').opciones.includes(m.sincero)) f.r['99842027'] = m.sincero;
+    if(/^[1-5]$/.test(m.escala || '')) f.r['788104521'] = m.escala;
+    // Varias opciones: se recuperan las marcadas y la nota escrita
+    f.multi = {}; f.notas = {}; f.intento = {};
+    const sinPrefijo = (s, pre) => s.startsWith(pre) ? s.slice(pre.length).replace(/^\.\s*/, '') : s;
+    [['1748549848', m.saboteador], ['701895149', m.accion]].forEach(([id, s]) => {
+      s = String(s || '').trim(); if(!s) return;
+      const l = P(id).opciones.filter(o => s.includes(o)).sort((x, y) => s.indexOf(x) - s.indexOf(y));   // en el orden en que se marcaron
+      f.multi[id] = l; f.notas[id] = l.length ? sinPrefijo(s, l.join('; ')) : s;
+      f.r[id] = [l.join('; '), f.notas[id]].filter(Boolean).join('. ');
+    });
+    let s = String(m.intentado || '').trim();
+    if(s){
+      const p = P('490104775'), el1 = p.opciones.find(o => s.startsWith(o)) || '';
+      s = sinPrefijo(s, el1);
+      const sl = s.toLowerCase(), l = s.startsWith('Lo intenté: ') ? p.conQue.filter(o => sl.includes(o.toLowerCase())).sort((x, y) => sl.indexOf(x.toLowerCase()) - sl.indexOf(y.toLowerCase())) : [];
+      if(l.length) s = sinPrefijo(s, 'Lo intenté: ' + l.join(', ').toLowerCase());
+      f.intento['490104775'] = el1; f.multi['490104775'] = l; f.notas['490104775'] = s;
+      f.r['490104775'] = [el1, l.length ? 'Lo intenté: ' + l.join(', ').toLowerCase() : '', s].filter(Boolean).join('. ');
+    }
   }
   function fmVisibles(){ return FM_PREGUNTAS.filter(p => (!p.soloSi || p.soloSi(state.fm.r)) && !(state.fm.saltar || []).includes(p.id)); }
   // Para enviar: todas las que tienen respuesta (también los datos que no se preguntaron)
@@ -10990,7 +11024,7 @@ lo que haces cada día es lo que vas a ser.`;
     if(fm.paso === 0){
       const conocido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test((state.gamifica && state.gamifica.email) || '');
       if(conocido) fm.email = state.gamifica.email;
-      card.innerHTML = barra + `<div class="practi-inicio">${practiReaccionHTML('pensativo','empujonPensando',90)}${bocadilloPracti('Vamos a definir tu meta del trimestre. Son unos 5 minutos y con tus respuestas te preparo tu guía de prácticas.', 'tono-calma')}</div>
+      card.innerHTML = barra + `<div class="practi-inicio">${practiReaccionHTML('pensativo','empujonPensando',90)}${bocadilloPracti(fm.seguir ? 'Seguimos con tu meta. Te he dejado tus respuestas del trimestre anterior: repásalas y cambia lo que quieras.' : 'Vamos a definir tu meta del trimestre. Son unos 5 minutos y con tus respuestas te preparo tu guía de prácticas.', 'tono-calma')}</div>
         ${conocido ? '' : `<label class="note-label strong" for="fmEmail" style="margin-top:14px">📧 ¿A qué correo te avisamos?</label>
         <p style="font-size:13px;color:var(--ink-soft);margin:0 0 6px">Lo necesitamos para enviarte tu guía de prácticas. Solo te lo pedimos esta vez.</p>
         <input id="fmEmail" type="email" inputmode="email" autocomplete="email" value="${escapeAttr(fm.email)}" placeholder="tu@correo.com" style="width:100%;box-sizing:border-box;font-size:17px;padding:12px 14px">`}
@@ -11347,4 +11381,4 @@ lo que haces cada día es lo que vas a ser.`;
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V13.21 · App Metas Amables · 2026-10-12 23:50==== -->
+<!-- ==== Fin del index V13.22 · App Metas Amables · 2026-10-12 23:59==== -->
