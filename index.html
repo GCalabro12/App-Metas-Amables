@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V12.91 · App Metas Amables · 2026-10-12 19:22==== -->
+<!-- ==== index V12.92 · App Metas Amables · 2026-10-12 19:24==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2245,7 +2245,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V12.91';
+  const APP_VERSION = 'V12.92';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -9835,14 +9835,14 @@ lo que haces cada día es lo que vas a ser.`;
     if(ultima >= 0){
       let d = 'M' + cx + ' ' + base;
       for(let y = base, k = 0; y > alto; y -= paso, k++){ const y2 = Math.max(alto, y - paso), t = (y - y2) / paso; d += ' Q' + (cx + (k % 2 ? -1 : 1) * amp * t) + ' ' + ((y + y2) / 2) + ' ' + (y2 === alto ? tallo(y2) : cx) + ' ' + y2; }
-      s += '<path d="' + d + '" fill="none" stroke="#3B6D11" stroke-width="' + (etiquetas ? 2.6 : 2) + '" stroke-linecap="round"/>';
+      s += '<path d="' + d + '" fill="none" stroke="#3B6D11" stroke-width="' + (etiquetas ? 3.2 : 2) + '" stroke-linecap="round"/>';
     }
     // Las hojas: nacen del tallo, la semana 1 a la derecha, la 2 a la izquierda… Junto a cada una, el número de la semana del mes
     const esc = paso / 24, inc = 20 * Math.PI / 180;
     b.semanas.forEach((w, j) => {
       const y = yDe(j), lado = j % 2 ? -1 : 1, sx = tallo(y), num = String(w.etiqueta || '').split(' ')[1] || '';
       if(w.dias > 0){
-        const t = w.dias >= 6 ? 13 : w.dias >= 3 ? 10 : 7, rx = t * esc + 1, ry = rx * 0.55, a = lado * rx * 2;
+        const t = (w.dias >= 6 ? 13 : w.dias >= 3 ? 10 : 7) * 1.4, rx = t * esc + 1, ry = rx * 0.6, a = lado * rx * 2;
         const px = sx + a * Math.cos(inc), py = y - rx * 2 * Math.sin(inc);
         s += '<g transform="rotate(' + (lado * -20) + ' ' + sx.toFixed(1) + ' ' + y + ')"><path d="M' + sx.toFixed(1) + ' ' + y + ' C' + (sx + a * 0.3).toFixed(1) + ' ' + (y - ry * 1.3).toFixed(1) + ' ' + (sx + a * 0.8).toFixed(1) + ' ' + (y - ry * 1.1).toFixed(1) + ' ' + (sx + a).toFixed(1) + ' ' + y
           + ' C' + (sx + a * 0.8).toFixed(1) + ' ' + (y + ry * 1.1).toFixed(1) + ' ' + (sx + a * 0.3).toFixed(1) + ' ' + (y + ry * 1.3).toFixed(1) + ' ' + sx.toFixed(1) + ' ' + y + ' Z" fill="#639922"/>'
@@ -11099,4 +11099,4 @@ lo que haces cada día es lo que vas a ser.`;
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V12.91 · App Metas Amables · 2026-10-12 19:22==== -->
+<!-- ==== Fin del index V12.92 · App Metas Amables · 2026-10-12 19:24==== -->
