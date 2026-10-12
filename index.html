@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V12.76 · App Metas Amables · 2026-10-12 16:32==== -->
+<!-- ==== index V12.77 · App Metas Amables · 2026-10-12 16:36==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2232,7 +2232,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V12.76';
+  const APP_VERSION = 'V12.77';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -2643,6 +2643,13 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     try { const qs = new URLSearchParams(location.search); if(qs.get('abonar') === '1' || qs.get('clima') === '1'){ history.replaceState(null, '', location.pathname); setTimeout(() => abrirMomentoRiego(true), 700); } } catch(e){}
     try { if(new URLSearchParams(location.search).get('guia') === '1'){ history.replaceState(null, '', location.pathname);
       setTimeout(() => { const b = document.querySelector('.guia-semana .ritual-guia') || document.querySelector('[data-ir="s3"]'); if(b) b.click(); }, 900); } } catch(e){}
+    // Enlaces de los emails: ?pausa=1 (poner la práctica en pausa), ?cambiar=1 (he perdido el interés) y ?plazo=si|no (final del plazo de la meta)
+    try { const qs = new URLSearchParams(location.search), pz = qs.get('pausa'), cm = qs.get('cambiar'), pl = qs.get('plazo');
+      if(pz === '1' || cm === '1' || pl === 'si' || pl === 'no'){ history.replaceState(null, '', location.pathname);
+        if(pz === '1') setTimeout(() => abrirPausa(''), 900);
+        else if(cm === '1') setTimeout(() => abrirFinMeta('sinInteres'), 900);
+        else { plazoPaso = pl; state.view = 'panel'; state.panelSub = null; if(pl === 'si') setTimeout(() => { try { launchConfetti(); sonidoLogro(); } catch(e){} }, 900); setTimeout(() => { window.scrollTo(0, 0); render(); }, 600); }
+      } } catch(e){}
     // Enlace de los emails (?planes=1): la pantalla de los planes
     try { if(new URLSearchParams(location.search).get('planes') === '1'){ history.replaceState(null, '', location.pathname); setTimeout(irAPlanes, 900); } } catch(e){}
     // Enlace de los emails (?meta=1): el formulario de la meta, o su sección si ya está rellenado
@@ -10721,4 +10728,4 @@ lo que haces cada día es lo que vas a ser.`;
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V12.76 · App Metas Amables · 2026-10-12 16:32==== -->
+<!-- ==== Fin del index V12.77 · App Metas Amables · 2026-10-12 16:36==== -->
