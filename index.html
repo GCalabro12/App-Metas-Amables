@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V12.84 · App Metas Amables · 2026-10-12 18:49==== -->
+<!-- ==== index V12.85 · App Metas Amables · 2026-10-12 18:49==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2238,7 +2238,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V12.84';
+  const APP_VERSION = 'V12.85';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -9872,7 +9872,7 @@ lo que haces cada día es lo que vas a ser.`;
       + [0, 72, 144, 216, 288].map(g => '<ellipse cx="0" cy="' + (-alto - 4.5) + '" rx="2.6" ry="4.5" fill="' + c + '" transform="rotate(' + g + ' 0 ' + (-alto) + ')"/>').join('') + '<circle cx="0" cy="' + (-alto) + '" r="2.4" fill="#FFE27F"/></g></g>';
     s += flor(136, 584, 26, '#FF9FC0', 4.4) + flor(246, 586, 20, '#FFC1D8', 3.8) + flor(70, 570, 18, '#FFB1A0', 4.1)
       // Luciérnagas por la parte baja de la montaña: vagan despacio y se encienden y apagan
-      + [[46, 520], [70, 548], [24, 476], [250, 560], [200, 548], [120, 500], [300, 520], [168, 462], [340, 470], [92, 452], [230, 498], [278, 446], [140, 572], [370, 500], [60, 590], [210, 590]].map(([x, y], k) => '<g class="mt-vaga v' + (k % 3) + '" style="animation-delay:-' + (k * 1.7).toFixed(1) + 's"><g class="mt-luciernaga" style="animation-delay:-' + (k * 0.9).toFixed(1) + 's">'
+      + [[62, 540], [150, 484], [244, 560], [318, 500], [206, 448]].map(([x, y], k) => '<g class="mt-vaga v' + (k % 3) + '" style="animation-delay:-' + (k * 1.7).toFixed(1) + 's"><g class="mt-luciernaga" style="animation-delay:-' + (k * 0.9).toFixed(1) + 's">'
         + '<circle cx="' + x + '" cy="' + y + '" r="10" fill="url(#mtLuz)"/><circle cx="' + x + '" cy="' + y + '" r="2.3" fill="#FFFBE0"/></g></g>').join('');
     // El camino en zigzag y los bancales (por encima de todo, para que se vean siempre)
     s += '<polyline points="' + Array.from({ length: 20 }, (x, i) => posBancal(i).join(',')).join(' ') + '" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-dasharray="2 5" stroke-linecap="round" opacity=".75"/>';
@@ -10941,4 +10941,4 @@ lo que haces cada día es lo que vas a ser.`;
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V12.84 · App Metas Amables · 2026-10-12 18:49==== -->
+<!-- ==== Fin del index V12.85 · App Metas Amables · 2026-10-12 18:49==== -->
