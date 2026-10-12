@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V13.19 · App Metas Amables · 2026-10-12 23:36==== -->
+<!-- ==== index V13.20 · App Metas Amables · 2026-10-12 23:41==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1659,6 +1659,11 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   [data-vista="checkin"] .back-btn, [data-vista="calendar"] .back-btn, [data-vista="sesionesCal"] .back-btn, [data-vista="situacion"] .back-btn, [data-vista="group"] .back-btn, [data-sub="s1"] .back-btn, [data-sub="s2"] .back-btn{ background:#6B9362 !important; border-color:#6B9362 !important; color:#fff !important; }
   [data-vista="utilidades"] .back-btn,[data-vista="frases"] .back-btn,[data-vista="habla"] .back-btn,[data-vista="musica"] .back-btn,[data-sub="s5"] .back-btn{ background:#7B5FB8 !important; border-color:#7B5FB8 !important; color:#fff !important; }
   [data-vista="formMeta"] .btn-dictar{ border-color:#C9942D !important; color:#7A5410 !important; }
+  .fm-tiempo{ display:block; margin:0 0 14px; }
+  .fm-tiempo span{ display:block; margin:0 0 6px; font-weight:700; font-size:15px; }
+  .fm-tiempo select{ width:100%; box-sizing:border-box; padding:12px 14px; font:600 16px Karla,sans-serif; color:var(--ink); background:#fff; border:1.5px solid var(--border); border-radius:12px; }
+  [data-vista="formMeta"] select:focus{ outline:none; border-color:#C9942D !important; box-shadow:0 0 0 3px rgba(201,148,45,.2) !important; }
+  .fm-tiempo select.elegido{ border-color:#C9942D; background:#F6EBD3; }
   [data-vista="formMeta"] textarea:focus, [data-vista="formMeta"] input:focus{ border-color:#C9942D !important; box-shadow:0 0 0 3px rgba(201,148,45,.2) !important; }
   /* Todo lo que se toca o se elige en el formulario, en marrón (el rojo de la marca parecía un error) */
   [data-vista="formMeta"]{ --moss:#C9942D; }
@@ -2284,7 +2289,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V13.19';
+  const APP_VERSION = 'V13.20';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -4618,6 +4623,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
+    { v: 'V13.20', f: '12 de octubre de 2026', n: [
+      'En el formulario de tu meta, el tiempo para tus prácticas se elige con dos cuadros: <b>cuántos días a la semana</b> y <b>cuánto tiempo cada día</b>.' ] },
     { v: 'V13.19', f: '12 de octubre de 2026', n: [
       'En la tarjeta de <b>Compromiso y práctica</b>, el lapicito ✏️ junto a tu meta te deja cambiar el resumen con tus propias palabras.' ] },
     { v: 'V13.17', f: '12 de octubre de 2026', n: [
@@ -8284,8 +8291,9 @@ lo que haces cada día es lo que vas a ser.`;
       // [texto en la app, valor que espera el Google Form]
       opciones: ['Quiero comenzar una práctica nueva', 'Prefiero no hacer prácticas personales (me tomaré una pausa)',
                  ['Continuaré con lo del trimestre anterior', 'Voy a continuar con lo que estoy haciendo el trimestre anterior']] },
-    { id: '1015444619', tipo: 'opciones', titulo: '⏱️ ¿Cuánto tiempo puedes dedicar a tus prácticas?', obligatoria: true,
-      opciones: ['Un poco cada día (5 a 10 minutos)', '3 o 4 días a la semana (15 a 25 minutos)', 'Me da igual / una combinación de las dos'] },
+    // Dos desplegables (días a la semana y tiempo cada día); llega al Google Form como «Otro»: «4 días a la semana, 30 minutos cada día»
+    { id: '1015444619', tipo: 'tiempo', titulo: '⏱️ ¿Cuánto tiempo puedes dedicar a tus prácticas?', obligatoria: true,
+      tiempos: ['5 minutos', '10 minutos', '15 minutos', '20 minutos', '30 minutos', '45 minutos', '1 hora', '1 hora y media', '2 horas'] },
     { id: '649833281', tipo: 'larga', titulo: '✍️ Explica en detalle lo que quieres lograr este trimestre', obligatoria: true, repreguntar: true,
       ayuda: 'Cuantos más detalles me des, más personalizada será tu guía. Ej.: «Quiero meditar 10 minutos cada mañana para estar más tranquilo en el trabajo» 💡' },
     { id: '1502404995', tipo: 'opciones', titulo: '⏳ ¿Durante cuánto tiempo quieres hacer la práctica?', obligatoria: true, opciones: ['1 mes', '2 meses', '3 meses o más'] },
@@ -11033,6 +11041,12 @@ lo que haces cada día es lo que vas a ser.`;
     if(p.tipo === 'corta') campo = `<input id="fmCampo" type="text" value="${escapeAttr(valor)}" style="width:100%;box-sizing:border-box;font-size:17px;padding:12px 14px">`;
     else if(p.tipo === 'larga') campo = `<textarea id="fmCampo" style="min-height:110px;width:100%;box-sizing:border-box;font-size:16px">${escapeAttr(valor)}</textarea>`;
     else if(p.tipo === 'escala') campo = `<div style="display:flex;gap:8px;justify-content:space-between;align-items:center"><small>Muy bajo</small>${[1,2,3,4,5].map(n => `<button type="button" class="fm-op dia-btn${valor === String(n) ? ' hecho' : ''}" data-v="${n}" style="flex:1"><span class="dia-letra">${n}</span></button>`).join('')}<small>Muy alto</small></div>`;
+    else if(p.tipo === 'tiempo'){
+      const m = String(valor).match(/^(\d) días? a la semana, (.+) cada día$/) || [];
+      const dSel = m[1] || '', tSel = m[2] || '';
+      campo = `<label class="fm-tiempo"><span>¿Cuántos días a la semana?</span><select id="fmDias" class="${dSel ? 'elegido' : ''}"><option value="">Elige…</option>${[1,2,3,4,5,6,7].map(n => `<option value="${n}"${String(n) === dSel ? ' selected' : ''}>${n} ${n === 1 ? 'día' : 'días'}</option>`).join('')}</select></label>`
+        + `<label class="fm-tiempo"><span>¿Cuánto tiempo cada día?</span><select id="fmMinutos" class="${tSel ? 'elegido' : ''}"><option value="">Elige…</option>${p.tiempos.map(x => `<option value="${x}"${x === tSel ? ' selected' : ''}>${x}</option>`).join('')}</select></label>`;
+    }
     else if(p.tipo === 'chips'){
       const marcadas = (fm.multi && fm.multi[p.id]) || [];
       campo = p.opciones.map(o => { const sel = marcadas.includes(o);
@@ -11081,6 +11095,7 @@ lo que haces cada día es lo que vas a ser.`;
     const pararDictado = () => { if(dictadoActivo){ try { dictadoActivo.stop(); } catch(e){} } };
     const avanzar = () => { pararDictado(); fm.repregunta = null; fm.paso++; fmGuardar(); window.scrollTo(0,0); render(); };
     // Elegir una opción solo la marca; se avanza siempre con «Siguiente»
+    card.querySelectorAll('.fm-tiempo select').forEach(s => s.onchange = () => { s.classList.toggle('elegido', !!s.value); card.querySelector('.fm-error').textContent = ''; });
     card.querySelectorAll('.fm-op').forEach(b => b.onclick = () => {
       fm.r[p.id] = b.dataset.v; fmGuardar(); render();
     });
@@ -11108,6 +11123,12 @@ lo que haces cada día es lo que vas a ser.`;
     });
     card.querySelector('#fmSig').onclick = async (e) => {
       const c = card.querySelector('#fmCampo');
+      if(p.tipo === 'tiempo'){
+        const d = card.querySelector('#fmDias').value, t = card.querySelector('#fmMinutos').value;
+        if(!d || !t){ card.querySelector('.fm-error').textContent = 'Elige los días y el tiempo de cada día.'; return; }
+        fm.r[p.id] = d + (d === '1' ? ' día' : ' días') + ' a la semana, ' + t + ' cada día';
+        fmGuardar(); avanzar(); return;
+      }
       if(p.tipo === 'chips'){
         fm.notas = fm.notas || {}; fm.notas[p.id] = c ? c.value.trim() : '';
         const l = (fm.multi && fm.multi[p.id]) || [];
@@ -11315,4 +11336,4 @@ lo que haces cada día es lo que vas a ser.`;
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V13.19 · App Metas Amables · 2026-10-12 23:36==== -->
+<!-- ==== Fin del index V13.20 · App Metas Amables · 2026-10-12 23:41==== -->
