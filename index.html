@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V12.89 · App Metas Amables · 2026-10-12 19:20==== -->
+<!-- ==== index V12.90 · App Metas Amables · 2026-10-12 19:21==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2245,7 +2245,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V12.89';
+  const APP_VERSION = 'V12.90';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -4574,7 +4574,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
     { v: 'V12.89', f: '12 de octubre de 2026', n: [
-      'Tu planta, más grande y en su maceta: trepa por una guía con los meses escritos, cada hoja nace del tallo con el número de su semana, y la tierra del bancal tiene el color de tu nivel.' ] },
+      'Tu planta, más grande y en su maceta: trepa por la guía, con los meses escritos, cada hoja nace del tallo con el número de su semana, y la tierra del bancal tiene el color de tu nivel.' ] },
     { v: 'V12.88', f: '12 de octubre de 2026', n: [
       '<b>Tu montaña interior</b>: así se llama ahora tu montaña. Prácti acampa a tu lado: su tienda está junto al bancal donde estás. Y los árboles de cada nivel son pinos de su color.' ] },
     { v: 'V12.87', f: '12 de octubre de 2026', n: [
@@ -9795,7 +9795,7 @@ lo que haces cada día es lo que vas a ser.`;
     if(!etiquetas){ const hasta = b.semanas.reduce((m, s, j) => (s.dias > 0 || s.hoy) ? j : m, 0); b = Object.assign({}, b, { semanas: b.semanas.slice(0, Math.min(b.semanas.length, hasta + 3)) }); }
     // La planta trepa por una guía de madera (en Progreso, ancha y con los meses escritos) y crece en una maceta de barro
     const n = b.semanas.length, W = etiquetas ? 260 : 84, ph = etiquetas ? 40 : 15, pw = etiquetas ? 74 : 34;
-    const H = n * paso + 30 + ph, cx = W / 2, base = H - ph - 6;
+    const H = n * paso + 30 + ph + (etiquetas ? 30 : 0), cx = W / 2, base = H - ph - 6;
     const yDe = j => base - 14 - j * paso;
     const ultima = b.semanas.reduce((m, s, j) => (s.dias > 0 || s.hoy) ? j : m, -1);
     const alto = ultima >= 0 ? yDe(ultima) - paso * 0.4 : base - 10;
@@ -9813,7 +9813,7 @@ lo que haces cada día es lo que vas a ser.`;
       + '<ellipse cx="' + cx + '" cy="' + (pt + 1) + '" rx="' + (pw / 2 - 4) + '" ry="' + (etiquetas ? 3.5 : 1.8) + '" fill="#7A4A2A"/>';
     // La guía
     if(etiquetas){
-      s += '<rect x="' + (cx - 8) + '" y="10" width="16" height="' + (base - 9) + '" rx="4" fill="#DDBA8E"/><rect x="' + (cx + 2) + '" y="10" width="6" height="' + (base - 9) + '" rx="3" fill="#C9A273" opacity=".7"/>';
+      s += '<rect x="' + (cx - 8) + '" y="14" width="16" height="' + (base - 13) + '" rx="4" fill="#DDBA8E"/><rect x="' + (cx + 2) + '" y="14" width="6" height="' + (base - 13) + '" rx="3" fill="#C9A273" opacity=".7"/>';
       // Los meses escritos en la guía, separados por una muesca
       const meses = [];
       b.semanas.forEach((w, j) => { const m = w.lunes ? w.lunes.getMonth() : -1; if(!meses.length || meses[meses.length - 1].m !== m) meses.push({ m, desde: j, hasta: j }); else meses[meses.length - 1].hasta = j; });
@@ -9825,6 +9825,11 @@ lo que haces cada día es lo que vas a ser.`;
     } else {
       s += '<line x1="' + cx + '" y1="' + base + '" x2="' + cx + '" y2="14" stroke="#B08A5A" stroke-width="3" stroke-linecap="round"/>';
     }
+    // El cartelito «Guía» clavado en lo alto del palo
+    if(etiquetas) s += '<rect x="' + (cx - 30) + '" y="3" width="60" height="25" rx="5" fill="#E9CB9E" stroke="#B98D5E" stroke-width="1.5"/>'
+      + '<path d="M' + (cx - 26) + ' 9 Q' + (cx - 6) + ' 7 ' + (cx + 8) + ' 10 T' + (cx + 26) + ' 9 M' + (cx - 26) + ' 23 Q' + (cx - 4) + ' 25 ' + (cx + 12) + ' 22 T' + (cx + 26) + ' 23" fill="none" stroke="#D2AE7E" stroke-width="1"/>'
+      + '<circle cx="' + (cx - 24) + '" cy="15.5" r="1.4" fill="#9C7448"/><circle cx="' + (cx + 24) + '" cy="15.5" r="1.4" fill="#9C7448"/>'
+      + '<text x="' + cx + '" y="20.5" text-anchor="middle" font-family="Karla,Arial,sans-serif" font-size="14" font-weight="800" fill="#6E4C2C">Guía</text>';
     // El tallo
     if(ultima >= 0){
       let d = 'M' + cx + ' ' + base;
@@ -11093,4 +11098,4 @@ lo que haces cada día es lo que vas a ser.`;
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V12.89 · App Metas Amables · 2026-10-12 19:20==== -->
+<!-- ==== Fin del index V12.90 · App Metas Amables · 2026-10-12 19:21==== -->
