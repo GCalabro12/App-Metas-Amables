@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V12.93 · App Metas Amables · 2026-10-12 19:31==== -->
+<!-- ==== index V12.94 · App Metas Amables · 2026-10-12 19:32==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2245,7 +2245,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V12.93';
+  const APP_VERSION = 'V12.94';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -9726,7 +9726,6 @@ lo que haces cada día es lo que vas a ser.`;
       + '<defs><linearGradient id="peCielo" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFF8F0"/><stop offset=".45" stop-color="#FCE8EE"/><stop offset=".75" stop-color="#EDE3FA"/></linearGradient>'
       + '<radialGradient id="peLuzG"><stop offset="0" stop-color="#FFF6B0"/><stop offset=".35" stop-color="#FFE45C" stop-opacity=".7"/><stop offset="1" stop-color="#FFD24D" stop-opacity="0"/></radialGradient><radialGradient id="peSol"><stop offset="0" stop-color="#FFE7A6" stop-opacity=".95"/><stop offset="1" stop-color="#FFD9A0" stop-opacity="0"/></radialGradient>'
       + '<linearGradient id="peHierba" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="' + SUELO[0] + '"/><stop offset="1" stop-color="' + SUELO[1] + '"/></linearGradient>'
-      + '<linearGradient id="peMuro" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#EBCBA8"/><stop offset="1" stop-color="#D7AE86"/></linearGradient>'
       + '<linearGradient id="peRegadera" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#B4E3EE"/><stop offset="1" stop-color="#5FAAD0"/></linearGradient>'
       + '<linearGradient id="peSaco" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F1DFC0"/><stop offset="1" stop-color="#C9A57A"/></linearGradient>'
       + '<linearGradient id="peBarro" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#F2A98C"/><stop offset="1" stop-color="#D9805F"/></linearGradient>'
@@ -9753,11 +9752,8 @@ lo que haces cada día es lo que vas a ser.`;
       // Un trocito de la tienda de campaña de Prácti, que asoma por la izquierda
       + '<g transform="translate(-8 480)"><path d="M-40 0 L42 -78 L118 0 Z" fill="#F6B98E"/><path d="M42 -78 L118 0 L58 0 Z" fill="#E39566"/><path d="M28 0 L46 -40 L64 0 Z" fill="#FFE7A8"/>'
       + '<path d="M42 -78 V-96" stroke="#9C7B5E" stroke-width="2"/><path d="M42 -96 L58 -91 L42 -86 Z" fill="#E86A92"/><path d="M118 0 L130 4" stroke="#9C7B5E" stroke-width="1.5"/></g>'
-      // El bancal: la tierra de arriba, del color del nivel en que está, y el muro de piedra delante
-      + '<path d="M0 468 Q100 458 200 466 T400 462 V500 H0 Z" fill="url(#peHierba)"/>'
-      + '<rect x="0" y="496" width="400" height="24" fill="#BFAE9A"/>'
-      + Array.from({ length: 26 }, (z, k) => { const fila = k % 2, x = Math.floor(k / 2) * 32 + (fila ? 16 : 0) - 10, w = 26 + (k * 7) % 9, y = 500 + fila * 10; return '<rect x="' + x + '" y="' + y + '" width="' + w + '" height="9" rx="4.5" fill="' + ['#E4D8C8', '#D9CBB8', '#EDE3D5'][k % 3] + '"/><rect x="' + (x + 3) + '" y="' + (y + 1.5) + '" width="' + (w * 0.4) + '" height="2" rx="1" fill="#FFFFFF" opacity=".5"/>'; }).join('')
-      + '<path d="M0 496 Q100 490 200 495 T400 492" fill="none" stroke="' + SUELO[2] + '" stroke-width="3"/>'
+      // El bancal: la tierra, del color del nivel en que está, hasta abajo
+      + '<path d="M0 468 Q100 458 200 466 T400 462 V520 H0 Z" fill="url(#peHierba)"/>'
       // La regadera (a la izquierda), con gotas que caen del rociador
       + '<g transform="translate(74 400) scale(1.05)"><ellipse cx="38" cy="82" rx="30" ry="4" fill="#3A2A6E" opacity=".12"/>'
       + '<path d="M20 22 Q36 -4 52 22" fill="none" stroke="#5FAAD0" stroke-width="5" stroke-linecap="round"/>'
@@ -9834,6 +9830,9 @@ lo que haces cada día es lo que vas a ser.`;
       + '<rect x="' + (cx - pw / 2) + '" y="' + pt + '" width="' + pw + '" height="' + borde + '" rx="' + (etiquetas ? 3 : 1.5) + '" fill="#F2A98C"/>'
       + '<path d="M' + (cx - pw * 0.34) + ' ' + (pt + borde + 3) + ' L' + (cx - pw * 0.28) + ' ' + (pt + ph - 3) + '" stroke="#FFFFFF" stroke-width="' + (etiquetas ? 3 : 1.5) + '" stroke-linecap="round" opacity=".35"/>'
       + '<ellipse cx="' + cx + '" cy="' + (pt + 1) + '" rx="' + (pw / 2 - 4) + '" ry="' + (etiquetas ? 3.5 : 1.8) + '" fill="#7A4A2A"/>';
+    // Leyenda arriba a la derecha, a la altura del cartel «Guía»: una hoja = una semana
+    if(etiquetas) s += '<g transform="translate(' + (cx + 42) + ' 32)"><g transform="rotate(-20)"><path d="M0 0 C4 -6.5 13 -6 18 0 C13 6 4 6.5 0 0 Z" fill="#639922"/><path d="M0 0 L15 0" stroke="#8FC35A" stroke-width="1"/></g>'
+      + '<text x="22" y="-2" font-family="Karla,Arial,sans-serif" font-size="13" font-weight="800" fill="#3B6D11" stroke="#FFFCF5" stroke-width="3" stroke-linejoin="round" paint-order="stroke">= semana</text></g>';
     // El tallo entero, por detrás de la guía (luego se repasan por delante los tramos que la cruzan, como una trepadora que se enrosca)
     if(ultima >= 0){
       let d = 'M' + cx + ' ' + base;
@@ -11129,4 +11128,4 @@ lo que haces cada día es lo que vas a ser.`;
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V12.93 · App Metas Amables · 2026-10-12 19:31==== -->
+<!-- ==== Fin del index V12.94 · App Metas Amables · 2026-10-12 19:32==== -->
