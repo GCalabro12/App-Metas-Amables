@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V13.06 · App Metas Amables · 2026-10-12 21:54==== -->
+<!-- ==== index V13.07 · App Metas Amables · 2026-10-12 21:56==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1653,6 +1653,11 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   [data-vista="utilidades"] .back-btn,[data-vista="frases"] .back-btn,[data-vista="habla"] .back-btn,[data-vista="musica"] .back-btn,[data-sub="s5"] .back-btn{ background:#7B5FB8 !important; border-color:#7B5FB8 !important; color:#fff !important; }
   [data-vista="formMeta"] .btn-dictar{ border-color:#C9942D !important; color:#7A5410 !important; }
   [data-vista="formMeta"] textarea:focus, [data-vista="formMeta"] input:focus{ border-color:#C9942D !important; box-shadow:0 0 0 3px rgba(201,148,45,.2) !important; }
+  /* Todo lo que se toca o se elige en el formulario, en marrón (el rojo de la marca parecía un error) */
+  [data-vista="formMeta"]{ --moss:#C9942D; }
+  [data-vista="formMeta"] .opcion-inicio:hover, [data-vista="formMeta"] .opcion-inicio:focus, [data-vista="formMeta"] .opcion-inicio:active,
+  [data-vista="formMeta"] .dia-btn:hover, [data-vista="formMeta"] .dia-btn:focus, [data-vista="formMeta"] .btn:focus{ border-color:#C9942D !important; box-shadow:0 0 0 3px rgba(201,148,45,.18) !important; outline:none; }
+  [data-vista="formMeta"] .dia-btn.hecho{ background:#C9942D !important; border-color:#C9942D !important; color:#fff !important; }
   [data-vista="formMeta"] textarea{ overflow:hidden; resize:none; }
   .dias-fila{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:2px}
   .dia-col{display:flex;flex-direction:column;align-items:stretch;gap:3px;min-width:0}
@@ -2272,7 +2277,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V13.06';
+  const APP_VERSION = 'V13.07';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -4609,7 +4614,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     { v: 'V13.04', f: '12 de octubre de 2026', n: [
       'En el formulario de tu meta, el botón <b>Siguiente</b> es ahora marrón liso, para distinguirlo de las respuestas.',
       'Las respuestas largas crecen solas mientras escribes o dictas, y el cuadro ya no se pone en rojo (no había ningún límite).',
-      'La pregunta del plazo dice ahora «¿Durante cuánto tiempo quieres hacer la práctica?».' ] },
+      'La pregunta del plazo dice ahora «¿Durante cuánto tiempo quieres hacer la práctica?».',
+      'En el formulario, todo lo que tocas o eliges se marca en marrón, también la escala del 1 al 5.' ] },
     { v: 'V13.01', f: '12 de octubre de 2026', n: [
       'Al empezar tus <b>primeros 15 registros</b>, Prácti ya no habla de «reto»: te propone algo sencillo y le respondes «¡Vamos allá!».' ] },
     { v: 'V13.00', f: '12 de octubre de 2026', n: [
@@ -11252,4 +11258,4 @@ lo que haces cada día es lo que vas a ser.`;
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V13.06 · App Metas Amables · 2026-10-12 21:54==== -->
+<!-- ==== Fin del index V13.07 · App Metas Amables · 2026-10-12 21:56==== -->
