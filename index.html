@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V13.16 · App Metas Amables · 2026-10-12 23:11==== -->
+<!-- ==== index V13.17 · App Metas Amables · 2026-10-12 23:18==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -681,6 +681,8 @@ button, input, textarea, select{ font-family:inherit; }
   .duo-plan-aviso p{ margin:0 0 8px; }
   .duo-plan-aviso.oculto{ display:none; }
   .duo-icono{ font-size:18px; }
+  .duo-meta-nueva{ margin:10px 0 2px; padding:10px 14px; border:1.5px solid #A0703C; border-radius:12px; background:#F6EBDD; color:#6B4A26; font-weight:800; font-size:14.5px; text-align:center; }
+  body.theme-dark .duo-meta-nueva{ background:#3A2C1E; color:#F0D9BC; border-color:#C08A52; }
   .duo-actual .duo-icono{ font-size:22px; text-shadow:0 0 6px rgba(79,127,181,.6); animation:starPulse 1.5s ease-in-out infinite; }
   @keyframes starPulse{ 0%, 100% { transform:scale(1); } 50% { transform:scale(1.15); } }
   details.duo-item .duo-contenido{
@@ -2277,7 +2279,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V13.16';
+  const APP_VERSION = 'V13.17';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -4611,6 +4613,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
+    { v: 'V13.17', f: '12 de octubre de 2026', n: [
+      'En tu <b>guía semanal</b>, cuando empiezas una meta nueva, un rectángulo marca «A partir de aquí, tu meta nueva», para distinguirla de las guías de la meta anterior.' ] },
     { v: 'V13.14', f: '12 de octubre de 2026', n: [
       'En la tarjeta de <b>Compromiso y práctica</b>, tu meta sale resumida en una frase corta (como mucho dos renglones), aunque en el formulario la hayas contado con detalle.' ] },
     { v: 'V13.04', f: '12 de octubre de 2026', n: [
@@ -6031,7 +6035,11 @@ lo que haces cada día es lo que vas a ser.`;
       // se marca como actual la última ya abierta
       let idxActual = semanas.findIndex(esSemanaActual);
       if(idxActual === -1) semanas.forEach((b, i) => { if(semanaDesbloqueada(b)) idxActual = i; });
+      // Cuando hay guías de la meta anterior, un rectángulo marca dónde empieza la meta nueva
+      const fm = fechaMetaActual(), dMeta = fm ? new Date(fm + 'T00:00:00') : null;
+      const idxMeta = dMeta ? semanas.findIndex(b => rangoSemana(b).finExclusivo > dMeta) : -1;
       semanas.forEach((b, i) => {
+        if(i === idxMeta && i > 0) cuerpo += `<div class="duo-meta-nueva">🌱 A partir de aquí, tu meta nueva</div>`;
         if(soloLibre && b.weekNum !== 1 && i !== 0){
           // Plan Libre: la primera semana de la guía y la primera de cada mes
           cuerpo += `<div class="duo-plan-item"><button type="button" class="duo-nodo duo-bloqueada duo-fuera-plan"><span class="duo-icono">👑</span><span class="duo-texto">${b.monthName} · Semana ${b.weekNum}</span><span class="duo-plan-tag">⭐ Plan Guías</span></button>
@@ -11277,4 +11285,4 @@ lo que haces cada día es lo que vas a ser.`;
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V13.16 · App Metas Amables · 2026-10-12 23:11==== -->
+<!-- ==== Fin del index V13.17 · App Metas Amables · 2026-10-12 23:18==== -->
