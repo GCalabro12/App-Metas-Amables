@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V12.72 · App Metas Amables · 2026-10-12 14:00==== -->
+<!-- ==== index V12.73 · App Metas Amables · 2026-10-12 14:04==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1250,7 +1250,6 @@ body.riego-abierto{overflow:hidden}
 .av-switch{position:relative;flex:none;width:50px;height:28px;padding:0;border:0;border-radius:14px;background:#C9C9C9;cursor:pointer;transition:background .2s}.av-switch span{position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.3);transition:left .2s}.av-switch.on{background:#8E2B2B}.av-switch.on span{left:25px}
 .av-detalle p{margin:8px 0 6px;font-size:14px;line-height:1.45}
 .av-lista{margin:0 0 8px;padding:0 0 0 22px;font-size:14px;line-height:1.45}.av-lista li{margin:0 0 6px}
-.av-por{display:block;font-size:12.5px;color:#5E6B55;margin-top:2px}
 .av-anima{margin:8px 0 0;font-size:13px;line-height:1.4;color:#5E6B55}
 .av-ok{display:inline-block;min-width:16px;color:#4C8C4A;font-weight:800}.av-prueba{background:none;border:0;padding:0;color:#8E2B2B;text-decoration:underline;font:600 14px Karla,sans-serif;cursor:pointer}
 .ritual-card{background:#FFF8E6 !important;border:2px solid #F2C14E;padding:14px 16px}
@@ -2220,7 +2219,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V12.72';
+  const APP_VERSION = 'V12.73';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -4533,7 +4532,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
     { v: 'V12.72', f: '12 de octubre de 2026', n: [
-      'Debajo de los mensajes de WhatsApp y de los emails te contamos <b>por qué ayudan</b> a no abandonar tu meta. Puedes quitarlos cuando quieras.' ] },
+      'En «🔔 Avisos en el móvil», mientras están apagados, una frase corta te recuerda que te ayudan a no abandonar tu meta.' ] },
     { v: 'V12.71', f: '12 de octubre de 2026', n: [
       'En Compromiso y práctica, «🔔 Avisos en el móvil» activa también los <b>emails que te acompañan</b> con tu meta, junto al aviso de las 8 de la tarde y los mensajes de WhatsApp.' ] },
     { v: 'V12.70', f: '12 de octubre de 2026', n: [
@@ -6590,7 +6589,7 @@ lo que haces cada día es lo que vas a ser.`;
           <label class="note-label">Elige una contraseña</label>
           <input type="password" id="altaPass" name="new-password" autocomplete="new-password" placeholder="Mínimo 6 caracteres" value="${escapeAttr(d.pass || '')}" style="${estiloCampo};margin-bottom:4px">
           <div style="height:10px"></div>
-          <label class="alta-permiso"><input type="checkbox" id="altaEmails" ${d.emails ? 'checked' : ''}><span>Quiero recibir emails de Metas Amables que me acompañen con mi meta. Un recordatorio a tiempo ayuda a no abandonarla. Puedo darme de baja cuando quiera.</span></label>
+          <label class="alta-permiso"><input type="checkbox" id="altaEmails" ${d.emails ? 'checked' : ''}><span>Quiero recibir emails de Metas Amables que me acompañen con mi meta. Puedo darme de baja cuando quiera.</span></label>
           <p style="font-size:12px;color:var(--ink-soft);margin:8px 0 0">Al crear tu cuenta aceptas la <a href="privacidad.html" target="_blank" rel="noopener" style="color:var(--ink-soft)">política de privacidad</a>.</p>
           <button class="btn btn-yes" id="btnAlta" style="text-align:center;margin-top:14px">Crear mi cuenta</button>
           ${state.loginError ? '<div style="color:' + (state.loginError.endsWith('…') ? 'var(--ink-soft)' : '#B94A3A') + ';font-size:13px;margin-top:8px">'+state.loginError+'</div>' : ''}
@@ -8915,10 +8914,10 @@ lo que haces cada día es lo que vas a ser.`;
     const c = el('<div class="card ps-recuadro av-card"><div class="av-fila"><div class="av-cab"><span class="av-tit">🔔 Avisos en el móvil <span class="av-flecha">▾</span></span><span class="av-estado"></span></div><button type="button" class="av-switch" role="switch" aria-label="Avisos en el móvil"><span></span></button></div>'
       + '<div class="av-detalle" hidden><p>Al activarlos recibirás:</p><ol class="av-lista">'
       + '<li><span class="av-ok av-ok-push"></span>🔔 Una <b>notificación a las 8 de la tarde</b> para recordarte registrar, solo si aún no lo has hecho. Llega aunque la app esté cerrada.</li>'
-      + '<li><span class="av-ok av-ok-wa"></span>💬 <b>Mensajes de ánimo por WhatsApp</b> cada 4 días.<small class="av-por">Sentirte acompañado/a ayuda a no abandonar. Puedes quitarlo cuando quieras.</small></li>'
-      + '<li><span class="av-ok av-ok-em"></span>📧 <b>Emails que te acompañen</b> con tu meta: pocos y solo cuando ayudan.<small class="av-por">Un recordatorio a tiempo ayuda a retomar tu meta. Puedes darte de baja cuando quieras.</small></li></ol>'
+      + '<li><span class="av-ok av-ok-wa"></span>💬 <b>Mensajes de ánimo por WhatsApp</b> cada 4 días.</li>'
+      + '<li><span class="av-ok av-ok-em"></span>📧 <b>Emails que te acompañen</b> con tu meta (pocos, y te puedes dar de baja cuando quieras).</li></ol>'
       + '<button type="button" class="av-prueba">Enviarme un aviso de prueba</button><div class="saved-msg av-msg"></div></div></div>').firstElementChild;
-    c.querySelector('.av-cab').insertAdjacentHTML('beforeend', '<p class="av-anima" hidden>Con recordatorios y alguien que te acompaña es más fácil no abandonar tu meta. Puedes quitarlos cuando quieras.</p>');
+    c.querySelector('.av-cab').insertAdjacentHTML('beforeend', '<p class="av-anima" hidden>Te ayudan a no abandonar tu meta. Puedes quitarlos cuando quieras.</p>');
     const sw = c.querySelector('.av-switch'), est = c.querySelector('.av-estado'), bPr = c.querySelector('.av-prueba'), msg = c.querySelector('.av-msg');
     const pintar = () => {
       const push = pushActivo(), wa = !!g.aceptaWhatsApp, em = !!g.aceptaEmails, on = push || wa || em;
@@ -10417,15 +10416,15 @@ lo que haces cada día es lo que vas a ser.`;
     const card = document.createElement('div');
     card.className = 'card';
     card.style.marginTop = '18px';
-    const fila = (clave, activo, texto, porque) => `
+    const fila = (clave, activo, texto) => `
       <label style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin:10px 0;cursor:pointer">
-        <span style="font-size:14px">${texto}<small class="av-por">${porque}</small></span>
+        <span style="font-size:14px">${texto}</span>
         <span class="interruptor"><input type="checkbox" data-aviso="${clave}" ${activo ? 'checked' : ''}><span></span></span>
       </label>`;
     card.innerHTML = `
       <p style="margin:0 0 4px;font-size:17px"><b>🔔 ¿Quieres que te acompañemos?</b></p>
-      ${fila('whatsapp', g.aceptaWhatsApp, '💬 Mensajes de ánimo por WhatsApp', 'Sentirte acompañado/a ayuda a no abandonar. Puedes quitarlo cuando quieras.')}
-      ${fila('emails', g.aceptaEmails, '📧 Emails que me acompañen con mi meta', 'Un recordatorio a tiempo ayuda a retomar tu meta. Puedes darte de baja cuando quieras.')}
+      ${fila('whatsapp', g.aceptaWhatsApp, '💬 Mensajes de ánimo por WhatsApp')}
+      ${fila('emails', g.aceptaEmails, '📧 Emails que me acompañen con mi meta')}
       <p class="avisos-msg" style="font-size:12px;color:var(--ink-soft);margin:4px 0 0">Puedes activarlo o desactivarlo cuando quieras.</p>`;
     const msg = card.querySelector('.avisos-msg');
     card.querySelectorAll('input[data-aviso]').forEach(inp => {
@@ -10571,4 +10570,4 @@ lo que haces cada día es lo que vas a ser.`;
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V12.72 · App Metas Amables · 2026-10-12 14:00==== -->
+<!-- ==== Fin del index V12.73 · App Metas Amables · 2026-10-12 14:04==== -->
