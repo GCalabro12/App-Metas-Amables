@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V12.73 · App Metas Amables · 2026-10-12 14:04==== -->
+<!-- ==== index V12.74 · App Metas Amables · 2026-10-12 14:51==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2219,7 +2219,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V12.73';
+  const APP_VERSION = 'V12.74';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -2630,6 +2630,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     try { const qs = new URLSearchParams(location.search); if(qs.get('abonar') === '1' || qs.get('clima') === '1'){ history.replaceState(null, '', location.pathname); setTimeout(() => abrirMomentoRiego(true), 700); } } catch(e){}
     try { if(new URLSearchParams(location.search).get('guia') === '1'){ history.replaceState(null, '', location.pathname);
       setTimeout(() => { const b = document.querySelector('.guia-semana .ritual-guia') || document.querySelector('[data-ir="s3"]'); if(b) b.click(); }, 900); } } catch(e){}
+    // Enlace de los emails (?planes=1): la pantalla de los planes
+    try { if(new URLSearchParams(location.search).get('planes') === '1'){ history.replaceState(null, '', location.pathname); setTimeout(irAPlanes, 900); } } catch(e){}
     // Enlace de los emails (?meta=1): el formulario de la meta, o su sección si ya está rellenado
     try { if(new URLSearchParams(location.search).get('meta') === '1'){ history.replaceState(null, '', location.pathname);
       setTimeout(() => { if(metaHechaYa()){ state.view = 'panel'; state.panelSub = 's4'; window.scrollTo(0, 0); render(); } else abrirFormularioMeta(); }, 900); } } catch(e){}
@@ -10570,4 +10572,4 @@ lo que haces cada día es lo que vas a ser.`;
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V12.73 · App Metas Amables · 2026-10-12 14:04==== -->
+<!-- ==== Fin del index V12.74 · App Metas Amables · 2026-10-12 14:51==== -->
