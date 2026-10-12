@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V13.00 · App Metas Amables · 2026-10-12 21:24==== -->
+<!-- ==== index V13.01 · App Metas Amables · 2026-10-12 21:28==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2265,7 +2265,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V13.00';
+  const APP_VERSION = 'V13.01';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -3509,16 +3509,16 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     document.querySelectorAll('.reto-capa').forEach(x => x.remove());
     const premio = premiosReto()[n];
     const siguiente = Object.keys(premiosReto()).map(Number).find(d => d > n);
-    const tit = n >= RETO_DIAS ? '¡Reto completado!' : '¡Has completado tu día ' + n + '!';
+    const tit = n >= RETO_DIAS ? '¡Tus 15 primeros registros!' : '¡Has completado tu día ' + n + '!';
     let tx = '';
-    if(n === 1) tx = '<p>Muchas personas que empiezan un hábito nuevo lo dejan en las dos primeras semanas. Por eso te propongo un reto: <b>registra tu día durante 15 días</b>.</p><p>No hace falta que sean seguidos: puedes descansar algún día entremedias. Cada 5 días te espera un regalo.</p>';
+    if(n === 1) tx = '<p>Muchas personas que empiezan un hábito nuevo lo dejan en las dos primeras semanas. Por eso te propongo algo sencillo: <b>registra tus primeros 15 días</b>.</p><p>No hace falta que sean seguidos: puedes descansar algún día entremedias. Cada 5 días te espera un regalo.</p>';
     else if(premio) tx = '<p class="reto-premio">' + premio.ico + ' Has desbloqueado <b>' + premio.tit + '</b>.</p>';
     if(siguiente) tx += '<p class="reto-falta">Te ' + (siguiente - n === 1 ? 'falta 1 día' : 'faltan ' + (siguiente - n) + ' días') + ' para tu próximo regalo 🎁</p>';
-    const capa = el('<div class="reto-capa" role="dialog" aria-label="Reto de 15 días"><div class="reto-card">'
+    const capa = el('<div class="reto-capa" role="dialog" aria-label="Tus primeros 15 registros"><div class="reto-card">'
       + '<div class="reto-cab">' + practiCartelHTML(n, 140) + '</div>'
       + '<div class="reto-cuerpo"><h2>' + tit + '</h2>' + tx + caminoRetoSVG(n) + '<p class="reto-info" hidden></p>'
       + (premio ? '<button type="button" class="reto-btn reto-premio-btn">' + premio.ico + ' ' + premio.boton + '</button>' : '')
-      + '<button type="button" class="reto-btn ' + (premio ? 'reto-sec' : '') + ' reto-ok">' + (n === 1 ? '¡Acepto el reto!' : 'Continuar') + '</button></div></div></div>').firstElementChild;
+      + '<button type="button" class="reto-btn ' + (premio ? 'reto-sec' : '') + ' reto-ok">' + (n === 1 ? '¡Vamos allá!' : 'Continuar') + '</button></div></div></div>').firstElementChild;
     document.body.appendChild(capa);
     try { activarPracti(capa); moverCartelConPracti(capa); } catch(e){}
     try { launchConfetti(); musicaCartel(); } catch(e){}   // siempre que sale el número: confeti y un poco de música
@@ -4305,7 +4305,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       { grupo: 'registro', tit: 'Hoy, sé amable contigo', img: mini('linear-gradient(180deg,#9AA59A 0 45%,#EEF5E6 45%)', '#3B6D11', '🍃'),
         cuando: 'Al marcar un clima difícil (enfadado, estresado, preocupado, desmotivado, cansado) o un entorno complicado (poco tiempo, visitas, enfermo). Una vez al día.',
         abrir: () => abrirHojaAmable('clima', true) },
-      { grupo: 'registro', tit: 'Reto de 15 días (cartel del día)', img: mini('linear-gradient(160deg,#FFE7B8,#E7DBFF)', '#5B3FA8', '🪧'),
+      { grupo: 'registro', tit: 'Tus primeros 15 registros (cartel del día)', img: mini('linear-gradient(160deg,#FFE7B8,#E7DBFF)', '#5B3FA8', '🪧'),
         cuando: 'Al cerrar Registros amables (o marcar un día del calendario) cuando hay un día registrado nuevo, del día 1 al 15. Una vez en la vida.',
         abrir: () => abrirRetoDia(8, true) },
       { grupo: 'registro', tit: 'Días registrados con tu meta', img: mini('linear-gradient(160deg,#FFE7B8,#FFD3D8)', '#2F5F93', '23'),
@@ -4599,6 +4599,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
+    { v: 'V13.01', f: '12 de octubre de 2026', n: [
+      'Al empezar tus <b>primeros 15 registros</b>, Prácti ya no habla de «reto»: te propone algo sencillo y le respondes «¡Vamos allá!».' ] },
     { v: 'V13.00', f: '12 de octubre de 2026', n: [
       'En Compromiso y práctica, el camino de tus <b>primeros 15 registros</b> tiene ahora su dibujito y un nombre más claro.',
       'En Inicio, la tarjeta de tu planta lleva el título en una sola línea.' ] },
@@ -11233,4 +11235,4 @@ lo que haces cada día es lo que vas a ser.`;
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V13.00 · App Metas Amables · 2026-10-12 21:24==== -->
+<!-- ==== Fin del index V13.01 · App Metas Amables · 2026-10-12 21:28==== -->
