@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V12.88 · App Metas Amables · 2026-10-12 19:13==== -->
+<!-- ==== index V12.89 · App Metas Amables · 2026-10-12 19:20==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1353,8 +1353,13 @@ html.modo-minimal .practi-inicio,html.modo-minimal .practi-bocadillo,html.modo-m
 .mont-ilus{display:block;width:100%;height:auto;border-radius:14px}
 .prog-cab{display:flex;align-items:center;justify-content:space-between;gap:12px}
 .prog-cab .viaje-titulo{flex:1}
-.prog-vol{display:flex;align-items:center;gap:6px;font-size:18px}
-.prog-vol input{width:130px;accent-color:#4F3A86}
+.prog-vol{display:flex;align-items:center;gap:6px}
+.prog-vol button{width:30px;height:30px;flex:none;border-radius:50%;border:1px solid #CFC6DD;background:#fff;color:#4F3A86;font:700 19px/1 Karla,sans-serif;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0}
+.prog-vol input[type=range]{-webkit-appearance:none;appearance:none;width:110px;height:6px;margin:0;border-radius:3px;outline:none;background:linear-gradient(90deg,#4F3A86 var(--v,35%),#E3DCF0 var(--v,35%))}
+.prog-vol input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:32px;height:32px;border-radius:50%;border:2px solid #4F3A86;box-shadow:0 1px 4px rgba(0,0,0,.2);cursor:pointer;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M4 9h4l5-4v14l-5-4H4z' fill='%234F3A86'/%3E%3Cpath d='M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12' fill='none' stroke='%234F3A86' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E") center/18px no-repeat}
+.prog-vol input[type=range]::-moz-range-thumb{width:28px;height:28px;border-radius:50%;border:2px solid #4F3A86;box-shadow:0 1px 4px rgba(0,0,0,.2);cursor:pointer;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M4 9h4l5-4v14l-5-4H4z' fill='%234F3A86'/%3E%3Cpath d='M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12' fill='none' stroke='%234F3A86' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E") center/16px no-repeat}
+.prog-vol input.mudo::-webkit-slider-thumb{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M4 9h4l5-4v14l-5-4H4z' fill='%238C80A8'/%3E%3Cpath d='M16 9l5 6M21 9l-5 6' stroke='%238C80A8' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E")}
+.prog-vol input.mudo::-moz-range-thumb{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M4 9h4l5-4v14l-5-4H4z' fill='%238C80A8'/%3E%3Cpath d='M16 9l5 6M21 9l-5 6' stroke='%238C80A8' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E")}
 .planta-fondo{position:relative;overflow:hidden;background:#FFF8F0}
 .planta-escena{position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
 .planta-fondo > :not(.planta-escena){position:relative;z-index:1}
@@ -2240,7 +2245,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V12.88';
+  const APP_VERSION = 'V12.89';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -4568,6 +4573,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
+    { v: 'V12.89', f: '12 de octubre de 2026', n: [
+      'Tu planta, más grande y en su maceta: trepa por una guía con los meses escritos, cada hoja nace del tallo con el número de su semana, y la tierra del bancal tiene el color de tu nivel.' ] },
     { v: 'V12.88', f: '12 de octubre de 2026', n: [
       '<b>Tu montaña interior</b>: así se llama ahora tu montaña. Prácti acampa a tu lado: su tienda está junto al bancal donde estás. Y los árboles de cada nivel son pinos de su color.' ] },
     { v: 'V12.87', f: '12 de octubre de 2026', n: [
@@ -9707,11 +9714,12 @@ lo que haces cada día es lo que vas a ser.`;
   // la regadera (que gotea), un saco de tierra de abono con su pala, macetas de barro y un frasco de semillas.
   // Detrás, montañas y colinas en pastel. Se mueven: nubes, dos pájaros lejanos, una mariposa, tres luciérnagas,
   // una hormiga que sube por la maceta y baja por el otro lado, y una mariquita que cruza en diagonal. Va por debajo del texto y de la planta.
-  function escenaPlanta(){
+  function escenaPlanta(nivel){
+    const SUELO = [['#F6D2CD', '#E8ABA4', '#D98E87'], ['#FBE3B4', '#EDC680', '#D9A95A'], ['#F9CFAB', '#EDA97E', '#D98B5C'], ['#CBEBB2', '#A2D69A', '#8CC48A'], ['#DFD5F5', '#BCACE8', '#A28FD9']][nivel == null ? 3 : nivel];
     return '<svg class="planta-escena" viewBox="0 0 400 520" preserveAspectRatio="xMidYMax slice" aria-hidden="true">'
       + '<defs><linearGradient id="peCielo" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFF8F0"/><stop offset=".45" stop-color="#FCE8EE"/><stop offset=".75" stop-color="#EDE3FA"/></linearGradient>'
       + '<radialGradient id="peLuzG"><stop offset="0" stop-color="#FFF6B0"/><stop offset=".35" stop-color="#FFE45C" stop-opacity=".7"/><stop offset="1" stop-color="#FFD24D" stop-opacity="0"/></radialGradient><radialGradient id="peSol"><stop offset="0" stop-color="#FFE7A6" stop-opacity=".95"/><stop offset="1" stop-color="#FFD9A0" stop-opacity="0"/></radialGradient>'
-      + '<linearGradient id="peHierba" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#CBEBB2"/><stop offset="1" stop-color="#A2D69A"/></linearGradient>'
+      + '<linearGradient id="peHierba" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="' + SUELO[0] + '"/><stop offset="1" stop-color="' + SUELO[1] + '"/></linearGradient>'
       + '<linearGradient id="peMuro" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#EBCBA8"/><stop offset="1" stop-color="#D7AE86"/></linearGradient>'
       + '<linearGradient id="peRegadera" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#B4E3EE"/><stop offset="1" stop-color="#5FAAD0"/></linearGradient>'
       + '<linearGradient id="peSaco" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F1DFC0"/><stop offset="1" stop-color="#C9A57A"/></linearGradient>'
@@ -9735,11 +9743,11 @@ lo que haces cada día es lo que vas a ser.`;
       + '<path d="M0 424 Q90 394 180 416 T400 406 M0 438 Q90 410 180 430 T400 420" fill="none" stroke="#C3E1AF" stroke-width="2"/>'
       + [[106, 402, '#F3C766', '#DAA43F'], [124, 406, '#F4A673', '#DB844E'], [278, 408, '#EE9A9A', '#D27474'], [296, 404, '#BBA6EE', '#9C85DA'], [20, 414, '#9ED39A', '#78B47A']].map(([x, y, c, o]) => '<path d="M' + x + ' ' + (y - 22) + ' L' + (x - 8) + ' ' + (y + 4) + ' L' + (x + 8) + ' ' + (y + 4) + ' Z" fill="' + c + '"/><path d="M' + x + ' ' + (y - 22) + ' L' + x + ' ' + (y + 4) + ' L' + (x + 8) + ' ' + (y + 4) + ' Z" fill="' + o + '"/>').join('')
       + '<path d="M-10 472 Q0 446 22 450 Q30 434 50 444 Q64 440 70 458 Q74 470 60 474 Z" fill="#A9D9A0"/><path d="M410 470 Q404 444 384 448 Q376 434 358 444 Q346 444 344 460 Q342 470 356 472 Z" fill="#B7DFA6"/>'
-      // El bancal: hierba arriba y el muro de piedra delante
+      // El bancal: la tierra de arriba, del color del nivel en que está, y el muro de piedra delante
       + '<path d="M0 468 Q100 458 200 466 T400 462 V500 H0 Z" fill="url(#peHierba)"/>'
       + '<rect x="0" y="496" width="400" height="24" fill="url(#peMuro)"/>'
       + [[0, 498, 46], [50, 498, 52], [106, 498, 40], [150, 498, 58], [212, 498, 44], [260, 498, 54], [318, 498, 38], [360, 498, 44], [22, 509, 50], [78, 509, 44], [126, 509, 56], [186, 509, 48], [238, 509, 52], [294, 509, 46], [344, 509, 56]].map(([x, y, w]) => '<rect x="' + x + '" y="' + y + '" width="' + (w - 4) + '" height="9" rx="4" fill="#F4DCC0" opacity=".75"/>').join('')
-      + '<path d="M0 496 Q100 490 200 495 T400 492" fill="none" stroke="#8CC48A" stroke-width="3"/>'
+      + '<path d="M0 496 Q100 490 200 495 T400 492" fill="none" stroke="' + SUELO[2] + '" stroke-width="3"/>'
       // La regadera (a la izquierda), con gotas que caen del rociador
       + '<g transform="translate(8 392) scale(1.15)"><ellipse cx="38" cy="82" rx="30" ry="4" fill="#3A2A6E" opacity=".12"/>'
       + '<path d="M20 22 Q36 -4 52 22" fill="none" stroke="#5FAAD0" stroke-width="5" stroke-linecap="round"/>'
@@ -9785,37 +9793,66 @@ lo que haces cada día es lo que vas a ser.`;
   function plantaSVG(b, paso, etiquetas){
     // En Inicio (sin etiquetas) solo se dibuja hasta la semana de ahora y dos más, para que la planta no quede con un palo vacío
     if(!etiquetas){ const hasta = b.semanas.reduce((m, s, j) => (s.dias > 0 || s.hoy) ? j : m, 0); b = Object.assign({}, b, { semanas: b.semanas.slice(0, Math.min(b.semanas.length, hasta + 3)) }); }
-    const n = b.semanas.length, W = etiquetas ? 190 : 84, H = n * paso + 44, cx = W / 2, base = H - 22;
+    // La planta trepa por una guía de madera (en Progreso, ancha y con los meses escritos) y crece en una maceta de barro
+    const n = b.semanas.length, W = etiquetas ? 260 : 84, ph = etiquetas ? 40 : 15, pw = etiquetas ? 74 : 34;
+    const H = n * paso + 30 + ph, cx = W / 2, base = H - ph - 6;
     const yDe = j => base - 14 - j * paso;
     const ultima = b.semanas.reduce((m, s, j) => (s.dias > 0 || s.hoy) ? j : m, -1);
     const alto = ultima >= 0 ? yDe(ultima) - paso * 0.4 : base - 10;
+    // El tallo serpentea alrededor de la guía; tallo(y) dice por dónde pasa a esa altura, para que cada hoja nazca justo de él
+    const amp = paso * (etiquetas ? 0.95 : 0.55);
+    const tallo = y => { const d = base - y, k = Math.floor(d / paso), t = d / paso - k; return cx + 2 * t * (1 - t) * (k % 2 ? -1 : 1) * amp; };
     let s = '<svg viewBox="0 0 ' + W + ' ' + H + '" width="' + W + '" height="' + H + '" role="img" aria-label="Tu planta del trimestre: ' + b.hojas + ' hojas"><title>Tu planta del trimestre</title>';
-    s += '<line x1="' + cx + '" y1="' + base + '" x2="' + cx + '" y2="14" stroke="#B08A5A" stroke-width="' + (etiquetas ? 4 : 3) + '" stroke-linecap="round"/>';
+    // La maceta de barro, con su sombra y la tierra
+    const pt = base - 1, borde = ph * 0.24;
+    s += '<ellipse cx="' + cx + '" cy="' + (pt + ph + 1) + '" rx="' + (pw * 0.46) + '" ry="' + (etiquetas ? 3.5 : 2) + '" fill="#3A2A6E" opacity=".15"/>'
+      + '<path d="M' + (cx - pw / 2 + 3) + ' ' + (pt + borde) + ' L' + (cx + pw / 2 - 3) + ' ' + (pt + borde) + ' L' + (cx + pw * 0.36) + ' ' + (pt + ph) + ' L' + (cx - pw * 0.36) + ' ' + (pt + ph) + ' Z" fill="#E9967A"/>'
+      + '<path d="M' + (cx + pw * 0.12) + ' ' + (pt + borde) + ' L' + (cx + pw / 2 - 3) + ' ' + (pt + borde) + ' L' + (cx + pw * 0.36) + ' ' + (pt + ph) + ' L' + (cx + pw * 0.1) + ' ' + (pt + ph) + ' Z" fill="#D9805F" opacity=".55"/>'
+      + '<rect x="' + (cx - pw / 2) + '" y="' + pt + '" width="' + pw + '" height="' + borde + '" rx="' + (etiquetas ? 3 : 1.5) + '" fill="#F2A98C"/>'
+      + '<path d="M' + (cx - pw * 0.34) + ' ' + (pt + borde + 3) + ' L' + (cx - pw * 0.28) + ' ' + (pt + ph - 3) + '" stroke="#FFFFFF" stroke-width="' + (etiquetas ? 3 : 1.5) + '" stroke-linecap="round" opacity=".35"/>'
+      + '<ellipse cx="' + cx + '" cy="' + (pt + 1) + '" rx="' + (pw / 2 - 4) + '" ry="' + (etiquetas ? 3.5 : 1.8) + '" fill="#7A4A2A"/>';
+    // La guía
+    if(etiquetas){
+      s += '<rect x="' + (cx - 8) + '" y="10" width="16" height="' + (base - 9) + '" rx="4" fill="#DDBA8E"/><rect x="' + (cx + 2) + '" y="10" width="6" height="' + (base - 9) + '" rx="3" fill="#C9A273" opacity=".7"/>';
+      // Los meses escritos en la guía, separados por una muesca
+      const meses = [];
+      b.semanas.forEach((w, j) => { const m = w.lunes ? w.lunes.getMonth() : -1; if(!meses.length || meses[meses.length - 1].m !== m) meses.push({ m, desde: j, hasta: j }); else meses[meses.length - 1].hasta = j; });
+      meses.forEach((g, k) => {
+        const yA = yDe(g.desde) + paso / 2, yB = yDe(g.hasta) - paso / 2, nombre = g.m < 0 ? '' : (yA - yB > 72 ? monthNamesEs[g.m] : MESES3[g.m].toLowerCase());
+        if(k > 0) s += '<line x1="' + (cx - 8) + '" y1="' + yA + '" x2="' + (cx + 8) + '" y2="' + yA + '" stroke="#9C7448" stroke-width="1.5"/>';
+        s += '<text transform="translate(' + (cx + 3.8) + ' ' + ((yA + yB) / 2) + ') rotate(-90)" text-anchor="middle" font-family="Karla,Arial,sans-serif" font-size="10.5" font-weight="800" letter-spacing=".6" fill="#7A5634">' + nombre.charAt(0).toUpperCase() + nombre.slice(1) + '</text>';
+      });
+    } else {
+      s += '<line x1="' + cx + '" y1="' + base + '" x2="' + cx + '" y2="14" stroke="#B08A5A" stroke-width="3" stroke-linecap="round"/>';
+    }
+    // El tallo
     if(ultima >= 0){
       let d = 'M' + cx + ' ' + base;
-      for(let y = base, k = 0; y > alto; y -= paso, k++){ const y2 = Math.max(alto, y - paso); d += ' Q' + (cx + (k % 2 ? -1 : 1) * paso * 0.55) + ' ' + ((y + y2) / 2) + ' ' + cx + ' ' + y2; }
-      s += '<path d="' + d + '" fill="none" stroke="#3B6D11" stroke-width="2"/>';
+      for(let y = base, k = 0; y > alto; y -= paso, k++){ const y2 = Math.max(alto, y - paso), t = (y - y2) / paso; d += ' Q' + (cx + (k % 2 ? -1 : 1) * amp * t) + ' ' + ((y + y2) / 2) + ' ' + (y2 === alto ? tallo(y2) : cx) + ' ' + y2; }
+      s += '<path d="' + d + '" fill="none" stroke="#3B6D11" stroke-width="' + (etiquetas ? 2.6 : 2) + '" stroke-linecap="round"/>';
     }
-    const esc = paso / 24;
+    // Las hojas: nacen del tallo, la semana 1 a la derecha, la 2 a la izquierda… Junto a cada una, el número de la semana del mes
+    const esc = paso / 24, inc = 20 * Math.PI / 180;
     b.semanas.forEach((w, j) => {
-      const y = yDe(j), lado = j % 2 ? 1 : -1;
+      const y = yDe(j), lado = j % 2 ? -1 : 1, sx = tallo(y), num = String(w.etiqueta || '').split(' ')[1] || '';
       if(w.dias > 0){
-        const t = w.dias >= 6 ? 13 : w.dias >= 3 ? 10 : 7, rx = t * esc + 1, ry = rx * 0.55, lx = cx + lado * (rx + 2);
-        s += '<ellipse cx="' + lx + '" cy="' + y + '" rx="' + rx + '" ry="' + ry + '" fill="#639922" transform="rotate(' + (lado * -18) + ' ' + lx + ' ' + y + ')"/>';
-        if(w.cumple) s += '<circle cx="' + (lx + lado * rx * 0.9) + '" cy="' + (y - ry) + '" r="' + (3.2 * esc + 1.3) + '" fill="#E86A92" stroke="#fff" stroke-width="1"/>';
-        if(etiquetas) s += '<text x="' + (cx + lado * (2 * rx + 10)) + '" y="' + (y + 4) + '" text-anchor="' + (lado < 0 ? 'end' : 'start') + '" font-family="Karla,Arial,sans-serif" font-size="12" font-weight="700" fill="#3B6D11" stroke="#FFFCF5" stroke-width="3" stroke-linejoin="round" paint-order="stroke">' + w.etiqueta + '</text>';
+        const t = w.dias >= 6 ? 13 : w.dias >= 3 ? 10 : 7, rx = t * esc + 1, ry = rx * 0.55, a = lado * rx * 2;
+        const px = sx + a * Math.cos(inc), py = y - rx * 2 * Math.sin(inc);
+        s += '<g transform="rotate(' + (lado * -20) + ' ' + sx.toFixed(1) + ' ' + y + ')"><path d="M' + sx.toFixed(1) + ' ' + y + ' C' + (sx + a * 0.3).toFixed(1) + ' ' + (y - ry * 1.3).toFixed(1) + ' ' + (sx + a * 0.8).toFixed(1) + ' ' + (y - ry * 1.1).toFixed(1) + ' ' + (sx + a).toFixed(1) + ' ' + y
+          + ' C' + (sx + a * 0.8).toFixed(1) + ' ' + (y + ry * 1.1).toFixed(1) + ' ' + (sx + a * 0.3).toFixed(1) + ' ' + (y + ry * 1.3).toFixed(1) + ' ' + sx.toFixed(1) + ' ' + y + ' Z" fill="#639922"/>'
+          + '<path d="M' + sx.toFixed(1) + ' ' + y + ' L' + (sx + a * 0.85).toFixed(1) + ' ' + y + '" stroke="#8FC35A" stroke-width="1"/></g>';
+        if(w.cumple) s += '<circle cx="' + px.toFixed(1) + '" cy="' + py.toFixed(1) + '" r="' + (3.2 * esc + 1.3) + '" fill="#E86A92" stroke="#fff" stroke-width="1"/>';
+        if(etiquetas && num) s += '<text x="' + (px + lado * 9).toFixed(1) + '" y="' + (py + 4).toFixed(1) + '" text-anchor="' + (lado < 0 ? 'end' : 'start') + '" font-family="Karla,Arial,sans-serif" font-size="12" font-weight="700" fill="#3B6D11" stroke="#FFFCF5" stroke-width="3" stroke-linejoin="round" paint-order="stroke">' + num + '</text>';
       } else if(w.hoy){
-        s += '<circle cx="' + cx + '" cy="' + y + '" r="' + (5 * esc + 2) + '" fill="none" stroke="#D99A1E" stroke-width="2"/>';
-        if(etiquetas) s += '<text x="' + (cx + lado * 16) + '" y="' + (y + 4) + '" text-anchor="' + (lado < 0 ? 'end' : 'start') + '" font-family="Karla,Arial,sans-serif" font-size="12" font-weight="700" fill="#8A5A00" stroke="#FFFCF5" stroke-width="3" stroke-linejoin="round" paint-order="stroke">' + w.etiqueta + ' · ahora</text>';
+        s += '<circle cx="' + sx.toFixed(1) + '" cy="' + y + '" r="' + (5 * esc + 2) + '" fill="#FFFFFF" stroke="#D99A1E" stroke-width="2"/>';
+        if(etiquetas) s += '<text x="' + (sx + lado * 16).toFixed(1) + '" y="' + (y + 4) + '" text-anchor="' + (lado < 0 ? 'end' : 'start') + '" font-family="Karla,Arial,sans-serif" font-size="12" font-weight="700" fill="#8A5A00" stroke="#FFFCF5" stroke-width="3" stroke-linejoin="round" paint-order="stroke">' + (num ? num + ' · ' : '') + 'ahora</text>';
       } else if(w.futura){
-        s += '<circle cx="' + cx + '" cy="' + y + '" r="1.6" fill="#C9B38E"/>';
+        s += '<circle cx="' + cx + '" cy="' + y + '" r="' + (etiquetas ? 2.2 : 1.6) + '" fill="' + (etiquetas ? '#A9845A' : '#C9B38E') + '"/>';
       }
     });
-    const ancho = etiquetas ? 40 : 26;
-    s += '<ellipse cx="' + cx + '" cy="' + (base + 9) + '" rx="' + ancho + '" ry="' + (etiquetas ? 9 : 7) + '" fill="#7A4A2A"/><ellipse cx="' + cx + '" cy="' + (base + 6) + '" rx="' + (ancho * 0.8) + '" ry="' + (etiquetas ? 6 : 4.5) + '" fill="#946038"/>'
-      + '<circle cx="' + (cx - ancho * 0.4) + '" cy="' + (base + 6) + '" r="1.6" fill="#B07A4C"/><circle cx="' + (cx + ancho * 0.3) + '" cy="' + (base + 8) + '" r="1.4" fill="#B07A4C"/></svg>';
-    return s;
+    return s + '</svg>';
   }
+
   // La montaña ilustrada (pastel, al estilo de un dibujo animado): cielo de amanecer con estrellas, destellos y una estrella fugaz,
   // el sol que sale con sus halos, nubes, pájaros que aletean, montañas lejanas, la montaña de los 5 niveles (un color por año)
   // con nieve en la cima, un prado con un sendero, un río a un lado por el que bajan un barquito y hojas, rocas, hojas grandes que se mecen y luciérnagas.
@@ -9976,14 +10013,15 @@ lo que haces cada día es lo que vas a ser.`;
     for(let i = 0; i < 20; i++){
       const [x, y] = posBancal(i);
       const borde = COL[Math.floor(i / 4)][1];
-      // Un brote con dos hojas (y su tallo), dibujado alrededor del centro del bancal
-      const brote = k => '<g transform="translate(' + x + ' ' + y + ') scale(' + k + ')"><path d="M0 6 Q-1 1 0 -3" fill="none" stroke="#3E8A3A" stroke-width="1.6" stroke-linecap="round"/>'
-        + '<path d="M0 -1 C-2 -6.5 -7.5 -6.5 -8.5 -3 C-6 -0.5 -3 0.2 0 -1 Z" fill="url(#mtBrote)"/><path d="M0 -3 C2 -9.5 7.5 -10.5 8.5 -6.5 C6.5 -3.2 3 -2.2 0 -3 Z" fill="url(#mtBrote2)"/></g>';
+      // Un brote con dos hojas en su macetita, dibujado alrededor del centro del bancal
+      const brote = k => '<g transform="translate(' + x + ' ' + y + ') scale(' + k + ')"><g transform="translate(0 -2.5)"><path d="M0 5 Q-1 1 0 -3" fill="none" stroke="#3E8A3A" stroke-width="1.6" stroke-linecap="round"/>'
+        + '<path d="M0 -1 C-2 -6.5 -7.5 -6.5 -8.5 -3 C-6 -0.5 -3 0.2 0 -1 Z" fill="url(#mtBrote)"/><path d="M0 -3 C2 -9.5 7.5 -10.5 8.5 -6.5 C6.5 -3.2 3 -2.2 0 -3 Z" fill="url(#mtBrote2)"/></g>'
+        + '<path d="M-4.6 3.4 L4.6 3.4 L3.5 9 L-3.5 9 Z" fill="#E9967A"/><rect x="-5.6" y="1.6" width="11.2" height="2.8" rx="1" fill="#F2A98C"/></g>';
       if(i < d.actual){
         // Bancal ya trabajado: un medallón claro con el borde del color de su nivel, su brote y, si cumplió, una flor
         const b = d.bancal(i);
         s += '<ellipse cx="' + x + '" cy="' + (y + 10) + '" rx="9" ry="2.4" fill="#3A2A6E" opacity=".18"/><circle cx="' + x + '" cy="' + y + '" r="10.5" fill="url(#mtMedalla)" stroke="' + borde + '" stroke-width="2.2"/>'
-          + (b.hojas ? brote(0.85) : '<ellipse cx="' + x + '" cy="' + (y + 2) + '" rx="3" ry="2.2" fill="#C9A27A"/>')
+          + (b.hojas ? brote(0.78) : '<ellipse cx="' + x + '" cy="' + (y + 2) + '" rx="3" ry="2.2" fill="#C9A27A"/>')
           + (b.flores ? '<g transform="translate(' + (x + 8) + ' ' + (y - 8) + ')">' + [0, 72, 144, 216, 288].map(g => '<ellipse cx="0" cy="-2.6" rx="1.8" ry="2.8" fill="#FF8FB5" transform="rotate(' + g + ')"/>').join('') + '<circle r="1.5" fill="#FFE27F"/></g>' : '');
       } else if(i === d.actual){
         // El cartel «Estás aquí», en el primer hueco donde no tape ningún otro bancal
@@ -9999,7 +10037,7 @@ lo que haces cada día es lo que vas a ser.`;
           + '<path d="M-11 0 L0 -15 L11 0 Z" fill="#F6B98E"/><path d="M0 -15 L11 0 L3 0 Z" fill="#E39566"/><path d="M-3.4 0 L0 -8 L3.4 0 Z" fill="#FFE7A8"/>'
           + '<path d="M0 -15 V-22" stroke="#9C7B5E" stroke-width="1"/><path d="M0 -22 L6 -20 L0 -18 Z" fill="#E86A92"/><path d="M-12 0 L-14 2 M12 0 L14 2" stroke="#9C7B5E" stroke-width="1"/></g>';
         s += '<circle class="mt-aqui" cx="' + x + '" cy="' + y + '" r="18" fill="url(#mtLuz)"/><ellipse cx="' + x + '" cy="' + (y + 12) + '" rx="11" ry="2.8" fill="#3A2A6E" opacity=".18"/>'
-          + '<circle cx="' + x + '" cy="' + y + '" r="13" fill="url(#mtMedalla)" stroke="#E0A526" stroke-width="2.6"/>' + brote(1.1)
+          + '<circle cx="' + x + '" cy="' + y + '" r="13" fill="url(#mtMedalla)" stroke="#E0A526" stroke-width="2.6"/>' + brote(0.98)
           + '<g transform="translate(' + lx + ' ' + ly + ')"><rect x="-34" y="-11" width="68" height="20" rx="10" fill="#FFFFFF" stroke="#E0A526" stroke-width="1.5"/><text x="0" y="3.5" text-anchor="middle" font-family="Karla,Arial,sans-serif" font-size="11" font-weight="800" fill="#7A4F00">Estás aquí</text></g>';
       } else {
         // Bancales que faltan: un puntito claro con el color de su nivel
@@ -10042,9 +10080,9 @@ lo que haces cada día es lo que vas a ser.`;
     app.appendChild(cab);
     let dm = null; try { dm = datosMontana(); } catch(e){ console.error('Montaña:', e); }
     const caja = el('<div class="progreso"><div class="prog-cab"><h1 class="viaje-titulo">Progreso</h1>'
-      + (dm ? '<label class="prog-vol"><span aria-hidden="true" id="montIco">🔉</span><input type="range" id="montVol" min="0" max="100" value="' + Math.round(volumenMontana() * 100) + '" aria-label="Volumen de la música de la montaña (a cero, sin música)"></label>' : '') + '</div>'
+      + (dm ? '<div class="prog-vol"><button type="button" id="volMenos" aria-label="Bajar la música">−</button><input type="range" id="montVol" min="0" max="100" step="5" value="' + Math.round(volumenMontana() * 100) + '" aria-label="Volumen de la música de la montaña (a cero, sin música)"><button type="button" id="volMas" aria-label="Subir la música">+</button></div>' : '') + '</div>'
       + (dm ? ''
-        + '<div class="card mont-card planta-fondo">' + escenaPlanta() + '<h2>🌿 Tu planta de este trimestre</h2><p class="mont-sub">Una hoja por cada semana con algún registro: más grande cuantos más días registras, y con flor si cumples tu compromiso.</p><div style="display:flex;justify-content:center">' + plantaSVG(dm.bancal(dm.actual), 24, true) + '</div></div>'
+        + '<div class="card mont-card planta-fondo">' + escenaPlanta(dm.nivel) + '<h2>🌿 Tu planta de este trimestre</h2><p class="mont-sub">Una hoja por cada semana con algún registro: más grande cuantos más días registras, y con flor si cumples tu compromiso. En la guía, los meses; junto a cada hoja, la semana.</p><div style="display:flex;justify-content:center;padding-bottom:10px">' + plantaSVG(dm.bancal(dm.actual), 30, true) + '</div></div>'
         + '<div class="card mont-card"><h2>⛰️ Tu montaña interior</h2><p class="mont-sub">Año ' + dm.anio + ' · ' + BADGE_SCALE[dm.nivel].label + ' · bancal ' + dm.enAnio + ' de 4 este año. Cada trimestre, tu meta queda plantada en un bancal y la siguiente sube un poco más.</p>'
         + montanaSVG(dm) + leyendaMontana(dm) + '</div>' : '')
       + '<div class="progreso-grid">'
@@ -10067,16 +10105,20 @@ lo que haces cada día es lo que vas a ser.`;
     // a cero se apaga y, al subirlo, vuelve a sonar. Se recuerda en el móvil
     const rVol = caja.querySelector('#montVol');
     if(rVol){
-      const ico = caja.querySelector('#montIco'), pintarIco = v => { ico.textContent = v === 0 ? '🔇' : v < 0.5 ? '🔉' : '🔊'; };
-      pintarIco(volumenMontana());
-      rVol.oninput = () => {
-        const v = Number(rVol.value) / 100;
+      // La bolita lleva el altavoz (tachado a cero); se desliza o se usan − y +
+      const pintarVol = v => { rVol.style.setProperty('--v', Math.round(v * 100) + '%'); rVol.classList.toggle('mudo', v === 0); };
+      const ponerVol = v => {
+        v = Math.max(0, Math.min(1, Math.round(v * 20) / 20)); rVol.value = Math.round(v * 100);
         try { localStorage.setItem('montana_volumen', String(v)); localStorage.removeItem('montana_musica'); } catch(err){}
-        pintarIco(v);
+        pintarVol(v);
         if(v === 0) pararMontana(400);
         else if(montanaSonando()){ clearInterval(relojMontana); relojMontana = null; musicaMontana.volume = v; }
         else sonarMontana();
       };
+      pintarVol(volumenMontana());
+      rVol.oninput = () => ponerVol(Number(rVol.value) / 100);
+      caja.querySelector('#volMenos').onclick = () => ponerVol(Number(rVol.value) / 100 - 0.1);
+      caja.querySelector('#volMas').onclick = () => ponerVol(Number(rVol.value) / 100 + 0.1);
       const otraMusica = (typeof sintoniaSonando === 'function' && sintoniaSonando()) || (typeof musica !== 'undefined' && musica && musica.id);
       if(!montanaSinMusica() && !otraMusica) sonarMontana();
     }
@@ -11051,4 +11093,4 @@ lo que haces cada día es lo que vas a ser.`;
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V12.88 · App Metas Amables · 2026-10-12 19:13==== -->
+<!-- ==== Fin del index V12.89 · App Metas Amables · 2026-10-12 19:20==== -->
