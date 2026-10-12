@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V13.22 · App Metas Amables · 2026-10-12 23:59==== -->
+<!-- ==== index V13.23 · App Metas Amables · 2026-10-13 00:02==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2289,7 +2289,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V13.22';
+  const APP_VERSION = 'V13.23';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -4624,6 +4624,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
+    { v: 'V13.23', f: '13 de octubre de 2026', n: [
+      'Al sellar tu <b>contrato de compromiso</b> suena un redoble de tambor y una fanfarria, para celebrarlo como se merece.' ] },
     { v: 'V13.22', f: '12 de octubre de 2026', n: [
       'Si al empezar un trimestre eliges <b>«Seguir con mi meta»</b>, el formulario se abre ya relleno con tus respuestas anteriores: solo tienes que repasarlas.',
       'En Inicio, el título <b>Compromiso y práctica</b> vuelve a tener el mismo tamaño que los demás.' ] },
@@ -8256,15 +8258,48 @@ lo que haces cada día es lo que vas a ser.`;
   }
   // Premio por enviar el formulario de la meta: fanfarria de trompetas (ta-ta-taaa), un acorde mayor
   // que se abre, una cascada de campanitas y un brillo final
-  function sonidoPremio(){
+  function sonidoPremio(desde){
     try {
-      const A = audioCelebra(), b = busCelebra(A, 0.5);
+      const A = audioCelebra(), b = busCelebra(A, 0.5), o = typeof desde === 'number' ? desde : 0;
       const T = { tipo: 'triangle', vol: 0.17, at: 0.025, p: [[1, 1], [2, 0.45, 0.8], [3, 0.22, 0.6], [4, 0.1, 0.4]] };
-      [[67, 0, 0.16], [67, 0.17, 0.16], [67, 0.34, 0.16], [72, 0.52, 0.5], [76, 0.86, 0.28], [79, 1.06, 1.6]].forEach(([n, t, d]) => notaCelebra(A, b, n, t, d, T));
-      [48, 55, 60, 64, 67, 72].forEach((n, i) => notaCelebra(A, b, n, 1.06 + i * 0.02, 2.6, { tipo: 'sine', vol: 0.08, at: 0.08, p: [[1, 1], [2, 0.3, 0.7]] }));
+      [[67, 0, 0.16], [67, 0.17, 0.16], [67, 0.34, 0.16], [72, 0.52, 0.5], [76, 0.86, 0.28], [79, 1.06, 1.6]].forEach(([n, t, d]) => notaCelebra(A, b, n, o + t, d, T));
+      [48, 55, 60, 64, 67, 72].forEach((n, i) => notaCelebra(A, b, n, o + 1.06 + i * 0.02, 2.6, { tipo: 'sine', vol: 0.08, at: 0.08, p: [[1, 1], [2, 0.3, 0.7]] }));
       const C = { tipo: 'sine', vol: 0.09, at: 0.003, p: [[1, 1], [2.76, 0.25, 0.35], [5.4, 0.08, 0.2]] };
-      [84, 88, 91, 96, 100, 103, 108, 103, 100, 96].forEach((n, i) => notaCelebra(A, b, n, 1.2 + i * 0.07, 1.3, C));
-      [96, 100, 103, 108].forEach(n => notaCelebra(A, b, n, 2.0, 2.4, { tipo: 'sine', vol: 0.06, at: 0.01, p: [[1, 1], [2.76, 0.2, 0.4]] }));
+      [84, 88, 91, 96, 100, 103, 108, 103, 100, 96].forEach((n, i) => notaCelebra(A, b, n, o + 1.2 + i * 0.07, 1.3, C));
+      [96, 100, 103, 108].forEach(n => notaCelebra(A, b, n, o + 2.0, 2.4, { tipo: 'sine', vol: 0.06, at: 0.01, p: [[1, 1], [2.76, 0.2, 0.4]] }));
+    } catch(e){}
+  }
+  // Contrato sellado: redoble de tambor de 4 segundos que va creciendo y, al final, platillo, timbal y la fanfarria del premio.
+  // Todo se programa de una vez, mientras aún se está tocando la pantalla (si no, el móvil no deja sonar)
+  function sonidoRedoble(){
+    try {
+      const A = audioCelebra(), b = busCelebra(A, 0.35), t0 = A.currentTime + 0.05, DUR = 4;
+      const ruido = A.createBuffer(1, A.sampleRate, A.sampleRate), dr = ruido.getChannelData(0);
+      for(let i = 0; i < dr.length; i++) dr[i] = Math.random() * 2 - 1;
+      const golpe = (t, vol, dec, filtro, frec, q) => {
+        const src = A.createBufferSource(), f = A.createBiquadFilter(), g = A.createGain();
+        src.buffer = ruido; f.type = filtro; f.frequency.value = frec; if(q) f.Q.value = q;
+        g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol, t + 0.004); g.gain.exponentialRampToValueAtTime(0.0001, t + dec);
+        src.connect(f); f.connect(g); g.connect(b); src.start(t, Math.random() * 0.5); src.stop(t + dec + 0.05);
+      };
+      const timbal = (t, vol, dec, fr) => {
+        const o = A.createOscillator(), g = A.createGain();
+        o.type = 'sine'; o.frequency.setValueAtTime(fr * 1.15, t); o.frequency.exponentialRampToValueAtTime(fr, t + 0.08);
+        g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol, t + 0.01); g.gain.exponentialRampToValueAtTime(0.0001, t + dec);
+        o.connect(g); g.connect(b); o.start(t); o.stop(t + dec + 0.05);
+      };
+      // El redoble: la caja cada vez más rápida y fuerte, con el timbal debajo
+      for(let t = 0; t < DUR; ){
+        const k = t / DUR;
+        golpe(t0 + t, 0.03 + 0.3 * k * k, 0.07, 'bandpass', 1900, 0.8);
+        t += 0.065 - 0.025 * k;
+      }
+      for(let t = 0; t < DUR; t += 0.1) timbal(t0 + t, 0.05 + 0.25 * Math.pow(t / DUR, 2), 0.25, 65.4);
+      // ¡Platillo y golpe de timbal!
+      golpe(t0 + DUR, 0.45, 2.8, 'highpass', 5200);
+      golpe(t0 + DUR, 0.25, 1.2, 'bandpass', 3000, 0.6);
+      timbal(t0 + DUR, 0.6, 1.6, 49);
+      sonidoPremio(DUR + 0.1);
     } catch(e){}
   }
   function sonidoLogro(){
@@ -8570,6 +8605,8 @@ lo que haces cada día es lo que vas a ser.`;
     btn.addEventListener('contextmenu', e => e.preventDefault());
     ['touchstart', 'touchmove'].forEach(t => btn.addEventListener(t, e => e.preventDefault(), { passive: false }));
     const guardar = async () => {
+      if(musica){ musica.parar(); musica = null; }
+      sonidoRedoble();   // al levantar el dedo: redoble de 4 segundos y fanfarria
       fase = 'hecho'; btn.remove(); const nota = caja.querySelector('.contrato-nota'); if(nota) nota.textContent = 'Este es tu compromiso contigo para este trimestre. Vuelve a leerlo cuando lo necesites. 🙏';
       const ta = caja.querySelector('.perg-edit'), texto = ta.value.trim();
       const div = document.createElement('div'); div.className = 'perg-texto'; div.innerHTML = escapeAttr(texto).replace(/\n/g, '<br>'); ta.replaceWith(div);
@@ -8587,7 +8624,6 @@ lo que haces cada día es lo que vas a ser.`;
         const r = await api('/carta', { tipo: 'contrato', texto, trimestre: trimestreClave(), momento });
         if(state.gamifica && r.datosFormulario) state.gamifica.datosFormulario = r.datosFormulario;
         aviso('🌱 Meta sembrada. Tu compromiso está sellado: es un acto sagrado contigo.');
-        setTimeout(sonidoTing, 900);
         setTimeout(() => aviso(''), 6000);
       } catch(err){ aviso('Está sellado, pero no se pudo guardar. Revisa tu conexión y vuelve a intentarlo.'); }
     };
@@ -11381,4 +11417,4 @@ lo que haces cada día es lo que vas a ser.`;
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V13.22 · App Metas Amables · 2026-10-12 23:59==== -->
+<!-- ==== Fin del index V13.23 · App Metas Amables · 2026-10-13 00:02==== -->
