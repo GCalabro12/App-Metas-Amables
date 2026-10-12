@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V12.98 · App Metas Amables · 2026-10-12 20:39==== -->
+<!-- ==== index V12.99 · App Metas Amables · 2026-10-12 21:03==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1178,10 +1178,10 @@ body.riego-abierto{overflow:hidden}
 .abonar-eje{margin:2px 0;font-size:12px;color:#6A6A60}.abonar-lados{display:flex;justify-content:space-between;width:min(300px,82vw);margin:2px auto 8px;font-size:12px;color:#6A6A60}
 .clima-fila{display:flex;align-items:center;justify-content:center;gap:4px}
 .clima-lado{writing-mode:vertical-rl;font-size:12.5px;color:#6A6A60;white-space:nowrap}.clima-lado.izq{transform:rotate(180deg)}
-.clima-sol{position:relative;flex:none;width:min(300px,74vw);aspect-ratio:1;margin:4px auto;padding:6%;box-sizing:border-box;color:var(--rayo,#F6C94A);transition:color .3s}
+.clima-sol{position:relative;flex:none;width:min(300px,74vw);height:min(300px,74vw);margin:4px auto;padding:6%;box-sizing:border-box;color:var(--rayo,#F6C94A);transition:color .3s}
 .clima-rayos{position:absolute;left:0;top:0;width:100%;height:100%;fill:currentColor}
-.clima-disco{position:relative;width:100%;height:100%;border-radius:50%;overflow:hidden;box-shadow:0 0 0 4px rgba(255,255,255,.9),0 4px 14px rgba(0,0,0,.12)}
-.clima-disco.rejilla{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:3px;background:#fff}
+.clima-disco{position:relative;width:100%;height:100%;min-height:0;border-radius:50%;overflow:hidden;box-shadow:0 0 0 4px rgba(255,255,255,.9),0 4px 14px rgba(0,0,0,.12)}
+.clima-disco.rejilla{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-rows:minmax(0,1fr) minmax(0,1fr);gap:3px;background:#fff}
 .clima-q{display:flex;flex-direction:column;justify-content:center;gap:4px;padding:8px}
 .clima-q.izq{align-items:flex-end;padding-left:2%;padding-right:6px}.clima-q.der{align-items:flex-start;padding-right:2%;padding-left:6px}
 .clima-q .abonar-em{font-size:12.5px;padding:4px 8px}
@@ -2264,7 +2264,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V12.98';
+  const APP_VERSION = 'V12.99';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -11211,4 +11211,4 @@ lo que haces cada día es lo que vas a ser.`;
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V12.98 · App Metas Amables · 2026-10-12 20:39==== -->
+<!-- ==== Fin del index V12.99 · App Metas Amables · 2026-10-12 21:03==== -->
