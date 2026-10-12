@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V13.18 · App Metas Amables · 2026-10-12 23:30==== -->
+<!-- ==== index V13.19 · App Metas Amables · 2026-10-12 23:36==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1139,6 +1139,11 @@ body.theme-dark .guia-progreso{background:var(--surface)}
 .ciclo .planta-card{margin:0}.ciclo .planta-card.actual{box-shadow:0 0 0 4px #FFD400;animation:toca 1.6s ease-in-out infinite}
 .planta-tit{display:flex;align-items:center;gap:12px;font:700 clamp(15px,4.6vw,18px)/1.25 Lora,serif;color:#A93226;white-space:nowrap}.planta-tit-ico{width:46px;height:46px;flex:none;display:inline-flex}.planta-tit-ico svg{width:100%;height:100%}
 .planta-card .planta-meta{margin:8px 0 6px;font:italic 700 16px/1.35 Lora,serif;color:#4F7A43}
+.planta-lapiz{border:none;background:transparent;font-size:15px;padding:2px 6px;margin-left:4px;cursor:pointer;vertical-align:baseline;font-style:normal}
+.planta-edita{margin:8px 0 6px}.planta-edita textarea{width:100%;box-sizing:border-box;min-height:62px;padding:8px 10px;border:1.5px solid #A0703C;border-radius:10px;font:italic 600 15px/1.35 Lora,serif;color:#4F7A43;background:#fff;resize:vertical}
+.planta-edita-bt{display:flex;gap:8px;margin-top:6px}.planta-edita-bt button{flex:1;padding:9px;border-radius:10px;font:700 14px Karla,sans-serif;cursor:pointer}
+.planta-edita-bt .ok{background:#8A5A2E;color:#fff;border:none}.planta-edita-bt .no{background:#fff;color:#6B4A26;border:1.5px solid #A0703C}
+.planta-edita small{display:block;margin-top:4px;font-size:12px;color:var(--ink-soft)}
 .planta-estado-tx{margin:4px 0 10px;font-size:14.5px;line-height:1.4}
 .planta-fila{display:flex;gap:12px;align-items:center}
 .planta-card[role="button"]{cursor:pointer}.planta-ir{margin-left:auto;font:400 26px Karla,sans-serif;color:#A93226}
@@ -1637,7 +1642,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   .dias-card{padding-left:12px;padding-right:12px}
   /* Colores por parte del ciclo: 0 meta = marrón, a guía = azul, b práctica = rojo, c compromiso = verde */
   [data-vista="formMeta"] .card{ border:2px solid #C9942D; }
-  [data-vista="panel"][data-sub=""] *:not(input):not(textarea):not(select):not(.practi-bocadillo):not(.practi-bocadillo *){ border-color:transparent !important; }   /* Inicio: sin bordes, salvo los bocadillos de Prácti */
+  [data-vista="panel"][data-sub=""] *:not(input):not(textarea):not(select):not(.practi-bocadillo):not(.practi-bocadillo *):not(.planta-edita *){ border-color:transparent !important; }   /* Inicio: sin bordes, salvo los bocadillos de Prácti */
   [data-vista="panel"][data-sub=""] .card{ box-shadow:0 2px 14px rgba(60,40,100,.08); }
   [data-vista="formMeta"] .btn-yes{ border-color:#C9942D !important; color:#7A5410 !important; }
   [data-vista="formMeta"] .btn-yes:hover, [data-vista="formMeta"] .btn-yes:active, [data-vista="formMeta"] .btn-yes:focus{ background:#C9942D !important; color:#fff !important; }
@@ -2279,7 +2284,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V13.18';
+  const APP_VERSION = 'V13.19';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -4613,6 +4618,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
+    { v: 'V13.19', f: '12 de octubre de 2026', n: [
+      'En la tarjeta de <b>Compromiso y práctica</b>, el lapicito ✏️ junto a tu meta te deja cambiar el resumen con tus propias palabras.' ] },
     { v: 'V13.17', f: '12 de octubre de 2026', n: [
       'En tu <b>guía semanal</b>, cuando empiezas una meta nueva, un rectángulo marca «A partir de aquí, tu meta nueva», para distinguirla de las guías de la meta anterior.' ] },
     { v: 'V13.14', f: '12 de octubre de 2026', n: [
@@ -9693,10 +9700,33 @@ lo que haces cada día es lo que vas a ser.`;
       ? '<p class="planta-reg hecho" role="button" tabindex="0">✓ Hoy ya has registrado</p>'
       : '<p class="planta-reg" role="button" tabindex="0">💧 Registra</p><p class="planta-reg-lista">Te falta registrar tu clima, tu entorno o tu práctica.</p>';
     const t = el('<div class="card planta-card ciclo-b" role="button" tabindex="0"><b class="planta-tit"><span class="planta-tit-ico">' + iconoCiclo('b') + '</span>Compromiso y práctica<span class="planta-ir">›</span></b>'
-      + (mt ? '<span class="planta-meta">🌱 «' + escapeAttr(mt) + '»</span>' : '')
+      + (mt ? '<span class="planta-meta">🌱 «' + escapeAttr(mt) + '»' + (dfm.metaTexto ? '<button type="button" class="planta-lapiz" aria-label="Cambiar el resumen de tu meta" title="Cambiar el resumen">✏️</button>' : '') + '</span>' : '')
       + '<div class="planta-fila"><span class="planta-fig" title="El tutor de tu planta es tu guía semanal">' + tutor + '<img src="' + e.img + '" alt="">' + lazo + '</span>'
       + '<div class="planta-tx">' + estadoReg + '</div></div></div>').firstElementChild;
     if(alVer){ t.onclick = alVer; t.onkeydown = ev => { if(ev.key === 'Enter' || ev.key === ' '){ ev.preventDefault(); alVer(); } }; }
+    // ✏️ Cambiar el resumen de la meta con sus propias palabras (sin abrir la tarjeta)
+    const lapiz = t.querySelector('.planta-lapiz');
+    if(lapiz) lapiz.onclick = ev => {
+      ev.stopPropagation();
+      const meta = t.querySelector('.planta-meta');
+      const caja = el('<div class="planta-edita"><textarea maxlength="100" aria-label="Tu meta en pocas palabras"></textarea><small>Tu meta en pocas palabras (100 letras como mucho).</small>'
+        + '<div class="planta-edita-bt"><button type="button" class="no">Cancelar</button><button type="button" class="ok">Guardar</button></div></div>').firstElementChild;
+      const ta = caja.querySelector('textarea');
+      ta.value = mt.replace(/…$/, '');
+      ['click', 'keydown', 'touchend'].forEach(tipo => caja.addEventListener(tipo, e2 => e2.stopPropagation()));
+      meta.replaceWith(caja); ta.focus();
+      caja.querySelector('.no').onclick = () => caja.replaceWith(meta);
+      caja.querySelector('.ok').onclick = async () => {
+        const texto = ta.value.replace(/\s+/g, ' ').trim();
+        if(!texto){ ta.focus(); return; }
+        const bOk = caja.querySelector('.ok'); bOk.disabled = true; bOk.textContent = 'Guardando…';
+        try {
+          const r = await api('/metaCorta', { texto });
+          if(state.gamifica && r.datosFormulario) state.gamifica.datosFormulario = r.datosFormulario;
+          render();
+        } catch(err){ bOk.disabled = false; bOk.textContent = 'Guardar'; avisoBreve('No se pudo guardar. Revisa tu conexión y vuelve a intentarlo.'); }
+      };
+    };
     // El botón de estado abre directamente Registros amables (para registrar o cambiar lo de hoy)
     const pill = t.querySelector('.planta-reg');
     if(pill){ pill.onclick = ev => { ev.stopPropagation(); abrirMomentoRiego(); }; pill.onkeydown = ev => { if(ev.key === 'Enter' || ev.key === ' '){ ev.preventDefault(); ev.stopPropagation(); abrirMomentoRiego(); } }; }
@@ -11285,4 +11315,4 @@ lo que haces cada día es lo que vas a ser.`;
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V13.18 · App Metas Amables · 2026-10-12 23:30==== -->
+<!-- ==== Fin del index V13.19 · App Metas Amables · 2026-10-12 23:36==== -->
