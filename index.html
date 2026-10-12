@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V12.70 · App Metas Amables · 2026-10-12 13:32==== -->
+<!-- ==== index V12.71 · App Metas Amables · 2026-10-12 13:50==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2218,7 +2218,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V12.70';
+  const APP_VERSION = 'V12.71';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -4197,6 +4197,15 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     } else if(det.tipo === 'lunes'){
       h += '<h3 class="pf-seccion">📝 Registro del lunes</h3>' + bloque('✓ Ya lo han hecho', gente.filter(x => x.lunesHecho), 'Nadie lo ha hecho todavía esta semana.')
         + bloque('— Pendiente', gente.filter(x => !x.lunesHecho), '¡Lo ha hecho todo el mundo! 🎉');
+    } else if(det.tipo === 'whatsapp'){
+      h += '<h3 class="pf-seccion">💬 Mensajes por WhatsApp</h3><p class="pf-gris" style="margin:0 0 10px;font-size:13.5px">Se activan en la app: Compromiso y práctica → «🔔 Avisos en el móvil». Anima a quien aún no lo tenga.</p>'
+        + bloque('✓ Los aceptan', gente.filter(x => x.aceptaWhatsApp), 'Nadie los ha activado todavía.')
+        + bloque('— Aún no', gente.filter(x => !x.aceptaWhatsApp), '¡Los tiene activados todo el mundo! 🎉');
+    } else if(det.tipo === 'emails'){
+      h += '<h3 class="pf-seccion">📧 Emails de acompañamiento</h3><p class="pf-gris" style="margin:0 0 10px;font-size:13.5px">Se activan al crear la cuenta o en Compromiso y práctica → «🔔 Avisos en el móvil». Solo llegan si además el email está confirmado.</p>'
+        + bloque('✓ Los aceptan y tienen el email confirmado', gente.filter(x => x.aceptaEmails && x.emailOk), 'Nadie todavía.')
+        + bloque('⏳ Los aceptan, pero falta confirmar el email', gente.filter(x => x.aceptaEmails && !x.emailOk), 'Nadie pendiente de confirmar.')
+        + bloque('— Aún no los aceptan', gente.filter(x => !x.aceptaEmails), '¡Los acepta todo el mundo! 🎉');
     } else if(det.tipo === 'perdiendo'){
       h += '<h3 class="pf-seccion">🍂 Se están desenganchando</h3><p class="pf-gris" style="margin:0 0 10px;font-size:13.5px">Llevan 5 días o más sin regar su meta, o se inscribieron hace 5 días o más y aún no han regado nunca. Un mensaje tuyo ahora puede marcar la diferencia.</p>'
         + bloque('Sin regar desde hace 5 días o más', perdiendoInteres(gente), 'Nadie se está desenganchando. 🌱');
@@ -4372,6 +4381,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       <button type="button" class="pf-cifra" data-detalle="nuevas"><b>${nuevas.length}</b><span>${nuevas.length === 1 ? 'nueva' : 'nuevas'} esta semana ›</span></button>
       <button type="button" class="pf-cifra" data-detalle="riegan"><b>${riegan}<small>/${gente.length}</small></b><span>han regado hoy ›</span></button>
       <button type="button" class="pf-cifra" data-detalle="lunes"><b>${lunesHechos}<small>/${gente.length}</small></b><span>registro del lunes ›</span></button>
+      <button type="button" class="pf-cifra" data-detalle="whatsapp"><b>${gente.filter(x => x.aceptaWhatsApp).length}<small>/${gente.length}</small></b><span>💬 aceptan WhatsApp ›</span></button>
+      <button type="button" class="pf-cifra" data-detalle="emails"><b>${gente.filter(x => x.aceptaEmails).length}<small>/${gente.length}</small></b><span>📧 aceptan emails ›</span><small class="pf-plan-det">${gente.filter(x => x.emailOk).length} con el email confirmado</small></button>
       <button type="button" class="pf-cifra pf-cifra-ancha${perdiendo.length ? ' alerta' : ''}" data-detalle="perdiendo"><b>${perdiendo.length}</b><span>🍂 sin regar desde hace 5 días o más (se están desenganchando) ›</span></button></div>`;
     const listaAbierta = !!state.pfListaAbierta;
     h += `<div class="card pf-lista"><button type="button" class="pf-desplegar" id="pfDesplegar" aria-expanded="${listaAbierta}"><span>👥 Todas las personas (${gente.length})<small>Semana del ${escapeAttr(d.semana || '')}</small></span><b>${listaAbierta ? '▲' : '▼'}</b></button>
@@ -4519,6 +4530,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
+    { v: 'V12.71', f: '12 de octubre de 2026', n: [
+      'En Compromiso y práctica, «🔔 Avisos en el móvil» activa también los <b>emails que te acompañan</b> con tu meta, junto al aviso de las 8 de la tarde y los mensajes de WhatsApp.' ] },
     { v: 'V12.70', f: '12 de octubre de 2026', n: [
       'Las contraseñas nuevas deben tener al menos <b>6 caracteres</b> (la tuya, si es más corta, sigue valiendo para entrar).' ] },
     { v: 'V12.69', f: '12 de octubre de 2026', n: [
@@ -8898,15 +8911,17 @@ lo que haces cada día es lo que vas a ser.`;
     const c = el('<div class="card ps-recuadro av-card"><div class="av-fila"><div class="av-cab"><span class="av-tit">🔔 Avisos en el móvil <span class="av-flecha">▾</span></span><span class="av-estado"></span></div><button type="button" class="av-switch" role="switch" aria-label="Avisos en el móvil"><span></span></button></div>'
       + '<div class="av-detalle" hidden><p>Al activarlos recibirás:</p><ol class="av-lista">'
       + '<li><span class="av-ok av-ok-push"></span>🔔 Una <b>notificación a las 8 de la tarde</b> para recordarte registrar, solo si aún no lo has hecho. Llega aunque la app esté cerrada.</li>'
-      + '<li><span class="av-ok av-ok-wa"></span>💬 <b>Mensajes de ánimo por WhatsApp</b> cada 4 días.</li></ol>'
+      + '<li><span class="av-ok av-ok-wa"></span>💬 <b>Mensajes de ánimo por WhatsApp</b> cada 4 días.</li>'
+      + '<li><span class="av-ok av-ok-em"></span>📧 <b>Emails que te acompañen</b> con tu meta (pocos, y te puedes dar de baja cuando quieras).</li></ol>'
       + '<button type="button" class="av-prueba">Enviarme un aviso de prueba</button><div class="saved-msg av-msg"></div></div></div>').firstElementChild;
     const sw = c.querySelector('.av-switch'), est = c.querySelector('.av-estado'), bPr = c.querySelector('.av-prueba'), msg = c.querySelector('.av-msg');
     const pintar = () => {
-      const push = pushActivo(), wa = !!g.aceptaWhatsApp, on = push || wa;
+      const push = pushActivo(), wa = !!g.aceptaWhatsApp, em = !!g.aceptaEmails, on = push || wa || em;
       sw.classList.toggle('on', on); sw.setAttribute('aria-checked', on);
       est.textContent = on ? 'Activados' : 'Desactivados';
       c.querySelector('.av-ok-push').textContent = push ? '✓' : '';
       c.querySelector('.av-ok-wa').textContent = wa ? '✓' : '';
+      c.querySelector('.av-ok-em').textContent = em ? '✓' : '';
       bPr.hidden = !push;
     };
     c.querySelector('.av-tit').onclick = () => { const det = c.querySelector('.av-detalle'); det.hidden = !det.hidden; c.querySelector('.av-flecha').textContent = det.hidden ? '▾' : '▴'; };
@@ -8916,17 +8931,26 @@ lo que haces cada día es lo que vas a ser.`;
       if(valor && !g.avisoTelDado){ g.avisoTelDado = true; msg.innerHTML = 'Guarda en tus contactos el número <b>' + TEL_FACILITADOR + '</b> como «Metas Amables»: por ahí te llegarán los mensajes.'; }
       pintar();
     };
+    const emails = async valor => {
+      try { await api('/avisos', { emails: valor }); g.aceptaEmails = valor; }
+      catch(e){ msg.textContent = 'No se pudieron guardar los emails. Revisa tu conexión.'; }
+      pintar();
+    };
+    // Al activar los emails sin haberlo confirmado, se pide el código (después de la guía de avisos, si sale)
+    const confirmar = () => { pintar(); if(g.aceptaEmails && g.email && !emailConfirmado()) abrirConfirmarEmail(g.email, false); };
     pintar();
     sw.onclick = async ev => {
       ev.stopPropagation();
-      if(pushActivo() || g.aceptaWhatsApp){
+      if(pushActivo() || g.aceptaWhatsApp || g.aceptaEmails){
         msg.textContent = '';
         if(pushActivo()) await desactivarAvisosPlanta();
         if(g.aceptaWhatsApp) await whatsapp(false);
+        if(g.aceptaEmails) await emails(false);
         pintar();
       } else {
         await whatsapp(true);
-        if(pushPosible()) abrirGuiaAvisos(pintar);
+        await emails(true);
+        if(pushPosible()) abrirGuiaAvisos(confirmar); else confirmar();
       }
     };
     bPr.onclick = async () => { msg.textContent = 'Enviando…'; try { const r = await api('/push-prueba', {}); const st = (r && r.estados) || []; msg.textContent = st.some(s => s >= 200 && s < 300) ? '✓ Enviado: debería llegarte en unos segundos.' : '⚠️ No se pudo entregar (' + (st.join(', ') || 'sin datos') + '). Desactiva y vuelve a activar los avisos.'; } catch(e){ msg.textContent = mensajeError(e, 'No se pudo enviar el aviso de prueba.'); } };
@@ -10541,4 +10565,4 @@ lo que haces cada día es lo que vas a ser.`;
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V12.70 · App Metas Amables · 2026-10-12 13:32==== -->
+<!-- ==== Fin del index V12.71 · App Metas Amables · 2026-10-12 13:50==== -->
