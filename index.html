@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V12.80 · App Metas Amables · 2026-10-12 17:19==== -->
+<!-- ==== index V12.81 · App Metas Amables · 2026-10-12 18:44==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1351,10 +1351,11 @@ html.modo-minimal .practi-inicio,html.modo-minimal .practi-bocadillo,html.modo-m
 .mont-son{flex:none;border:1px solid #CFC6DD;background:#fff;border-radius:999px;padding:5px 12px;font:700 13px Karla,sans-serif;color:#4F3A86;cursor:pointer}
 .mont-sub{margin:0 0 10px;font-size:14px;color:var(--ink-soft)}
 .mont-svg{display:block;width:100%;height:auto;border-radius:12px}
-.mont-foto{position:relative;border-radius:14px;overflow:hidden;background:#BFD8F2}
-.mont-foto img{display:block;width:100%;height:auto}
-.mont-foto svg{position:absolute;inset:0;width:100%;height:100%}
-.planta-fondo{background:linear-gradient(rgba(255,252,245,.82),rgba(255,252,245,.45) 45%,rgba(255,252,245,.15)),url(fondo-planta.jpg) center bottom/cover no-repeat}
+.mont-ilus{display:block;width:100%;height:auto;border-radius:14px}
+.prog-son{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 12px}
+.prog-vol{display:flex;align-items:center;gap:6px;font-size:18px}
+.prog-vol input{width:130px;accent-color:#4F3A86}
+.planta-fondo{background:linear-gradient(rgba(255,252,245,.86),rgba(255,252,245,.55) 40%,rgba(255,252,245,.5) 75%,rgba(255,252,245,.35)),url(fondo-planta.jpg) center bottom/cover no-repeat}
 .mont-ley{display:flex;flex-wrap:wrap;gap:6px 12px;margin:8px 0 0;font-size:12.5px;color:var(--ink-soft)}
 .mont-ley span{display:inline-flex;align-items:center;gap:5px}.mont-ley i{display:inline-block;width:12px;height:12px;border-radius:3px}
 .mont-ley span.on{color:var(--ink);font-weight:800}
@@ -2237,7 +2238,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V12.80';
+  const APP_VERSION = 'V12.81';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -4565,6 +4566,9 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
+    { v: 'V12.81', f: '12 de octubre de 2026', n: [
+      'En <b>Progreso</b>, primero tu planta y después <b>Mi montaña</b>, ahora ilustrada en tonos pastel: sale el sol, cruzan pájaros y algún avión, por el río baja un barquito de papel y las plantas se mecen.',
+      'Justo debajo del título tienes el botón de música y un regulador de volumen.' ] },
     { v: 'V12.80', f: '12 de octubre de 2026', n: [
       '<b>Mi montaña</b> es ahora la gran montaña de los cinco niveles: tus bancales están sobre sus caminos y un brillo te marca «Estás aquí». La planta del trimestre crece sobre las colinas doradas.' ] },
     { v: 'V12.79', f: '12 de octubre de 2026', n: [
@@ -9667,6 +9671,7 @@ lo que haces cada día es lo que vas a ser.`;
   // se apaga suave al salir, y el botón 🎵 la quita (se recuerda en el móvil)
   // var y function (no let/const): render() las consulta ya en el primer pintado, antes de que el script llegue aquí
   var musicaMontana = null, relojMontana = null;
+  function volumenMontana(){ try { const v = parseFloat(localStorage.getItem('montana_volumen')); return isNaN(v) ? 0.35 : Math.max(0, Math.min(1, v)); } catch(e){ return 0.35; } }
   function montanaSinMusica(){ try { return localStorage.getItem('montana_musica') === '0'; } catch(e){ return false; } }
   function fundirMontana(hacia, ms, alAcabar){
     if(!musicaMontana) return;
@@ -9683,7 +9688,7 @@ lo que haces cada día es lo que vas a ser.`;
       if(!musicaMontana){ musicaMontana = new Audio('musica-montana.mp3'); musicaMontana.loop = true; }
       if(!musicaMontana.paused) return Promise.resolve(true);
       musicaMontana.volume = 0;
-      return musicaMontana.play().then(() => { fundirMontana(0.35, 2500); return true; }).catch(() => false);
+      return musicaMontana.play().then(() => { fundirMontana(volumenMontana(), 2500); return true; }).catch(() => false);
     } catch(e){ return Promise.resolve(false); }
   }
   function pararMontana(ms){ if(musicaMontana && !musicaMontana.paused) fundirMontana(0, ms || 1200, () => musicaMontana.pause()); }
@@ -9713,10 +9718,10 @@ lo que haces cada día es lo que vas a ser.`;
         const t = w.dias >= 6 ? 13 : w.dias >= 3 ? 10 : 7, rx = t * esc + 1, ry = rx * 0.55, lx = cx + lado * (rx + 2);
         s += '<ellipse cx="' + lx + '" cy="' + y + '" rx="' + rx + '" ry="' + ry + '" fill="#639922" transform="rotate(' + (lado * -18) + ' ' + lx + ' ' + y + ')"/>';
         if(w.cumple) s += '<circle cx="' + (lx + lado * rx * 0.9) + '" cy="' + (y - ry) + '" r="' + (3.2 * esc + 1.3) + '" fill="#E86A92" stroke="#fff" stroke-width="1"/>';
-        if(etiquetas) s += '<text x="' + (cx + lado * (2 * rx + 10)) + '" y="' + (y + 4) + '" text-anchor="' + (lado < 0 ? 'end' : 'start') + '" font-family="Karla,Arial,sans-serif" font-size="12" font-weight="700" fill="#3B6D11">' + w.etiqueta + '</text>';
+        if(etiquetas) s += '<text x="' + (cx + lado * (2 * rx + 10)) + '" y="' + (y + 4) + '" text-anchor="' + (lado < 0 ? 'end' : 'start') + '" font-family="Karla,Arial,sans-serif" font-size="12" font-weight="700" fill="#3B6D11" stroke="#FFFCF5" stroke-width="3" stroke-linejoin="round" paint-order="stroke">' + w.etiqueta + '</text>';
       } else if(w.hoy){
         s += '<circle cx="' + cx + '" cy="' + y + '" r="' + (5 * esc + 2) + '" fill="none" stroke="#D99A1E" stroke-width="2"/>';
-        if(etiquetas) s += '<text x="' + (cx + lado * 16) + '" y="' + (y + 4) + '" text-anchor="' + (lado < 0 ? 'end' : 'start') + '" font-family="Karla,Arial,sans-serif" font-size="12" font-weight="700" fill="#B07A10">' + w.etiqueta + ' · ahora</text>';
+        if(etiquetas) s += '<text x="' + (cx + lado * 16) + '" y="' + (y + 4) + '" text-anchor="' + (lado < 0 ? 'end' : 'start') + '" font-family="Karla,Arial,sans-serif" font-size="12" font-weight="700" fill="#8A5A00" stroke="#FFFCF5" stroke-width="3" stroke-linejoin="round" paint-order="stroke">' + w.etiqueta + ' · ahora</text>';
       } else if(w.futura){
         s += '<circle cx="' + cx + '" cy="' + y + '" r="1.6" fill="#C9B38E"/>';
       }
@@ -9724,41 +9729,173 @@ lo que haces cada día es lo que vas a ser.`;
     s += '<rect x="' + (cx - (etiquetas ? 34 : 22)) + '" y="' + base + '" width="' + (etiquetas ? 68 : 44) + '" height="14" rx="4" fill="#8A5A1E"/></svg>';
     return s;
   }
-  // La montaña: la imagen de los 5 niveles (la de las insignias) y, encima, los 20 bancales sobre sus caminos:
-  // rojo (año 1), ámbar, naranja, verde y violeta, alternando el sentido de la subida cada año
-  const BANCALES_MONTANA = [[110, 1215], [300, 1245], [520, 1235], [690, 1060], [650, 890], [470, 985], [250, 995], [90, 880],
-    [150, 760], [330, 800], [520, 785], [640, 675], [575, 560], [440, 600], [300, 610], [175, 580], [270, 395], [420, 448], [545, 330], [400, 245]];
+  // La montaña ilustrada (pastel, al estilo de un dibujo animado): cielo de amanecer con estrellas, destellos y una estrella fugaz,
+  // el sol que sale con sus halos, nubes, pájaros que aletean, montañas lejanas, la montaña de los 5 niveles (un color por año)
+  // con nieve en la cima, un prado con un sendero, un río a un lado por el que bajan un barquito y hojas, rocas, hojas grandes que se mecen y lucecitas que suben.
+  // Encima, los 20 bancales en zigzag: 4 por franja, un año hacia la derecha y el siguiente hacia la izquierda.
+  const MT = { AY: 70, BY: 540, BW: 152, BANDA: 84 };
+  function mtMedio(y){ return MT.BW * Math.pow(Math.max(0, y - MT.AY) / (MT.BY - MT.AY), 0.78); }
+  // Las franjas se curvan hacia abajo en el centro, como bancales que rodean la montaña
+  function mtCaida(y, x){ const a = mtMedio(y) + 12, u = (x - 200) / a; return a * 0.11 * Math.max(0, 1 - u * u); }
+  function posBancal(i){
+    const k = Math.floor(i / 4), j = i % 4, y = MT.BY - k * MT.BANDA - 14 - j * 18, dir = k % 2 ? -1 : 1;
+    const x = Math.round(200 + dir * (j - 1.5) / 1.5 * mtMedio(y) * 0.62);
+    return [x, Math.round(y + mtCaida(y, x))];
+  }
   function montanaSVG(d){
-    let s = '<div class="mont-foto"><img src="montana-niveles.jpg" alt="La montaña de los cinco niveles: rojo, ámbar, naranja, verde y violeta" loading="lazy">'
-      + '<svg viewBox="0 0 768 1376" role="img" aria-label="Mi montaña: año ' + d.anio + ', bancal ' + (d.actual + 1) + ' de 20"><title>Mi montaña</title>'
-      + '<defs><radialGradient id="mtSol"><stop offset="0" stop-color="#FFF8D8" stop-opacity=".95"/><stop offset=".5" stop-color="#FFE08A" stop-opacity=".45"/><stop offset="1" stop-color="#FFC24D" stop-opacity="0"/></radialGradient>'
-      + '<radialGradient id="mtNiebla"><stop offset="0" stop-color="#FFFFFF" stop-opacity=".75"/><stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/></radialGradient></defs>'
-      + '<style>.mt-brillo{transform-origin:292px 91px;animation:mtLate 5s ease-in-out infinite}.mt-rayos{transform-origin:292px 91px;animation:mtGira 90s linear infinite}'
-      + '.mt-nube{animation:mtNube 110s linear infinite}.mt-nube.b{animation-duration:150s;animation-delay:-70s}.mt-aqui{transform-box:fill-box;transform-origin:center;animation:mtAqui 2.4s ease-in-out infinite}'
-      + '@keyframes mtLate{0%,100%{opacity:.55;transform:scale(1)}50%{opacity:1;transform:scale(1.12)}}@keyframes mtGira{to{transform:rotate(360deg)}}'
-      + '@keyframes mtNube{from{transform:translateX(-320px)}to{transform:translateX(1100px)}}@keyframes mtAqui{0%,100%{transform:scale(1);opacity:.9}50%{transform:scale(1.35);opacity:.35}}'
-      + '@media (prefers-reduced-motion:reduce){.mt-brillo,.mt-rayos,.mt-nube,.mt-aqui{animation:none}}</style>'
-      // Destellos del sol y niebla que pasa despacio
-      + '<g class="mt-rayos" opacity=".35">' + Array.from({ length: 12 }, (x, k) => { const a = k * Math.PI / 6, r1 = 60, r2 = k % 2 ? 150 : 210; return '<line x1="' + (292 + Math.cos(a) * r1).toFixed(1) + '" y1="' + (91 + Math.sin(a) * r1).toFixed(1) + '" x2="' + (292 + Math.cos(a) * r2).toFixed(1) + '" y2="' + (91 + Math.sin(a) * r2).toFixed(1) + '" stroke="#FFF1B8" stroke-width="' + (k % 2 ? 3 : 5) + '" stroke-linecap="round"/>'; }).join('') + '</g>'
-      + '<circle class="mt-brillo" cx="292" cy="91" r="120" fill="url(#mtSol)"/>'
-      + '<g class="mt-nube"><ellipse cx="0" cy="230" rx="150" ry="34" fill="url(#mtNiebla)"/></g><g class="mt-nube b"><ellipse cx="0" cy="520" rx="190" ry="40" fill="url(#mtNiebla)"/></g>';
-    // Los bancales: los ya trabajados con su planta, el de ahora con un brillo, y los que faltan como puntos
-    BANCALES_MONTANA.forEach(([x, y], i) => {
+    const COL = [['#F4B6AF', '#E39790'], ['#F7D69A', '#E5B86E'], ['#F6BE97', '#E39E74'], ['#BFE2B2', '#97C788'], ['#D0BFF2', '#AE9BE0']];
+    const izq = [], der = [];
+    // Aristas de roca (salientes irregulares) y la base que se abre hacia las colinas
+    for(let y = MT.AY, n = 0; y <= 600; y += 22, n++){
+      const a = mtMedio(y) + Math.pow(Math.max(0, y - 420), 2) * 0.0016, r1 = y === MT.AY ? 0 : ((n * 7) % 5 - 2) * 2.6, r2 = y === MT.AY ? 0 : ((n * 3) % 5 - 2) * 2.6;
+      izq.push((200 - a - r1).toFixed(1) + ' ' + y); der.unshift((200 + a + r2).toFixed(1) + ' ' + y);
+    }
+    const silueta = 'M' + izq.join(' L') + ' L' + der.join(' L') + ' Z';
+    const onda = y => { const a = mtMedio(y) + 12, c = a * 0.22; return 'M0 ' + y + ' L' + (200 - a).toFixed(1) + ' ' + y + ' Q200 ' + (y + c).toFixed(1) + ' ' + (200 + a).toFixed(1) + ' ' + y + ' L400 ' + y; };
+    const destello = (x, y, r, k, clase) => '<g transform="translate(' + x + ' ' + y + ')"><path class="' + (clase || 'mt-chispa') + '" style="animation-delay:-' + (k * 0.8).toFixed(1) + 's" d="M0 ' + (-r) + ' Q' + (r * 0.16) + ' ' + (-r * 0.16) + ' ' + r + ' 0 Q' + (r * 0.16) + ' ' + (r * 0.16) + ' 0 ' + r + ' Q' + (-r * 0.16) + ' ' + (r * 0.16) + ' ' + (-r) + ' 0 Q' + (-r * 0.16) + ' ' + (-r * 0.16) + ' 0 ' + (-r) + ' Z" fill="#FFFFFF"/></g>';
+    let s = '<svg class="mont-ilus" viewBox="0 0 400 600" role="img" aria-label="Mi montaña: año ' + d.anio + ', bancal ' + (Math.min(d.actual, 19) + 1) + ' de 20"><title>Mi montaña</title>'
+      + '<defs><linearGradient id="mtCielo" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5440C9"/><stop offset=".3" stop-color="#8F6CE0"/><stop offset=".55" stop-color="#E79AC6"/><stop offset=".8" stop-color="#FFC6A0"/></linearGradient>'
+      + '<radialGradient id="mtResplandor" cx="300" cy="230" r="260" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#FFE3B0" stop-opacity=".75"/><stop offset=".5" stop-color="#FFB3B8" stop-opacity=".25"/><stop offset="1" stop-color="#FFB3B8" stop-opacity="0"/></radialGradient>'
+      + '<radialGradient id="mtHalo"><stop offset="0" stop-color="#FFF1C9" stop-opacity=".95"/><stop offset=".45" stop-color="#FFC9A0" stop-opacity=".5"/><stop offset="1" stop-color="#FFB0B8" stop-opacity="0"/></radialGradient>'
+      + '<linearGradient id="mtSolG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFF4C0"/><stop offset=".55" stop-color="#FFC56E"/><stop offset="1" stop-color="#FF8F6B"/></linearGradient>'
+      + '<linearGradient id="mtNubeG" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#FFE9F3"/><stop offset="1" stop-color="#FFC2B4"/></linearGradient>'
+      + '<linearGradient id="mtLejos" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#C9B8F3"/><stop offset="1" stop-color="#A08CE2"/></linearGradient>'
+      + '<linearGradient id="mtCerca" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#A794E8"/><stop offset="1" stop-color="#7F69D0"/></linearGradient>'
+      + '<linearGradient id="mtHoja" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#2F8F7E"/><stop offset="1" stop-color="#A3E2AE"/></linearGradient>'
+      + '<linearGradient id="mtHoja2" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#4E7FD0"/><stop offset="1" stop-color="#ABE6CB"/></linearGradient>'
+      + '<linearGradient id="mtHoja3" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#C0569E"/><stop offset="1" stop-color="#FFB3D2"/></linearGradient>'
+      + '<radialGradient id="mtRoca" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#FFD9EC"/><stop offset=".6" stop-color="#E59AC9"/><stop offset="1" stop-color="#B46CB4"/></radialGradient>'
+      + '<linearGradient id="mtPrado" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#CDEBB0"/><stop offset="1" stop-color="#9AD19C"/></linearGradient>'
+      + '<linearGradient id="mtPrado2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#A9DCA2"/><stop offset="1" stop-color="#78BD93"/></linearGradient>'
+      + '<linearGradient id="mtRio" x1="1" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#C9F3F7"/><stop offset=".6" stop-color="#8FD3EE"/><stop offset="1" stop-color="#6CB2E8"/></linearGradient>'
+      + '<radialGradient id="mtRoca2" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#E6D6FF"/><stop offset=".6" stop-color="#B69AE8"/><stop offset="1" stop-color="#8565C8"/></radialGradient>'
+      + '<linearGradient id="mtHojaSombra" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#4A3A9A"/><stop offset="1" stop-color="#8A73D0"/></linearGradient>'
+      + '<linearGradient id="mtProf" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFFFFF" stop-opacity=".12"/><stop offset=".55" stop-color="#FFFFFF" stop-opacity="0"/><stop offset="1" stop-color="#6B3F95" stop-opacity=".18"/></linearGradient>'
+      + '<radialGradient id="mtBruma"><stop offset="0" stop-color="#FFFFFF" stop-opacity=".7"/><stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/></radialGradient>'
+      + '<linearGradient id="mtEstela" x1="12" y1="0" x2="120" y2="0" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#FFFFFF" stop-opacity=".85"/><stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/></linearGradient>'
+      + '<linearGradient id="mtFugaz" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#FFFFFF" stop-opacity="0"/><stop offset="1" stop-color="#FFFFFF"/></linearGradient>'
+      + '<clipPath id="mtSil"><path d="' + silueta + '"/></clipPath><clipPath id="mtDer"><rect x="203" y="0" width="200" height="600"/></clipPath></defs>'
+      + '<style>.mt-sol{animation:mtSale 6s cubic-bezier(.2,.7,.3,1) both}.mt-halo{transform-box:fill-box;transform-origin:center;animation:mtLate 5s ease-in-out infinite}'
+      + '.mt-rayos{transform-origin:300px 212px;animation:mtGira 80s linear infinite}.mt-est{animation:mtTitila 3s ease-in-out infinite}'
+      + '.mt-chispa{transform-box:fill-box;transform-origin:center;animation:mtChispa 3.2s ease-in-out infinite}.mt-fugaz{animation:mtFugaz 11s ease-in 2s infinite;opacity:0}'
+      + '.mt-nube{animation:mtNube 22s ease-in-out infinite alternate}.mt-vuelo{animation:mtVuelo 30s linear infinite}.mt-vuelo.b{animation-duration:42s;animation-delay:-20s}'
+      + '.mt-hoja{transform-box:fill-box;transform-origin:50% 100%;animation:mtMece 3.6s ease-in-out infinite alternate}.mt-brilla{animation:mtTitila 2.6s ease-in-out infinite}'
+      + '.mt-luz{animation:mtSube 6s ease-in-out infinite;opacity:0}.mt-avion{animation:mtAvion 48s linear 3s infinite;transform:translate(470px,74px)}.mt-baliza{animation:mtTitila 1.2s steps(2) infinite}.mt-agua{stroke-dasharray:10 22;animation:mtFluye 2.8s linear infinite}.mt-aqui{transform-box:fill-box;transform-origin:center;animation:mtAqui 2.4s ease-in-out infinite}'
+      + '@keyframes mtSale{from{transform:translateY(80px)}to{transform:translateY(0)}}@keyframes mtLate{0%,100%{opacity:.7;transform:scale(1)}50%{opacity:1;transform:scale(1.08)}}'
+      + '@keyframes mtGira{to{transform:rotate(360deg)}}@keyframes mtTitila{0%,100%{opacity:.25}50%{opacity:1}}@keyframes mtChispa{0%,100%{opacity:.3;transform:scale(.6)}50%{opacity:1;transform:scale(1)}}'
+      + '@keyframes mtFugaz{0%{opacity:0;transform:translate(0,0)}3%{opacity:1}10%{opacity:0;transform:translate(150px,70px)}100%{opacity:0;transform:translate(150px,70px)}}'
+      + '@keyframes mtNube{from{transform:translateX(-30px)}to{transform:translateX(30px)}}'
+      + '@keyframes mtVuelo{0%{transform:translate(-60px,150px)}50%{transform:translate(200px,118px)}100%{transform:translate(470px,140px)}}'
+      + '@keyframes mtMece{from{transform:rotate(-5deg)}to{transform:rotate(5deg)}}@keyframes mtSube{0%{opacity:0;transform:translateY(0)}30%{opacity:.9}100%{opacity:0;transform:translateY(-60px)}}'
+      + '@keyframes mtAvion{0%{transform:translate(470px,74px)}45%,100%{transform:translate(-140px,58px)}}@keyframes mtFluye{to{stroke-dashoffset:-64}}@keyframes mtAqui{0%,100%{transform:scale(1);opacity:.9}50%{transform:scale(1.35);opacity:.35}}'
+      + '@media (prefers-reduced-motion:reduce){.mt-sol,.mt-halo,.mt-rayos,.mt-est,.mt-chispa,.mt-fugaz,.mt-nube,.mt-vuelo,.mt-hoja,.mt-brilla,.mt-luz,.mt-agua,.mt-avion,.mt-baliza,.mt-aqui{animation:none}}</style>'
+      // Cielo con el resplandor del amanecer, estrellas, destellos y una estrella fugaz de vez en cuando
+      + '<rect width="400" height="600" fill="url(#mtCielo)"/><rect width="400" height="600" fill="url(#mtResplandor)"/>'
+      + [[40, 30], [95, 62], [150, 22], [230, 48], [280, 18], [20, 95], [190, 80], [120, 110], [60, 160]].map(([x, y], k) => '<circle class="mt-est" cx="' + x + '" cy="' + y + '" r="' + (k % 3 ? 1.2 : 1.8) + '" fill="#FFFFFF" style="animation-delay:-' + (k * 0.7).toFixed(1) + 's"/>').join('')
+      + destello(352, 46, 11, 0) + destello(78, 92, 6, 1) + destello(250, 112, 5, 2) + destello(168, 46, 4, 3)
+      + '<g class="mt-fugaz"><line x1="40" y1="30" x2="86" y2="51" stroke="url(#mtFugaz)" stroke-width="2" stroke-linecap="round"/></g>'
+      + '<g class="mt-avion"><line x1="12" y1="0" x2="120" y2="0" stroke="url(#mtEstela)" stroke-width="2.4" stroke-linecap="round"/>'
+        + '<path d="M-10 0 Q-9 -2.6 -4 -2.6 L9 -2 Q12 -1 12 0 Q12 1 9 1.6 L-4 2.2 Q-9 2.2 -10 0 Z" fill="#F6F1FF"/><path d="M0 -1 L5 -9 L8 -9 L6 -1 Z M1 1.5 L6 8 L8.5 8 L6.5 1.5 Z M8 -2 L11 -6 L12.5 -6 L11.5 -1 Z" fill="#D9CCF7"/>'
+        + '<circle class="mt-baliza" cx="-9" cy="0" r="1.2" fill="#FF6B8B"/></g>'
+      // El sol, que sale detrás de las montañas lejanas, con halos y rayos que giran despacio
+      + '<g class="mt-sol"><g class="mt-rayos" opacity=".35">' + Array.from({ length: 12 }, (x, k) => { const a = k * Math.PI / 6, r2 = k % 2 ? 100 : 128; return '<line x1="' + (300 + Math.cos(a) * 58).toFixed(1) + '" y1="' + (212 + Math.sin(a) * 58).toFixed(1) + '" x2="' + (300 + Math.cos(a) * r2).toFixed(1) + '" y2="' + (212 + Math.sin(a) * r2).toFixed(1) + '" stroke="#FFF3C4" stroke-width="' + (k % 2 ? 2 : 3.5) + '" stroke-linecap="round"/>'; }).join('') + '</g>'
+      + '<circle class="mt-halo" cx="300" cy="212" r="120" fill="url(#mtHalo)"/><circle cx="300" cy="212" r="78" fill="#FFE9BE" opacity=".22"/><circle cx="300" cy="212" r="62" fill="#FFE2B0" opacity=".3"/>'
+      + '<circle cx="300" cy="212" r="46" fill="url(#mtSolG)"/><circle cx="288" cy="198" r="14" fill="#FFF8DA" opacity=".55"/></g>'
+      // Nubes alargadas con degradado (unas delante del sol)
+      + '<g class="mt-nube"><rect x="20" y="128" width="120" height="10" rx="5" fill="url(#mtNubeG)" opacity=".85" transform="skewX(-25)"/><rect x="70" y="143" width="76" height="7" rx="3.5" fill="url(#mtNubeG)" opacity=".65" transform="skewX(-25)"/></g>'
+      + '<g class="mt-nube" style="animation-delay:-11s"><rect x="300" y="196" width="130" height="11" rx="5.5" fill="url(#mtNubeG)" opacity=".85" transform="skewX(-25)"/><rect x="345" y="212" width="70" height="7" rx="3.5" fill="url(#mtNubeG)" opacity=".7" transform="skewX(-25)"/></g>'
+      // Montañas lejanas, con volumen, caras iluminadas y nieve en las puntas
+      + '<path d="M0 330 L45 282 L80 300 L130 214 L165 252 L190 236 L250 284 L305 206 L340 256 L370 238 L400 262 V600 H0 Z" fill="url(#mtLejos)"/>'
+      + '<path d="M130 214 L165 252 L150 300 Z M305 206 L340 256 L322 300 Z M45 282 L80 300 L64 320 Z M370 238 L400 262 L400 290 Z" fill="#8E7AD6" opacity=".35"/>'
+      + '<path d="M130 214 L102 262 L122 258 L138 236 Z M305 206 L276 252 L296 250 L312 226 Z M45 282 L28 302 L44 300 Z" fill="#DCD0F8" opacity=".8"/>'
+      + '<path d="M130 214 L122 228 L130 225 L137 230 Z M305 206 L297 220 L305 217 L313 222 Z" fill="#FFFFFF" opacity=".95"/>'
+      + '<path d="M0 420 L40 372 L80 395 L120 350 L160 390 L240 380 L290 345 L330 378 L370 352 L400 372 V600 H0 Z" fill="url(#mtCerca)"/>'
+      + '<path d="M120 350 L160 390 L140 420 Z M290 345 L330 378 L312 410 Z M370 352 L400 372 L400 400 Z M40 372 L80 395 L60 420 Z" fill="#6A55BE" opacity=".3"/>'
+      // La montaña de los 5 niveles: franjas de color curvadas, bancales, textura, sombra, brillo y nieve
+      + '<g clip-path="url(#mtSil)"><rect width="400" height="600" fill="' + COL[0][0] + '"/>';
+    for(let k = 4; k >= 0; k--){
+      const top = MT.BY - (k + 1) * MT.BANDA;
+      s += '<path d="' + onda(top) + ' V600 H0 Z" fill="' + COL[k][0] + '"/>';
+      for(let j = 1; j < 4; j++) s += '<path d="' + onda(top + j * 21) + '" fill="none" stroke="' + COL[k][1] + '" stroke-width="1.5" opacity=".45"/>';
+      s += '<path d="' + onda(top) + '" fill="none" stroke="' + COL[k][1] + '" stroke-width="3" opacity=".8"/><path d="' + onda(top + 3) + '" fill="none" stroke="#FFFFFF" stroke-width="1.5" opacity=".35"/>';
+    }
+    for(let n = 0; n < 46; n++){
+      const y = 140 + (n * 53) % 400, x = 200 + ((n * 97) % 100 / 50 - 1) * mtMedio(y) * 0.92;
+      s += '<ellipse cx="' + x.toFixed(1) + '" cy="' + y + '" rx="' + (3 + n % 3) + '" ry="1.6" fill="#FFFFFF" opacity=".3"/>';
+    }
+    // Arbolitos en la franja verde
+    [[-0.8, 270], [-0.55, 280], [0.6, 262], [0.82, 276], [-0.3, 240], [0.35, 232], [-0.7, 300], [0.72, 296]].forEach(([f, y]) => {
+      const x = 200 + f * mtMedio(y);
+      s += '<path d="M' + x.toFixed(1) + ' ' + (y - 14) + ' L' + (x - 5).toFixed(1) + ' ' + y + ' L' + (x + 5).toFixed(1) + ' ' + y + ' Z" fill="#7DBB86"/><path d="M' + x.toFixed(1) + ' ' + (y - 14) + ' L' + x.toFixed(1) + ' ' + y + ' L' + (x + 5).toFixed(1) + ' ' + y + ' Z" fill="#5FA078"/>';
+    });
+    // Luz del sol (a la derecha): la cara izquierda en sombra con una arista irregular, brillo cálido y un borde de luz a la derecha
+    s += '<rect width="400" height="600" fill="url(#mtProf)"/>'
+      + '<path d="M200 70 L193 140 L203 210 L188 290 L199 370 L182 450 L192 520 L176 600 L0 600 L0 70 Z" fill="#3A2A6E" opacity=".11"/>'
+      + '<path d="M200 70 L232 170 L246 300 L278 420 L300 600 L400 600 L400 70 Z" fill="#FFE8C8" opacity=".18"/>'
+      + '<g clip-path="url(#mtDer)"><path d="' + silueta + '" fill="none" stroke="#FFE4BE" stroke-width="7" opacity=".55"/></g>'
+      + '<path d="M0 0 H400 V120 L236 120 Q231 130 225 142 Q222 133 218 135 Q213 150 208 154 Q204 138 198 139 Q193 150 188 148 Q184 134 179 135 Q174 144 170 141 Q168 128 164 122 L0 122 Z" fill="#FFFFFF"/>'
+      + '<path d="M201 70 L210 108 L206 128 L212 148 L220 134 L400 134 V60 Z" fill="#CEC3F2" opacity=".6"/></g>'
+      + destello(212, 88, 7, 4);
+    // Bruma en la base y una nube de niebla que cruza despacio la ladera
+    s += '<ellipse cx="200" cy="546" rx="240" ry="26" fill="url(#mtBruma)"/><g class="mt-nube" style="animation-duration:30s"><ellipse cx="150" cy="330" rx="120" ry="14" fill="url(#mtBruma)" opacity=".7"/></g>';
+    // Al pie de la montaña, tierra: un prado con un sendero que sube hasta el primer bancal
+    s += '<path d="M0 536 Q100 520 200 534 T400 528 V600 H0 Z" fill="url(#mtPrado)"/>'
+      + '<path d="M0 568 Q120 552 230 570 T400 560 V600 H0 Z" fill="url(#mtPrado2)"/>'
+      + '<path d="M150 600 C152 576 128 556 106 538 Q112 534 120 536 C146 554 178 574 196 600 Z" fill="#FBE4C6"/><path d="M162 600 C160 580 140 562 118 544" fill="none" stroke="#FFF3E2" stroke-width="2" stroke-dasharray="4 7" stroke-linecap="round"/>'
+      // El río baja por la derecha, con el agua que corre y el reflejo del sol
+      + '<path d="M400 512 C364 530 318 562 280 600 L394 600 C396 572 398 548 400 538 Z" fill="url(#mtRio)"/>'
+      + '<path d="M400 512 C364 530 318 562 280 600" fill="none" stroke="#FFFFFF" stroke-width="2.5" opacity=".7"/>'
+      + '<path class="mt-agua" d="M398 524 C366 544 336 568 316 600" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" opacity=".8"/>'
+      + '<path class="mt-agua" style="animation-delay:-1.4s" d="M399 536 C380 554 364 576 352 600" fill="none" stroke="#FFF1C8" stroke-width="2" stroke-linecap="round" opacity=".8"/>'
+      + destello(352, 574, 5, 5) + destello(374, 590, 4, 6)
+      + [['<path d="M-6 0 L0 -10 L6 0 Z" fill="#FFE3EF"/><path d="M0 -10 L0 0" stroke="#E7B4CC" stroke-width=".8"/><path d="M-10 0 L10 0 L7 4.5 L-7 4.5 Z" fill="#FFFFFF"/>', 16, 0],
+         ['<ellipse rx="4" ry="1.9" fill="#6DC79A" transform="rotate(30)"/>', 11, -4], ['<ellipse rx="3.4" ry="1.7" fill="#F5A3C7" transform="rotate(-20)"/>', 13, -9],
+         ['<ellipse rx="3.6" ry="1.8" fill="#9BD58A" transform="rotate(60)"/>', 10, -2]].map(([forma, t, ini], k) => '<g transform="translate(' + [0, 8, -6, 14][k] + ' 0)" opacity="0">' + forma
+        + '<animateMotion dur="' + t + 's" begin="' + ini + 's" repeatCount="indefinite" path="M399 528 C372 548 350 570 334 606"/>'
+        + '<animate attributeName="opacity" dur="' + t + 's" begin="' + ini + 's" repeatCount="indefinite" values="0;1;1;0" keyTimes="0;.12;.85;1"/></g>').join('')
+      // Matas de hierba y flores en el prado
+      + [[60, 552], [232, 560], [262, 548], [86, 578], [214, 588], [280, 582]].map(([x, y]) => '<path d="M' + x + ' ' + y + ' q-2 -9 -6 -12 M' + x + ' ' + y + ' q0 -11 1 -15 M' + x + ' ' + y + ' q3 -8 7 -11" fill="none" stroke="#5FA97E" stroke-width="1.8" stroke-linecap="round"/>').join('')
+      // Rocas redondeadas y brillantes
+      + '<ellipse cx="96" cy="586" rx="20" ry="13" fill="url(#mtRoca)"/><ellipse cx="88" cy="580" rx="6" ry="3" fill="#FFFFFF" opacity=".55"/><ellipse cx="118" cy="594" rx="11" ry="7" fill="url(#mtRoca)"/>'
+      + '<ellipse cx="296" cy="590" rx="16" ry="10" fill="url(#mtRoca2)"/><ellipse cx="290" cy="585" rx="5" ry="2.4" fill="#FFFFFF" opacity=".55"/><ellipse cx="276" cy="597" rx="9" ry="5.5" fill="url(#mtRoca)"/>';
+    // Hojas grandes en las esquinas, que se mecen (con su nervio de luz), y otras en sombra detrás para dar profundidad
+    const hojaGrande = (bx, by, [a, L, w, g, c], k) => '<g transform="translate(' + bx + ' ' + by + ') rotate(' + a + ')"><g class="mt-hoja" style="animation-delay:-' + (k * 0.7).toFixed(1) + 's;animation-duration:' + (3.4 + k % 3 * 0.5).toFixed(1) + 's">'
+      + '<path d="M0 0 C' + (-w) + ' ' + (-L * 0.3).toFixed(1) + ' ' + (-w * 0.8 + c).toFixed(1) + ' ' + (-L * 0.8).toFixed(1) + ' ' + c + ' ' + (-L) + ' C' + (w * 0.9 + c).toFixed(1) + ' ' + (-L * 0.75).toFixed(1) + ' ' + w + ' ' + (-L * 0.3).toFixed(1) + ' 0 0 Z" fill="url(#' + g + ')"/>'
+      + (g === 'mtHojaSombra' ? '' : '<path d="M0 -3 Q' + (c * 0.3).toFixed(1) + ' ' + (-L * 0.5).toFixed(1) + ' ' + (c * 0.92).toFixed(1) + ' ' + (-L * 0.94).toFixed(1) + '" fill="none" stroke="#FFFFFF" stroke-width="1.3" opacity=".5"/>') + '</g></g>';
+    const izqH = [[-25, 120, 20, 'mtHoja2', 10], [-5, 140, 22, 'mtHoja', 8], [15, 125, 20, 'mtHoja2', -6], [35, 105, 17, 'mtHoja', -10], [55, 80, 14, 'mtHoja3', -8], [-45, 90, 16, 'mtHoja', 12]];
+    s += [[-10, 150, 24, 'mtHojaSombra', 10], [22, 130, 22, 'mtHojaSombra', -8]].map((h, k) => hojaGrande(20, 608, h, k)).join('')
+      + izqH.map((h, k) => hojaGrande(16, 606, h, k)).join('');
+    const flor = (x, y, alto, c, t) => '<g transform="translate(' + x + ' ' + y + ')"><g class="mt-hoja" style="animation-duration:' + t + 's"><path d="M0 0 Q3 ' + (-alto / 2) + ' 0 ' + (-alto) + '" fill="none" stroke="#3E9C86" stroke-width="2"/>'
+      + [0, 72, 144, 216, 288].map(g => '<ellipse cx="0" cy="' + (-alto - 4.5) + '" rx="2.6" ry="4.5" fill="' + c + '" transform="rotate(' + g + ' 0 ' + (-alto) + ')"/>').join('') + '<circle cx="0" cy="' + (-alto) + '" r="2.4" fill="#FFE27F"/></g></g>';
+    s += flor(136, 584, 26, '#FF9FC0', 4.4) + flor(246, 586, 20, '#FFC1D8', 3.8) + flor(70, 570, 18, '#FFB1A0', 4.1)
+      // Lucecitas que suben despacio desde las plantas
+      + [[46, 520], [70, 548], [24, 490], [250, 560], [200, 560]].map(([x, y], k) => '<circle class="mt-luz" cx="' + x + '" cy="' + y + '" r="1.8" fill="#FFF6C8" style="animation-delay:-' + (k * 1.1).toFixed(1) + 's"/>').join('');
+    // El camino en zigzag y los bancales (por encima de todo, para que se vean siempre)
+    s += '<polyline points="' + Array.from({ length: 20 }, (x, i) => posBancal(i).join(',')).join(' ') + '" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-dasharray="2 5" stroke-linecap="round" opacity=".75"/>';
+    for(let i = 0; i < 20; i++){
+      const [x, y] = posBancal(i);
+      const hojas = (cx, cy, k) => '<path d="M' + cx + ' ' + (cy + 5 * k) + ' V' + (cy - 5 * k) + '" stroke="#3B6D11" stroke-width="' + (1.6 * k) + '"/><ellipse cx="' + (cx - 3.4 * k) + '" cy="' + (cy - 1) + '" rx="' + (3.6 * k) + '" ry="' + (2.1 * k) + '" fill="#4E7F2A" transform="rotate(25 ' + (cx - 3.4 * k) + ' ' + (cy - 1) + ')"/><ellipse cx="' + (cx + 3.4 * k) + '" cy="' + (cy - 4 * k) + '" rx="' + (3.6 * k) + '" ry="' + (2.1 * k) + '" fill="#639922" transform="rotate(-25 ' + (cx + 3.4 * k) + ' ' + (cy - 4 * k) + ')"/>';
       if(i < d.actual){
         const b = d.bancal(i);
-        s += '<g><circle cx="' + x + '" cy="' + y + '" r="17" fill="#FFFFFF" stroke="#3B6D11" stroke-width="3"/>'
-          + (b.hojas ? '<path d="M' + x + ' ' + (y + 9) + ' V' + (y - 8) + '" stroke="#3B6D11" stroke-width="2.5"/><ellipse cx="' + (x - 5) + '" cy="' + (y - 2) + '" rx="6" ry="3.5" fill="#4E7F2A" transform="rotate(25 ' + (x - 5) + ' ' + (y - 2) + ')"/><ellipse cx="' + (x + 5) + '" cy="' + (y - 7) + '" rx="6" ry="3.5" fill="#639922" transform="rotate(-25 ' + (x + 5) + ' ' + (y - 7) + ')"/>' : '<circle cx="' + x + '" cy="' + y + '" r="4" fill="#B49A78"/>')
-          + (b.flores ? '<circle cx="' + (x + 12) + '" cy="' + (y - 12) + '" r="5" fill="#E86A92" stroke="#fff" stroke-width="1.5"/>' : '') + '</g>';
+        s += '<circle cx="' + x + '" cy="' + y + '" r="10" fill="#FFFFFF" stroke="#3B6D11" stroke-width="2"/>'
+          + (b.hojas ? hojas(x, y, 1) : '<circle cx="' + x + '" cy="' + y + '" r="2.5" fill="#B49A78"/>')
+          + (b.flores ? '<circle cx="' + (x + 7) + '" cy="' + (y - 7) + '" r="3.2" fill="#E86A92" stroke="#fff" stroke-width="1"/>' : '');
       } else if(i === d.actual){
-        s += '<circle class="mt-aqui" cx="' + x + '" cy="' + y + '" r="30" fill="#FFD25E" opacity=".9"/>'
-          + '<circle cx="' + x + '" cy="' + y + '" r="20" fill="#FFFFFF" stroke="#D99A1E" stroke-width="4"/>'
-          + '<path d="M' + x + ' ' + (y + 11) + ' V' + (y - 9) + '" stroke="#3B6D11" stroke-width="3"/><ellipse cx="' + (x - 6) + '" cy="' + (y - 1) + '" rx="7" ry="4" fill="#639922" transform="rotate(25 ' + (x - 6) + ' ' + (y - 1) + ')"/><ellipse cx="' + (x + 6) + '" cy="' + (y - 7) + '" rx="7" ry="4" fill="#639922" transform="rotate(-25 ' + (x + 6) + ' ' + (y - 7) + ')"/>'
-          + '<g transform="translate(' + x + ' ' + (y - 46) + ')"><rect x="-52" y="-17" width="104" height="30" rx="15" fill="#FFFFFF" stroke="#D99A1E" stroke-width="2.5"/><text x="0" y="5" text-anchor="middle" font-family="Karla,Arial,sans-serif" font-size="17" font-weight="800" fill="#7A4F00">Estás aquí</text></g>';
+        // El cartel «Estás aquí», en el primer hueco donde no tape ningún otro bancal
+        const huecos = [[0, -27], [0, 27], [-52, 0], [52, 0], [-72, 0], [72, 0], [-60, -24], [60, -24], [-60, 24], [60, 24]].map(([dx, dy]) => [Math.max(38, Math.min(362, x + dx)), y + dy]);
+        const libre = ([lx, ly]) => Array.from({ length: 20 }, (z, j) => posBancal(j)).every(([mx, my], j) => j === i || Math.abs(mx - lx) > 45 || Math.abs(my - ly) > 21);
+        const [lx, ly] = huecos.find(libre) || huecos[0];
+        s += '<circle class="mt-aqui" cx="' + x + '" cy="' + y + '" r="17" fill="#FFD25E" opacity=".9"/><circle cx="' + x + '" cy="' + y + '" r="12" fill="#FFFFFF" stroke="#D99A1E" stroke-width="2.5"/>' + hojas(x, y, 1.15)
+          + '<g transform="translate(' + lx + ' ' + ly + ')"><rect x="-34" y="-11" width="68" height="20" rx="10" fill="#FFFFFF" stroke="#D99A1E" stroke-width="1.5"/><text x="0" y="3.5" text-anchor="middle" font-family="Karla,Arial,sans-serif" font-size="11" font-weight="800" fill="#7A4F00">Estás aquí</text></g>';
       } else {
-        s += '<circle cx="' + x + '" cy="' + y + '" r="7" fill="#FFFFFF" opacity=".75" stroke="#7A6A9E" stroke-width="1.5"/>';
+        s += '<circle cx="' + x + '" cy="' + y + '" r="4" fill="#FFFFFF" opacity=".85" stroke="#8C7BC4" stroke-width="1"/>';
       }
-    });
-    return s + '</svg></div>';
+    }
+    // Pájaros que cruzan aleteando (las alas suben y bajan; el cuerpo no gira)
+    const ARRIBA = 'M-14 -6 Q-7 -9 0 1 Q7 -9 14 -6 Q7 -3 0 4 Q-7 -3 -14 -6 Z', ABAJO = 'M-14 6 Q-7 -1 0 1 Q7 -1 14 6 Q7 2 0 4 Q-7 2 -14 6 Z';
+    const pajaro = (dx, dy, e, t) => '<g transform="translate(' + dx + ' ' + dy + ') scale(' + e + ')"><path d="' + ARRIBA + '" fill="#4A3A8C"><animate attributeName="d" dur="' + t + 's" repeatCount="indefinite" values="' + ARRIBA + ';' + ABAJO + ';' + ARRIBA + '" calcMode="spline" keyTimes="0;.5;1" keySplines=".45 0 .55 1;.45 0 .55 1"/></path></g>';
+    s += '<g class="mt-vuelo">' + pajaro(0, 0, 0.9, 0.9) + pajaro(-26, 12, 0.7, 0.8) + '</g><g class="mt-vuelo b">' + pajaro(0, -40, 0.6, 1) + '</g>';
+    return s + '</svg>';
   }
   function leyendaMontana(d){
     return '<div class="mont-ley">' + BADGE_SCALE.map((b, k) => '<span' + (k === d.nivel ? ' class="on"' : '') + '><i style="background:' + NIVELES_MONTANA[k].c + '"></i>Año ' + (k + 1) + ' · ' + b.label + '</span>').join('') + '</div>';
@@ -9790,9 +9927,11 @@ lo que haces cada día es lo que vas a ser.`;
     app.appendChild(cab);
     let dm = null; try { dm = datosMontana(); } catch(e){ console.error('Montaña:', e); }
     const caja = el('<div class="progreso"><h1 class="viaje-titulo">Progreso</h1>'
-      + (dm ? '<div class="card mont-card"><h2><span>⛰️ Mi montaña</span><button type="button" class="mont-son" id="montSon" aria-label="Música de la montaña">🎵 Música</button></h2><p class="mont-sub">Año ' + dm.anio + ' · ' + BADGE_SCALE[dm.nivel].label + ' · bancal ' + dm.enAnio + ' de 4 este año. Cada trimestre, tu meta queda plantada en un bancal y la siguiente sube un poco más.</p>'
-        + montanaSVG(dm) + leyendaMontana(dm) + '</div>'
-        + '<div class="card mont-card planta-fondo"><h2>🌿 Tu planta de este trimestre</h2><p class="mont-sub">Una hoja por cada semana con algún registro: más grande cuantos más días registras, y con flor si cumples tu compromiso.</p><div style="display:flex;justify-content:center">' + plantaSVG(dm.bancal(dm.actual), 24, true) + '</div></div>' : '')
+      + (dm ? '<div class="prog-son"><button type="button" class="mont-son" id="montSon" aria-label="Música de la montaña">🎵 Música</button>'
+          + '<label class="prog-vol"><span aria-hidden="true">🔉</span><input type="range" id="montVol" min="0" max="100" value="' + Math.round(volumenMontana() * 100) + '" aria-label="Volumen de la música"></label></div>'
+        + '<div class="card mont-card planta-fondo"><h2>🌿 Tu planta de este trimestre</h2><p class="mont-sub">Una hoja por cada semana con algún registro: más grande cuantos más días registras, y con flor si cumples tu compromiso.</p><div style="display:flex;justify-content:center">' + plantaSVG(dm.bancal(dm.actual), 24, true) + '</div></div>'
+        + '<div class="card mont-card"><h2>⛰️ Mi montaña</h2><p class="mont-sub">Año ' + dm.anio + ' · ' + BADGE_SCALE[dm.nivel].label + ' · bancal ' + dm.enAnio + ' de 4 este año. Cada trimestre, tu meta queda plantada en un bancal y la siguiente sube un poco más.</p>'
+        + montanaSVG(dm) + leyendaMontana(dm) + '</div>' : '')
       + '<div class="progreso-grid">'
       + '<div class="progreso-dato"><b>' + racha + '</b><span>' + (racha === 1 ? 'día seguido' : 'días seguidos') + ' practicando</span></div>'
       + '<div class="progreso-dato"><b>' + semana + '/7</b><span>días esta semana</span></div>'
@@ -9818,6 +9957,12 @@ lo que haces cada día es lo que vas a ser.`;
         else { try { localStorage.removeItem('montana_musica'); } catch(e){} sonarMontana().then(pintarSon); }
       };
       pintarSon();
+      // Volumen: se nota al momento y se recuerda en el móvil
+      caja.querySelector('#montVol').oninput = e => {
+        const v = Number(e.target.value) / 100;
+        try { localStorage.setItem('montana_volumen', String(v)); } catch(err){}
+        if(montanaSonando()){ clearInterval(relojMontana); relojMontana = null; musicaMontana.volume = v; }
+      };
       const otraMusica = (typeof sintoniaSonando === 'function' && sintoniaSonando()) || (typeof musica !== 'undefined' && musica && musica.id);
       if(!montanaSinMusica() && !otraMusica) sonarMontana().then(pintarSon);
     }
@@ -10792,4 +10937,4 @@ lo que haces cada día es lo que vas a ser.`;
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V12.80 · App Metas Amables · 2026-10-12 17:19==== -->
+<!-- ==== Fin del index V12.81 · App Metas Amables · 2026-10-12 18:44==== -->
