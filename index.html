@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V12.96 · App Metas Amables · 2026-10-12 19:50==== -->
+<!-- ==== index V12.97 · App Metas Amables · 2026-10-12 20:35==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -892,7 +892,15 @@ body:has(.banda-fin-plan) #app{padding-bottom:28vh}
 svg.escudo{vertical-align:-0.18em;flex:0 0 auto}
 .tres-areas .area{display:flex;flex-direction:column;gap:2px;margin:8px 0;padding:10px 12px;border-radius:12px;background:#F1ECFC}.tres-areas .area b{font-size:16px}.tres-areas .area span{font-size:14px;line-height:1.4}
 body.con-fondo-nivel{background:#fff}
-body.con-fondo-vivo{background:#fff}
+body.con-fondo-vivo{background:#3A2A8C}
+/* Inicio con el fondo oscuro: los textos que van directamente sobre él, en claro */
+body.con-fondo-vivo .wordmark{color:#FFFFFF}
+body.con-fondo-vivo .lema, body.con-fondo-vivo .fecha-hoy{color:#E6DEFF}
+body.con-fondo-vivo .version-tag{color:#CFC3F5}
+body.con-fondo-vivo .saludo-inicio > div:not(.practi-inicio){color:#FFFFFF !important}
+body.con-fondo-vivo .pie-derechos, body.con-fondo-vivo .pie-derechos a{color:#CFC3F5}
+body.con-fondo-vivo .ciclo-flecha path{stroke:#FFFFFF}
+body.con-fondo-vivo .ciclo-flecha path[fill]{fill:#FFFFFF}
 .fondo-vivo{position:fixed;inset:0;z-index:-1;pointer-events:none}
 .fondo-vivo svg{display:block;width:100%;height:100%}
 body.con-fondo-nivel::before{content:"";position:fixed;inset:0;z-index:-1;background:linear-gradient(var(--velo-nivel,rgba(255,255,255,.55)),var(--velo-nivel,rgba(255,255,255,.55))),var(--fondo-nivel) center/cover no-repeat}
@@ -2254,7 +2262,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V12.96';
+  const APP_VERSION = 'V12.97';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -4583,7 +4591,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
     { v: 'V12.96', f: '12 de octubre de 2026', n: [
-      '<b>Inicio</b>, más moderno: recuadros sin borde y, de fondo, el paisaje de tu montaña con movimiento (sol, nubes, pájaros y algún avión), con el color de tu nivel.' ] },
+      '<b>Inicio</b>, más moderno: recuadros sin borde sobre un cielo oscuro de amanecer con movimiento (estrellas, sol, nubes, pájaros y algún avión) y colinas del color de tu nivel.' ] },
     { v: 'V12.93', f: '12 de octubre de 2026', n: [
       'Tu planta se enrosca de verdad en la guía (por delante y por detrás) y sus flores son flores. El paisaje de alrededor tiene el color de tu nivel, y asoma la tienda de Prácti.' ] },
     { v: 'V12.89', f: '12 de octubre de 2026', n: [
@@ -6754,7 +6762,7 @@ lo que haces cada día es lo que vas a ser.`;
                 : state.panelSub === 's4'
                   ? '<span class="practi-tocable" data-reaccion="practi-pizarra-empujon.json" title="Tócame">' + practiHTML('pizarra', '', 190) + '</span>'   // al tocarlo, empujón en la pizarra
                   : practiHTML(figuraSub[0], '', figuraSub[1], figuraSub[2] ? 'una-vez' : '')}</div>`)
-        : el(`<div style="position:relative;text-align:center;margin-bottom:14px"><div style="font-family:'Lora',serif;font-size:24px;font-weight:600;color:var(--ink)">Hola, ${escapeAttr(state.me)}${avatarDe(state.me) ? ' ' + avatarDe(state.me) : ''}</div><div style="font-family:'Karla',sans-serif;font-size:15px;font-weight:700;color:var(--ink);margin-top:2px">${bienvenidaTexto(state.me)} a tu ciclo de aprendizaje</div><div class="fecha-hoy" id="fechaHoy" style="margin-bottom:10px">${textoFechaHoy()}</div><div class="hueco-panel-fac"></div><div class="practi-inicio" style="margin-bottom:10px">${practiReaccionHTML('saludo', 'empujonSaludo', 104, 'practi-saludo')}${bocadilloPracti(fraseInicio(), 'tono-calma')}</div></div>`);
+        : el(`<div class="saludo-inicio" style="position:relative;text-align:center;margin-bottom:14px"><div style="font-family:'Lora',serif;font-size:24px;font-weight:600;color:var(--ink)">Hola, ${escapeAttr(state.me)}${avatarDe(state.me) ? ' ' + avatarDe(state.me) : ''}</div><div style="font-family:'Karla',sans-serif;font-size:15px;font-weight:700;color:var(--ink);margin-top:2px">${bienvenidaTexto(state.me)} a tu ciclo de aprendizaje</div><div class="fecha-hoy" id="fechaHoy" style="margin-bottom:10px">${textoFechaHoy()}</div><div class="hueco-panel-fac"></div><div class="practi-inicio" style="margin-bottom:10px">${practiReaccionHTML('saludo', 'empujonSaludo', 104, 'practi-saludo')}${bocadilloPracti(fraseInicio(), 'tono-calma')}</div></div>`);
       // (el() devuelve un fragmento: hay que buscar dentro antes de añadirlo a la página)
       greetPanel.querySelectorAll('.practi-tocable').forEach(c => { c.onclick = () => reaccionExterna(c, c.dataset.reaccion); });
       // «Panel de control admin Metas A.» (solo moderadores): justo debajo de la fecha, antes de Prácti saludando
@@ -9733,16 +9741,16 @@ lo que haces cada día es lo que vas a ser.`;
   document.addEventListener('visibilitychange', () => { if(document.visibilityState !== 'visible' && montanaSonando()){ clearInterval(relojMontana); musicaMontana.pause(); } });
   function insigniaMontana(){ try { return BADGE_SCALE[datosMontana().nivel]; } catch(e){ return BADGE_SCALE[0]; } }
   // La planta: un tutor y una trepadora; cada semana, una hoja (o un hueco). paso = alto de cada semana; etiquetas = poner «Oct 1»…
-  // Fondo vivo de Inicio: el paisaje de la montaña, sin la montaña. Cielo claro (para que se lea todo), el sol que sale,
+  // Fondo vivo de Inicio: el paisaje de la montaña, sin la montaña. Cielo oscuro de amanecer (para que contrasten los recuadros), el sol que sale,
   // nubes, pájaros que aletean, algún avión, montañas lejanas y, abajo, colinas y pinos del color del nivel, con luciérnagas
   function fondoInicioSVG(nivel){
-    const C = [['#F8DAD6', '#EFB3AC', '#EE9A9A', '#D67A7A'], ['#FBEACB', '#F3CF8E', '#F0C25E', '#D9A43F'], ['#FBE0CA', '#F4BC93', '#F4A673', '#DB844E'],
-      ['#D9EEC9', '#A9D9A0', '#7DBB86', '#5FA078'], ['#E8E0F8', '#C9BAF0', '#BBA6EE', '#9C85DA']][nivel == null ? 0 : nivel];
+    const C = [['#A84D68', '#8C3D57', '#D06A80', '#A54A61'], ['#B07A2C', '#8F6222', '#D59A3E', '#A6762A'], ['#B05C38', '#90482B', '#D4794B', '#A35834'],
+      ['#3B7C65', '#2E6352', '#55A07E', '#3A7860'], ['#6A4FAD', '#543B90', '#8A6CCB', '#6449A5']][nivel == null ? 0 : nivel];
     const ARRIBA = 'M-14 -6 Q-7 -9 0 1 Q7 -9 14 -6 Q7 -3 0 4 Q-7 -3 -14 -6 Z', ABAJO = 'M-14 6 Q-7 -1 0 1 Q7 -1 14 6 Q7 2 0 4 Q-7 2 -14 6 Z';
-    const pajaro = (dx, dy, e, t) => '<g transform="translate(' + dx + ' ' + dy + ') scale(' + e + ')"><path d="' + ARRIBA + '" fill="#8D7BC0"><animate attributeName="d" dur="' + t + 's" repeatCount="indefinite" values="' + ARRIBA + ';' + ABAJO + ';' + ARRIBA + '" calcMode="spline" keyTimes="0;.5;1" keySplines=".45 0 .55 1;.45 0 .55 1"/></path></g>';
+    const pajaro = (dx, dy, e, t) => '<g transform="translate(' + dx + ' ' + dy + ') scale(' + e + ')"><path d="' + ARRIBA + '" fill="#E2D9FF"><animate attributeName="d" dur="' + t + 's" repeatCount="indefinite" values="' + ARRIBA + ';' + ABAJO + ';' + ARRIBA + '" calcMode="spline" keyTimes="0;.5;1" keySplines=".45 0 .55 1;.45 0 .55 1"/></path></g>';
     const pino = (x, y, e) => '<path d="M' + x + ' ' + (y - 26 * e) + ' L' + (x - 9 * e) + ' ' + y + ' L' + (x + 9 * e) + ' ' + y + ' Z" fill="' + C[2] + '"/><path d="M' + x + ' ' + (y - 26 * e) + ' L' + x + ' ' + y + ' L' + (x + 9 * e) + ' ' + y + ' Z" fill="' + C[3] + '"/>';
     return '<svg viewBox="0 0 400 800" preserveAspectRatio="xMidYMax slice" aria-hidden="true">'
-      + '<defs><linearGradient id="fiCielo" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFF9F2"/><stop offset=".4" stop-color="#FCE9EF"/><stop offset=".72" stop-color="#EFE5FA"/><stop offset="1" stop-color="' + C[0] + '"/></linearGradient>'
+      + '<defs><linearGradient id="fiCielo" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2B1E78"/><stop offset=".4" stop-color="#4632A6"/><stop offset=".7" stop-color="#7650BE"/><stop offset="1" stop-color="#B8679E"/></linearGradient>'
       + '<radialGradient id="fiHalo"><stop offset="0" stop-color="#FFEBB5" stop-opacity=".9"/><stop offset="1" stop-color="#FFD9A0" stop-opacity="0"/></radialGradient>'
       + '<linearGradient id="fiEstela" x1="12" y1="0" x2="120" y2="0" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#FFFFFF" stop-opacity=".9"/><stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/></linearGradient>'
       + '<radialGradient id="fiLuz"><stop offset="0" stop-color="#FFF6B0"/><stop offset=".35" stop-color="#FFE45C" stop-opacity=".7"/><stop offset="1" stop-color="#FFD24D" stop-opacity="0"/></radialGradient></defs>'
@@ -9755,20 +9763,22 @@ lo que haces cada día es lo que vas a ser.`;
       + '@keyframes fiVaga{0%{transform:translate(0,0)}33%{transform:translate(12px,-10px)}66%{transform:translate(-8px,-18px)}100%{transform:translate(8px,-4px)}}'
       + '@media (prefers-reduced-motion:reduce){.fi-sol,.fi-halo,.fi-rayos,.fi-nube,.fi-vuelo,.fi-avion,.fi-luz,.fi-vaga{animation:none}}</style>'
       + '<rect width="400" height="800" fill="url(#fiCielo)"/>'
+      // Estrellas que titilan
+      + [[30, 40], [90, 90], [150, 30], [220, 70], [270, 24], [370, 60], [40, 200], [120, 250], [200, 180], [360, 230], [80, 380], [240, 420]].map(([x, y], k) => '<circle class="fi-luz" cx="' + x + '" cy="' + y + '" r="' + (k % 3 ? 1.2 : 1.8) + '" fill="#FFFFFF" style="animation-delay:-' + (k * 0.7).toFixed(1) + 's"/>').join('')
       // El sol que sale, con rayos que giran despacio
-      + '<g class="fi-sol"><g class="fi-rayos" opacity=".3">' + Array.from({ length: 12 }, (x, k) => { const a = k * Math.PI / 6, r2 = k % 2 ? 92 : 118; return '<line x1="' + (318 + Math.cos(a) * 52).toFixed(1) + '" y1="' + (320 + Math.sin(a) * 52).toFixed(1) + '" x2="' + (318 + Math.cos(a) * r2).toFixed(1) + '" y2="' + (320 + Math.sin(a) * r2).toFixed(1) + '" stroke="#FFE9B0" stroke-width="' + (k % 2 ? 2 : 3.5) + '" stroke-linecap="round"/>'; }).join('') + '</g>'
-      + '<circle class="fi-halo" cx="318" cy="320" r="105" fill="url(#fiHalo)"/><circle cx="318" cy="320" r="36" fill="#FFE4A3"/><circle cx="309" cy="310" r="11" fill="#FFF6D8" opacity=".6"/></g>'
+      + '<g class="fi-sol"><g class="fi-rayos" opacity=".3">' + Array.from({ length: 12 }, (x, k) => { const a = k * Math.PI / 6, r2 = k % 2 ? 92 : 118; return '<line x1="' + (318 + Math.cos(a) * 52).toFixed(1) + '" y1="' + (320 + Math.sin(a) * 52).toFixed(1) + '" x2="' + (318 + Math.cos(a) * r2).toFixed(1) + '" y2="' + (320 + Math.sin(a) * r2).toFixed(1) + '" stroke="#FFD98A" stroke-width="' + (k % 2 ? 2 : 3.5) + '" stroke-linecap="round"/>'; }).join('') + '</g>'
+      + '<circle class="fi-halo" cx="318" cy="320" r="105" fill="url(#fiHalo)"/><circle cx="318" cy="320" r="36" fill="#FFCF73"/><circle cx="309" cy="310" r="11" fill="#FFF6D8" opacity=".6"/></g>'
       // Nubes alargadas
-      + '<g class="fi-nube"><rect x="30" y="290" width="120" height="10" rx="5" fill="#FFFFFF" opacity=".8" transform="skewX(-25)"/><rect x="70" y="306" width="70" height="7" rx="3.5" fill="#FFFFFF" opacity=".6" transform="skewX(-25)"/></g>'
-      + '<g class="fi-nube" style="animation-delay:-12s"><rect x="250" y="300" width="110" height="9" rx="4.5" fill="#FFFFFF" opacity=".75" transform="skewX(-25)"/></g>'
-      + '<g class="fi-nube" style="animation-delay:-6s"><rect x="60" y="420" width="90" height="8" rx="4" fill="#FFFFFF" opacity=".65" transform="skewX(-25)"/></g>'
+      + '<g class="fi-nube"><rect x="30" y="290" width="120" height="10" rx="5" fill="#F3C6E6" opacity=".35" transform="skewX(-25)"/><rect x="70" y="306" width="70" height="7" rx="3.5" fill="#F3C6E6" opacity=".28" transform="skewX(-25)"/></g>'
+      + '<g class="fi-nube" style="animation-delay:-12s"><rect x="250" y="300" width="110" height="9" rx="4.5" fill="#F3C6E6" opacity=".3" transform="skewX(-25)"/></g>'
+      + '<g class="fi-nube" style="animation-delay:-6s"><rect x="60" y="420" width="90" height="8" rx="4" fill="#F3C6E6" opacity=".25" transform="skewX(-25)"/></g>'
       // Un avión de vez en cuando, con su estela
       + '<g class="fi-avion"><line x1="12" y1="0" x2="120" y2="0" stroke="url(#fiEstela)" stroke-width="2.4" stroke-linecap="round"/>'
       + '<path d="M-10 0 Q-9 -2.6 -4 -2.6 L9 -2 Q12 -1 12 0 Q12 1 9 1.6 L-4 2.2 Q-9 2.2 -10 0 Z" fill="#F6F1FF"/><path d="M0 -1 L5 -9 L8 -9 L6 -1 Z M1 1.5 L6 8 L8.5 8 L6.5 1.5 Z M8 -2 L11 -6 L12.5 -6 L11.5 -1 Z" fill="#D9CCF7"/></g>'
       // Pájaros que aletean
       + '<g class="fi-vuelo">' + pajaro(0, 0, 0.7, 0.9) + pajaro(-24, 12, 0.55, 0.8) + '</g><g class="fi-vuelo b">' + pajaro(0, -60, 0.5, 1) + '</g>'
       // Montañas lejanas con nieve y, delante, colinas y pinos del color del nivel
-      + '<path d="M0 640 L60 590 L110 612 L180 540 L230 590 L290 552 L350 598 L400 570 V800 H0 Z" fill="#E1D5F6"/>'
+      + '<path d="M0 640 L60 590 L110 612 L180 540 L230 590 L290 552 L350 598 L400 570 V800 H0 Z" fill="#5B45AE"/>'
       + '<path d="M180 540 L168 556 L180 552 L192 558 Z M290 552 L281 564 L290 561 L299 565 Z" fill="#FFFFFF" opacity=".9"/>'
       + '<path d="M0 690 Q90 660 190 684 T400 672 V800 H0 Z" fill="' + C[0] + '"/>'
       + pino(40, 690, 1) + pino(64, 694, 0.8) + pino(338, 682, 1.1) + pino(362, 688, 0.85) + pino(212, 686, 0.7)
@@ -11190,4 +11200,4 @@ lo que haces cada día es lo que vas a ser.`;
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V12.96 · App Metas Amables · 2026-10-12 19:50==== -->
+<!-- ==== Fin del index V12.97 · App Metas Amables · 2026-10-12 20:35==== -->
