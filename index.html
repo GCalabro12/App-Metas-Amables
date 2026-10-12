@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V12.78 · App Metas Amables · 2026-10-12 16:53==== -->
+<!-- ==== index V12.79 · App Metas Amables · 2026-10-12 17:13==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1347,7 +1347,8 @@ html.modo-minimal .practi-inicio,html.modo-minimal .practi-bocadillo,html.modo-m
 .modo-switch.off .ms-pista{background:#C9C9C9}.modo-switch.off .ms-bola{left:2px}
 /* Mi montaña y la planta del trimestre */
 .mont-card{padding:16px}
-.mont-card h2{margin:0 0 2px;font:700 20px Lora,serif}
+.mont-card h2{margin:0 0 2px;font:700 20px Lora,serif;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.mont-son{flex:none;border:1px solid #CFC6DD;background:#fff;border-radius:999px;padding:5px 12px;font:700 13px Karla,sans-serif;color:#4F3A86;cursor:pointer}
 .mont-sub{margin:0 0 10px;font-size:14px;color:var(--ink-soft)}
 .mont-svg{display:block;width:100%;height:auto;border-radius:12px}
 .mont-ley{display:flex;flex-wrap:wrap;gap:6px 12px;margin:8px 0 0;font-size:12.5px;color:var(--ink-soft)}
@@ -2232,7 +2233,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V12.78';
+  const APP_VERSION = 'V12.79';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -4560,6 +4561,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
+    { v: 'V12.79', f: '12 de octubre de 2026', n: [
+      'Al abrir <b>Mi montaña</b> suena de fondo una versión tranquila de la música de Metas Amables. Con el botón 🎵 la quitas cuando quieras.' ] },
     { v: 'V12.78', f: '12 de octubre de 2026', n: [
       '<b>Mi montaña</b>, más bonita: cielo de amanecer, sol con destellos, haces de luz, nubes que pasan, un pájaro y nieve en la cima.' ] },
     { v: 'V12.76', f: '12 de octubre de 2026', n: [
@@ -6270,6 +6273,7 @@ lo que haces cada día es lo que vas a ser.`;
       document.body.style.setProperty('--fondo-nivel', fondo ? 'url(' + fondo + ')' : 'none');
     } catch(e){}
     try { bandaFinDePlan(); } catch(e){}
+    if(state.view !== 'progreso' && montanaSonando()) pararMontana(1200);   // la música de la montaña, solo en Progreso
     if(state.view !== 'formMeta' && typeof musica !== 'undefined' && musica && musica.porFormulario){ musica.porFormulario = false; musicaPoner(null); }   // para los colores de cada parte del ciclo
     app.setAttribute('data-sub', (state.view === 'panel' && state.panelSub) || '');
     applyTheme();
@@ -9653,6 +9657,32 @@ lo que haces cada día es lo que vas a ser.`;
     const nivel = Math.min(4, Math.floor(actual / 4));
     return { actual, nivel, anio: Math.min(5, Math.floor(actual / 4) + 1), enAnio: actual % 4 + 1, bancal, primerQ };
   }
+  // Música de la montaña (versión tranquila de la música oficial, hecha en Suno): entra suave al abrir Progreso,
+  // se apaga suave al salir, y el botón 🎵 la quita (se recuerda en el móvil)
+  let musicaMontana = null, relojMontana = null;
+  const montanaSinMusica = () => { try { return localStorage.getItem('montana_musica') === '0'; } catch(e){ return false; } };
+  function fundirMontana(hacia, ms, alAcabar){
+    if(!musicaMontana) return;
+    clearInterval(relojMontana);
+    const desde = musicaMontana.volume, t0 = Date.now();
+    relojMontana = setInterval(() => {
+      const k = Math.min(1, (Date.now() - t0) / ms);
+      musicaMontana.volume = Math.max(0, Math.min(1, desde + (hacia - desde) * k));
+      if(k >= 1){ clearInterval(relojMontana); relojMontana = null; if(alAcabar) alAcabar(); }
+    }, 60);
+  }
+  function sonarMontana(){
+    try {
+      if(!musicaMontana){ musicaMontana = new Audio('musica-montana.mp3'); musicaMontana.loop = true; }
+      if(!musicaMontana.paused) return Promise.resolve(true);
+      musicaMontana.volume = 0;
+      return musicaMontana.play().then(() => { fundirMontana(0.35, 2500); return true; }).catch(() => false);
+    } catch(e){ return Promise.resolve(false); }
+  }
+  function pararMontana(ms){ if(musicaMontana && !musicaMontana.paused) fundirMontana(0, ms || 1200, () => musicaMontana.pause()); }
+  const montanaSonando = () => !!(musicaMontana && !musicaMontana.paused);
+
+  document.addEventListener('visibilitychange', () => { if(document.visibilityState !== 'visible' && montanaSonando()){ clearInterval(relojMontana); musicaMontana.pause(); } });
   function insigniaMontana(){ try { return BADGE_SCALE[datosMontana().nivel]; } catch(e){ return BADGE_SCALE[0]; } }
   // La planta: un tutor y una trepadora; cada semana, una hoja (o un hueco). paso = alto de cada semana; etiquetas = poner «Oct 1»…
   function plantaSVG(b, paso, etiquetas){
@@ -9772,7 +9802,7 @@ lo que haces cada día es lo que vas a ser.`;
     app.appendChild(cab);
     let dm = null; try { dm = datosMontana(); } catch(e){ console.error('Montaña:', e); }
     const caja = el('<div class="progreso"><h1 class="viaje-titulo">Progreso</h1>'
-      + (dm ? '<div class="card mont-card"><h2>⛰️ Mi montaña</h2><p class="mont-sub">Año ' + dm.anio + ' · ' + BADGE_SCALE[dm.nivel].label + ' · bancal ' + dm.enAnio + ' de 4 este año. Cada trimestre, tu meta queda plantada en un bancal y la siguiente sube un poco más.</p>'
+      + (dm ? '<div class="card mont-card"><h2><span>⛰️ Mi montaña</span><button type="button" class="mont-son" id="montSon" aria-label="Música de la montaña">🎵 Música</button></h2><p class="mont-sub">Año ' + dm.anio + ' · ' + BADGE_SCALE[dm.nivel].label + ' · bancal ' + dm.enAnio + ' de 4 este año. Cada trimestre, tu meta queda plantada en un bancal y la siguiente sube un poco más.</p>'
         + montanaSVG(dm) + leyendaMontana(dm) + '</div>'
         + '<div class="card mont-card"><h2>🌿 Tu planta de este trimestre</h2><p class="mont-sub">Una hoja por cada semana con algún registro: más grande cuantos más días registras, y con flor si cumples tu compromiso.</p><div style="display:flex;justify-content:center">' + plantaSVG(dm.bancal(dm.actual), 24, true) + '</div></div>' : '')
       + '<div class="progreso-grid">'
@@ -9791,6 +9821,18 @@ lo que haces cada día es lo que vas a ser.`;
     caja.querySelector('#progViaje').onclick = () => { state.view = 'viaje'; window.scrollTo(0,0); render(); };
     if(caja.querySelector('#progNivel')) caja.querySelector('#progNivel').onclick = () => { state.prevView = 'progreso'; state.view = insigniasBloqueadas() ? 'planes' : 'perfil'; window.scrollTo(0,0); render(); };
     caja.querySelector('#progHist').onclick = () => { state.view = 'historial'; window.scrollTo(0,0); render(); };
+    // Música de la montaña: empieza sola (salvo que la haya quitado o ya suene otra música)
+    const bSon = caja.querySelector('#montSon');
+    if(bSon){
+      const pintarSon = () => { const on = montanaSonando(); bSon.textContent = on ? '🎵 Música: sí' : '🔇 Música: no'; bSon.setAttribute('aria-pressed', on); };
+      bSon.onclick = () => {
+        if(montanaSonando()){ try { localStorage.setItem('montana_musica', '0'); } catch(e){} pararMontana(600); setTimeout(pintarSon, 650); }
+        else { try { localStorage.removeItem('montana_musica'); } catch(e){} sonarMontana().then(pintarSon); }
+      };
+      pintarSon();
+      const otraMusica = (typeof sintoniaSonando === 'function' && sintoniaSonando()) || (typeof musica !== 'undefined' && musica && musica.id);
+      if(!montanaSinMusica() && !otraMusica) sonarMontana().then(pintarSon);
+    }
     app.appendChild(caja);
   }
   // ===== Barra de abajo: Inicio · Viaje · Progreso · Descubre =====
@@ -10762,4 +10804,4 @@ lo que haces cada día es lo que vas a ser.`;
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V12.78 · App Metas Amables · 2026-10-12 16:53==== -->
+<!-- ==== Fin del index V12.79 · App Metas Amables · 2026-10-12 17:13==== -->
