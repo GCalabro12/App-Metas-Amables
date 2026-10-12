@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V12.69 · App Metas Amables · 2026-10-12 13:18==== -->
+<!-- ==== index V12.70 · App Metas Amables · 2026-10-12 13:32==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2218,7 +2218,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V12.69';
+  const APP_VERSION = 'V12.70';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -2446,7 +2446,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     if(nombre.length < 2){ state.loginError = 'Escribe tu nombre y apellido'; render(); return; }
     if(digitos.length < 9){ state.loginError = 'Escribe un teléfono válido (con prefijo si no es de España)'; render(); return; }
     if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ state.loginError = 'Escribe un email válido'; render(); return; }
-    if(pass.length < 4){ state.loginError = 'La contraseña debe tener al menos 4 caracteres'; render(); return; }
+    if(pass.length < 6){ state.loginError = 'La contraseña debe tener al menos 6 caracteres'; render(); return; }
     state.loginError = 'Creando tu cuenta…'; render();
     // El Worker comprueba que el nombre no esté ya en uso
     try {
@@ -2550,7 +2550,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     newPass = (newPass||'').trim();
     state.loginNombre = nombre;
     if(nombre.length < 2 || !currentPass || !newPass){ state.loginError = 'Rellena todos los campos'; render(); return; }
-    if(newPass.length < 3){ state.loginError = 'La nueva contraseña debe tener al menos 3 caracteres'; render(); return; }
+    if(newPass.length < 6){ state.loginError = 'La nueva contraseña debe tener al menos 6 caracteres'; render(); return; }
     try {
       await api('/cambiar-password', { nombre, actual: currentPass, nueva: newPass });
       state.loginError = '';
@@ -2577,7 +2577,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   async function cambiarConCodigo(codigo, nueva){
     codigo = String(codigo || '').replace(/\D/g, ''); nueva = String(nueva || '').trim();
     if(codigo.length !== 6){ state.loginError = 'Escribe el código de 6 cifras'; render(); return; }
-    if(nueva.length < 3){ state.loginError = 'La nueva contraseña debe tener al menos 3 caracteres'; render(); return; }
+    if(nueva.length < 6){ state.loginError = 'La nueva contraseña debe tener al menos 6 caracteres'; render(); return; }
     state.loginError = 'Comprobando…'; render();
     try {
       const r = await api('/recuperar/cambiar', { email: state.olvidoEmail, codigo, nueva });
@@ -2629,6 +2629,9 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     try { const qs = new URLSearchParams(location.search); if(qs.get('abonar') === '1' || qs.get('clima') === '1'){ history.replaceState(null, '', location.pathname); setTimeout(() => abrirMomentoRiego(true), 700); } } catch(e){}
     try { if(new URLSearchParams(location.search).get('guia') === '1'){ history.replaceState(null, '', location.pathname);
       setTimeout(() => { const b = document.querySelector('.guia-semana .ritual-guia') || document.querySelector('[data-ir="s3"]'); if(b) b.click(); }, 900); } } catch(e){}
+    // Enlace de los emails (?meta=1): el formulario de la meta, o su sección si ya está rellenado
+    try { if(new URLSearchParams(location.search).get('meta') === '1'){ history.replaceState(null, '', location.pathname);
+      setTimeout(() => { if(metaHechaYa()){ state.view = 'panel'; state.panelSub = 's4'; window.scrollTo(0, 0); render(); } else abrirFormularioMeta(); }, 900); } } catch(e){}
     // Enlace del resumen de Telegram (?panel=1): abre «Panel de control admin Metas A.»
     try { if(new URLSearchParams(location.search).get('panel') === '1'){ history.replaceState(null, '', location.pathname); if(soyModerador()) abrirPanelFacilitador(); } } catch(e){}
     const list = state.checkins[state.me] || [];
@@ -4516,6 +4519,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
+    { v: 'V12.70', f: '12 de octubre de 2026', n: [
+      'Las contraseñas nuevas deben tener al menos <b>6 caracteres</b> (la tuya, si es más corta, sigue valiendo para entrar).' ] },
     { v: 'V12.69', f: '12 de octubre de 2026', n: [
       'Al crear tu cuenta puedes marcar si quieres recibir <b>emails que te acompañen con tu meta</b>. Si te registras sin Google, te llega un código de 6 cifras para <b>confirmar tu email</b>.' ] },
     { v: 'V12.68', f: '12 de octubre de 2026', n: [
@@ -5561,7 +5566,7 @@ lo que haces cada día es lo que vas a ser.`;
     currentPass = (currentPass||'').trim();
     newPass = (newPass||'').trim();
     if(!currentPass || !newPass){ msgEl.style.color='#B94A3A'; msgEl.textContent='Rellena ambos campos'; return; }
-    if(newPass.length < 3){ msgEl.style.color='#B94A3A'; msgEl.textContent='La nueva contraseña debe tener al menos 3 caracteres'; return; }
+    if(newPass.length < 6){ msgEl.style.color='#B94A3A'; msgEl.textContent='La nueva contraseña debe tener al menos 6 caracteres'; return; }
     msgEl.style.color = 'var(--ink-soft)'; msgEl.textContent = 'Guardando…';
     try {
       // El Worker comprueba la contraseña actual de la persona que ha entrado
@@ -6566,7 +6571,7 @@ lo que haces cada día es lo que vas a ser.`;
           <label class="note-label">Email</label>
           <input type="email" id="altaEmail" autocomplete="email" placeholder="Ej.: laura@gmail.com" value="${escapeAttr(d.email || '')}" style="${estiloCampo}">
           <label class="note-label">Elige una contraseña</label>
-          <input type="password" id="altaPass" name="new-password" autocomplete="new-password" placeholder="Mínimo 4 caracteres" value="${escapeAttr(d.pass || '')}" style="${estiloCampo};margin-bottom:4px">
+          <input type="password" id="altaPass" name="new-password" autocomplete="new-password" placeholder="Mínimo 6 caracteres" value="${escapeAttr(d.pass || '')}" style="${estiloCampo};margin-bottom:4px">
           <div style="height:10px"></div>
           <label class="alta-permiso"><input type="checkbox" id="altaEmails" ${d.emails ? 'checked' : ''}><span>Quiero recibir emails de Metas Amables que me acompañen con mi meta. Puedo darme de baja cuando quiera.</span></label>
           <p style="font-size:12px;color:var(--ink-soft);margin:8px 0 0">Al crear tu cuenta aceptas la <a href="privacidad.html" target="_blank" rel="noopener" style="color:var(--ink-soft)">política de privacidad</a>.</p>
@@ -10536,4 +10541,4 @@ lo que haces cada día es lo que vas a ser.`;
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V12.69 · App Metas Amables · 2026-10-12 13:18==== -->
+<!-- ==== Fin del index V12.70 · App Metas Amables · 2026-10-12 13:32==== -->
