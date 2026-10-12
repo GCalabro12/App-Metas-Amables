@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V12.75 · App Metas Amables · 2026-10-12 15:51==== -->
+<!-- ==== index V12.76 · App Metas Amables · 2026-10-12 16:32==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1345,6 +1345,19 @@ html.modo-minimal .practi-inicio,html.modo-minimal .practi-bocadillo,html.modo-m
 .ms-pista{position:relative;width:40px;height:22px;border-radius:11px;background:#639922;transition:background .25s}
 .ms-bola{position:absolute;top:2px;left:20px;width:18px;height:18px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.3);transition:left .25s}
 .modo-switch.off .ms-pista{background:#C9C9C9}.modo-switch.off .ms-bola{left:2px}
+/* Mi montaña y la planta del trimestre */
+.mont-card{padding:16px}
+.mont-card h2{margin:0 0 2px;font:700 20px Lora,serif}
+.mont-sub{margin:0 0 10px;font-size:14px;color:var(--ink-soft)}
+.mont-svg{display:block;width:100%;height:auto}
+.mont-ley{display:flex;flex-wrap:wrap;gap:6px 12px;margin:8px 0 0;font-size:12.5px;color:var(--ink-soft)}
+.mont-ley span{display:inline-flex;align-items:center;gap:5px}.mont-ley i{display:inline-block;width:12px;height:12px;border-radius:3px}
+.mont-ley span.on{color:var(--ink);font-weight:800}
+.planta-fila{display:flex;gap:14px;align-items:center}
+.planta-fila svg{flex:0 0 auto}
+.planta-tx b{display:block;font-size:16px}.planta-tx small{display:block;font-size:13.5px;color:var(--ink-soft);margin-top:3px;line-height:1.4}
+.planta-tx em{display:block;font-style:normal;font-size:13px;font-weight:800;color:#3B6D11;margin-top:6px}
+.planta-inicio{cursor:pointer;width:100%;text-align:left;font:inherit;color:inherit;border:2px solid #C0DD97;background:#F6FAF0}
 .util-nov{display:flex;align-items:center;gap:10px;width:100%;margin:14px 0 0;padding:12px 16px;border:2px solid #101010;border-radius:16px;background:#FFF6DC;font:inherit;color:#101010;text-align:left;cursor:pointer}.util-nov b{display:block;font-size:16px}.util-nov small{display:block;color:var(--ink-soft);font-size:13px}.util-nov .opcion-flecha{margin-left:auto;font-size:22px}
 .nov-lista{display:block}.nov-ver{margin:0 0 14px;padding:14px 16px}.nov-ver h3{margin:0 0 2px;font:700 18px Lora,serif;color:#2F5A23}.nov-ver .nov-fecha{display:block;margin:0 0 8px;font-size:13px;color:var(--ink-soft)}.nov-ver ul{margin:0;padding-left:20px}.nov-ver li{margin:0 0 6px;line-height:1.45}
 .alta-marchita{position:relative;width:200px;height:213px;margin:0 auto}.alta-marchita img{position:absolute;left:0;top:0;width:200px;height:auto;opacity:0;animation-duration:6s;animation-timing-function:ease;animation-iteration-count:infinite}
@@ -1791,7 +1804,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     const g = state.gamifica;
     if(!g){ state.nivel = null; return; }
     const cumplidas = g.cumplidas || 0;
-    const actual = insigniaActual(cumplidas);
+    const actual = insigniaMontana();   // desde el 12-10-2026: un nivel por año en la montaña (antes, por puntos)
     state.nivel = { icon: actual.icon, label: actual.label, min: actual.min, cumplidas };
   }
 
@@ -2219,7 +2232,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V12.75';
+  const APP_VERSION = 'V12.76';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -3935,7 +3948,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     panel.className = 'menu-panel menu-perfil';
     // Imagen de arriba: el fondo del nivel de la persona (o el neutro)
     let fondoMenu = '';
-    try { const n = state.gamifica ? BADGE_SCALE.indexOf(insigniaActual(state.gamifica.cumplidas || 0)) : -1; fondoMenu = (n >= 0 && !insigniasBloqueadas()) ? FONDOS_NIVEL[n] : FONDO_NEUTRO; } catch(e){}
+    try { const n = state.gamifica ? BADGE_SCALE.indexOf(insigniaMontana()) : -1; fondoMenu = (n >= 0 && !insigniasBloqueadas()) ? FONDOS_NIVEL[n] : FONDO_NEUTRO; } catch(e){}
     let rv = { pct: 0, hechos: 0, total: 0 }; try { rv = resumenViaje(); } catch(e){}
     const pend = Math.max(0, (rv.total || 0) - (rv.hechos || 0));
     const fotoMenu = fotoDePerfil();
@@ -4533,6 +4546,9 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
+    { v: 'V12.76', f: '12 de octubre de 2026', n: [
+      '<b>Tu planta del trimestre</b> (en Inicio): cada semana que registras le sale una hoja, más grande cuantos más días registras, y una flor si cumples tu compromiso.',
+      '<b>Mi montaña</b> (en Progreso): cada trimestre tu meta queda plantada en un bancal y la siguiente sube un poco más. Cada año, un color y un nivel: Guerrero, Tribal, Competitivo, Colaborativo e Integral.' ] },
     { v: 'V12.75', f: '12 de octubre de 2026', n: [
       'Cuando se cumple el plazo de tu meta, la tarjeta de Inicio se llama ahora <b>«Final del plazo de tu meta»</b>.' ] },
     { v: 'V12.72', f: '12 de octubre de 2026', n: [
@@ -5547,8 +5563,7 @@ lo que haces cada día es lo que vas a ser.`;
           return;
         }
         const cumplidas = rec.fields['Cumplidas semanas'] || 0;
-        const insigniaTexto = rec.fields['Insignia'] || insigniaActual(cumplidas).label;
-        const actual = insigniaActual(cumplidas);
+        const actual = insigniaMontana(), insigniaTexto = actual.label;   // la insignia la marca la montaña
         // Fuera del Plan Guías + Grupo: los puntos se ven, la insignia sale con candado
         if(insigniasBloqueadas()){
           box.innerHTML = `
@@ -6216,7 +6231,7 @@ lo que haces cada día es lo que vas a ser.`;
       const inicio = state.me && ((state.view === 'panel' && !state.panelSub) || ['perfil'].indexOf(state.view) >= 0);
       let fondo = '';
       if(inicio){
-        const n = state.gamifica ? BADGE_SCALE.indexOf(insigniaActual(state.gamifica.cumplidas || 0)) : -1;
+        const n = state.gamifica ? BADGE_SCALE.indexOf(insigniaMontana()) : -1;
         fondo = (n >= 0 && !insigniasBloqueadas()) ? FONDOS_NIVEL[n] : FONDO_NEUTRO;
       }
       // Pasos a, b, c y d: su fondo pastel con un velo más ligero (35 %)
@@ -6757,6 +6772,7 @@ lo que haces cada día es lo que vas a ser.`;
                     + (textoProximaSesion() ? '<br><span style="font-weight:700">📅 ' + textoProximaSesion() + '</span>' : ''), '', sinSesiones && '👑👑')
           + (modoMinimal() ? '' : '<button type="button" class="opcion-inicio ciclo-formacion" data-ir="util"><span class="ciclo-icono">' + iconoLlave() + '</span><span class="opcion-tx"><b>Utilidades</b><small>Habla con Prácti, formación, frases y música</small></span><span class="opcion-flecha">›</span></button>');
         app.appendChild(opciones);
+        try { const tp = tarjetaPlantaInicio(); if(tp) app.appendChild(tp); } catch(e){ console.error('Planta de Inicio:', e); }
         try { if(localStorage.getItem('tour_' + state.me) === 'pendiente' && state.view === 'panel'){ localStorage.setItem('tour_' + state.me, 'visto'); setTimeout(iniciarTour, 900); } } catch(e){}
         opciones.querySelector('.hablar-practi-btn').onclick = () => { state.hablaDesdeInicio = true; state.view = 'habla'; window.scrollTo(0,0); render(); };
         const irDestino = destino => {
@@ -7589,9 +7605,9 @@ lo que haces cada día es lo que vas a ser.`;
 
           <p style="font-weight:700;margin:16px 0 6px">Cómo se calcula tu nivel</p>
           <p style="font-size:13px;color:var(--ink-soft);margin:0 0 10px">
-            Se van sumando esos puntos semana a semana. Cuando el total pasa cada umbral,
-            cambias de insignia: Guerrero (rojo) al empezar, Tribal (ámbar) a partir de 10 puntos, Competitivo (naranja) a partir de 30,
-            Colaborativo (verde) a partir de 60 e Integral (violeta) a partir de 100.
+            Tu insignia la marca tu montaña: cada año que sigues trabajando tus metas subes un nivel.
+            Guerrero (rojo) el primer año, Tribal (ámbar) el segundo, Competitivo (naranja) el tercero,
+            Colaborativo (verde) el cuarto e Integral (violeta) el quinto. Los puntos se siguen sumando semana a semana.
           </p>
           <p style="font-size:13px;color:var(--ink-soft);margin:0">
             Por eso el total puede tener decimales (por ejemplo 12,6 puntos): recoge también
@@ -9573,6 +9589,133 @@ lo que haces cada día es lo que vas a ser.`;
     return t;
   }
   // ===== Progreso: el calendario y un resumen de cómo vas =====
+  // ===== Mi montaña y la planta del trimestre (idea de Gustavo, 12-10-2026) =====
+  // Cada semana con algún registro es una hoja de la planta trepadora del trimestre (tamaño según los días: 1-2, 3-5, 6-7)
+  // y una flor si cumple su compromiso. Cada trimestre es un bancal de la montaña; la planta no se cosecha: se queda.
+  // 4 bancales por año y 5 años (un color por año: Guerrero, Tribal, Competitivo, Colaborativo, Integral). La subida va en zigzag.
+  // El primer bancal: si empezó en la primera mitad del trimestre, cuenta ese trimestre; si no, el siguiente (sus semanas se suman a él).
+  // La insignia sale de aquí: un nivel por año en la montaña.
+  const MESES3 = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+  const NIVELES_MONTANA = [{ c: '#F4C7C3', f: '#A93226' }, { c: '#FAD9A0', f: '#8A5A00' }, { c: '#F7BE94', f: '#A04A10' }, { c: '#C0DD97', f: '#3B6D11' }, { c: '#CFC3EE', f: '#4F3A86' }];
+  const trimDe = l => l.getFullYear() * 4 + Math.floor(l.getMonth() / 3);
+  function lunesDelTrimestre(qi){
+    const y = Math.floor(qi / 4), q = qi % 4, out = [];
+    for(let m = q * 3; m < q * 3 + 3; m++){ let d = primerLunesDelMes(y, m); while(d.getMonth() === m){ out.push(new Date(d)); d = new Date(d.getFullYear(), d.getMonth(), d.getDate() + 7); } }
+    return out;
+  }
+  const etiquetaSemana = l => MESES3[l.getMonth()] + ' ' + (Math.floor((l.getDate() - 1) / 7) + 1);
+  function semanasRegistradas(){
+    const o = {};
+    ((state.checkins && state.checkins[state.me]) || []).forEach(c => {
+      const l = lunesDeSemanaTexto(c.week); if(!l) return;
+      const d = leerDias(c.diasHechos);
+      const letras = new Set([...Object.keys(d), ...Object.keys(leerAbonos(c.abonos)), ...Object.keys(leerEntornos(c.abonos))]);
+      const veces = Object.values(d).reduce((a, b) => a + b, 0), comp = Number(c.compromisoVeces) || 0;
+      const cumple = c.estadoSemana === ESTADO_CUMPLIDO || (comp > 0 && veces >= comp);
+      if(!letras.size && !cumple) return;
+      const k = isoLocal(l), prev = o[k];
+      o[k] = { lunes: l, dias: Math.max(letras.size, cumple ? 1 : 0, prev ? prev.dias : 0), cumple: cumple || !!(prev && prev.cumple) };
+    });
+    return o;
+  }
+  function datosMontana(){
+    const sem = semanasRegistradas(), claves = Object.keys(sem).sort(), qHoy = trimDe(lunesHoy);
+    const primerBancal = (q, k) => { const l = lunesDelTrimestre(q), i = l.findIndex(x => isoLocal(x) === k); return i >= 0 && i < l.length / 2 ? q : q + 1; };
+    const primerQ = claves.length ? primerBancal(trimDe(sem[claves[0]].lunes), claves[0]) : primerBancal(qHoy, isoLocal(lunesHoy));
+    const actual = Math.max(0, qHoy - primerQ);
+    const bancal = i => {
+      const qi = primerQ + i;
+      // Si empezó en la segunda mitad del trimestre anterior, esas semanas se suman al primer bancal
+      const previas = i === 0 && claves.length && trimDe(sem[claves[0]].lunes) === primerQ - 1 ? lunesDelTrimestre(primerQ - 1).filter(l => isoLocal(l) >= claves[0]) : [];
+      const semanas = previas.concat(lunesDelTrimestre(qi)).map(l => {
+        const r = sem[isoLocal(l)] || { dias: 0, cumple: false };
+        return { lunes: l, etiqueta: etiquetaSemana(l), dias: r.dias, cumple: r.cumple, futura: l > lunesHoy, hoy: isoLocal(l) === isoLocal(lunesHoy) };
+      });
+      return { i, qi, semanas, hojas: semanas.filter(s => s.dias > 0).length, flores: semanas.filter(s => s.cumple).length,
+        nombre: MESES3[(qi % 4) * 3] + '–' + MESES3[(qi % 4) * 3 + 2] + ' ' + Math.floor(qi / 4) };
+    };
+    const nivel = Math.min(4, Math.floor(actual / 4));
+    return { actual, nivel, anio: Math.min(5, Math.floor(actual / 4) + 1), enAnio: actual % 4 + 1, bancal, primerQ };
+  }
+  function insigniaMontana(){ try { return BADGE_SCALE[datosMontana().nivel]; } catch(e){ return BADGE_SCALE[0]; } }
+  // La planta: un tutor y una trepadora; cada semana, una hoja (o un hueco). paso = alto de cada semana; etiquetas = poner «Oct 1»…
+  function plantaSVG(b, paso, etiquetas){
+    // En Inicio (sin etiquetas) solo se dibuja hasta la semana de ahora y dos más, para que la planta no quede con un palo vacío
+    if(!etiquetas){ const hasta = b.semanas.reduce((m, s, j) => (s.dias > 0 || s.hoy) ? j : m, 0); b = Object.assign({}, b, { semanas: b.semanas.slice(0, Math.min(b.semanas.length, hasta + 3)) }); }
+    const n = b.semanas.length, W = etiquetas ? 190 : 84, H = n * paso + 44, cx = W / 2, base = H - 22;
+    const yDe = j => base - 14 - j * paso;
+    const ultima = b.semanas.reduce((m, s, j) => (s.dias > 0 || s.hoy) ? j : m, -1);
+    const alto = ultima >= 0 ? yDe(ultima) - paso * 0.4 : base - 10;
+    let s = '<svg viewBox="0 0 ' + W + ' ' + H + '" width="' + W + '" height="' + H + '" role="img" aria-label="Tu planta del trimestre: ' + b.hojas + ' hojas"><title>Tu planta del trimestre</title>';
+    s += '<line x1="' + cx + '" y1="' + base + '" x2="' + cx + '" y2="14" stroke="#B08A5A" stroke-width="' + (etiquetas ? 4 : 3) + '" stroke-linecap="round"/>';
+    if(ultima >= 0){
+      let d = 'M' + cx + ' ' + base;
+      for(let y = base, k = 0; y > alto; y -= paso, k++){ const y2 = Math.max(alto, y - paso); d += ' Q' + (cx + (k % 2 ? -1 : 1) * paso * 0.55) + ' ' + ((y + y2) / 2) + ' ' + cx + ' ' + y2; }
+      s += '<path d="' + d + '" fill="none" stroke="#3B6D11" stroke-width="2"/>';
+    }
+    const esc = paso / 24;
+    b.semanas.forEach((w, j) => {
+      const y = yDe(j), lado = j % 2 ? 1 : -1;
+      if(w.dias > 0){
+        const t = w.dias >= 6 ? 13 : w.dias >= 3 ? 10 : 7, rx = t * esc + 1, ry = rx * 0.55, lx = cx + lado * (rx + 2);
+        s += '<ellipse cx="' + lx + '" cy="' + y + '" rx="' + rx + '" ry="' + ry + '" fill="#639922" transform="rotate(' + (lado * -18) + ' ' + lx + ' ' + y + ')"/>';
+        if(w.cumple) s += '<circle cx="' + (lx + lado * rx * 0.9) + '" cy="' + (y - ry) + '" r="' + (3.2 * esc + 1.3) + '" fill="#E86A92" stroke="#fff" stroke-width="1"/>';
+        if(etiquetas) s += '<text x="' + (cx + lado * (2 * rx + 10)) + '" y="' + (y + 4) + '" text-anchor="' + (lado < 0 ? 'end' : 'start') + '" font-family="Karla,Arial,sans-serif" font-size="12" font-weight="700" fill="#3B6D11">' + w.etiqueta + '</text>';
+      } else if(w.hoy){
+        s += '<circle cx="' + cx + '" cy="' + y + '" r="' + (5 * esc + 2) + '" fill="none" stroke="#D99A1E" stroke-width="2"/>';
+        if(etiquetas) s += '<text x="' + (cx + lado * 16) + '" y="' + (y + 4) + '" text-anchor="' + (lado < 0 ? 'end' : 'start') + '" font-family="Karla,Arial,sans-serif" font-size="12" font-weight="700" fill="#B07A10">' + w.etiqueta + ' · ahora</text>';
+      } else if(w.futura){
+        s += '<circle cx="' + cx + '" cy="' + y + '" r="1.6" fill="#C9B38E"/>';
+      }
+    });
+    s += '<rect x="' + (cx - (etiquetas ? 34 : 22)) + '" y="' + base + '" width="' + (etiquetas ? 68 : 44) + '" height="14" rx="4" fill="#8A5A1E"/></svg>';
+    return s;
+  }
+  // La montaña: 5 franjas de color (una por año) y 4 bancales por franja, en zigzag
+  function montanaSVG(d){
+    const franjas = [[40, 610, 640, 580, 500, 100], [100, 500, 580, 520, 390, 160], [160, 390, 520, 460, 280, 220], [220, 280, 460, 400, 170, 280]];
+    let s = '<svg class="mont-svg" viewBox="0 0 680 640" role="img" aria-label="Mi montaña: año ' + d.anio + ', bancal ' + (d.actual + 1) + ' de 20"><title>Mi montaña</title>';
+    franjas.forEach((f, k) => { s += '<polygon points="' + f[0] + ',' + f[1] + ' ' + f[2] + ',' + f[1] + ' ' + f[3] + ',' + f[4] + ' ' + f[5] + ',' + f[4] + '" fill="' + NIVELES_MONTANA[k].c + '"/>'; });
+    s += '<polygon points="280,170 400,170 340,60" fill="' + NIVELES_MONTANA[4].c + '"/><polygon points="40,610 340,60 640,610" fill="none" stroke="#9C88CF" stroke-width="1"/>';
+    // Posiciones de los 20 bancales: cada año sube en diagonal, alternando derecha e izquierda
+    const pos = [];
+    const ys = [[590, 565, 540, 515], [480, 455, 430, 405], [370, 345, 320, 295], [260, 235, 210, 185], [150, 125, 100, 78]];
+    const xs = [[190, 290, 390, 490], [450, 377, 303, 230], [260, 313, 367, 420], [390, 357, 323, 290], [315, 330, 345, 340]];
+    const anchos = [50, 40, 32, 24, 16];
+    for(let a = 0; a < 5; a++) for(let t = 0; t < 4; t++) pos.push({ x: xs[a][t], y: ys[a][t], w: anchos[a] });
+    s += '<path d="M' + pos.map(p => p.x + ',' + p.y).join(' L') + '" fill="none" stroke="#7A6A9E" stroke-width="1.2" stroke-dasharray="4 4"/>';
+    pos.forEach((p, i) => {
+      const hecho = i < d.actual, ahora = i === d.actual;
+      s += '<rect x="' + (p.x - p.w / 2) + '" y="' + p.y + '" width="' + p.w + '" height="5" rx="2" fill="' + (hecho || ahora ? '#8A5A1E' : '#B49A78') + '"' + (ahora ? ' stroke="#D99A1E" stroke-width="2.5"' : '') + '/>';
+      if(hecho || ahora){
+        const b = d.bancal(i), alto = Math.max(6, Math.min(40, 6 + b.hojas * 2.6)) * (p.w / 50 + 0.4) / 1.4;
+        if(b.hojas){
+          s += '<line x1="' + p.x + '" y1="' + p.y + '" x2="' + p.x + '" y2="' + (p.y - alto) + '" stroke="#6B4A1A" stroke-width="1.6"/>';
+          const nh = Math.min(6, Math.ceil(b.hojas / 2));
+          for(let k = 0; k < nh; k++){ const yy = p.y - alto * (k + 0.6) / (nh + 0.2), ll = k % 2 ? 1 : -1; s += '<ellipse cx="' + (p.x + ll * 5) + '" cy="' + yy + '" rx="5" ry="3" fill="#4E7F2A"/>'; }
+          if(b.flores) s += '<circle cx="' + (p.x + 7) + '" cy="' + (p.y - alto) + '" r="3" fill="#E86A92"/>';
+        }
+      }
+    });
+    s += '<line x1="340" y1="72" x2="340" y2="50" stroke="#6B4A1A" stroke-width="1.5"/><polygon points="340,50 354,55 340,60" fill="#C0392B"/>';
+    if(d.actual < 20){ const p = pos[d.actual]; s += '<circle cx="' + p.x + '" cy="' + (p.y - 16) + '" r="8" fill="#FFFFFF" stroke="#D99A1E" stroke-width="2"/><circle cx="' + p.x + '" cy="' + (p.y - 16) + '" r="3" fill="#D99A1E"/>'; }
+    return s + '</svg>';
+  }
+  function leyendaMontana(d){
+    return '<div class="mont-ley">' + BADGE_SCALE.map((b, k) => '<span' + (k === d.nivel ? ' class="on"' : '') + '><i style="background:' + NIVELES_MONTANA[k].c + '"></i>Año ' + (k + 1) + ' · ' + b.label + '</span>').join('') + '</div>';
+  }
+  // Tarjeta de Inicio: la planta de este trimestre (toca para ver la montaña)
+  function tarjetaPlantaInicio(){
+    let d; try { d = datosMontana(); } catch(e){ return null; }
+    const b = d.bancal(d.actual), hoy = b.semanas.find(s => s.hoy);
+    const c = el('<button type="button" class="card planta-inicio"><div class="planta-fila">' + plantaSVG(b, 11, false)
+      + '<span class="planta-tx"><b>🌿 Tu planta de este trimestre</b><small>' + b.hojas + (b.hojas === 1 ? ' hoja' : ' hojas') + (b.flores ? ' · ' + b.flores + (b.flores === 1 ? ' flor' : ' flores') : '')
+      + (hoy ? '<br>Esta semana es <b style="display:inline">' + hoy.etiqueta + '</b>: ' + (hoy.dias ? (hoy.dias === 1 ? '1 día registrado' : hoy.dias + ' días registrados') : 'registra para que salga su hoja') : '') + '</small>'
+      + '<em>Año ' + d.anio + ' · ' + BADGE_SCALE[d.nivel].label + ' · Ver mi montaña ›</em></span></div></button>').firstElementChild;
+    c.onclick = () => { state.view = 'progreso'; window.scrollTo(0, 0); render(); };
+    return c;
+  }
+
   function renderProgreso(){
     const hoy = new Date(); hoy.setHours(0, 0, 0, 0);
     let semana = 0, mes = 0, trimestre = 0, racha = 0;
@@ -9586,7 +9729,11 @@ lo que haces cada día es lo que vas a ser.`;
     const cab = el('<div class="topbar"><span></span><button class="hamburger-btn-text" aria-label="Menú">☰ Menú</button></div>').firstElementChild;
     cab.querySelector('button').onclick = () => { state.prevView = state.view; state.menuOpen = true; render(); };
     app.appendChild(cab);
+    let dm = null; try { dm = datosMontana(); } catch(e){ console.error('Montaña:', e); }
     const caja = el('<div class="progreso"><h1 class="viaje-titulo">Progreso</h1>'
+      + (dm ? '<div class="card mont-card"><h2>⛰️ Mi montaña</h2><p class="mont-sub">Año ' + dm.anio + ' · ' + BADGE_SCALE[dm.nivel].label + ' · bancal ' + dm.enAnio + ' de 4 este año. Cada trimestre, tu meta queda plantada en un bancal y la siguiente sube un poco más.</p>'
+        + montanaSVG(dm) + leyendaMontana(dm) + '</div>'
+        + '<div class="card mont-card"><h2>🌿 Tu planta de este trimestre</h2><p class="mont-sub">Una hoja por cada semana con algún registro: más grande cuantos más días registras, y con flor si cumples tu compromiso.</p><div style="display:flex;justify-content:center">' + plantaSVG(dm.bancal(dm.actual), 24, true) + '</div></div>' : '')
       + '<div class="progreso-grid">'
       + '<div class="progreso-dato"><b>' + racha + '</b><span>' + (racha === 1 ? 'día seguido' : 'días seguidos') + ' practicando</span></div>'
       + '<div class="progreso-dato"><b>' + semana + '/7</b><span>días esta semana</span></div>'
@@ -9595,7 +9742,7 @@ lo que haces cada día es lo que vas a ser.`;
       + '</div>'
       + '<button type="button" class="card progreso-fila" id="progViaje"><span>🧭 <b>Tu viaje</b>: ' + rv.hechos + ' de ' + rv.total + ' pasos (' + rv.pct + ' %)</span><span>›</span></button>'
       + (insigniasBloqueadas() ? '<button type="button" class="card progreso-fila" id="progNivel"><span>👑👑 <b>Insignias y niveles</b>: Plan Guías + Grupo</span><span>›</span></button>'
-        : nv ? '<button type="button" class="card progreso-fila" id="progNivel"><span>' + (nv.icon || '🏅') + ' <b>Tu nivel</b>: ' + escapeAttr(nv.label || '') + ' · ' + fmtPuntos(nv.cumplidas || 0) + ' puntos</span><span>›</span></button>' : '')
+        : nv ? '<button type="button" class="card progreso-fila" id="progNivel"><span>' + (nv.icon || '🏅') + ' <b>Tu nivel</b>: ' + escapeAttr(nv.label || '') + (dm ? ' · año ' + dm.anio + ' de 5 en tu montaña' : '') + '</span><span>›</span></button>' : '')
       + '<div id="progCal"></div>'
       + '<button type="button" class="panel-link-btn" id="progHist" style="width:100%;border:2px solid #C0392B;background:#fff;color:#A93226;cursor:pointer;margin:12px 0 0">Mi historial de prácticas</button>'
       + '</div>').firstElementChild;
@@ -10574,4 +10721,4 @@ lo que haces cada día es lo que vas a ser.`;
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V12.75 · App Metas Amables · 2026-10-12 15:51==== -->
+<!-- ==== Fin del index V12.76 · App Metas Amables · 2026-10-12 16:32==== -->
