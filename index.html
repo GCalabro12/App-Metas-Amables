@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V12.74 · App Metas Amables · 2026-10-12 14:51==== -->
+<!-- ==== index V12.75 · App Metas Amables · 2026-10-12 15:51==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2219,7 +2219,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V12.74';
+  const APP_VERSION = 'V12.75';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -4267,9 +4267,9 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       { grupo: 'pausa', tit: 'Hoy, sé amable contigo (con la pausa)', img: mini('linear-gradient(180deg,#9AA59A 0 45%,#EEF5E6 45%)', '#55657F', '⏸️'),
         cuando: 'Al marcar el entorno «Visitas, viaje, salida…» o «Enfermo, imposibilitado»: la hoja amable trae además «Poner mi práctica en pausa».',
         abrir: () => abrirHojaAmable('entorno', true) },
-      { grupo: 'meta', tit: 'Tiempo de cosecha', img: mini('#fff', '#6B9362', '🧺'),
+      { grupo: 'meta', tit: 'Final del plazo de tu meta', img: mini('#fff', '#6B9362', '🎯'),
         cuando: 'En Inicio, cuando se cumple el plazo de la meta (1 o 2 meses desde el formulario): «¿Has terminado tu práctica?». Los botones funcionan: prueba «¡Sí, la conseguí!» o «Todavía no».',
-        abrir: () => vistaPreviaTarjeta('Tiempo de cosecha', tarjetaPlazoMeta({ paso: null })) },
+        abrir: () => vistaPreviaTarjeta('Final del plazo de tu meta', tarjetaPlazoMeta({ paso: null })) },
       { grupo: 'futuro', tit: 'Nota de tu yo de hace un mes', img: mini('#FFF8DC', '#8A6A1E', '📝'),
         cuando: 'En Inicio, el día que se puede abrir la nota que la persona se escribió el mes pasado (Plan Guías o regalo del día 10 del reto).',
         abrir: () => {
@@ -4533,6 +4533,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
+    { v: 'V12.75', f: '12 de octubre de 2026', n: [
+      'Cuando se cumple el plazo de tu meta, la tarjeta de Inicio se llama ahora <b>«Final del plazo de tu meta»</b>.' ] },
     { v: 'V12.72', f: '12 de octubre de 2026', n: [
       'En «🔔 Avisos en el móvil», mientras están apagados, una frase corta te recuerda que te ayudan a no abandonar tu meta.' ] },
     { v: 'V12.71', f: '12 de octubre de 2026', n: [
@@ -9755,7 +9757,7 @@ lo que haces cada día es lo que vas a ser.`;
     };
     if(!paso){
       card.innerHTML = `${practiHTML('pizarra', '', 90)}
-        <p style="font-weight:700;margin:8px 0 4px">🧺 Tiempo de cosecha: se cumple el plazo de tu meta (${escapeAttr(d.plazo || (prueba ? '1 mes' : ''))})</p>
+        <p style="font-weight:700;margin:8px 0 4px">🎯 Final del plazo de tu meta (${escapeAttr(d.plazo || (prueba ? '1 mes' : ''))})</p>
         <p style="margin:0 0 12px">${meta}<br>¿Has terminado tu práctica?</p>
         <button type="button" class="btn btn-yes" id="plazoSi" style="text-align:center">¡Sí, la conseguí! 🧺🎉</button>
         <button type="button" class="btn btn-no" id="plazoNo" style="text-align:center;margin-top:8px">Todavía no</button>`;
@@ -10572,4 +10574,4 @@ lo que haces cada día es lo que vas a ser.`;
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V12.74 · App Metas Amables · 2026-10-12 14:51==== -->
+<!-- ==== Fin del index V12.75 · App Metas Amables · 2026-10-12 15:51==== -->
