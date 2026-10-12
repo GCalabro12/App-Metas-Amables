@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V13.01 · App Metas Amables · 2026-10-12 21:28==== -->
+<!-- ==== index V13.02 · App Metas Amables · 2026-10-12 21:30==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1387,7 +1387,9 @@ html.modo-minimal .practi-inicio,html.modo-minimal .practi-bocadillo,html.modo-m
 .planta-fila svg{flex:0 0 auto}
 .planta-tx b{display:block;font-size:16px}.planta-tx small{display:block;font-size:13.5px;color:var(--ink-soft);margin-top:3px;line-height:1.4}
 .planta-tx em{display:block;font-style:normal;font-size:13px;font-weight:800;color:#3B6D11;margin-top:6px}
-.planta-inicio{cursor:pointer;width:100%;text-align:left;font:inherit;color:inherit;border:0;background:linear-gradient(90deg,rgba(255,252,245,.92),rgba(255,252,245,.55) 60%,rgba(255,252,245,.2)),url(fondo-planta.jpg) center 70%/cover no-repeat}
+.planta-inicio{cursor:pointer;width:100%;text-align:left;font:inherit;color:inherit;border:0;position:relative;overflow:hidden;background:#FFF8F0}
+.planta-inicio > :not(.planta-escena){position:relative;z-index:1}
+.planta-inicio .planta-tx{background:rgba(255,252,245,.82);border-radius:12px;padding:8px 10px}
 .planta-tit{display:block;margin:0 0 8px;font:700 clamp(14px,4.4vw,20px)/1.2 Lora,serif;letter-spacing:-.1px;color:#2F5A23;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .util-nov{display:flex;align-items:center;gap:10px;width:100%;margin:14px 0 0;padding:12px 16px;border:2px solid #101010;border-radius:16px;background:#FFF6DC;font:inherit;color:#101010;text-align:left;cursor:pointer}.util-nov b{display:block;font-size:16px}.util-nov small{display:block;color:var(--ink-soft);font-size:13px}.util-nov .opcion-flecha{margin-left:auto;font-size:22px}
 .nov-lista{display:block}.nov-ver{margin:0 0 14px;padding:14px 16px}.nov-ver h3{margin:0 0 2px;font:700 18px Lora,serif;color:#2F5A23}.nov-ver .nov-fecha{display:block;margin:0 0 8px;font-size:13px;color:var(--ink-soft)}.nov-ver ul{margin:0;padding-left:20px}.nov-ver li{margin:0 0 6px;line-height:1.45}
@@ -2265,7 +2267,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V13.01';
+  const APP_VERSION = 'V13.02';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -4603,7 +4605,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       'Al empezar tus <b>primeros 15 registros</b>, Prácti ya no habla de «reto»: te propone algo sencillo y le respondes «¡Vamos allá!».' ] },
     { v: 'V13.00', f: '12 de octubre de 2026', n: [
       'En Compromiso y práctica, el camino de tus <b>primeros 15 registros</b> tiene ahora su dibujito y un nombre más claro.',
-      'En Inicio, la tarjeta de tu planta lleva el título en una sola línea.' ] },
+      'En Inicio, la tarjeta de tu planta lleva el título en una sola línea y, de fondo, el paisaje de tu nivel.' ] },
     { v: 'V12.96', f: '12 de octubre de 2026', n: [
       '<b>Inicio</b>, más moderno: recuadros sin borde sobre un cielo oscuro de amanecer con movimiento (estrellas, sol, nubes, pájaros y algún avión) y colinas del color de tu nivel.' ] },
     { v: 'V12.93', f: '12 de octubre de 2026', n: [
@@ -10199,7 +10201,7 @@ lo que haces cada día es lo que vas a ser.`;
     let d; try { d = datosMontana(); } catch(e){ return null; }
     const b = d.bancal(d.actual), hoy = b.semanas.find(s => s.hoy);
     // El título en una sola línea arriba, a todo lo ancho; debajo, la planta y los datos
-    const c = el('<button type="button" class="card planta-inicio"><b class="planta-tit">Tu planta (meta) de este trimestre</b><div class="planta-fila">' + plantaSVG(b, 11, false)
+    const c = el('<button type="button" class="card planta-inicio">' + escenaPlanta(d.nivel, true) + '<b class="planta-tit">Tu planta (meta) de este trimestre</b><div class="planta-fila">' + plantaSVG(b, 11, false)
       + '<span class="planta-tx"><small>' + b.hojas + (b.hojas === 1 ? ' hoja' : ' hojas') + (b.flores ? ' · ' + b.flores + (b.flores === 1 ? ' flor' : ' flores') : '')
       + (hoy ? '<br>Esta semana es <b style="display:inline">' + hoy.etiqueta + '</b>: ' + (hoy.dias ? (hoy.dias === 1 ? '1 día registrado' : hoy.dias + ' días registrados') : 'registra para que salga su hoja') : '') + '</small>'
       + '<em>Año ' + d.anio + ' · ' + BADGE_SCALE[d.nivel].label + ' · Ver mi montaña ›</em></span></div></button>').firstElementChild;
@@ -11235,4 +11237,4 @@ lo que haces cada día es lo que vas a ser.`;
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V13.01 · App Metas Amables · 2026-10-12 21:28==== -->
+<!-- ==== Fin del index V13.02 · App Metas Amables · 2026-10-12 21:30==== -->
