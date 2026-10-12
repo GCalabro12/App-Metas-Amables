@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V13.17 · App Metas Amables · 2026-10-12 23:18==== -->
+<!-- ==== index V13.18 · App Metas Amables · 2026-10-12 23:30==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2279,7 +2279,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V13.17';
+  const APP_VERSION = 'V13.18';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -6039,7 +6039,7 @@ lo que haces cada día es lo que vas a ser.`;
       const fm = fechaMetaActual(), dMeta = fm ? new Date(fm + 'T00:00:00') : null;
       const idxMeta = dMeta ? semanas.findIndex(b => rangoSemana(b).finExclusivo > dMeta) : -1;
       semanas.forEach((b, i) => {
-        if(i === idxMeta && i > 0) cuerpo += `<div class="duo-meta-nueva">🌱 A partir de aquí, tu meta nueva</div>`;
+        if(i === idxMeta && i > 0) cuerpo += `<div class="duo-meta-nueva">⬇️ A partir de aquí, tu meta nueva</div>`;
         if(soloLibre && b.weekNum !== 1 && i !== 0){
           // Plan Libre: la primera semana de la guía y la primera de cada mes
           cuerpo += `<div class="duo-plan-item"><button type="button" class="duo-nodo duo-bloqueada duo-fuera-plan"><span class="duo-icono">👑</span><span class="duo-texto">${b.monthName} · Semana ${b.weekNum}</span><span class="duo-plan-tag">⭐ Plan Guías</span></button>
@@ -11285,4 +11285,4 @@ lo que haces cada día es lo que vas a ser.`;
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V13.17 · App Metas Amables · 2026-10-12 23:18==== -->
+<!-- ==== Fin del index V13.18 · App Metas Amables · 2026-10-12 23:30==== -->
