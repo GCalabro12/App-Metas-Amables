@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V13.13 · App Metas Amables · 2026-10-12 22:12==== -->
+<!-- ==== index V13.14 · App Metas Amables · 2026-10-12 22:15==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2277,7 +2277,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V13.13';
+  const APP_VERSION = 'V13.14';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -4611,6 +4611,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
+    { v: 'V13.14', f: '12 de octubre de 2026', n: [
+      'En la tarjeta de <b>Compromiso y práctica</b>, tu meta sale resumida en una frase corta (como mucho dos renglones), aunque en el formulario la hayas contado con detalle.' ] },
     { v: 'V13.04', f: '12 de octubre de 2026', n: [
       'En el formulario de tu meta, el botón <b>Siguiente</b> es ahora marrón liso, para distinguirlo de las respuestas.',
       'Las respuestas largas crecen solas mientras escribes o dictas, y el cuadro ya no se pone en rojo (no había ningún límite).',
@@ -9665,9 +9667,13 @@ lo que haces cada día es lo que vas a ser.`;
   function tarjetaPlanta(alVer){
     if(!state.me) return null;
     const e = estadoPlanta();
-    // Debajo del título, la meta de la persona con sus palabras: la planta ES su meta
+    // Debajo del título, la meta de la persona: el resumen corto que hace la IA (dos renglones como mucho);
+    // si aún no está, sus palabras recortadas. La planta ES su meta
     let mt = ''; try { mt = metaFinalViaje().texto; } catch(err){}
-    if(mt.length > 120) mt = mt.slice(0, 119) + '…';
+    const dfm = (state.gamifica && state.gamifica.datosFormulario) || {};
+    const marca = t => String(t || '').length + ':' + String(t || '').slice(0, 40);   // la misma marca que pone el Worker
+    if(dfm.metaCorta && dfm.metaTexto && mt === String(dfm.metaTexto).trim() && dfm.metaCortaDe === marca(dfm.metaTexto)) mt = dfm.metaCorta;
+    if(mt.length > 90) mt = mt.slice(0, 89).trim() + '…';
     // El tutor (el palo junto a la planta) es la guía semanal: la sostiene para que crezca recta y no se tuerza
     const tutor = '<svg class="planta-tutor" viewBox="0 0 600 640" aria-hidden="true"><rect x="390" y="150" width="16" height="302" rx="2" fill="#D8B26A" stroke="#8A6A2E" stroke-width="3"/>'
       + '<path d="M390 240 h16 M390 320 h16 M390 400 h16" stroke="#8A6A2E" stroke-width="3"/></svg>';
@@ -11271,4 +11277,4 @@ lo que haces cada día es lo que vas a ser.`;
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V13.13 · App Metas Amables · 2026-10-12 22:12==== -->
+<!-- ==== Fin del index V13.14 · App Metas Amables · 2026-10-12 22:15==== -->
