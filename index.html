@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V12.83 · App Metas Amables · 2026-10-12 18:47==== -->
+<!-- ==== index V12.84 · App Metas Amables · 2026-10-12 18:49==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2238,7 +2238,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V12.83';
+  const APP_VERSION = 'V12.84';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -9731,7 +9731,7 @@ lo que haces cada día es lo que vas a ser.`;
   }
   // La montaña ilustrada (pastel, al estilo de un dibujo animado): cielo de amanecer con estrellas, destellos y una estrella fugaz,
   // el sol que sale con sus halos, nubes, pájaros que aletean, montañas lejanas, la montaña de los 5 niveles (un color por año)
-  // con nieve en la cima, un prado con un sendero, un río a un lado por el que bajan un barquito y hojas, rocas, hojas grandes que se mecen y lucecitas que suben.
+  // con nieve en la cima, un prado con un sendero, un río a un lado por el que bajan un barquito y hojas, rocas, hojas grandes que se mecen y luciérnagas.
   // Encima, los 20 bancales en zigzag: 4 por franja, un año hacia la derecha y el siguiente hacia la izquierda.
   const MT = { AY: 70, BY: 540, BW: 152, BANDA: 84 };
   function mtMedio(y){ return MT.BW * Math.pow(Math.max(0, y - MT.AY) / (MT.BY - MT.AY), 0.78); }
@@ -9772,6 +9772,7 @@ lo que haces cada día es lo que vas a ser.`;
       + '<linearGradient id="mtHojaSombra" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#4A3A9A"/><stop offset="1" stop-color="#8A73D0"/></linearGradient>'
       + '<linearGradient id="mtProf" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFFFFF" stop-opacity=".12"/><stop offset=".55" stop-color="#FFFFFF" stop-opacity="0"/><stop offset="1" stop-color="#6B3F95" stop-opacity=".18"/></linearGradient>'
       + '<radialGradient id="mtBruma"><stop offset="0" stop-color="#FFFFFF" stop-opacity=".7"/><stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/></radialGradient>'
+      + '<radialGradient id="mtLuz"><stop offset="0" stop-color="#FFF6B0"/><stop offset=".35" stop-color="#FFE45C" stop-opacity=".7"/><stop offset="1" stop-color="#FFD24D" stop-opacity="0"/></radialGradient>'
       + '<linearGradient id="mtEstela" x1="12" y1="0" x2="120" y2="0" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#FFFFFF" stop-opacity=".85"/><stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/></linearGradient>'
       + '<linearGradient id="mtFugaz" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#FFFFFF" stop-opacity="0"/><stop offset="1" stop-color="#FFFFFF"/></linearGradient>'
       + '<clipPath id="mtSil"><path d="' + silueta + '"/></clipPath><clipPath id="mtDer"><rect x="203" y="0" width="200" height="600"/></clipPath></defs>'
@@ -9780,15 +9781,15 @@ lo que haces cada día es lo que vas a ser.`;
       + '.mt-chispa{transform-box:fill-box;transform-origin:center;animation:mtChispa 3.2s ease-in-out infinite}.mt-fugaz{animation:mtFugaz 11s ease-in 2s infinite;opacity:0}'
       + '.mt-nube{animation:mtNube 22s ease-in-out infinite alternate}.mt-vuelo{animation:mtVuelo 30s linear infinite}.mt-vuelo.b{animation-duration:42s;animation-delay:-20s}'
       + '.mt-hoja{transform-box:fill-box;transform-origin:50% 100%;animation:mtMece 3.6s ease-in-out infinite alternate}.mt-brilla{animation:mtTitila 2.6s ease-in-out infinite}'
-      + '.mt-luz{animation:mtSube 6s ease-in-out infinite;opacity:0}.mt-avion{animation:mtAvion 48s linear 3s infinite;transform:translate(470px,74px)}.mt-baliza{animation:mtTitila 1.2s steps(2) infinite}.mt-agua{stroke-dasharray:10 22;animation:mtFluye 2.8s linear infinite}.mt-aqui{transform-box:fill-box;transform-origin:center;animation:mtAqui 2.4s ease-in-out infinite}'
+      + '.mt-vaga.v0{animation:mtVaga0 9s ease-in-out infinite alternate}.mt-vaga.v1{animation:mtVaga1 11s ease-in-out infinite alternate}.mt-vaga.v2{animation:mtVaga2 13s ease-in-out infinite alternate}.mt-luciernaga{animation:mtLuciernaga 2.8s ease-in-out infinite}.mt-avion{animation:mtAvion 48s linear 3s infinite;transform:translate(470px,74px)}.mt-baliza{animation:mtTitila 1.2s steps(2) infinite}.mt-agua{stroke-dasharray:10 22;animation:mtFluye 2.8s linear infinite}.mt-aqui{transform-box:fill-box;transform-origin:center;animation:mtAqui 2.4s ease-in-out infinite}'
       + '@keyframes mtSale{from{transform:translateY(80px)}to{transform:translateY(0)}}@keyframes mtLate{0%,100%{opacity:.7;transform:scale(1)}50%{opacity:1;transform:scale(1.08)}}'
       + '@keyframes mtGira{to{transform:rotate(360deg)}}@keyframes mtTitila{0%,100%{opacity:.25}50%{opacity:1}}@keyframes mtChispa{0%,100%{opacity:.3;transform:scale(.6)}50%{opacity:1;transform:scale(1)}}'
       + '@keyframes mtFugaz{0%{opacity:0;transform:translate(0,0)}3%{opacity:1}10%{opacity:0;transform:translate(150px,70px)}100%{opacity:0;transform:translate(150px,70px)}}'
       + '@keyframes mtNube{from{transform:translateX(-30px)}to{transform:translateX(30px)}}'
       + '@keyframes mtVuelo{0%{transform:translate(-60px,150px)}50%{transform:translate(200px,118px)}100%{transform:translate(470px,140px)}}'
-      + '@keyframes mtMece{from{transform:rotate(-5deg)}to{transform:rotate(5deg)}}@keyframes mtSube{0%{opacity:0;transform:translateY(0)}30%{opacity:.9}100%{opacity:0;transform:translateY(-60px)}}'
+      + '@keyframes mtMece{from{transform:rotate(-5deg)}to{transform:rotate(5deg)}}@keyframes mtLuciernaga{0%,100%{opacity:.35}50%{opacity:1}}@keyframes mtVaga0{0%{transform:translate(0,0)}33%{transform:translate(14px,-10px)}66%{transform:translate(-6px,-20px)}100%{transform:translate(10px,-6px)}}@keyframes mtVaga1{0%{transform:translate(0,0)}33%{transform:translate(-12px,-8px)}66%{transform:translate(8px,-16px)}100%{transform:translate(-14px,4px)}}@keyframes mtVaga2{0%{transform:translate(0,0)}33%{transform:translate(10px,8px)}66%{transform:translate(-10px,-12px)}100%{transform:translate(4px,-22px)}}'
       + '@keyframes mtAvion{0%{transform:translate(470px,74px)}45%,100%{transform:translate(-140px,58px)}}@keyframes mtFluye{to{stroke-dashoffset:-64}}@keyframes mtAqui{0%,100%{transform:scale(1);opacity:.9}50%{transform:scale(1.35);opacity:.35}}'
-      + '@media (prefers-reduced-motion:reduce){.mt-sol,.mt-halo,.mt-rayos,.mt-est,.mt-chispa,.mt-fugaz,.mt-nube,.mt-vuelo,.mt-hoja,.mt-brilla,.mt-luz,.mt-agua,.mt-avion,.mt-baliza,.mt-aqui{animation:none}}</style>'
+      + '@media (prefers-reduced-motion:reduce){.mt-sol,.mt-halo,.mt-rayos,.mt-est,.mt-chispa,.mt-fugaz,.mt-nube,.mt-vuelo,.mt-hoja,.mt-brilla,.mt-vaga,.mt-luciernaga,.mt-agua,.mt-avion,.mt-baliza,.mt-aqui{animation:none}}</style>'
       // Cielo con el resplandor del amanecer, estrellas, destellos y una estrella fugaz de vez en cuando
       + '<rect width="400" height="600" fill="url(#mtCielo)"/><rect width="400" height="600" fill="url(#mtResplandor)"/>'
       + [[40, 30], [95, 62], [150, 22], [230, 48], [280, 18], [20, 95], [190, 80], [120, 110], [60, 160]].map(([x, y], k) => '<circle class="mt-est" cx="' + x + '" cy="' + y + '" r="' + (k % 3 ? 1.2 : 1.8) + '" fill="#FFFFFF" style="animation-delay:-' + (k * 0.7).toFixed(1) + 's"/>').join('')
@@ -9870,8 +9871,9 @@ lo que haces cada día es lo que vas a ser.`;
     const flor = (x, y, alto, c, t) => '<g transform="translate(' + x + ' ' + y + ')"><g class="mt-hoja" style="animation-duration:' + t + 's"><path d="M0 0 Q3 ' + (-alto / 2) + ' 0 ' + (-alto) + '" fill="none" stroke="#3E9C86" stroke-width="2"/>'
       + [0, 72, 144, 216, 288].map(g => '<ellipse cx="0" cy="' + (-alto - 4.5) + '" rx="2.6" ry="4.5" fill="' + c + '" transform="rotate(' + g + ' 0 ' + (-alto) + ')"/>').join('') + '<circle cx="0" cy="' + (-alto) + '" r="2.4" fill="#FFE27F"/></g></g>';
     s += flor(136, 584, 26, '#FF9FC0', 4.4) + flor(246, 586, 20, '#FFC1D8', 3.8) + flor(70, 570, 18, '#FFB1A0', 4.1)
-      // Lucecitas que suben despacio desde las plantas
-      + [[46, 520], [70, 548], [24, 490], [250, 560], [200, 560]].map(([x, y], k) => '<circle class="mt-luz" cx="' + x + '" cy="' + y + '" r="1.8" fill="#FFF6C8" style="animation-delay:-' + (k * 1.1).toFixed(1) + 's"/>').join('');
+      // Luciérnagas por la parte baja de la montaña: vagan despacio y se encienden y apagan
+      + [[46, 520], [70, 548], [24, 476], [250, 560], [200, 548], [120, 500], [300, 520], [168, 462], [340, 470], [92, 452], [230, 498], [278, 446], [140, 572], [370, 500], [60, 590], [210, 590]].map(([x, y], k) => '<g class="mt-vaga v' + (k % 3) + '" style="animation-delay:-' + (k * 1.7).toFixed(1) + 's"><g class="mt-luciernaga" style="animation-delay:-' + (k * 0.9).toFixed(1) + 's">'
+        + '<circle cx="' + x + '" cy="' + y + '" r="10" fill="url(#mtLuz)"/><circle cx="' + x + '" cy="' + y + '" r="2.3" fill="#FFFBE0"/></g></g>').join('');
     // El camino en zigzag y los bancales (por encima de todo, para que se vean siempre)
     s += '<polyline points="' + Array.from({ length: 20 }, (x, i) => posBancal(i).join(',')).join(' ') + '" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-dasharray="2 5" stroke-linecap="round" opacity=".75"/>';
     for(let i = 0; i < 20; i++){
@@ -10939,4 +10941,4 @@ lo que haces cada día es lo que vas a ser.`;
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V12.83 · App Metas Amables · 2026-10-12 18:47==== -->
+<!-- ==== Fin del index V12.84 · App Metas Amables · 2026-10-12 18:49==== -->
