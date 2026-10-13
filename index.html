@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V13.27 · App Metas Amables · 2026-10-13 15:41==== -->
+<!-- ==== index V13.28 · App Metas Amables · 2026-10-13 15:53==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2328,7 +2328,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V13.27';
+  const APP_VERSION = 'V13.28';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -7317,12 +7317,14 @@ lo que haces cada día es lo que vas a ser.`;
         // Ya está hecha: en el Plan Libre no se vuelve a abrir el formulario
         s2.innerHTML = `
           <h3 class="metas-sub">🌱 Meta con guía</h3>
-          <p style="background:var(--honey-tint);border-radius:10px;padding:12px 14px">✅ <b>Ya tienes el formulario rellenado</b>${enviado ? ' (el ' + enviado.getDate() + '/' + (enviado.getMonth() + 1) + ')' : ''}: tu meta está definida para el <b>${trimestreMeta()}</b>.<br>
-          ${state.guiaTexto ? 'Tu guía ya está lista en <b>«b · Guía semanal»</b>.' : 'En breve tendrás tu guía de prácticas en <b>«b · Guía semanal»</b>.'}</p>
+          <p style="font-size:15.5px"><b>Será tu meta más importante para este trimestre.</b></p>
           <p style="font-size:13px;color:var(--ink-soft)">${reglaMeta}</p>
+          <p style="background:var(--honey-tint);border-radius:10px;padding:12px 14px">✅ <b>Ya tienes el formulario rellenado</b>${enviado ? ' (' + fechaCorta(enviado) + ')' : ''}: tu meta está definida para el <b>${trimestreMeta()}</b>.<br>
+          ${state.guiaTexto ? 'Tu guía ya está lista en <b>«b · Guía semanal»</b>.' : 'En breve tendrás tu guía de prácticas en <b>«b · Guía semanal»</b>.'}</p>
           ${cambios > 1 ? '<button type="button" class="panel-link-btn honey fm-abrir" style="width:100%;border:none;cursor:pointer">Cambiar mi meta con guía →</button>' : ''}`;
       } else s2.innerHTML = `
         <h3 class="metas-sub">🌱 Meta con guía</h3>
+        <p style="font-size:15.5px"><b>Será tu meta más importante para este trimestre.</b></p>
         <p>Rellena el formulario para definir tu meta trimestral más importante para ti, tus dificultades y a qué ritmo quieres ir. Te crearemos tu guía de prácticas.</p>
         <p style="background:var(--honey-tint);border-radius:10px;padding:10px 12px;font-size:14px">${reglaMeta}</p>
         <button type="button" class="panel-link-btn honey fm-abrir" style="width:100%;border:none;cursor:pointer">Rellenar formulario de meta →</button>
@@ -11661,4 +11663,4 @@ lo que haces cada día es lo que vas a ser.`;
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V13.27 · App Metas Amables · 2026-10-13 15:41==== -->
+<!-- ==== Fin del index V13.28 · App Metas Amables · 2026-10-13 15:53==== -->
