@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V13.51 · App Metas Amables · 2026-10-13 23:47==== -->
+<!-- ==== index V13.52 · App Metas Amables · 2026-10-13 23:51==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1149,7 +1149,7 @@ body.theme-dark .guia-progreso{background:var(--surface)}
 .planta-card[role="button"]{cursor:pointer}.planta-ir{margin-left:auto;font:400 26px Karla,sans-serif;color:#A93226}
 .planta-reg{display:block;cursor:pointer;margin:0 0 6px;padding:12px 14px;border-radius:12px;background:#C0392B;color:#fff;font:800 16px Karla,sans-serif;text-align:center}
 .planta-reg.hecho{background:#E8F3E2;color:#2F5A23;border:2px solid #9CC58E}
-.planta-reg-lista{margin:0;font-size:14px;line-height:1.4;color:#5A4A48}
+.planta-mas{display:flex;align-items:center;gap:6px;margin:12px 0 0;padding:10px 0 0;border-top:1.5px dashed #E3B4AE;font:800 15px Karla,sans-serif;color:#A93226;text-decoration:underline;text-underline-offset:3px}.planta-mas span{margin-left:auto;font-size:22px;line-height:1;text-decoration:none}.planta-reg-lista{margin:0;font-size:14px;line-height:1.4;color:#5A4A48}
 .planta-ver{display:block;margin:10px auto 0;padding:4px 8px;border:0;background:none;color:#A93226;font:700 14px Karla,sans-serif;cursor:pointer}
 .planta-card .planta-tx b{color:#A93226}.planta-estado{font-weight:700;color:#A93226}.planta-fig{position:relative;flex:none;display:block}.planta-fig img,.planta-fig .planta-anim{display:block;position:relative;z-index:1;mix-blend-mode:multiply;background:transparent !important}.planta-tutor{position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none;z-index:0}.planta-tutor.planta-lazo{z-index:2}.planta-card img{width:112px;height:auto;flex:none;border-radius:14px;background:#fff}
 .planta-tx{flex:1;min-width:0}.planta-tx b{display:block;font:700 18px Lora,serif;color:#2F5A23}.planta-tx p{margin:4px 0 10px;font-size:14.5px;line-height:1.4}
@@ -1345,7 +1345,7 @@ textarea.ms-nombre-in:focus{outline:none;border-color:#C9942D;box-shadow:0 0 0 3
 @media (prefers-reduced-motion: reduce){.riego-escena img,.riego-mariposa,.riego-sol{animation:none}.riego-brillo{display:none}}
 .futuro-cab{margin:24px 4px 10px}.futuro-cab h3{margin:0 0 4px;font:700 20px Lora,serif;color:#5B3A9E}.futuro-cab p{margin:0;font-size:14.5px;line-height:1.45;color:var(--ink-soft)}
 .ciclo-btn .opcion-tx > b{font:700 clamp(15px,4.6vw,18px)/1.25 Lora,serif;text-transform:none;letter-spacing:0}
-/* Los pasos del ciclo de Inicio, en mayúsculas (METAS, TU GUÍA DE ESTA SEMANA, COMPROMISO Y PRÁCTICA, GRUPO DE APOYO) */
+/* Los pasos del ciclo de Inicio, en mayúsculas (METAS, TU GUÍA DE ESTA SEMANA, REGISTRO Y COMPROMISO, GRUPO DE APOYO) */
 [data-vista="panel"][data-sub=""] .ciclo-btn .opcion-tx > b,[data-vista="panel"][data-sub=""] .ritual-tit,[data-vista="panel"][data-sub=""] .planta-card .planta-tit{text-transform:uppercase;letter-spacing:.02em}
 .panel-badge > span:last-child{text-transform:uppercase;letter-spacing:.04em;font-weight:800}
 .viaje-paso .viaje-tx b{text-transform:uppercase;letter-spacing:.03em;font-size:15px}
@@ -2375,7 +2375,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V13.51';
+  const APP_VERSION = 'V13.52';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -2969,7 +2969,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   // El calendario de semanas (registros del lunes) es del Plan Guías + Grupo: si no, candado y a «Tu plan»
   function calBloqueado(){ return !tienePlan('sesiones'); }
   function irAPlanes(){ state.prevView = state.view; state.view = 'planes'; window.scrollTo(0,0); render(); }
-  // Un solo calendario para todos: el de «b · Compromiso y práctica», ya desplegado
+  // Un solo calendario para todos: el de «b · Registro y compromiso», ya desplegado
   function irCalendario(){ state.abrirCalDiario = true; state.view = 'practicaSemanal'; window.scrollTo(0,0); render(); }
   function txtCal(t){ return '📅 ' + t; }
 
@@ -4099,7 +4099,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     document.body.style.overflow = ''; juegoAbierto = null;
   }
   const PRACTI_LEYENDO_PNG = 'data:image/png;base64,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';
-  // Letras del ciclo (11-10-2026): a Formulario de meta · b Tu guía de esta semana · c Compromiso y práctica · d Grupo de apoyo
+  // Letras del ciclo (11-10-2026): a Formulario de meta · b Tu guía de esta semana · c Registro y compromiso · d Grupo de apoyo
   function iconoCiclo(tipo){
     const t = (x, y, letra) => '<text x="' + x + '" y="' + y + '" text-anchor="middle" font-family="Karla,Arial,sans-serif" font-size="19" font-weight="800" fill="#101010">' + letra + '</text>';
     const svg = inner => '<svg class="ciclo-svg" viewBox="0 0 48 48" aria-hidden="true">' + inner + '</svg>';
@@ -4233,7 +4233,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     const pasos = [
       ['0', 'Metas.', metaHechaYa() ? 'Ya tienes rellenado tu formulario.' : 'Tienes pendiente rellenarlo (el primer botón).'],
       ['a', 'Guía semanal.', 'Recibirás tu guía de prácticas ' + (libre ? 'la primera semana de cada mes.' : 'cada semana.')],
-      ['b', 'Compromiso y práctica.', 'Cada día marca los días en que la hiciste.'],
+      ['b', 'Registro y compromiso.', 'Cada día marca los días en que la hiciste.'],
     ];
     if(registraLunes()) pasos.push(['c', 'Grupo de apoyo.', 'Cada lunes haces tu compromiso con el grupo y cada 15 días tienes sesión con él.']);
     const frase = '¡Hola, ' + nombre + '! Soy Prácti y te acompaño en tus prácticas. Pasos a seguir: '
@@ -4768,11 +4768,11 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       h += '<h3 class="pf-seccion">📝 Registro del lunes</h3>' + bloque('✓ Ya lo han hecho', gente.filter(x => x.lunesHecho), 'Nadie lo ha hecho todavía esta semana.')
         + bloque('— Pendiente', gente.filter(x => !x.lunesHecho), '¡Lo ha hecho todo el mundo! 🎉');
     } else if(det.tipo === 'whatsapp'){
-      h += '<h3 class="pf-seccion">💬 Mensajes por WhatsApp</h3><p class="pf-gris" style="margin:0 0 10px;font-size:13.5px">Se activan en la app: Compromiso y práctica → «🔔 Avisos en el móvil». Anima a quien aún no lo tenga.</p>'
+      h += '<h3 class="pf-seccion">💬 Mensajes por WhatsApp</h3><p class="pf-gris" style="margin:0 0 10px;font-size:13.5px">Se activan en la app: Registro y compromiso → «🔔 Avisos en el móvil». Anima a quien aún no lo tenga.</p>'
         + bloque('✓ Los aceptan', gente.filter(x => x.aceptaWhatsApp), 'Nadie los ha activado todavía.')
         + bloque('— Aún no', gente.filter(x => !x.aceptaWhatsApp), '¡Los tiene activados todo el mundo! 🎉');
     } else if(det.tipo === 'emails'){
-      h += '<h3 class="pf-seccion">📧 Emails de acompañamiento</h3><p class="pf-gris" style="margin:0 0 10px;font-size:13.5px">Se activan al crear la cuenta o en Compromiso y práctica → «🔔 Avisos en el móvil». Solo llegan si además el email está confirmado.</p>'
+      h += '<h3 class="pf-seccion">📧 Emails de acompañamiento</h3><p class="pf-gris" style="margin:0 0 10px;font-size:13.5px">Se activan al crear la cuenta o en Registro y compromiso → «🔔 Avisos en el móvil». Solo llegan si además el email está confirmado.</p>'
         + bloque('✓ Los aceptan y tienen el email confirmado', gente.filter(x => x.aceptaEmails && x.emailOk), 'Nadie todavía.')
         + bloque('⏳ Los aceptan, pero falta confirmar el email', gente.filter(x => x.aceptaEmails && !x.emailOk), 'Nadie pendiente de confirmar.')
         + bloque('— Aún no los aceptan', gente.filter(x => !x.aceptaEmails), '¡Los acepta todo el mundo! 🎉');
@@ -4820,7 +4820,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
         cuando: 'Después del reto (día 16 en adelante): cada día registrado nuevo. Cuenta los días desde la meta actual y vuelve a 1 con cada meta nueva.',
         abrir: () => abrirDiasMeta(23) },
       { grupo: 'meta', tit: 'Meta lograda o sin interés', img: mini('linear-gradient(180deg,#fff 72%,#7A1C6A 72%)', '#4F3A86', '🏁'),
-        cuando: 'Desde el botón de Compromiso y práctica, o con «Ya no me interesa» en la pausa para tu meta. En la vista previa no se guarda nada.',
+        cuando: 'Desde el botón de Registro y compromiso, o con «Ya no me interesa» en la pausa para tu meta. En la vista previa no se guarda nada.',
         abrir: () => abrirFinMeta('elegir', true) },
       { grupo: 'pausa', tit: 'Práctica en pausa', img: mini('linear-gradient(180deg,#fff 72%,#7A1C6A 72%)', '#4F3A86', '⏸️'),
         cuando: 'Desde «Meta lograda, sin interés o en pausa», o al marcar un entorno de visitas/viaje o enfermedad. Pregunta hasta cuándo (1 semana, 15 días, 1 mes o una fecha). Después sale en grande en Inicio.',
@@ -5107,6 +5107,9 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
+    { v: 'V13.52', f: '13 de octubre de 2026', n: [
+      'El paso c de Inicio se llama ahora <b>Registro y compromiso</b>: en la app registras; la práctica la haces fuera.',
+      'En su recuadro hay dos accesos: «💧 Registra hoy» (tu clima, tu entorno y tu práctica) y, abajo, «📜 Tu compromiso: contrato, notas a tu yo y más».' ] },
     { v: 'V13.51', f: '13 de octubre de 2026', n: [
       'Los avisos del registro semanal ahora se llaman igual en toda la app: <b>compromiso del lunes</b> (cuántas veces practicarás esta semana), para no confundirlo con los registros de cada día.' ] },
     { v: 'V13.50', f: '13 de octubre de 2026', n: [
@@ -5408,7 +5411,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     const PASOS = [
       { s: '.ciclo-meta', t: 'a · Siembra tu meta', x: 'Empieza por aquí: rellena el formulario con <b>una meta importante para ti</b> este trimestre. Con tus respuestas preparamos tu guía.' },
       { s: '.ciclo-a', t: 'b · Tu guía de esta semana', x: 'Cada semana te llega una guía con prácticas pequeñas. Es el tutor de tu planta: léela con calma, o escúchala con 🔊 Oír.' },
-      { s: '.ciclo-b', t: 'c · Compromiso y práctica', x: 'Aquí miras tu clima y tu entorno y <b>registras tu práctica</b>: así riegas tu meta 💧' },
+      { s: '.ciclo-b', t: 'c · Registro y compromiso', x: 'Aquí miras tu clima y tu entorno y <b>registras tu práctica</b>: así riegas tu meta 💧' },
       { s: '.ciclo-c', t: 'd · Grupo de apoyo', x: 'Cada lunes registras tu compromiso de la semana y, con el Plan Guías + Grupo, nos vemos en grupo cada 15 días.' }
 
     ].filter(p => document.querySelector(p.s));
@@ -6343,7 +6346,7 @@ lo que haces cada día es lo que vas a ser.`;
     renderBackTopbar('Centro de ayuda');
     app.querySelector('#btnVolver').onclick = () => { state.view = 'ajustes'; window.scrollTo(0,0); render(); };
     const preguntas = [
-      ['¿Cómo marco que he hecho mi práctica?', 'En <b>c · Compromiso y práctica</b>, en el recuadro <b>«Registra tu práctica»</b>, toca el día y elige cuántas veces la hiciste. También desde <b>Viaje → «Marca tu práctica de hoy»</b>.'],
+      ['¿Cómo marco que he hecho mi práctica?', 'En <b>c · Registro y compromiso</b>, en el recuadro <b>«Registra tu práctica»</b>, toca el día y elige cuántas veces la hiciste. También desde <b>Viaje → «Marca tu práctica de hoy»</b>.'],
       ['¿Cuándo me llega mi guía?', 'Con el <b>Plan Guías</b> tienes una guía nueva cada semana. Con el <b>Plan Libre</b>, la primera semana de cada mes. La encuentras en <b>b · Guía semanal</b>.'],
       ['¿Qué es el Viaje?', 'Son los pasos de tu trimestre, uno detrás de otro: tu meta, tu guía, tu compromiso, tus notas… y al final, tu meta alcanzada. El paso que toca ahora se mueve para que lo veas.'],
       ['¿Cómo cambio la voz de Prácti?', 'En <b>Ajustes → Voz de Prácti</b> eliges voz, tono y velocidad. Si no te suena bien, mira <a href="#" data-ir="ayudaVoz">cómo cambiar la voz del móvil</a>.'],
@@ -7404,8 +7407,8 @@ lo que haces cada día es lo que vas a ser.`;
         const act = k => (k === toca ? ' actual' : '');
         // Con guía y sin candado, el paso «a» es la tarjeta azul «Tu guía de esta semana» (con su práctica)
         const guiaEnTarjeta = !!state.guiaTexto && !practicaBloqueada;
-        // Paso b: la tarjeta «Compromiso y práctica» (planta, clima y registrar); si no se puede, el botón de siempre
-        const botonB = boton('sB', 'ciclo-b' + act('b'), 'b', 'Compromiso y práctica',
+        // Paso b: la tarjeta «Registro y compromiso» (planta, clima y registrar); si no se puede, el botón de siempre
+        const botonB = boton('sB', 'ciclo-b' + act('b'), 'b', 'Registro y compromiso',
                 (tx.practica ? '<span class="ciclo-dato">' + escapeAttr(corto(tx.practica, 110)) + '</span>' : registraLunes() ? 'La defines en tu compromiso del lunes' : 'Marca cada día que la hagas')
                 + (vecesTx ? '<br><span style="font-weight:700">' + vecesTx + '</span>' : ''), '', false);
         opciones.innerHTML =
@@ -8133,7 +8136,7 @@ lo que haces cada día es lo que vas a ser.`;
       }
       app.appendChild(el('<div style="text-align:center;margin:0 0 4px">' + practiReaccionHTML('correr', 'valla', 170) + '</div>'));
       app.appendChild(botonVolver());
-      app.appendChild(el('<div style="display:flex;justify-content:center;margin:0 0 6px">' + badgeSeccion('b', 'Compromiso y práctica') + '</div>'
+      app.appendChild(el('<div style="display:flex;justify-content:center;margin:0 0 6px">' + badgeSeccion('b', 'Registro y compromiso') + '</div>'
         ));
       // Se pueden marcar los días desde el primer momento, aunque aún no haya registro.
       // La meta del trimestre (y el compromiso semanal) van dentro de «Registra tu práctica»
@@ -9414,7 +9417,7 @@ lo que haces cada día es lo que vas a ser.`;
   }
 
   // ===== Meta lograda o sin interés (idea de Gustavo, 11-10-2026) =====
-  // Se abre desde «Compromiso y práctica» (y, para «sin interés», desde la pausa de reflexión). Pantallas grandes, poco texto en cada una.
+  // Se abre desde «Registro y compromiso» (y, para «sin interés», desde la pausa de reflexión). Pantallas grandes, poco texto en cada una.
   // Lograda: se felicita, se guarda en el historial (Worker /meta-plazo) y se invita al formulario de una meta nueva (no cuenta como cambio).
   // Sin interés: dos pantallas de consuelo y, según el plan, el formulario (5 minutos) o los planes.
   function puedeCambiarMeta(){ return tienePlan('guias') && limiteMetaIntentos() - metaIntentosUsados() > 0; }
@@ -9449,7 +9452,7 @@ lo que haces cada día es lo que vas a ser.`;
       [['🏆 Ya logré mi meta', logro1], ['💭 He perdido el interés', interes1], ['⏸️ Necesito una pausa', () => abrirPausa('', prueba)], ['Volver', cerrar]]);
     // --- Meta lograda ---
     const logro1 = () => {
-      avisar(true, 'lograda', 'Meta lograda (desde Compromiso y práctica)');
+      avisar(true, 'lograda', 'Meta lograda (desde Registro y compromiso)');
       // Mientras no llegue la respuesta, la meta ya se ve en el historial
       if(!prueba) try {
         const d = state.gamifica && state.gamifica.datosFormulario;
@@ -10281,16 +10284,18 @@ lo que haces cada día es lo que vas a ser.`;
     const tutor = '<svg class="planta-tutor" viewBox="0 0 600 640" aria-hidden="true"><rect x="390" y="150" width="16" height="302" rx="2" fill="#D8B26A" stroke="#8A6A2E" stroke-width="3"/>'
       + '<path d="M390 240 h16 M390 320 h16 M390 400 h16" stroke="#8A6A2E" stroke-width="3"/></svg>';
     const lazo = '<svg class="planta-tutor planta-lazo" viewBox="0 0 600 640" aria-hidden="true"><path d="M350 404 q26 -11 52 0 q-26 11 -52 0z" fill="none" stroke="#3E7A2E" stroke-width="5"/></svg>';
-    // Paso c en Inicio: la tarjeta entera lleva a «Compromiso y práctica». Sin botones: solo dice si hoy ya registraste algo
+    // Paso c en Inicio: la tarjeta entera lleva a «Registro y compromiso». Sin botones: solo dice si hoy ya registraste algo
     // (con el clima, el entorno o la práctica ya vale)
     const hoyAb = abonoDeHoy(), hoyEnt = entornoDeHoy(), hoyPr = diaHechoFecha(new Date()) > 0, reg = registradoHoy();
     const estadoReg = reg
       ? '<p class="planta-reg hecho" role="button" tabindex="0">✓ Hoy ya has registrado</p>'
-      : '<p class="planta-reg" role="button" tabindex="0">💧 Registra</p><p class="planta-reg-lista">Te falta registrar tu clima, tu entorno o tu práctica.</p>';
-    const t = el('<div class="card planta-card ciclo-b" role="button" tabindex="0"><b class="planta-tit"><span class="planta-tit-ico">' + iconoCiclo('b') + '</span>Compromiso y práctica<span class="planta-ir">›</span></b>'
+      : '<p class="planta-reg" role="button" tabindex="0">💧 Registra hoy</p><p class="planta-reg-lista">Te falta registrar tu clima, tu entorno o tu práctica.</p>';
+    const t = el('<div class="card planta-card ciclo-b" role="button" tabindex="0"><b class="planta-tit"><span class="planta-tit-ico">' + iconoCiclo('b') + '</span>Registro y compromiso<span class="planta-ir">›</span></b>'
       + (mt ? '<span class="planta-meta">🌱 «' + escapeAttr(mt) + '»' + (dfm.metaTexto ? '<button type="button" class="planta-lapiz" aria-label="Cambiar el resumen de tu meta" title="Cambiar el resumen">✏️</button>' : '') + '</span>' : '')
       + '<div class="planta-fila"><span class="planta-fig" title="El tutor de tu planta es tu guía semanal">' + tutor + '<img src="' + e.img + '" alt="">' + lazo + '</span>'
-      + '<div class="planta-tx">' + estadoReg + '</div></div></div>').firstElementChild;
+      + '<div class="planta-tx">' + estadoReg + '</div></div>'
+      // Abajo, a la vista: el resto de la tarjeta (contrato, notas a tu yo, meta lograda…) se abre tocándola
+      + '<p class="planta-mas">📜 Tu compromiso: contrato, notas a tu yo y más <span>›</span></p></div>').firstElementChild;
     if(alVer){ t.onclick = alVer; t.onkeydown = ev => { if(ev.key === 'Enter' || ev.key === ' '){ ev.preventDefault(); alVer(); } }; }
     // ✏️ Cambiar el resumen de la meta con sus propias palabras (sin abrir la tarjeta)
     const lapiz = t.querySelector('.planta-lapiz');
@@ -11977,4 +11982,4 @@ lo que haces cada día es lo que vas a ser.`;
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V13.51 · App Metas Amables · 2026-10-13 23:47==== -->
+<!-- ==== Fin del index V13.52 · App Metas Amables · 2026-10-13 23:51==== -->
