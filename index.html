@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V13.29 · App Metas Amables · 2026-10-13 15:55==== -->
+<!-- ==== index V13.30 · App Metas Amables · 2026-10-13 18:22==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1272,7 +1272,6 @@ textarea.ms-nombre-in:focus{outline:none;border-color:#C9942D;box-shadow:0 0 0 3
 .ms-rapidos{display:flex;gap:8px;margin-top:8px}.ms-rapidos button{flex:1;padding:7px;border-radius:999px;border:1.5px solid #D9CFB8;background:#fff;font:700 13px Karla,sans-serif;color:#6B4A26;cursor:pointer}
 .ms-aviso{font-size:12.5px;color:var(--ink-soft);margin:10px 0 0}
 .ms-editor .ms-archivar{display:block;margin:12px auto 0;border:none;background:none;color:#A93226;font:700 14px Karla,sans-serif;text-decoration:underline;cursor:pointer}
-.ms-dia-m.libre,.ms-dia.libre{opacity:.55}.ms-dia-m.libre.hecho,.ms-dia.libre.hecho{opacity:1}
 .ms-reg .ms-nombre small{font-weight:600;color:var(--ink-soft);font-size:13px}
 .ms-ayuda,.ms-nota{font-size:14px;color:var(--ink-soft);margin:0 0 10px}.ms-nota{margin:8px 0 0;font-size:13px}
 .ms-tarjeta{margin:0 0 14px;padding:0 0 14px;border-bottom:1px solid rgba(0,0,0,.1)}
@@ -1281,7 +1280,24 @@ textarea.ms-nombre-in:focus{outline:none;border-color:#C9942D;box-shadow:0 0 0 3
 .ms-mes-cab button{border:none;background:#F1ECDF;border-radius:8px;width:34px;height:30px;font-size:18px;cursor:pointer;color:var(--ink)}.ms-mes-cab button:disabled{opacity:.3;cursor:default}
 .ms-mes{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}.ms-mes-l{text-align:center;font:700 11px Karla,sans-serif;color:var(--ink-soft)}
 .ms-dia-m{aspect-ratio:1;border:1.5px solid #E2DACA;border-radius:8px;background:#fff;font:700 13px Karla,sans-serif;color:var(--ink);cursor:pointer;padding:0}
-.ms-dia-m.hecho,.ms-dia.hecho{background:#4C8C4A;border-color:#4C8C4A;color:#fff}.ms-dia-m.hoy,.ms-dia.hoy{border-color:#E8B400}.ms-dia-m:disabled,.ms-dia:disabled{opacity:.35;cursor:default}
+.ms-dia-m,.ms-dia{background:#EFEDE7;border-color:#E2DED3;color:#9A958A}
+.ms-dia-m.toca,.ms-dia.toca{background:#F6EBD3;border-color:#C9942D;color:#6B4A26}
+.ms-dia-m.hecho,.ms-dia.hecho{background:#4C8C4A;border-color:#4C8C4A;color:#fff}
+.ms-dia-m.fallo,.ms-dia.fallo{background:#D9483B;border-color:#D9483B;color:#fff}
+.ms-dia-m.libre,.ms-dia.libre{background:#2B2B2B;border-color:#2B2B2B;color:#fff}
+.ms-dia.con-nota,.ms-dia-m.con-nota{box-shadow:inset 0 -4px 0 #5B3FA8}
+.ms-leyenda .ly{display:inline-block;width:11px;height:11px;border-radius:50%;margin:0 4px 0 6px;vertical-align:-1px}.ms-leyenda .ly.hecho{background:#4C8C4A;margin-left:0}.ms-leyenda .ly.fallo{background:#D9483B}.ms-leyenda .ly.libre{background:#2B2B2B}.ms-leyenda b{margin:0 2px 0 6px}
+.ms-pop .o-nota{width:240px;max-width:70vw;min-height:54px;border:1.5px solid #D9CFB8;border-radius:10px;padding:8px 10px;font:600 15px Karla,sans-serif;box-sizing:border-box;resize:vertical}
+.ms-pop .o-guardar{background:#8A5A2E;color:#fff}
+.ms-dia-m.hoy{outline:2px solid #E8B400;outline-offset:1px}.ms-dia-m:disabled{opacity:.35;cursor:default}
+.ms-col{display:flex;flex-direction:column;align-items:center;gap:3px;min-width:0}.ms-col small{font:800 10px Karla,sans-serif;letter-spacing:.04em;color:#6B4A26}
+.ms-leyenda{margin:6px 0 0;font-size:12.5px;color:var(--ink-soft)}
+.ms-pop{position:fixed;z-index:990;display:flex;gap:8px;padding:8px;background:#fff;border-radius:14px;box-shadow:0 8px 26px rgba(0,0,0,.25)}
+.ms-pop::after{content:'';position:absolute;left:var(--flecha,50%);width:14px;height:14px;background:#fff;transform:translateX(-50%) rotate(45deg)}
+.ms-pop.arriba::after{bottom:-6px}.ms-pop.abajo::after{top:-6px}
+.ms-pop button{width:48px;height:48px;border-radius:50%;border:none;font:800 20px Karla,sans-serif;color:#fff;cursor:pointer;position:relative;z-index:1}
+.ms-pop .o-hecho{background:#4C8C4A}.ms-pop .o-fallo{background:#D9483B}.ms-pop .o-libre{background:#2B2B2B}.ms-pop .o-mas{background:#EDEBE6;color:#333;font-size:15px}
+.ms-pop.texto{flex-direction:column;gap:4px}.ms-pop .o-txt{width:auto;height:auto;border-radius:10px;padding:10px 14px;background:#F6F3EC;color:var(--ink);font:700 14.5px Karla,sans-serif;text-align:left}
 .ms-acciones{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:10px}
 .ms-acciones button,.ms-anadir{flex:1;min-width:110px;padding:9px 10px;border-radius:10px;border:1.5px solid #A0703C;background:#fff;color:#6B4A26;font:700 14px Karla,sans-serif;cursor:pointer}
 .ms-acciones .ms-si,.ms-anadir{background:#8A5A2E;border-color:#8A5A2E;color:#fff}.ms-pregunta{width:100%;font-size:14px}
@@ -1290,8 +1306,8 @@ textarea.ms-nombre-in:focus{outline:none;border-color:#C9942D;box-shadow:0 0 0 3
 .ms-historial{margin-top:12px;font-size:14px}.ms-historial summary{cursor:pointer;font-weight:700;color:var(--ink-soft)}.ms-historial p{margin:6px 0}.ms-historial small{display:block;color:var(--ink-soft)}
 .ms-corona{width:100%;padding:12px;border-radius:12px;border:1.5px dashed #C9A227;background:#FFFBEF;color:#8A6A10;font:700 15px Karla,sans-serif;cursor:pointer}
 .riego-capa .rp-sencillas{width:min(420px,100%);margin:16px auto 0;padding:16px 14px;box-sizing:border-box;border:2px solid rgba(169,50,38,.35);border-radius:20px;background:rgba(255,255,255,.92);text-align:left}
-.ms-reg{margin-top:10px}.ms-semana{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-top:6px}
-.ms-dia{height:52px;border:2px solid #d8d3c6;border-radius:12px;background:#FCFCF9;font-family:Karla,sans-serif;color:var(--ink);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0}
+.ms-reg{margin-top:10px}.ms-semana{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px;margin-top:8px}
+.ms-dia{width:100%;height:52px;border:2px solid #d8d3c6;border-radius:12px;background:#FCFCF9;font-family:Karla,sans-serif;color:var(--ink);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0}
 .ms-dia span{font-size:11px;font-weight:700;opacity:.8}.ms-dia b{font-size:15px}
 .riego-capa .rp-semana{width:min(420px,100%);margin:16px auto 0;box-sizing:border-box;border:2px solid rgba(169,50,38,.35);border-radius:20px;background:rgba(255,255,255,.92);text-align:left}
 .rp-seccion .riego-consejo{margin:4px auto 0;padding:0;background:none;font-size:13.5px;line-height:1.35;color:#5A5A50}
@@ -2335,7 +2351,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V13.29';
+  const APP_VERSION = 'V13.30';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -3584,47 +3600,101 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     const r = await api('/metas-sencillas', { lista, archivo });
     if(state.gamifica && r.datosFormulario) state.gamifica.datosFormulario = r.datosFormulario;
   }
-  // Marca o desmarca un día (devuelve si queda marcado)
-  async function marcarDiaSencilla(id, iso){
+  // Estado de un día: 'hecho' (✓, verde), 'fallo' (✕, rojo: no hecho), 'libre' (–, negro: no tocaba) o '' (sin marcar).
+  // Con «•••» se escribe un comentario de ese día (notas: { fecha: texto })
+  function estadoDiaSencilla(m, iso){ return (m.dias || []).includes(iso) ? 'hecho' : (m.fallos || []).includes(iso) ? 'fallo' : (m.libres || []).includes(iso) ? 'libre' : ''; }
+  async function marcarDiaSencilla(id, iso, estado){
     const { lista, archivo } = datosSencillas(), copia = JSON.parse(JSON.stringify(lista)), m = copia.find(x => x.id === id);
-    if(!m) return false;
-    const dias = new Set(m.dias || []);
-    if(dias.has(iso)) dias.delete(iso); else dias.add(iso);
-    m.dias = [...dias].sort();
+    if(!m) return '';
+    ['dias', 'fallos', 'libres'].forEach(k => { m[k] = (m[k] || []).filter(x => x !== iso); });
+    const campo = { hecho: 'dias', fallo: 'fallos', libre: 'libres' }[estado];
+    if(campo) m[campo] = m[campo].concat(iso).sort();
     await guardarSencillas(copia, archivo);
-    return dias.has(iso);
+    return campo ? estado : '';
   }
-  // Los botones de día (de la semana o del mes) marcan y desmarcan; al acabar se llama a «despues»
-  function enlazarDiasSencilla(raiz, id, despues){
-    raiz.querySelectorAll('[data-iso]').forEach(b => b.onclick = async () => {
-      if(b.disabled) return;
-      b.disabled = true;
+  const ICO_DIA = { hecho: '✓', fallo: '✕', libre: '–' };
+  // «toca»: es uno de los días elegidos (se ve en color)
+  function claseDiaSencilla(m, iso, L){ const e = estadoDiaSencilla(m, iso); return (e ? ' ' + e : '') + (diasPlanSencilla(m).includes(L) ? ' toca' : '') + ((m.notas || {})[iso] ? ' con-nota' : ''); }
+  function pintarDiaSencilla(b, est){
+    b.classList.remove('hecho', 'fallo', 'libre'); if(est) b.classList.add(est);
+    const n = b.querySelector('b'), dia = Number(b.dataset.iso.slice(8));
+    if(n) n.textContent = ICO_DIA[est] || dia; else b.textContent = dia;
+  }
+  async function comentarDiaSencilla(id, iso, texto){
+    const { lista, archivo } = datosSencillas(), copia = JSON.parse(JSON.stringify(lista)), m = copia.find(x => x.id === id);
+    if(!m) return;
+    m.notas = Object.assign({}, m.notas || {});
+    texto = String(texto || '').trim().slice(0, 200);
+    if(texto) m.notas[iso] = texto; else delete m.notas[iso];
+    await guardarSencillas(copia, archivo);
+  }
+  // Al tocar un día: las cuatro opciones (hecho, no hecho, no tocaba y comentario) en un bocadillo junto al día
+  function opcionesDiaSencilla(b, id, alElegir, verCalendario){
+    document.querySelectorAll('.ms-pop').forEach(x => x.remove());
+    const pop = el('<div class="ms-pop" role="menu"><button type="button" data-e="hecho" class="o-hecho" aria-label="Hecho">✓</button><button type="button" data-e="fallo" class="o-fallo" aria-label="No lo hice">✕</button>'
+      + '<button type="button" data-e="libre" class="o-libre" aria-label="No tocaba">–</button><button type="button" data-e="mas" class="o-mas" aria-label="Comentario">•••</button></div>').firstElementChild;
+    document.body.appendChild(pop);
+    const colocar = () => {
+      const r = b.getBoundingClientRect(), w = pop.offsetWidth, h = pop.offsetHeight;
+      const x = Math.max(8, Math.min(window.innerWidth - w - 8, r.left + r.width / 2 - w / 2)), arriba = r.top - h - 12 > 8;
+      pop.classList.remove('arriba', 'abajo'); pop.classList.add(arriba ? 'arriba' : 'abajo');
+      pop.style.left = x + 'px'; pop.style.top = (arriba ? r.top - h - 12 : r.bottom + 12) + 'px';
+      pop.style.setProperty('--flecha', Math.max(16, Math.min(w - 16, r.left + r.width / 2 - x)) + 'px');
+    };
+    colocar();
+    const fuera = e => { if(!pop.contains(e.target)) cerrar(); };
+    const cerrar = () => { pop.remove(); window.removeEventListener('scroll', cerrar, true); document.removeEventListener('pointerdown', fuera, true); };
+    setTimeout(() => { window.addEventListener('scroll', cerrar, true); document.addEventListener('pointerdown', fuera, true); }, 0);
+    const aplicar = async e => {
+      cerrar(); b.disabled = true;
       try {
-        const on = await marcarDiaSencilla(id, b.dataset.iso);
-        if(on) try { sonidoLogro(); } catch(e){}
-        if(despues) despues(on, b);
+        const est = await marcarDiaSencilla(id, b.dataset.iso, e);
+        if(est === 'hecho') try { sonidoLogro(); } catch(err){}
+        if(alElegir) alElegir(est, b);
       } catch(err){ avisoBreve('No se pudo guardar. Revisa tu conexión e inténtalo de nuevo.'); }
       b.disabled = false;
+    };
+    pop.querySelectorAll('button').forEach(o => o.onclick = () => {
+      if(o.dataset.e !== 'mas'){ aplicar(o.dataset.e); return; }
+      // Comentario de ese día (y, abajo, quitar la marca o ver el calendario)
+      const m = datosSencillas().lista.find(x => x.id === id) || {}, previo = (m.notas || {})[b.dataset.iso] || '';
+      pop.innerHTML = '<textarea class="o-nota" rows="2" maxlength="200" placeholder="Comentario de este día…">' + escapeAttr(previo) + '</textarea>'
+        + '<button type="button" class="o-txt o-guardar">Guardar comentario</button><button type="button" class="o-txt" data-e="nada">Quitar la marca</button>'
+        + (verCalendario ? '<button type="button" class="o-txt" data-e="cal">📅 Ver calendario</button>' : '');
+      pop.classList.add('texto'); colocar();
+      const ta = pop.querySelector('.o-nota'); ta.focus();
+      pop.querySelector('.o-guardar').onclick = async () => {
+        cerrar();
+        try { await comentarDiaSencilla(id, b.dataset.iso, ta.value); b.classList.toggle('con-nota', !!ta.value.trim()); avisoBreve(ta.value.trim() ? '💬 Comentario guardado' : 'Comentario borrado'); if(alElegir) alElegir(estadoDiaSencilla(datosSencillas().lista.find(x => x.id === id) || {}, b.dataset.iso), b); }
+        catch(err){ avisoBreve('No se pudo guardar. Revisa tu conexión e inténtalo de nuevo.'); }
+      };
+      pop.querySelectorAll('.o-txt[data-e]').forEach(t => t.onclick = () => { if(t.dataset.e === 'cal'){ cerrar(); verCalendario(); } else aplicar(''); });
     });
   }
-  // La semana actual (L…D), para «Registros amables»; los días que no tocan se ven más claros (pero se pueden marcar)
-  function semanaSencillaHTML(m){
-    const l = lunesDe(new Date()), hoy = hoyISO(), hechos = new Set(m.dias || []), plan = diasPlanSencilla(m);
-    return '<div class="ms-semana">' + DIAS_SEMANA.map((L, i) => {
-      const d = new Date(l.getFullYear(), l.getMonth(), l.getDate() + i), iso = isoLocal(d);
-      return '<button type="button" class="ms-dia' + (hechos.has(iso) ? ' hecho' : '') + (iso === hoy ? ' hoy' : '') + (plan.includes(L) ? '' : ' libre') + '" data-iso="' + iso + '" data-n="' + d.getDate() + '"' + (iso > hoy ? ' disabled' : '')
-        + '><span>' + L + '</span><b>' + (hechos.has(iso) ? '✓' : d.getDate()) + '</b></button>';
-    }).join('') + '</div>';
+  function enlazarDiasSencilla(raiz, id, despues, verCalendario){
+    raiz.querySelectorAll('[data-iso]').forEach(b => b.onclick = () => { if(!b.disabled) opcionesDiaSencilla(b, id, despues, verCalendario); });
   }
+  // Los últimos 7 días, con HOY al final (como en las apps de hábitos)
+  function sieteDiasSencillaHTML(m){
+    const hoy = new Date(), hoyIso = hoyISO();
+    let s = '<div class="ms-semana">';
+    for(let k = 6; k >= 0; k--){
+      const d = new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate() - k), iso = isoLocal(d), L = DIAS_SEMANA[(d.getDay() + 6) % 7], e = estadoDiaSencilla(m, iso);
+      s += '<div class="ms-col"><button type="button" class="ms-dia' + claseDiaSencilla(m, iso, L) + '" data-iso="' + iso + '" aria-label="' + L + ' ' + d.getDate() + '"><span>' + L + '</span><b>' + (ICO_DIA[e] || d.getDate()) + '</b></button>'
+        + (iso === hoyIso ? '<small>HOY</small>' : '') + '</div>';
+    }
+    return s + '</div>';
+  }
+  const LEYENDA_SENCILLA = '<p class="ms-leyenda">En color, los días en que te toca. Toca un día para marcarlo:<br><i class="ly hecho"></i>hecho <i class="ly fallo"></i>no hecho <i class="ly libre"></i>no tocaba <b>•••</b> comentario</p>';
   // El calendario de un mes, con los días marcados
   function mesSencillaHTML(m, y, mes){
-    const hechos = new Set(m.dias || []), hoy = hoyISO(), plan = diasPlanSencilla(m), hueco = (new Date(y, mes, 1).getDay() + 6) % 7, n = new Date(y, mes + 1, 0).getDate();
+    const hoy = hoyISO(), hueco = (new Date(y, mes, 1).getDay() + 6) % 7, n = new Date(y, mes + 1, 0).getDate();
     let s = '<div class="ms-mes-cab"><button type="button" class="ms-mes-ant" aria-label="Mes anterior">‹</button><b>' + monthNamesEs[mes] + ' ' + y + '</b>'
       + '<button type="button" class="ms-mes-sig" aria-label="Mes siguiente">›</button></div><div class="ms-mes">'
       + DIAS_SEMANA.map(L => '<span class="ms-mes-l">' + L + '</span>').join('') + '<span></span>'.repeat(hueco);
     for(let d = 1; d <= n; d++){
       const f = new Date(y, mes, d), iso = isoLocal(f), L = DIAS_SEMANA[(f.getDay() + 6) % 7];
-      s += '<button type="button" class="ms-dia-m' + (hechos.has(iso) ? ' hecho' : '') + (iso === hoy ? ' hoy' : '') + (plan.includes(L) ? '' : ' libre') + '" data-iso="' + iso + '"' + (iso > hoy ? ' disabled' : '') + '>' + d + '</button>';
+      s += '<button type="button" class="ms-dia-m' + claseDiaSencilla(m, iso, L) + (iso === hoy ? ' hoy' : '') + '" data-iso="' + iso + '"' + (iso > hoy ? ' disabled' : '') + '>' + d + '</button>';
     }
     return s + '</div>';
   }
@@ -3634,7 +3704,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     const caja = el('<div class="card panel-section s2 ms-bloque"><h3 class="metas-sub">✔️ ' + TXT_SENCILLAS + '</h3>'
       + '<p class="ms-ayuda">Un hábito sencillo, con un calendario para marcar los días que lo haces. No cambia tu planta ni tu montaña.</p><div class="ms-lista"></div></div>').firstElementChild;
     const zona = caja.querySelector('.ms-lista');
-    const cuenta = m => { const n = (m.dias || []).length; return n + (n === 1 ? ' día registrado' : ' días registrados') + ((m.dias || []).includes(hoyISO()) ? ' · hoy ✓' : ''); };
+    const cuenta = m => { const n = (m.dias || []).length; return n + (n === 1 ? ' día hecho' : ' días hechos') + ((m.dias || []).includes(hoyISO()) ? ' · hoy ✓' : ''); };
     const archivada = (m, motivo) => ({ id: m.id, nombre: m.nombre, desde: m.desde || hoyISO(), hasta: hoyISO(), motivo, n: (m.dias || []).length });
     let pintar = null;
     const guardar = async (lista, archivo, boton) => {
@@ -3652,6 +3722,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
         + '<label class="ms-et" for="msNombre">¿Qué quieres hacer?</label><textarea id="msNombre" class="ms-input ms-nombre-in" rows="2" maxlength="80" placeholder="Ej.: beber 2 litros de agua, caminar 20 minutos…">' + escapeAttr(m ? m.nombre : '') + '</textarea>'
         + '<label class="ms-et">¿Qué días?</label><div class="ms-elegir">' + DIAS_SEMANA.map(L => '<button type="button" class="ms-elige' + (plan.includes(L) ? ' on' : '') + '" data-l="' + L + '">' + L + '</button>').join('') + '</div>'
         + '<div class="ms-rapidos"><button type="button" data-r="todos">Todos los días</button><button type="button" data-r="semana">De lunes a viernes</button></div>'
+        + '<p class="ms-aviso">Los días en color son los días que harás tu práctica.</p>'
         + (m ? '<p class="ms-aviso">Si cambias el nombre, la meta anterior pasa a tu historial con sus días.</p>' : '')
         + '<div class="ms-acciones"><button type="button" class="ms-no">Cancelar</button><button type="button" class="ms-si">Guardar</button></div>'
         + (m ? '<button type="button" class="ms-archivar">Archivar esta meta</button>' : '') + '</div></div>').firstElementChild;
@@ -3692,7 +3763,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
         return;
       }
       zona.innerHTML = activas.map(m => '<div class="ms-tarjeta" data-id="' + escapeAttr(m.id) + '"><p class="ms-nombre">' + escapeAttr(m.nombre) + '</p>'
-          + '<p class="ms-dias-plan">📆 ' + textoDiasSencilla(m) + '</p><p class="ms-cuenta">' + cuenta(m) + '</p>'
+          + '<p class="ms-dias-plan">📆 ' + textoDiasSencilla(m) + '</p><p class="ms-cuenta">' + cuenta(m) + '</p>' + sieteDiasSencillaHTML(m) + LEYENDA_SENCILLA
           + '<button type="button" class="ms-btn ms-cambiar">Cambiar mi ' + TXT_SENCILLA.toLowerCase() + ' →</button>'
           + '<button type="button" class="ms-btn ms-ver-cal">📅 Calendario</button><div class="ms-cal" hidden></div></div>').join('')
         + (activas.length < max ? '<button type="button" class="ms-btn ms-crear">' + (activas.length ? '＋ Crear otra ' : 'Crear mi ') + TXT_SENCILLA.toLowerCase() + ' →</button>' : '')
@@ -3708,11 +3779,19 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
           const sig = cal.querySelector('.ms-mes-sig');
           if(y > hoy.getFullYear() || (y === hoy.getFullYear() && mes >= hoy.getMonth())) sig.disabled = true;
           sig.onclick = () => { meses[id] = mes === 11 ? [y + 1, 0] : [y, mes + 1]; ver(); };
-          enlazarDiasSencilla(cal, id, () => { ver(); t.querySelector('.ms-cuenta').textContent = cuenta(datosSencillas().lista.find(x => x.id === id) || m); });
+          enlazarDiasSencilla(cal, id, () => { ver(); refrescar(); });
+        };
+        // Al marcar un día (en la fila o en el calendario) se pone al día todo lo de esta meta
+        const refrescar = () => {
+          const ya = datosSencillas().lista.find(x => x.id === id) || m;
+          t.querySelector('.ms-cuenta').textContent = cuenta(ya);
+          const fila = t.querySelector('.ms-semana'), nueva = el(sieteDiasSencillaHTML(ya)).firstElementChild;
+          fila.replaceWith(nueva); enlazarDiasSencilla(nueva, id, () => { refrescar(); if(!cal.hidden) ver(); }, () => abrir(true));
         };
         const abrir = si => { abiertos[id] = si; cal.hidden = !si; bCal.textContent = si ? '📅 Ocultar calendario' : '📅 Calendario'; if(si) ver(); };
         abrir(!!abiertos[id]);
         bCal.onclick = () => abrir(cal.hidden);
+        enlazarDiasSencilla(t.querySelector('.ms-semana'), id, () => { refrescar(); if(!cal.hidden) ver(); }, () => abrir(true));
         t.querySelector('.ms-cambiar').onclick = () => editor(t, m);
       });
       const crear = zona.querySelector('.ms-crear');
@@ -3725,11 +3804,11 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   function registroSencillas(){
     const activas = sencillasActivas();
     if(!activas.length) return null;
-    const caja = el('<div class="rp-sencillas"><p class="abonar-tit">5 · ✔️ Tus ' + TXT_SENCILLAS.toLowerCase() + '</p><p class="abonar-sub">Toca los días en que la hiciste.</p></div>').firstElementChild;
+    const caja = el('<div class="rp-sencillas"><p class="abonar-tit">5 · ✔️ Tus ' + TXT_SENCILLAS.toLowerCase() + '</p>' + LEYENDA_SENCILLA + '</div>').firstElementChild;
     activas.forEach(m => {
-      const f = el('<div class="ms-reg"><p class="ms-nombre">' + escapeAttr(m.nombre) + ' <small>· ' + textoDiasSencilla(m) + '</small></p>' + semanaSencillaHTML(m) + '</div>').firstElementChild;
+      const f = el('<div class="ms-reg"><p class="ms-nombre">' + escapeAttr(m.nombre) + ' <small>· ' + textoDiasSencilla(m) + '</small></p>' + sieteDiasSencillaHTML(m) + '</div>').firstElementChild;
       caja.appendChild(f);
-      enlazarDiasSencilla(f, m.id, (on, b) => { b.classList.toggle('hecho', on); b.querySelector('b').textContent = on ? '✓' : b.dataset.n; });
+      enlazarDiasSencilla(f, m.id, (est, b) => pintarDiaSencilla(b, est));
     });
     return caja;
   }
@@ -4866,6 +4945,9 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
+    { v: 'V13.30', f: '13 de octubre de 2026', n: [
+      'En tus <b>metas sencillas</b> ves los últimos 7 días, con «HOY» al final, y las marcas ahí mismo.',
+      'Al tocar un día eliges: ✓ hecho (verde), ✕ no hecho (rojo), – no tocaba (negro) o ••• para escribir un comentario de ese día.' ] },
     { v: 'V13.27', f: '13 de octubre de 2026', n: [
       'En <b>Metas</b>, la meta con guía y las metas sencillas tienen cada una su recuadro.',
       'Al crear tu <b>meta sencilla</b> eliges qué quieres hacer y qué días de la semana. Después tienes «Cambiar mi meta sencilla» y su <b>calendario</b>.' ] },
@@ -11678,4 +11760,4 @@ lo que haces cada día es lo que vas a ser.`;
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V13.29 · App Metas Amables · 2026-10-13 15:55==== -->
+<!-- ==== Fin del index V13.30 · App Metas Amables · 2026-10-13 18:22==== -->
