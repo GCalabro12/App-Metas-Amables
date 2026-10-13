@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V13.28 · App Metas Amables · 2026-10-13 15:53==== -->
+<!-- ==== index V13.29 · App Metas Amables · 2026-10-13 15:55==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1257,10 +1257,17 @@ body.riego-abierto{overflow:hidden}
 .ms-btn{display:block;width:100%;margin:8px 0 0;padding:12px;border-radius:12px;border:none;background:#C9942D;color:#fff;font:700 15px Karla,sans-serif;cursor:pointer}
 .ms-btn.ms-ver-cal{background:#fff;color:#6B4A26;border:1.5px solid #A0703C}
 .ms-dias-plan{margin:2px 0 0;font-size:13.5px;color:var(--ink-soft)}
-.ms-editor{margin:0 0 12px;padding:14px;border:1.5px solid #C9942D;border-radius:14px;background:#FFFBF2}
+.ms-capa{position:fixed;inset:0;z-index:950;background:#FFFDF8;overflow:auto;-webkit-overflow-scrolling:touch}
+body.ms-capa-abierta{overflow:hidden}
+.ms-capa-in{max-width:520px;margin:0 auto;padding:calc(14px + env(safe-area-inset-top)) 16px calc(28px + env(safe-area-inset-bottom));box-sizing:border-box}
+.ms-capa-cab{display:flex;align-items:center;gap:12px;margin:0 0 20px}.ms-capa-cab b{font:700 19px Lora,serif;color:var(--ink)}
+.ms-capa .ms-et{font-size:17px;margin:18px 0 8px}
+.ms-capa .ms-acciones{margin-top:22px}.ms-capa .ms-acciones button{padding:13px;font-size:16px}
+textarea.ms-nombre-in{display:block;width:100%;min-height:58px;resize:vertical;overflow:hidden;font:600 17px/1.35 Karla,sans-serif;padding:12px 14px;border:1.5px solid #D9CFB8;border-radius:12px;box-sizing:border-box}
+textarea.ms-nombre-in:focus{outline:none;border-color:#C9942D;box-shadow:0 0 0 3px rgba(201,148,45,.2)}
 .ms-et{display:block;margin:10px 0 6px;font-weight:800;font-size:15px}.ms-et:first-child{margin-top:0}
-.ms-elegir{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}
-.ms-elige{height:42px;border-radius:50%;aspect-ratio:1;margin:auto;width:100%;max-width:44px;border:2px solid #D9CFB8;background:#fff;font:800 15px Karla,sans-serif;color:var(--ink);cursor:pointer;padding:0}
+.ms-elegir{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}
+.ms-elige{height:auto;border-radius:50%;aspect-ratio:1;margin:auto;width:100%;max-width:50px;min-width:0;border:2px solid #D9CFB8;background:#fff;font:800 15px Karla,sans-serif;color:var(--ink);cursor:pointer;padding:0}
 .ms-elige.on{background:#C9942D;border-color:#C9942D;color:#fff}
 .ms-rapidos{display:flex;gap:8px;margin-top:8px}.ms-rapidos button{flex:1;padding:7px;border-radius:999px;border:1.5px solid #D9CFB8;background:#fff;font:700 13px Karla,sans-serif;color:#6B4A26;cursor:pointer}
 .ms-aviso{font-size:12.5px;color:var(--ink-soft);margin:10px 0 0}
@@ -1268,7 +1275,7 @@ body.riego-abierto{overflow:hidden}
 .ms-dia-m.libre,.ms-dia.libre{opacity:.55}.ms-dia-m.libre.hecho,.ms-dia.libre.hecho{opacity:1}
 .ms-reg .ms-nombre small{font-weight:600;color:var(--ink-soft);font-size:13px}
 .ms-ayuda,.ms-nota{font-size:14px;color:var(--ink-soft);margin:0 0 10px}.ms-nota{margin:8px 0 0;font-size:13px}
-.ms-tarjeta{margin:0 0 12px;padding:12px;border:1.5px solid #D9CFB8;border-radius:14px;background:#FFFDF7}
+.ms-tarjeta{margin:0 0 14px;padding:0 0 14px;border-bottom:1px solid rgba(0,0,0,.1)}
 .ms-nombre{margin:0;font-weight:800;font-size:16px;color:var(--ink)}.ms-cuenta{margin:2px 0 8px;font-size:13.5px;color:#4C8C4A;font-weight:700}
 .ms-mes-cab{display:flex;align-items:center;justify-content:space-between;margin:0 0 6px}.ms-mes-cab b{text-transform:capitalize;font-size:14.5px}
 .ms-mes-cab button{border:none;background:#F1ECDF;border-radius:8px;width:34px;height:30px;font-size:18px;cursor:pointer;color:var(--ink)}.ms-mes-cab button:disabled{opacity:.3;cursor:default}
@@ -2328,7 +2335,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V13.28';
+  const APP_VERSION = 'V13.29';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -3636,37 +3643,45 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       catch(err){ avisoBreve('No se pudo guardar. Revisa tu conexión e inténtalo de nuevo.'); }
       pintar();
     };
-    // Crear o cambiar: el nombre y los días de la semana (como en las apps de hábitos)
+    // Crear o cambiar: en una pantalla propia, a todo lo ancho. El nombre y los días de la semana (como en las apps de hábitos)
     const editor = (destino, m) => {
       const plan = m ? diasPlanSencilla(m) : DIAS_SEMANA.slice();
-      const f = el('<div class="ms-editor">'
-        + '<label class="ms-et">¿Qué quieres hacer?</label><input type="text" class="ms-input" maxlength="80" placeholder="Ej.: beber 2 litros de agua, caminar 20 minutos…" value="' + escapeAttr(m ? m.nombre : '') + '">'
+      document.querySelectorAll('.ms-capa').forEach(x => x.remove());
+      const f = el('<div class="ms-capa" role="dialog" aria-label="' + (m ? 'Cambiar' : 'Crear') + ' mi ' + TXT_SENCILLA.toLowerCase() + '"><div class="ms-capa-in">'
+        + '<div class="ms-capa-cab"><button type="button" class="back-btn ms-no">← Volver</button><b>' + (m ? 'Cambiar' : 'Crear') + ' mi ' + TXT_SENCILLA.toLowerCase() + '</b></div>'
+        + '<label class="ms-et" for="msNombre">¿Qué quieres hacer?</label><textarea id="msNombre" class="ms-input ms-nombre-in" rows="2" maxlength="80" placeholder="Ej.: beber 2 litros de agua, caminar 20 minutos…">' + escapeAttr(m ? m.nombre : '') + '</textarea>'
         + '<label class="ms-et">¿Qué días?</label><div class="ms-elegir">' + DIAS_SEMANA.map(L => '<button type="button" class="ms-elige' + (plan.includes(L) ? ' on' : '') + '" data-l="' + L + '">' + L + '</button>').join('') + '</div>'
         + '<div class="ms-rapidos"><button type="button" data-r="todos">Todos los días</button><button type="button" data-r="semana">De lunes a viernes</button></div>'
         + (m ? '<p class="ms-aviso">Si cambias el nombre, la meta anterior pasa a tu historial con sus días.</p>' : '')
         + '<div class="ms-acciones"><button type="button" class="ms-no">Cancelar</button><button type="button" class="ms-si">Guardar</button></div>'
-        + (m ? '<button type="button" class="ms-archivar">Archivar esta meta</button>' : '') + '</div>').firstElementChild;
-      destino.replaceWith(f);
-      const inp = f.querySelector('.ms-input'); inp.focus();
+        + (m ? '<button type="button" class="ms-archivar">Archivar esta meta</button>' : '') + '</div></div>').firstElementChild;
+      document.body.appendChild(f);
+      document.body.classList.add('ms-capa-abierta');
+      const cerrar = () => { f.remove(); document.body.classList.remove('ms-capa-abierta'); };
+      const inp = f.querySelector('.ms-input');
+      // El cuadro del nombre crece mientras escribes (y se puede estirar desde la esquina)
+      const crecer = () => { inp.style.height = 'auto'; inp.style.height = (inp.scrollHeight + 2) + 'px'; };
+      inp.addEventListener('input', crecer); setTimeout(() => { crecer(); inp.focus(); }, 0);
       const elegidos = () => [...f.querySelectorAll('.ms-elige.on')].map(b => b.dataset.l);
       f.querySelectorAll('.ms-elige').forEach(b => b.onclick = () => b.classList.toggle('on'));
       f.querySelectorAll('.ms-rapidos button').forEach(b => b.onclick = () => f.querySelectorAll('.ms-elige').forEach(x => x.classList.toggle('on', b.dataset.r === 'todos' || 'LMXJV'.includes(x.dataset.l))));
-      f.querySelector('.ms-no').onclick = pintar;
+      f.querySelectorAll('.ms-no').forEach(b => b.onclick = () => { cerrar(); pintar(); });
+      const guardarYCerrar = async (lista, archivo, boton) => { await guardar(lista, archivo, boton); cerrar(); };
       f.querySelector('.ms-si').onclick = e => {
         const nombre = inp.value.replace(/\s+/g, ' ').trim(), dias = elegidos();
         if(!nombre){ inp.focus(); return; }
         if(!dias.length){ avisoBreve('Elige al menos un día.'); return; }
         const d = datosSencillas();
-        if(!m){ guardar(d.lista.slice(0, max).concat({ id: Date.now().toString(36), nombre, diasSemana: dias, desde: hoyISO(), dias: [] }), d.archivo, e.currentTarget); return; }
+        if(!m){ guardarYCerrar(d.lista.slice(0, max).concat({ id: Date.now().toString(36), nombre, diasSemana: dias, desde: hoyISO(), dias: [] }), d.archivo, e.currentTarget); return; }
         const ya = d.lista.find(x => x.id === m.id) || m;
-        if(nombre === ya.nombre) guardar(d.lista.map(x => x.id === m.id ? Object.assign({}, x, { diasSemana: dias }) : x), d.archivo, e.currentTarget);
-        else guardar(d.lista.map(x => x.id === m.id ? { id: Date.now().toString(36), nombre, diasSemana: dias, desde: hoyISO(), dias: [] } : x), d.archivo.concat(archivada(ya, 'cambiada')), e.currentTarget);
+        if(nombre === ya.nombre) guardarYCerrar(d.lista.map(x => x.id === m.id ? Object.assign({}, x, { diasSemana: dias }) : x), d.archivo, e.currentTarget);
+        else guardarYCerrar(d.lista.map(x => x.id === m.id ? { id: Date.now().toString(36), nombre, diasSemana: dias, desde: hoyISO(), dias: [] } : x), d.archivo.concat(archivada(ya, 'cambiada')), e.currentTarget);
       };
       const arch = f.querySelector('.ms-archivar');
       if(arch) arch.onclick = () => {
         arch.outerHTML = '<div class="ms-acciones"><span class="ms-pregunta">¿Archivar «' + escapeAttr(m.nombre) + '»? Quedará en tu historial.</span><button type="button" class="ms-no2">No</button><button type="button" class="ms-si2">Sí, archivar</button></div>';
-        f.querySelector('.ms-no2').onclick = pintar;
-        f.querySelector('.ms-si2').onclick = e => { const d = datosSencillas(), ya = d.lista.find(x => x.id === m.id) || m; guardar(d.lista.filter(x => x.id !== m.id), d.archivo.concat(archivada(ya, 'archivada')), e.currentTarget); };
+        f.querySelector('.ms-no2').onclick = () => { cerrar(); pintar(); };
+        f.querySelector('.ms-si2').onclick = e => { const d = datosSencillas(), ya = d.lista.find(x => x.id === m.id) || m; guardarYCerrar(d.lista.filter(x => x.id !== m.id), d.archivo.concat(archivada(ya, 'archivada')), e.currentTarget); };
       };
     };
     pintar = () => {
@@ -11663,4 +11678,4 @@ lo que haces cada día es lo que vas a ser.`;
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V13.28 · App Metas Amables · 2026-10-13 15:53==== -->
+<!-- ==== Fin del index V13.29 · App Metas Amables · 2026-10-13 15:55==== -->
