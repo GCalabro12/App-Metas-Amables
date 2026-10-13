@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V13.48 · App Metas Amables · 2026-10-13 23:42==== -->
+<!-- ==== index V13.49 · App Metas Amables · 2026-10-13 23:44==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1294,7 +1294,7 @@ textarea.ms-nombre-in:focus{outline:none;border-color:#C9942D;box-shadow:0 0 0 3
 .ms-dia-m.hecho,.ms-dia.hecho{background:#4C8C4A;border-color:#4C8C4A;color:#fff}
 .ms-dia-m.fallo,.ms-dia.fallo{background:#D9483B;border-color:#D9483B;color:#fff}
 .ms-dia-m.libre,.ms-dia.libre{background:#2B2B2B;border-color:#2B2B2B;color:#fff}
-.ms-dia,.ms-dia-m{position:relative}
+.ms-dia,.ms-dia-m{position:relative}.ms-dia.no-toca,.ms-dia-m.no-toca{cursor:default}
 .ms-dia-m.con-nota::after{content:'•••';position:absolute;left:0;right:0;bottom:3px;font-size:12px;font-weight:900;line-height:.6;letter-spacing:1px;text-align:center;color:currentColor}
 .ms-dia-m.con-nota{padding-bottom:6px}
 .ms-notas{margin:10px 0 0;padding-top:8px;border-top:1px solid rgba(0,0,0,.08)}.ms-notas p{display:flex;gap:10px;margin:6px 0;font-size:14.5px}.ms-notas b{min-width:22px;text-align:right}
@@ -2375,7 +2375,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V13.48';
+  const APP_VERSION = 'V13.49';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -3724,7 +3724,13 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     });
   }
   function enlazarDiasSencilla(raiz, id, despues, verCalendario){
-    raiz.querySelectorAll('[data-iso]').forEach(b => b.onclick = () => { if(!b.disabled) opcionesDiaSencilla(b, id, despues, verCalendario); });
+    raiz.querySelectorAll('[data-iso]').forEach(b => {
+      // Los días que no elegiste (en blanco) no se marcan; si ya tenían marca o comentario, sí se pueden cambiar o quitar
+      if(!b.classList.contains('toca') && !b.matches('.hecho, .fallo, .libre, .con-nota')){
+        b.classList.add('no-toca'); b.onclick = () => avisoBreve('Este día no lo elegiste para esta meta.'); return;
+      }
+      b.onclick = () => { if(!b.disabled) opcionesDiaSencilla(b, id, despues, verCalendario); };
+    });
   }
   // Los últimos 7 días, con HOY al final (como en las apps de hábitos)
   function sieteDiasSencillaHTML(m){
@@ -5095,6 +5101,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
+    { v: 'V13.49', f: '13 de octubre de 2026', n: [
+      'En tus <b>metas sencillas</b>, los días que no elegiste (en blanco) ya no se pueden marcar.' ] },
     { v: 'V13.48', f: '13 de octubre de 2026', n: [
       'Con una meta nueva, «Tu práctica de hoy» (en Registros amables) ya no muestra la práctica de la meta anterior: sale tu meta nueva hasta que hagas tu compromiso de la semana.' ] },
     { v: 'V13.47', f: '13 de octubre de 2026', n: [
@@ -11959,4 +11967,4 @@ lo que haces cada día es lo que vas a ser.`;
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V13.48 · App Metas Amables · 2026-10-13 23:42==== -->
+<!-- ==== Fin del index V13.49 · App Metas Amables · 2026-10-13 23:44==== -->
