@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V13.46 · App Metas Amables · 2026-10-13 23:38==== -->
+<!-- ==== index V13.47 · App Metas Amables · 2026-10-13 23:41==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2375,7 +2375,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V13.46';
+  const APP_VERSION = 'V13.47';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -5093,6 +5093,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
+    { v: 'V13.47', f: '13 de octubre de 2026', n: [
+      'En Inicio, <b>Grupo de apoyo</b> dice «Compromiso pendiente» cuando aún no has dicho cuántas veces practicarás esta semana. Al tocarlo, vas directo a hacerlo.' ] },
     { v: 'V13.46', f: '13 de octubre de 2026', n: [
       'En <b>Tu planta</b>, si empiezas una meta nueva, el tallo lleva la marca «🌱 meta nueva» en la semana en que empezaste. Las hojas de antes se quedan.',
       'En <b>Registros amables</b> ya se pueden marcar los días de tus <b>metas sencillas</b> (el bocadillo salía por detrás).',
@@ -7405,7 +7407,7 @@ lo que haces cada día es lo que vas a ser.`;
           + boton('s1', 'ciclo-c' + (sinSesiones ? ' bloqueada' : '') + (act('c') || act('d')), 'cpc', 'Grupo de apoyo',
                 sinSesiones
                   ? 'Registro de compromiso cada lunes y sesiones en grupo cada 15 días. Plan Guías + Grupo'
-                  : '✍️ Registro ' + (registroPendienteEstaSemana() ? 'pendiente: aún no has registrado esta semana' : textoProximoLunes())
+                  : (registroPendienteEstaSemana() ? '✍️ <b>Compromiso pendiente:</b> aún no has dicho cuántas veces practicarás esta semana' : '✍️ Registro ' + textoProximoLunes())
                     + (textoProximaSesion() ? '<br><span style="font-weight:700">📅 ' + textoProximaSesion() + '</span>' : ''), '', sinSesiones && '👑👑')
           + (modoMinimal() ? '' : '<button type="button" class="opcion-inicio ciclo-formacion" data-ir="util"><span class="ciclo-icono">' + iconoLlave() + '</span><span class="opcion-tx"><b>Utilidades</b><small>Habla con Prácti, formación, frases y música</small></span><span class="opcion-flecha">›</span></button>');
         app.appendChild(opciones);
@@ -7419,6 +7421,8 @@ lo que haces cada día es lo que vas a ser.`;
             if(destino === 's3' && !practicaBloqueada && saltarIntro('s3')){ state.prevView = 'panel'; state.view = 'practicas'; window.scrollTo(0,0); render(); return; }
             if(destino === 's2' && !sinSesiones && saltarIntro('s2')){ state.view = 'sesionesCal'; window.scrollTo(0,0); render(); return; }
             if(destino === 's1' && sinSesiones){ state.prevView = 'panel'; state.view = 'planes'; window.scrollTo(0,0); render(); return; }
+            // Con el compromiso de esta semana pendiente, «Grupo de apoyo» lleva directo a hacerlo
+            if(destino === 's1' && registroPendienteEstaSemana()){ state.prevView = 'panel'; state.view = 'checkin'; state.regPaso = null; window.scrollTo(0,0); render(); return; }
             if(destino === 's2' && sinSesiones){ state.prevView = 'panel'; state.view = 'planes'; window.scrollTo(0,0); render(); return; }
             if(destino === 's3' && practicaBloqueada){ state.prevView = 'panel'; state.view = 'planes'; window.scrollTo(0,0); render(); return; }
             if(destino === 's3' && practicaAbiertaEsteMes()){ state.panelSub = destino; render(); return; }
@@ -11951,4 +11955,4 @@ lo que haces cada día es lo que vas a ser.`;
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V13.46 · App Metas Amables · 2026-10-13 23:38==== -->
+<!-- ==== Fin del index V13.47 · App Metas Amables · 2026-10-13 23:41==== -->
