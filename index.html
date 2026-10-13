@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V13.34 · App Metas Amables · 2026-10-13 19:27==== -->
+<!-- ==== index V13.35 · App Metas Amables · 2026-10-13 19:28==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1284,7 +1284,9 @@ textarea.ms-nombre-in:focus{outline:none;border-color:#C9942D;box-shadow:0 0 0 3
 .ms-dia-m{width:100%;max-width:44px;aspect-ratio:1;border:1.5px solid #E2DACA;border-radius:50%;background:#fff;font:700 13px Karla,sans-serif;color:var(--ink);cursor:pointer;padding:0}
 .ms-dia-m,.ms-dia{background:#EFEDE7;border-color:#E2DED3;color:#9A958A}
 .ms-dia-m.toca,.ms-dia.toca{background:var(--ms-f,#F6EBD3);border-color:var(--ms-c,#C9942D);color:var(--ms-t,#6B4A26)}
-.ms-b{--ms-c:#7A4E2D;--ms-f:#EBDCCB;--ms-t:#4A2E17}
+.ms-b{--ms-c:#7A4E2D;--ms-f:#EBDCCB;--ms-t:#4A2E17;--ms-n:#E9D7C2}
+/* El nombre de cada meta sencilla, bien destacado: fondo amarillo (marrón claro en la segunda) y aire arriba y abajo */
+.ms-tarjeta > .ms-nombre,.ms-reg > .ms-nombre{margin:10px 0 10px;padding:12px 14px;border-radius:12px;background:var(--ms-n,#FCEFC2);font-size:17px;line-height:1.3}
 .ms-punto{display:inline-block;width:12px;height:12px;border-radius:50%;background:var(--ms-c,#C9942D);margin-right:8px;vertical-align:0}
 .ms-tarjeta .ms-cambiar{background:var(--ms-c,#C9942D)}.ms-tarjeta .ms-ver-cal{border-color:var(--ms-c,#A0703C);color:var(--ms-t,#6B4A26)}
 .ms-dia-m.hecho,.ms-dia.hecho{background:#4C8C4A;border-color:#4C8C4A;color:#fff}
@@ -2358,7 +2360,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V13.34';
+  const APP_VERSION = 'V13.35';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -3785,7 +3787,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
         zona.querySelector('.ms-corona').onclick = irAPlanes;
         return;
       }
-      zona.innerHTML = activas.map((m, i) => '<div class="ms-tarjeta' + (i ? ' ms-b' : '') + '" data-id="' + escapeAttr(m.id) + '"><p class="ms-nombre"><i class="ms-punto"></i>' + escapeAttr(m.nombre) + '</p>'
+      zona.innerHTML = activas.map((m, i) => '<div class="ms-tarjeta' + (i ? ' ms-b' : '') + '" data-id="' + escapeAttr(m.id) + '"><p class="ms-nombre">' + escapeAttr(m.nombre) + '</p>'
           + (vecesSemanaSencilla(m) ? '<p class="ms-dias-plan">📆 ' + textoDiasSencilla(m) + '</p>' : '') + '<p class="ms-cuenta">' + cuenta(m) + '</p>' + sieteDiasSencillaHTML(m) + LEYENDA_SENCILLA
           + '<button type="button" class="ms-btn ms-cambiar">Cambiar mi ' + TXT_SENCILLA.toLowerCase() + ' →</button>'
           + '<button type="button" class="ms-btn ms-ver-cal">📅 Calendario</button><div class="ms-cal" hidden></div></div>').join('')
@@ -3829,7 +3831,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     if(!activas.length) return null;
     const caja = el('<div class="rp-sencillas"><p class="abonar-tit">5 · ✔️ Tus ' + TXT_SENCILLAS.toLowerCase() + '</p>' + LEYENDA_SENCILLA + '</div>').firstElementChild;
     activas.forEach((m, i) => {
-      const f = el('<div class="ms-reg' + (i ? ' ms-b' : '') + '"><p class="ms-nombre"><i class="ms-punto"></i>' + escapeAttr(m.nombre) + (vecesSemanaSencilla(m) ? ' <small>· ' + textoDiasSencilla(m) + '</small>' : '') + '</p>' + sieteDiasSencillaHTML(m) + '</div>').firstElementChild;
+      const f = el('<div class="ms-reg' + (i ? ' ms-b' : '') + '"><p class="ms-nombre">' + escapeAttr(m.nombre) + (vecesSemanaSencilla(m) ? ' <small>· ' + textoDiasSencilla(m) + '</small>' : '') + '</p>' + sieteDiasSencillaHTML(m) + '</div>').firstElementChild;
       caja.appendChild(f);
       enlazarDiasSencilla(f, m.id, (est, b) => pintarDiaSencilla(b, est));
     });
@@ -11786,4 +11788,4 @@ lo que haces cada día es lo que vas a ser.`;
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V13.34 · App Metas Amables · 2026-10-13 19:27==== -->
+<!-- ==== Fin del index V13.35 · App Metas Amables · 2026-10-13 19:28==== -->
