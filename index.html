@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V13.53 · App Metas Amables · 2026-10-13 23:53==== -->
+<!-- ==== index V13.54 · App Metas Amables · 2026-10-13 23:55==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1149,7 +1149,7 @@ body.theme-dark .guia-progreso{background:var(--surface)}
 .planta-card[role="button"]{cursor:pointer}.planta-ir{margin-left:auto;font:400 26px Karla,sans-serif;color:#A93226}
 .planta-reg{display:block;cursor:pointer;margin:0 0 6px;padding:12px 14px;border-radius:12px;background:#C0392B;color:#fff;font:800 16px Karla,sans-serif;text-align:center}
 .planta-reg.hecho{background:#E8F3E2;color:#2F5A23;border:2px solid #9CC58E}
-.planta-mas{display:flex;align-items:center;gap:6px;margin:12px 0 0;padding:10px 0 0;border-top:1.5px dashed #E3B4AE;font:800 15px Karla,sans-serif;color:#A93226;text-decoration:underline;text-underline-offset:3px}.planta-mas span{margin-left:auto;font-size:22px;line-height:1;text-decoration:none}.planta-reg-lista{margin:0;font-size:14px;line-height:1.4;color:#5A4A48}
+.planta-mas{display:flex;align-items:center;gap:6px;margin:12px 0 0;padding:10px 0 0;border-top:1.5px dashed #E3B4AE;font:800 18px Karla,sans-serif;color:#A93226;text-decoration:underline;text-underline-offset:3px}.planta-mas span{margin-left:auto;font-size:22px;line-height:1;text-decoration:none}.planta-reg-lista{margin:0;font-size:14px;line-height:1.4;color:#5A4A48}
 .planta-ver{display:block;margin:10px auto 0;padding:4px 8px;border:0;background:none;color:#A93226;font:700 14px Karla,sans-serif;cursor:pointer}
 .planta-card .planta-tx b{color:#A93226}.planta-estado{font-weight:700;color:#A93226}.planta-fig{position:relative;flex:none;display:block}.planta-fig img,.planta-fig .planta-anim{display:block;position:relative;z-index:1;mix-blend-mode:multiply;background:transparent !important}.planta-tutor{position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none;z-index:0}.planta-tutor.planta-lazo{z-index:2}.planta-card img{width:112px;height:auto;flex:none;border-radius:14px;background:#fff}
 .planta-tx{flex:1;min-width:0}.planta-tx b{display:block;font:700 18px Lora,serif;color:#2F5A23}.planta-tx p{margin:4px 0 10px;font-size:14.5px;line-height:1.4}
@@ -2375,7 +2375,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V13.53';
+  const APP_VERSION = 'V13.54';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -5111,7 +5111,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       'Moderadores: en «Tus primeros 15 registros» (Registro y compromiso) también salen las flechas para pasar los días.' ] },
     { v: 'V13.52', f: '13 de octubre de 2026', n: [
       'El paso c de Inicio se llama ahora <b>Registro y compromiso</b>: en la app registras; la práctica la haces fuera.',
-      'En su recuadro hay dos accesos: «💧 Registra hoy» (tu clima, tu entorno y tu práctica) y, abajo, «📜 Tu compromiso: contrato, notas a tu yo y más».' ] },
+      'En su recuadro hay dos accesos: «💧 Registra hoy» (tu clima, tu entorno y tu práctica) y, abajo, «📜 Tu compromiso y más».' ] },
     { v: 'V13.51', f: '13 de octubre de 2026', n: [
       'Los avisos del registro semanal ahora se llaman igual en toda la app: <b>compromiso del lunes</b> (cuántas veces practicarás esta semana), para no confundirlo con los registros de cada día.' ] },
     { v: 'V13.50', f: '13 de octubre de 2026', n: [
@@ -10298,7 +10298,7 @@ lo que haces cada día es lo que vas a ser.`;
       + '<div class="planta-fila"><span class="planta-fig" title="El tutor de tu planta es tu guía semanal">' + tutor + '<img src="' + e.img + '" alt="">' + lazo + '</span>'
       + '<div class="planta-tx">' + estadoReg + '</div></div>'
       // Abajo, a la vista: el resto de la tarjeta (contrato, notas a tu yo, meta lograda…) se abre tocándola
-      + '<p class="planta-mas">📜 Tu compromiso: contrato, notas a tu yo y más <span>›</span></p></div>').firstElementChild;
+      + '<p class="planta-mas">📜 Tu compromiso y más <span>›</span></p></div>').firstElementChild;
     if(alVer){ t.onclick = alVer; t.onkeydown = ev => { if(ev.key === 'Enter' || ev.key === ' '){ ev.preventDefault(); alVer(); } }; }
     // ✏️ Cambiar el resumen de la meta con sus propias palabras (sin abrir la tarjeta)
     const lapiz = t.querySelector('.planta-lapiz');
@@ -11985,4 +11985,4 @@ lo que haces cada día es lo que vas a ser.`;
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V13.53 · App Metas Amables · 2026-10-13 23:53==== -->
+<!-- ==== Fin del index V13.54 · App Metas Amables · 2026-10-13 23:55==== -->
