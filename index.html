@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V13.49 · App Metas Amables · 2026-10-13 23:44==== -->
+<!-- ==== index V13.50 · App Metas Amables · 2026-10-13 23:46==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1239,7 +1239,7 @@ body.riego-abierto{overflow:hidden}
 .reto-cuerpo h2{margin:0 0 8px;font:700 24px Lora,serif;color:#5B3FA8}
 .reto-cuerpo p{margin:0 0 8px;font-size:15.5px;line-height:1.45;color:#2B2B2B;text-align:left}
 .reto-cuerpo .reto-premio{text-align:center;font-size:16.5px}.reto-cuerpo .reto-falta{text-align:center;color:#7A6A50;font-size:14px}
-.reto-camino{display:block;width:100%;max-width:330px;margin:6px auto 10px;overflow:visible}.reto-regalo{cursor:pointer;outline:none;-webkit-tap-highlight-color:transparent}.reto-regalo:focus{outline:none}.reto-premio-caja{margin:4px 0 12px;padding:14px 16px;border-radius:16px;background:#5B3FA8;color:#fff;font-size:17px;line-height:1.4;text-align:center;box-shadow:0 8px 22px rgba(40,20,90,.25)}.reto-premio-caja b{color:#FFE7A3}.reto-premio-caja .reto-pop-ico{display:block;font-size:34px;margin:0 0 4px}.reto-btn.reto-premio-btn{background:#5B3FA8}
+.reto-camino{display:block;width:100%;max-width:330px;margin:6px auto 10px;overflow:visible}.reto-pasar{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 12px;background:#2B2420;color:#fff;font:700 15px Karla,sans-serif}.reto-pasar button{border:0;border-radius:10px;padding:8px 12px;background:#fff;color:#2B2420;font:800 15px Karla,sans-serif;cursor:pointer}.reto-pasar button:disabled{opacity:.35;cursor:default}.reto-regalo{cursor:pointer;outline:none;-webkit-tap-highlight-color:transparent}.reto-regalo:focus{outline:none}.reto-premio-caja{margin:4px 0 12px;padding:14px 16px;border-radius:16px;background:#5B3FA8;color:#fff;font-size:17px;line-height:1.4;text-align:center;box-shadow:0 8px 22px rgba(40,20,90,.25)}.reto-premio-caja b{color:#FFE7A3}.reto-premio-caja .reto-pop-ico{display:block;font-size:34px;margin:0 0 4px}.reto-btn.reto-premio-btn{background:#5B3FA8}
 .reto-pop{position:absolute;z-index:5;width:min(270px,calc(100% - 24px));padding:14px 16px;border-radius:16px;background:#5B3FA8;color:#fff;font-size:17px;line-height:1.4;text-align:left;box-shadow:0 10px 28px rgba(40,20,90,.35)}
 .reto-pop::after{content:'';position:absolute;left:var(--flecha,50%);width:18px;height:18px;background:#5B3FA8;transform:translateX(-50%) rotate(45deg)}
 .reto-pop.abajo::after{top:-8px}.reto-pop.arriba::after{bottom:-8px}
@@ -2375,7 +2375,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V13.49';
+  const APP_VERSION = 'V13.50';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -3986,7 +3986,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     try { launchConfetti(); musicaCartel(); } catch(e){}
     capa.querySelector('.reto-ok').onclick = () => capa.remove();
   }
-  function abrirRetoDia(n, soloVer){
+  // pasarDias (vista previa del panel): flechas arriba para ir del día 1 al 15 y ver cómo cambia la pantalla
+  function abrirRetoDia(n, soloVer, pasarDias){
     document.querySelectorAll('.reto-capa').forEach(x => x.remove());
     const premio = premiosReto()[n];
     const siguiente = Object.keys(premiosReto()).map(Number).find(d => d > n);
@@ -3996,6 +3997,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     else if(premio) tx = '<div class="reto-premio-caja"><span class="reto-pop-ico">' + premio.ico + '</span>¡Has desbloqueado <b>' + premio.tit + '</b>!</div>';
     if(siguiente) tx += '<p class="reto-falta">Te ' + (siguiente - n === 1 ? 'falta 1 día' : 'faltan ' + (siguiente - n) + ' días') + ' para tu próximo regalo 🎁</p>';
     const capa = el('<div class="reto-capa" role="dialog" aria-label="Tus primeros 15 registros"><div class="reto-card">'
+      + (pasarDias ? '<div class="reto-pasar"><button type="button" class="reto-pasar-ant"' + (n <= 1 ? ' disabled' : '') + '>‹ Día ' + (n - 1) + '</button><b>Día ' + n + ' de ' + RETO_DIAS + '</b><button type="button" class="reto-pasar-sig"' + (n >= RETO_DIAS ? ' disabled' : '') + '>Día ' + (n + 1) + ' ›</button></div>' : '')
       + '<div class="reto-cab">' + practiCartelHTML(n, 140) + '</div>'
       + '<div class="reto-cuerpo"><h2>' + tit + '</h2>' + tx + caminoRetoSVG(n)
       + (premio ? '<button type="button" class="reto-btn reto-premio-btn">' + premio.ico + ' ' + premio.boton + '</button>' : '')
@@ -4005,6 +4007,10 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     try { launchConfetti(); musicaCartel(); } catch(e){}   // siempre que sale el número: confeti y un poco de música
     const cerrar = () => capa.remove();
     capa.querySelector('.reto-ok').onclick = cerrar;
+    if(pasarDias){
+      capa.querySelector('.reto-pasar-ant').onclick = () => abrirRetoDia(Math.max(1, n - 1), soloVer, true);
+      capa.querySelector('.reto-pasar-sig').onclick = () => abrirRetoDia(Math.min(RETO_DIAS, n + 1), soloVer, true);
+    }
     // La «?» de cada regalo lo explica en un bocadillo grande que apunta al regalo tocado
     const card = capa.querySelector('.reto-card');
     card.style.position = 'relative';
@@ -4808,8 +4814,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
         cuando: 'Al marcar un clima difícil (enfadado, estresado, preocupado, desmotivado, cansado) o un entorno complicado (poco tiempo, visitas, enfermo). Una vez al día.',
         abrir: () => abrirHojaAmable('clima', true) },
       { grupo: 'registro', tit: 'Tus primeros 15 registros (cartel del día)', img: mini('linear-gradient(160deg,#FFE7B8,#E7DBFF)', '#5B3FA8', '🪧'),
-        cuando: 'Al cerrar Registros amables (o marcar un día del calendario) cuando hay un día registrado nuevo, del día 1 al 15. Una vez en la vida.',
-        abrir: () => abrirRetoDia(8, true) },
+        cuando: 'Al cerrar Registros amables (o marcar un día del calendario) cuando hay un día registrado nuevo, del día 1 al 15. Una vez en la vida. En la vista previa, con las flechas de arriba pasas de un día a otro.',
+        abrir: () => abrirRetoDia(1, true, true) },
       { grupo: 'registro', tit: 'Días registrados con tu meta', img: mini('linear-gradient(160deg,#FFE7B8,#FFD3D8)', '#2F5F93', '23'),
         cuando: 'Después del reto (día 16 en adelante): cada día registrado nuevo. Cuenta los días desde la meta actual y vuelve a 1 con cada meta nueva.',
         abrir: () => abrirDiasMeta(23) },
@@ -5101,6 +5107,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
+    { v: 'V13.50', f: '13 de octubre de 2026', n: [
+      'Panel de control › Vistas previas: en «Tus primeros 15 registros», unas flechas arriba pasan del día 1 al 15 para ver cómo cambia la pantalla.' ] },
     { v: 'V13.49', f: '13 de octubre de 2026', n: [
       'En tus <b>metas sencillas</b>, los días que no elegiste (en blanco) ya no se pueden marcar.' ] },
     { v: 'V13.48', f: '13 de octubre de 2026', n: [
@@ -11967,4 +11975,4 @@ lo que haces cada día es lo que vas a ser.`;
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V13.49 · App Metas Amables · 2026-10-13 23:44==== -->
+<!-- ==== Fin del index V13.50 · App Metas Amables · 2026-10-13 23:46==== -->
