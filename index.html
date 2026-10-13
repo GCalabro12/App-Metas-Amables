@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V13.23 · App Metas Amables · 2026-10-13 00:02==== -->
+<!-- ==== index V13.24 · App Metas Amables · 2026-10-13 13:26==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1240,7 +1240,11 @@ body.riego-abierto{overflow:hidden}
 .reto-cuerpo p{margin:0 0 8px;font-size:15.5px;line-height:1.45;color:#2B2B2B;text-align:left}
 .reto-cuerpo .reto-premio{text-align:center;font-size:16.5px}.reto-cuerpo .reto-falta{text-align:center;color:#7A6A50;font-size:14px}
 .reto-camino{display:block;width:100%;max-width:330px;margin:6px auto 10px;overflow:visible}.reto-regalo{cursor:pointer}
-.reto-cuerpo .reto-info{margin:-4px 0 8px;padding:10px 12px;border-radius:12px;background:#F1ECFC;color:#3E2A7A;font-size:14.5px;text-align:center}
+.reto-pop{position:absolute;z-index:5;width:min(270px,calc(100% - 24px));padding:14px 16px;border-radius:16px;background:#5B3FA8;color:#fff;font-size:17px;line-height:1.4;text-align:left;box-shadow:0 10px 28px rgba(40,20,90,.35)}
+.reto-pop::after{content:'';position:absolute;left:var(--flecha,50%);width:18px;height:18px;background:#5B3FA8;transform:translateX(-50%) rotate(45deg)}
+.reto-pop.abajo::after{top:-8px}.reto-pop.arriba::after{bottom:-8px}
+.reto-pop b{color:#FFE7A3}.reto-pop .reto-pop-x{position:absolute;top:4px;right:6px;border:none;background:none;color:#fff;font-size:20px;line-height:1;padding:6px;cursor:pointer}
+.reto-pop .reto-pop-ico{display:block;font-size:30px;margin:0 0 4px}
 .reto-btn{display:block;width:100%;margin:8px 0 0;padding:13px;border:0;border-radius:12px;background:#C0392B;color:#fff;font:800 17px Karla,sans-serif;cursor:pointer}
 .reto-btn.reto-sec{background:#fff;color:#A93226;border:2px solid #E3B4AE}
 .rp-seccion{width:min(420px,100%);margin:22px auto 0;padding:16px 12px 14px;border-radius:20px;background:rgba(255,255,255,.88);text-align:center;box-sizing:border-box}
@@ -2289,7 +2293,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V13.23';
+  const APP_VERSION = 'V13.24';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -2709,6 +2713,9 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       } } catch(e){}
     // Enlace de los emails (?planes=1): la pantalla de los planes
     try { if(new URLSearchParams(location.search).get('planes') === '1'){ history.replaceState(null, '', location.pathname); setTimeout(irAPlanes, 900); } } catch(e){}
+    // Enlace del email de los 10 días (?nota=1): la nota a tu yo del próximo mes (el segundo regalo)
+    try { if(new URLSearchParams(location.search).get('nota') === '1'){ history.replaceState(null, '', location.pathname);
+      setTimeout(() => { if(!puedeNotaMes()){ avisoPremioBloqueado('nota'); return; } state.prevView = 'practicaSemanal'; state.view = 'posit'; window.scrollTo(0, 0); render(); }, 900); } } catch(e){}
     // Enlace de los emails (?meta=1): el formulario de la meta, o su sección si ya está rellenado.
     // ?meta=seguir («Seguir con mi meta»): el formulario ya relleno con las respuestas del trimestre anterior
     try { const pm = new URLSearchParams(location.search).get('meta'); if(pm === '1' || pm === 'seguir'){ history.replaceState(null, '', location.pathname);
@@ -3541,7 +3548,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     if(siguiente) tx += '<p class="reto-falta">Te ' + (siguiente - n === 1 ? 'falta 1 día' : 'faltan ' + (siguiente - n) + ' días') + ' para tu próximo regalo 🎁</p>';
     const capa = el('<div class="reto-capa" role="dialog" aria-label="Tus primeros 15 registros"><div class="reto-card">'
       + '<div class="reto-cab">' + practiCartelHTML(n, 140) + '</div>'
-      + '<div class="reto-cuerpo"><h2>' + tit + '</h2>' + tx + caminoRetoSVG(n) + '<p class="reto-info" hidden></p>'
+      + '<div class="reto-cuerpo"><h2>' + tit + '</h2>' + tx + caminoRetoSVG(n)
       + (premio ? '<button type="button" class="reto-btn reto-premio-btn">' + premio.ico + ' ' + premio.boton + '</button>' : '')
       + '<button type="button" class="reto-btn ' + (premio ? 'reto-sec' : '') + ' reto-ok">' + (n === 1 ? '¡Vamos allá!' : 'Continuar') + '</button></div></div></div>').firstElementChild;
     document.body.appendChild(capa);
@@ -3549,12 +3556,31 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     try { launchConfetti(); musicaCartel(); } catch(e){}   // siempre que sale el número: confeti y un poco de música
     const cerrar = () => capa.remove();
     capa.querySelector('.reto-ok').onclick = cerrar;
-    // La «?» de cada regalo explica cuál es
-    const info = capa.querySelector('.reto-info');
+    // La «?» de cada regalo lo explica en un bocadillo grande que apunta al regalo tocado
+    const card = capa.querySelector('.reto-card');
+    card.style.position = 'relative';
+    const quitarPop = () => card.querySelectorAll('.reto-pop').forEach(x => x.remove());
     capa.querySelectorAll('.reto-regalo').forEach(g => {
-      const ver = () => { const d = Number(g.dataset.dia), pr = RETO_PREMIOS[d]; info.innerHTML = pr.ico + ' <b>Día ' + d + ':</b> ' + (n >= d ? 'ya tienes ' : 'desbloquearás ') + pr.tit + '.'; info.hidden = false; };
-      g.onclick = ver; g.onkeydown = ev => { if(ev.key === 'Enter' || ev.key === ' '){ ev.preventDefault(); ver(); } };
+      const ver = ev => {
+        if(ev) ev.stopPropagation();
+        quitarPop();
+        const d = Number(g.dataset.dia), pr = RETO_PREMIOS[d];
+        const pop = el('<div class="reto-pop" role="status"><button type="button" class="reto-pop-x" aria-label="Cerrar">×</button><span class="reto-pop-ico">' + (n >= d ? pr.ico : '🎁') + '</span>'
+          + '<b>Día ' + d + '</b><br>' + (n >= d ? 'Ya tienes ' : 'Desbloquearás ') + pr.tit + '.</div>').firstElementChild;
+        card.appendChild(pop);
+        // Encima del regalo si cabe; si no, debajo. La flecha apunta al centro del regalo
+        const rc = card.getBoundingClientRect(), rg = g.getBoundingClientRect(), cx = rg.left + rg.width / 2 - rc.left;
+        const w = pop.offsetWidth, h = pop.offsetHeight, x = Math.max(12, Math.min(card.clientWidth - w - 12, cx - w / 2));
+        const arriba = rg.top - rc.top + card.scrollTop - h - 14 > 0;
+        pop.classList.add(arriba ? 'arriba' : 'abajo');
+        pop.style.left = x + 'px';
+        pop.style.top = (arriba ? rg.top - rc.top + card.scrollTop - h - 12 : rg.bottom - rc.top + card.scrollTop + 12) + 'px';
+        pop.style.setProperty('--flecha', Math.max(18, Math.min(w - 18, cx - x)) + 'px');
+        pop.querySelector('.reto-pop-x').onclick = e2 => { e2.stopPropagation(); pop.remove(); };
+      };
+      g.onclick = ver; g.onkeydown = ev => { if(ev.key === 'Enter' || ev.key === ' '){ ev.preventDefault(); ver(ev); } };
     });
+    card.addEventListener('click', e => { if(!e.target.closest('.reto-pop, .reto-regalo')) quitarPop(); });
     const pb = capa.querySelector('.reto-premio-btn');
     if(pb) pb.onclick = () => {
       cerrar();
@@ -4624,6 +4650,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
+    { v: 'V13.24', f: '13 de octubre de 2026', n: [
+      'En <b>Tus 15 primeros registros</b>, al tocar la «?» de un regalo se abre un bocadillo grande que apunta a ese regalo.' ] },
     { v: 'V13.23', f: '13 de octubre de 2026', n: [
       'Al sellar tu <b>contrato de compromiso</b> suena un redoble de tambor y una fanfarria, para celebrarlo como se merece.' ] },
     { v: 'V13.22', f: '12 de octubre de 2026', n: [
@@ -11417,4 +11445,4 @@ lo que haces cada día es lo que vas a ser.`;
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V13.23 · App Metas Amables · 2026-10-13 00:02==== -->
+<!-- ==== Fin del index V13.24 · App Metas Amables · 2026-10-13 13:26==== -->
