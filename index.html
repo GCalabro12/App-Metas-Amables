@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V13.41 · App Metas Amables · 2026-10-13 19:47==== -->
+<!-- ==== index V13.42 · App Metas Amables · 2026-10-13 19:50==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2375,7 +2375,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V13.41';
+  const APP_VERSION = 'V13.42';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -3779,7 +3779,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     };
     const ver = () => {
       const m = ya(); if(!m) return;
-      f.querySelector('.ms-cuenta').innerHTML = textoCuentaSencilla(m);
+      f.querySelector('.ms-cuenta').innerHTML = textoCuentaSencilla(m) + (m.desde ? '<span>Fecha de inicio: ' + fechaConAnio(new Date(m.desde + 'T12:00:00')) + '</span>' : '');
       cal.innerHTML = mesSencillaHTML(m, y, mes);
       cal.querySelector('.ms-mes-ant').onclick = () => mover(-1);
       const sig = cal.querySelector('.ms-mes-sig'); sig.disabled = esteMes(); sig.onclick = () => mover(1);
@@ -11894,4 +11894,4 @@ lo que haces cada día es lo que vas a ser.`;
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V13.41 · App Metas Amables · 2026-10-13 19:47==== -->
+<!-- ==== Fin del index V13.42 · App Metas Amables · 2026-10-13 19:50==== -->
