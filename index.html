@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V13.50 · App Metas Amables · 2026-10-13 23:46==== -->
+<!-- ==== index V13.51 · App Metas Amables · 2026-10-13 23:47==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2375,7 +2375,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V13.50';
+  const APP_VERSION = 'V13.51';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -4197,8 +4197,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     if(haySesionEnDias(0) && tienePlan('sesiones')) return '🤝 Hoy tenemos reunión, ' + nombre + '. Nos vemos en un rato.';
     if(haySesionEnDias(1) && tienePlan('sesiones')) return '🤝 Mañana tenemos reunión, ' + nombre + '. Deja el rato apartado.';
     if(toca === 'c') return new Date().getDay() === 1
-      ? '🗓️ Es lunes, ' + nombre + ': toca cerrar la semana y comprometerte con la nueva.'
-      : '🗓️ ' + nombre + ', aún tienes pendiente el registro de esta semana: cierra la anterior y comprométete con esta.';
+      ? '🗓️ Es lunes, ' + nombre + ': toca tu compromiso del lunes. Cierra la semana pasada y di cuántas veces practicarás en esta.'
+      : '🗓️ ' + nombre + ', aún tienes pendiente tu compromiso del lunes: cierra la semana pasada y di cuántas veces practicarás en esta.';
     const inicioAno = new Date(today.getFullYear(), 0, 1);
     const diaDelAno = Math.floor((today - inicioAno) / 86400000);
     return FRASES_INICIO[diaDelAno % FRASES_INICIO.length].replace('{n}', nombre);
@@ -5107,6 +5107,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
+    { v: 'V13.51', f: '13 de octubre de 2026', n: [
+      'Los avisos del registro semanal ahora se llaman igual en toda la app: <b>compromiso del lunes</b> (cuántas veces practicarás esta semana), para no confundirlo con los registros de cada día.' ] },
     { v: 'V13.50', f: '13 de octubre de 2026', n: [
       'Panel de control › Vistas previas: en «Tus primeros 15 registros», unas flechas arriba pasan del día 1 al 15 para ver cómo cambia la pantalla.' ] },
     { v: 'V13.49', f: '13 de octubre de 2026', n: [
@@ -7404,7 +7406,7 @@ lo que haces cada día es lo que vas a ser.`;
         const guiaEnTarjeta = !!state.guiaTexto && !practicaBloqueada;
         // Paso b: la tarjeta «Compromiso y práctica» (planta, clima y registrar); si no se puede, el botón de siempre
         const botonB = boton('sB', 'ciclo-b' + act('b'), 'b', 'Compromiso y práctica',
-                (tx.practica ? '<span class="ciclo-dato">' + escapeAttr(corto(tx.practica, 110)) + '</span>' : registraLunes() ? 'La defines en tu registro del lunes' : 'Marca cada día que la hagas')
+                (tx.practica ? '<span class="ciclo-dato">' + escapeAttr(corto(tx.practica, 110)) + '</span>' : registraLunes() ? 'La defines en tu compromiso del lunes' : 'Marca cada día que la hagas')
                 + (vecesTx ? '<br><span style="font-weight:700">' + vecesTx + '</span>' : ''), '', false);
         opciones.innerHTML =
           '<button type="button" class="hablar-practi-btn">💬 Quiero hablar con Prácti</button>'
@@ -7427,7 +7429,7 @@ lo que haces cada día es lo que vas a ser.`;
           + boton('s1', 'ciclo-c' + (sinSesiones ? ' bloqueada' : '') + (act('c') || act('d')), 'cpc', 'Grupo de apoyo',
                 sinSesiones
                   ? 'Registro de compromiso cada lunes y sesiones en grupo cada 15 días. Plan Guías + Grupo'
-                  : (registroPendienteEstaSemana() ? '✍️ <b>Compromiso pendiente:</b> aún no has dicho cuántas veces practicarás esta semana' : '✍️ Registro ' + textoProximoLunes())
+                  : (registroPendienteEstaSemana() ? '✍️ <b>Compromiso pendiente:</b> aún no has dicho cuántas veces practicarás esta semana' : '✍️ Próximo compromiso: ' + textoProximoLunes())
                     + (textoProximaSesion() ? '<br><span style="font-weight:700">📅 ' + textoProximaSesion() + '</span>' : ''), '', sinSesiones && '👑👑')
           + (modoMinimal() ? '' : '<button type="button" class="opcion-inicio ciclo-formacion" data-ir="util"><span class="ciclo-icono">' + iconoLlave() + '</span><span class="opcion-tx"><b>Utilidades</b><small>Habla con Prácti, formación, frases y música</small></span><span class="opcion-flecha">›</span></button>');
         app.appendChild(opciones);
@@ -8125,9 +8127,9 @@ lo que haces cada día es lo que vas a ser.`;
         cuerpo = '<p class="ps-label" style="margin:0 0 4px">Recuerda tu compromiso semanal</p>'
           + ((deEstaSemana && veces)
             ? '<p class="ps-veces" style="margin:0">🎯 Esta semana lo haré <b>' + veces + (veces === 1 ? ' vez' : ' veces') + '</b>.</p>'
-            : '<p class="ps-nota" style="margin:0">Aún no has hecho el registro de esta semana.</p>');
+            : '<p class="ps-nota" style="margin:0">Aún no has hecho tu compromiso del lunes de esta semana.</p>');
       } else {
-        cuerpo = '<p class="ps-practica" style="font-style:normal">Aún no has definido tu práctica.</p><p class="ps-nota">La defines en tu registro del lunes, con la frase «Cuando…, haré…».</p>';
+        cuerpo = '<p class="ps-practica" style="font-style:normal">Aún no has definido tu práctica.</p><p class="ps-nota">La defines en tu compromiso del lunes, con la frase «Cuando…, haré…».</p>';
       }
       app.appendChild(el('<div style="text-align:center;margin:0 0 4px">' + practiReaccionHTML('correr', 'valla', 170) + '</div>'));
       app.appendChild(botonVolver());
@@ -11975,4 +11977,4 @@ lo que haces cada día es lo que vas a ser.`;
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V13.50 · App Metas Amables · 2026-10-13 23:46==== -->
+<!-- ==== Fin del index V13.51 · App Metas Amables · 2026-10-13 23:47==== -->
