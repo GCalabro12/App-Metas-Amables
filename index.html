@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V13.56 · App Metas Amables · 2026-10-14 00:04==== -->
+<!-- ==== index V13.57 · App Metas Amables · 2026-10-14 00:06==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2000,7 +2000,10 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     return 'del ' + monday.getDate() + ' ' + mL + ' al ' + sunday.getDate() + ' ' + mD;
   }
 
-  const today = new Date();
+  // El día de registro cambia a las 5:00 (hora del móvil), no a medianoche: quien se acuesta tarde aún registra «hoy»
+  const HORA_CAMBIO_DIA = 5;
+  function ahoraRegistro(){ return new Date(Date.now() - HORA_CAMBIO_DIA * 3600000); }
+  const today = ahoraRegistro();
   const currentWeek = isoWeek(today);
   const currentWeekLabel = weekLabel(today);
   const currentWeekShort = weekShort(today);
@@ -2375,7 +2378,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V13.56';
+  const APP_VERSION = 'V13.57';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -2803,7 +2806,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     if(!state.me) return;   // la sesión había caducado: ya se muestra la pantalla de entrada
     // Si el móvil ya da permiso de avisos (la app de Google Play en Android anterior al 13), se activan solos
     try { if(pushPosible() && Notification.permission === 'granted' && !pushActivo() && localStorage.getItem('push_off_' + state.me) !== '1') activarAvisosPlanta(true); } catch(e){}
-    try { if(new URLSearchParams(location.search).get('regar') === '1'){ history.replaceState(null, '', location.pathname); if(diaHechoFecha(new Date()) === 0) setTimeout(abrirMomentoRiego, 700); else setTimeout(() => avisoBreve('🌱 Hoy ya has regado tu meta'), 700); } } catch(e){}
+    try { if(new URLSearchParams(location.search).get('regar') === '1'){ history.replaceState(null, '', location.pathname); if(diaHechoFecha(ahoraRegistro()) === 0) setTimeout(abrirMomentoRiego, 700); else setTimeout(() => avisoBreve('🌱 Hoy ya has regado tu meta'), 700); } } catch(e){}
     // Accesos directos del icono (dejarlo pulsado): «Abonar» y «Mi guía»
     try { const qs = new URLSearchParams(location.search); if(qs.get('abonar') === '1' || qs.get('clima') === '1'){ history.replaceState(null, '', location.pathname); setTimeout(() => abrirMomentoRiego(true), 700); } } catch(e){}
     try { if(new URLSearchParams(location.search).get('guia') === '1'){ history.replaceState(null, '', location.pathname);
@@ -3636,7 +3639,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   // Frecuencia «X veces por semana»: cualquier día vale (todos en color)
   function vecesSemanaSencilla(m){ const n = Number(m && m.vecesSemana) || 0; return m && m.frecuencia === 'semana' && n >= 1 && n <= 6 ? n : 0; }
   // Hechos de esta semana (de lunes a hoy)
-  function hechosSemanaSencilla(m){ const l = isoLocal(lunesDe(new Date())), h = hoyISO(); return (m.dias || []).filter(x => x >= l && x <= h).length; }
+  function hechosSemanaSencilla(m){ const l = isoLocal(lunesDe(ahoraRegistro())), h = hoyISO(); return (m.dias || []).filter(x => x >= l && x <= h).length; }
   // Los días elegidos (si no eligió ninguno, o va por veces a la semana, todos)
   function diasPlanSencilla(m){ if(vecesSemanaSencilla(m)) return DIAS_SEMANA.slice(); const l = Array.isArray(m.diasSemana) ? m.diasSemana.filter(x => DIAS_SEMANA.includes(x)) : []; return l.length ? l : DIAS_SEMANA.slice(); }
   function textoDiasSencilla(m){
@@ -3734,7 +3737,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
   // Los últimos 7 días, con HOY al final (como en las apps de hábitos)
   function sieteDiasSencillaHTML(m){
-    const hoy = new Date(), hoyIso = hoyISO();
+    const hoy = ahoraRegistro(), hoyIso = hoyISO();
     let s = '<div class="ms-semana">';
     for(let k = 6; k >= 0; k--){
       const d = new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate() - k), iso = isoLocal(d), L = DIAS_SEMANA[(d.getDay() + 6) % 7], e = estadoDiaSencilla(m, iso);
@@ -3790,7 +3793,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   // El calendario en su propia pantalla, a todo lo ancho; deslizando a los lados se pasa de mes
   function abrirCalendarioSencilla(id, alCerrar){
     document.querySelectorAll('.ms-capa').forEach(x => x.remove());
-    const hoy = new Date(), ya = () => datosSencillas().lista.find(x => x.id === id);
+    const hoy = ahoraRegistro(), ya = () => datosSencillas().lista.find(x => x.id === id);
     let y = hoy.getFullYear(), mes = hoy.getMonth();
     const m0 = ya(); if(!m0) return;
     const f = el('<div class="ms-capa ms-capa-cal' + (datosSencillas().lista.indexOf(m0) > 0 ? ' ms-b' : '') + '" role="dialog" aria-label="Calendario"><div class="ms-capa-in">'
@@ -4214,7 +4217,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     if(toca === 'a') return '📖 ' + nombre + ', tu guía de esta semana te está esperando. ¡Ábrela en «Guía semanal»!';
     if(haySesionEnDias(0) && tienePlan('sesiones')) return '🤝 Hoy tenemos reunión, ' + nombre + '. Nos vemos en un rato.';
     if(haySesionEnDias(1) && tienePlan('sesiones')) return '🤝 Mañana tenemos reunión, ' + nombre + '. Deja el rato apartado.';
-    if(toca === 'c') return new Date().getDay() === 1
+    if(toca === 'c') return today.getDay() === 1
       ? '🗓️ Es lunes, ' + nombre + ': toca tu compromiso del lunes. Cierra la semana pasada y di cuántas veces practicarás en esta.'
       : '🗓️ ' + nombre + ', aún tienes pendiente tu compromiso del lunes: cierra la semana pasada y di cuántas veces practicarás en esta.';
     const inicioAno = new Date(today.getFullYear(), 0, 1);
@@ -5125,6 +5128,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
+    { v: 'V13.57', f: '14 de octubre de 2026', n: [
+      'El día de registro cambia a las <b>5 de la mañana</b> (hora de tu móvil), no a medianoche: si te acuestas tarde, lo que registras antes de las 5 cuenta para el día que acaba.' ] },
     { v: 'V13.56', f: '14 de octubre de 2026', n: [
       'En <b>Registro y compromiso</b> ya no se repite tu meta del trimestre (ya la ves en Inicio).',
       'Tu nivel lo marca tu montaña interior (un nivel por año), así que se ha quitado la explicación de los puntos («¿Cómo cuenta la app…?»).' ] },
@@ -8414,7 +8419,7 @@ lo que haces cada día es lo que vas a ser.`;
   function renderCalendarioPracticas(){
     renderBackTopbar('📅 Mi calendario de prácticas');
     app.querySelector('#btnVolver').onclick = () => { state.view = state.prevView === 'calendar' ? 'calendar' : 'practicaSemanal'; window.scrollTo(0,0); render(); };
-    const hoy = new Date(); hoy.setHours(0, 0, 0, 0);
+    const hoy = ahoraRegistro(); hoy.setHours(0, 0, 0, 0);
     let primero = new Date(hoy.getFullYear(), hoy.getMonth(), 1);
     ((state.checkins && state.checkins[state.me]) || []).forEach(c => {
       if(!Object.keys(leerDias(c.diasHechos)).length) return;
@@ -8477,7 +8482,7 @@ lo que haces cada día es lo que vas a ser.`;
     return dias + (dias === 1 ? ' día' : ' días') + (veces > dias ? ' · ' + veces + ' veces' : '');
   }
   function tarjetaDias(estaSemana, extraHTML, titulo){
-    const hoy = (new Date().getDay() + 6) % 7;   // 0 = lunes
+    const hoy = (ahoraRegistro().getDay() + 6) % 7;   // 0 = lunes
     let veces = leerDias(estaSemana && estaSemana.diasHechos);
     const abonosSem = leerAbonos(estaSemana && estaSemana.abonos), entSem = leerEntornos(estaSemana && estaSemana.abonos);
     let elegido = null;   // día abierto para elegir el número
@@ -8491,7 +8496,7 @@ lo que haces cada día es lo que vas a ser.`;
         ${extraHTML || ''}
         <p style="font-size:13px;color:var(--ink-soft);margin:0 0 10px">${registraLunes() ? 'Opcional. Toca el día y elige cuántas veces lo hiciste; el lunes tu cierre saldrá ya rellenado.' : 'Toca el día y elige cuántas veces hiciste tu práctica (del 1 al 9).'}</p>
         <div class="dias-fila">${DIAS_SEMANA.map((d, i) => {
-          const lun = lunesDe(new Date()), f = new Date(lun.getFullYear(), lun.getMonth(), lun.getDate() + i), hoyD = new Date(); hoyD.setHours(0, 0, 0, 0);
+          const lun = lunesDe(ahoraRegistro()), f = new Date(lun.getFullYear(), lun.getMonth(), lun.getDate() + i), hoyD = ahoraRegistro(); hoyD.setHours(0, 0, 0, 0);
           let c = celdaDiaHTML(f, hoyD, 'button', ' type="button" data-dia="' + d + '"' + (i > hoy ? ' disabled' : '') + ' aria-pressed="' + !!veces[d] + '"', { veces: veces[d] || 0, clima: abonosSem[d] || null, ent: entSem[d] || 0 });
           if(elegido === d) c = c.replace('class="dc', 'class="dc elegido');
           return '<div class="dia-col"><span class="dia-letra2">' + d + '</span>' + c + '</div>';
@@ -8570,7 +8575,7 @@ lo que haces cada día es lo que vas a ser.`;
       + filas.map(({ c, lun }) => '<p style="margin:2px 0;font-size:13px">Semana del ' + lun.getDate() + ': 🎯 me comprometí a ' + c.compromisoVeces + (c.vecesRealizadas != null ? ' · ✅ hice ' + c.vecesRealizadas : '') + (c.estadoSemana ? ' · ' + escapeAttr(c.estadoSemana) : '') + '</p>').join('') + '</div>';
   }
   function calendarioDiario(soloVer){
-    const hoy = new Date(); hoy.setHours(0, 0, 0, 0);
+    const hoy = ahoraRegistro(); hoy.setHours(0, 0, 0, 0);
     if(!calDiarioMes) calDiarioMes = new Date(hoy.getFullYear(), hoy.getMonth(), 1);
     const minMes = new Date(hoy.getFullYear(), hoy.getMonth() - 3, 1);   // hasta 3 meses atrás
     const card = document.createElement('div');
@@ -9285,7 +9290,7 @@ lo que haces cada día es lo que vas a ser.`;
   }
   function fechaCorta(x){ return x.getDate() + ' ' + ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sept', 'oct', 'nov', 'dic'][x.getMonth()]; }
   function guiaVistaAlgunaVez(){ try { return !!localStorage.getItem(claveGuiaVista()); } catch(e){ return false; } }
-  function hoyISO(){ const t = new Date(); return t.getFullYear() + '-' + String(t.getMonth() + 1).padStart(2, '0') + '-' + String(t.getDate()).padStart(2, '0'); }
+  function hoyISO(){ const t = ahoraRegistro(); return t.getFullYear() + '-' + String(t.getMonth() + 1).padStart(2, '0') + '-' + String(t.getDate()).padStart(2, '0'); }
   function extrasViaje(){ return [
     { titulo: 'Comparte una frase con alguien', sub: 'Elige una frase motivadora y regálasela', ir: 'frases' },
     { titulo: 'Elige una música para tu práctica', sub: 'La misma música, cada vez: será tu señal', ir: 'musica' },
@@ -9306,7 +9311,7 @@ lo que haces cada día es lo que vas a ser.`;
     } catch(e){}
   }
   function diasSinPractica(){
-    const d = new Date(); d.setHours(0, 0, 0, 0);
+    const d = ahoraRegistro(); d.setHours(0, 0, 0, 0);
     for(let i = 0; i <= 30; i++){ if(diaHechoFecha(d) > 0) return i; d.setDate(d.getDate() - 1); }
     return 99;
   }
@@ -9567,7 +9572,7 @@ lo que haces cada día es lo que vas a ser.`;
     const c = cartaGuardada(), ab = aperturaCarta(c);
     const carta = !!(ab && ab > new Date());
     pasos.push({ id: 'carta', titulo: 'Nota a tu yo: final de trimestre (' + fechaCorta(ab && carta ? ab : lunesProximoTrimestre()) + ')', hecho: carta, plan: plan2 ? '' : '👑👑 Plan Guías + Grupo', bloqueo: (carta || nota) ? '' : 'Aún no desbloqueado', sub: carta ? 'Cerrada hasta ese lunes' : 'Se abrirá el primer lunes del próximo trimestre' });
-    const diario = meta && diaHechoFecha(new Date()) > 0;
+    const diario = meta && diaHechoFecha(ahoraRegistro()) > 0;
     pasos.push({ id: 'diario', titulo: 'Marca tu práctica de hoy', hecho: diario, bloqueo: meta ? '' : 'Aún no desbloqueado', sub: diario ? 'Hecho hoy' : 'Toca el día cuando la hagas' });
     if(registraLunes()){
       const lunes = !registroPendienteEstaSemana();
@@ -9964,7 +9969,7 @@ lo que haces cada día es lo que vas a ser.`;
     let receta = ''; try { receta = recetaTexto(historiaGuardada('brecha')); } catch(err){}
     let cuando = ''; try { cuando = localStorage.getItem(claveRitual()) || ''; } catch(err){}
     const consejo = cuando ? 'Esta mañana decidiste hacerla ' + cuando + '. ¡Es el momento! 🌱' : receta ? 'Tu receta: «' + receta + '»' : CONSEJOS_RIEGO[new Date().getDate() % CONSEJOS_RIEGO.length];
-    const hecho = diaHechoFecha(new Date()) > 0, e = estadoPlanta();
+    const hecho = diaHechoFecha(ahoraRegistro()) > 0, e = estadoPlanta();
     const capa = el('<div class="riego-capa" role="dialog" aria-label="Riega tu meta">'
       + '<button type="button" class="riego-cerrar" aria-label="Cerrar">✕</button><button type="button" class="riego-ir">Ir a Metas Amables</button><button type="button" class="riego-son" aria-label="Música">🔈</button>'
       + '<h2 class="riego-tit">Registros amables</h2>'
@@ -10094,9 +10099,9 @@ lo que haces cada día es lo que vas a ser.`;
     return lista.length === 1 ? colorEmo(lista[0]) : 'linear-gradient(90deg,' + colorEmo(lista[0]) + ' 50%,' + colorEmo(lista[1]) + ' 50%)';
   }
   function filaSemanaActual(){ return ((state.checkins && state.checkins[state.me]) || []).find(c => c.week === currentWeekShort); }
-  function abonoDeHoy(){ const f = filaSemanaActual(); return (leerAbonos(f && f.abonos)[DIAS_SEMANA[(new Date().getDay() + 6) % 7]] || []).map(x => ({ ...x })); }
+  function abonoDeHoy(){ const f = filaSemanaActual(); return (leerAbonos(f && f.abonos)[DIAS_SEMANA[(ahoraRegistro().getDay() + 6) % 7]] || []).map(x => ({ ...x })); }
   async function guardarAbonoHoy(lista, entorno){
-    const letra = DIAS_SEMANA[(new Date().getDay() + 6) % 7];
+    const letra = DIAS_SEMANA[(ahoraRegistro().getDay() + 6) % 7];
     const listaCheck = state.checkins[state.me] || (state.checkins[state.me] = []);
     let fila = filaSemanaActual();
     const abonos = leerAbonos(fila && fila.abonos), ent = leerEntornos(fila && fila.abonos);
@@ -10108,7 +10113,7 @@ lo que haces cada día es lo que vas a ser.`;
     if(!fila){ fila = { id: data.id, week: currentWeekShort, label: currentWeekLabel, cumplida: false, nota: '', estadoSemana: '', compromisoVeces: null, vecesRealizadas: null, diasHechos: '' }; listaCheck.push(fila); }
     fila.abonos = escribirAbonos(abonos, ent);
   }
-  function entornoDeHoy(){ const f = filaSemanaActual(); return leerEntornos(f && f.abonos)[DIAS_SEMANA[(new Date().getDay() + 6) % 7]] || 0; }
+  function entornoDeHoy(){ const f = filaSemanaActual(); return leerEntornos(f && f.abonos)[DIAS_SEMANA[(ahoraRegistro().getDay() + 6) % 7]] || 0; }
   // La maceta con los cuatro cuadrantes: arriba (la parte ancha) más energía, abajo menos; izquierda desagradable, derecha agradable.
   // Al tocar una emoción la maceta toma su color y la palabra sale en el centro; con dos, mitad y mitad.
   // El clima de hoy: las emociones son el clima de tu meta (no se eligen, se observan). Un sol partido en cuatro quesitos:
@@ -10232,7 +10237,7 @@ lo que haces cada día es lo que vas a ser.`;
 
   // Marca hoy como hecho (1 vez) en «Días hechos» de esta semana, igual que la fila L–D de paso b
   async function marcarHoyHecho(){
-    const letra = DIAS_SEMANA[(new Date().getDay() + 6) % 7];
+    const letra = DIAS_SEMANA[(ahoraRegistro().getDay() + 6) % 7];
     const lista = state.checkins[state.me] || (state.checkins[state.me] = []);
     let fila = lista.find(c => c.week === currentWeekShort);
     const veces = leerDias(fila && fila.diasHechos);
@@ -10244,7 +10249,7 @@ lo que haces cada día es lo que vas a ser.`;
     fila.diasHechos = escribirDias(veces);
   }
   // Al tocar el aviso de las 20:00 con la app ya abierta, el service worker pide abrir el momento de regar
-  try { if('serviceWorker' in navigator) navigator.serviceWorker.addEventListener('message', ev => { if(ev.data && ev.data.abrir === 'regar' && state.me && diaHechoFecha(new Date()) === 0) abrirMomentoRiego(); }); } catch(e){}
+  try { if('serviceWorker' in navigator) navigator.serviceWorker.addEventListener('message', ev => { if(ev.data && ev.data.abrir === 'regar' && state.me && diaHechoFecha(ahoraRegistro()) === 0) abrirMomentoRiego(); }); } catch(e){}
 
   // ===== La planta de Prácti en Inicio: se riega marcando la práctica; si no se riega, se va marchitando =====
   // (idea de Duolingo, en amable: nunca riñe, siempre invita a volver)
@@ -10260,7 +10265,7 @@ lo que haces cada día es lo que vas a ser.`;
     return { img: imgPlanta('seca'), tit: 'Tu meta se ha secado', tx: 'No pasa nada: las metas vuelven a brotar. Hoy puedes sembrarla de nuevo, con calma.', boton: '🌱 Volver a sembrar' };
   }
   function diasSinPracticaAntesDeHoy(){
-    const d = new Date(); d.setHours(0, 0, 0, 0);
+    const d = ahoraRegistro(); d.setHours(0, 0, 0, 0);
     for(let i = 1; i <= 30; i++){ d.setDate(d.getDate() - 1); if(diaHechoFecha(d) > 0) return i - 1; }
     return 99;
   }
@@ -10291,7 +10296,7 @@ lo que haces cada día es lo que vas a ser.`;
   }
   // ¿Hoy ya registró algo? (clima, entorno o práctica: cualquiera vale)
   function registradoHoy(){
-    try { return abonoDeHoy().length > 0 || entornoDeHoy() > 0 || diaHechoFecha(new Date()) > 0; } catch(e){ return false; }
+    try { return abonoDeHoy().length > 0 || entornoDeHoy() > 0 || diaHechoFecha(ahoraRegistro()) > 0; } catch(e){ return false; }
   }
   function tarjetaPlanta(alVer){
     if(!state.me) return null;
@@ -10309,7 +10314,7 @@ lo que haces cada día es lo que vas a ser.`;
     const lazo = '<svg class="planta-tutor planta-lazo" viewBox="0 0 600 640" aria-hidden="true"><path d="M350 404 q26 -11 52 0 q-26 11 -52 0z" fill="none" stroke="#3E7A2E" stroke-width="5"/></svg>';
     // Paso c en Inicio: la tarjeta entera lleva a «Registro y compromiso». Sin botones: solo dice si hoy ya registraste algo
     // (con el clima, el entorno o la práctica ya vale)
-    const hoyAb = abonoDeHoy(), hoyEnt = entornoDeHoy(), hoyPr = diaHechoFecha(new Date()) > 0, reg = registradoHoy();
+    const hoyAb = abonoDeHoy(), hoyEnt = entornoDeHoy(), hoyPr = diaHechoFecha(ahoraRegistro()) > 0, reg = registradoHoy();
     const estadoReg = reg
       ? '<p class="planta-reg hecho" role="button" tabindex="0">✓ Hoy ya has registrado</p>'
       : '<p class="planta-reg" role="button" tabindex="0">💧 Registra hoy</p><p class="planta-reg-lista">Te falta registrar tu clima, tu entorno o tu práctica.</p>';
@@ -10915,7 +10920,7 @@ lo que haces cada día es lo que vas a ser.`;
   }
 
   function renderProgreso(){
-    const hoy = new Date(); hoy.setHours(0, 0, 0, 0);
+    const hoy = ahoraRegistro(); hoy.setHours(0, 0, 0, 0);
     let semana = 0, mes = 0, trimestre = 0, racha = 0;
     const lunes = lunesDe(hoy), iniTrim = inicioTrimestreActual();
     for(let dd = new Date(Math.min(iniTrim, lunes)); dd <= hoy; dd.setDate(dd.getDate() + 1)){
@@ -12005,4 +12010,4 @@ lo que haces cada día es lo que vas a ser.`;
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V13.56 · App Metas Amables · 2026-10-14 00:04==== -->
+<!-- ==== Fin del index V13.57 · App Metas Amables · 2026-10-14 00:06==== -->
