@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V13.47 · App Metas Amables · 2026-10-13 23:41==== -->
+<!-- ==== index V13.48 · App Metas Amables · 2026-10-13 23:42==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2375,7 +2375,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V13.47';
+  const APP_VERSION = 'V13.48';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -4106,7 +4106,9 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   // Práctica de esta semana y meta del trimestre, tal como las escribió la persona
   function textosCiclo(){
     const lista = (state.checkins && state.checkins[state.me]) || [];
-    const conSem = lista.slice().reverse().find(c => c.metaSem && c.metaSem.trim());
+    // La práctica de la semana solo cuenta desde la semana en que empezó la meta actual (la de una meta anterior ya no vale)
+    let desde = ''; try { const fm = fechaMetaActual(); if(fm) desde = isoLocal(lunesDe(new Date(fm + 'T12:00:00'))); } catch(e){}
+    const conSem = lista.slice().reverse().find(c => { if(!(c.metaSem && c.metaSem.trim())) return false; if(!desde) return true; const l = lunesDeSemanaTexto(c.week); return !l || isoLocal(l) >= desde; });
     const conMeta = lista.slice().reverse().find(c => c.metaTrim && c.metaTrim.trim());
     return {
       practica: (state.metaSemDraft || (conSem ? conSem.metaSem : '') || '').trim(),
@@ -5093,6 +5095,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
+    { v: 'V13.48', f: '13 de octubre de 2026', n: [
+      'Con una meta nueva, «Tu práctica de hoy» (en Registros amables) ya no muestra la práctica de la meta anterior: sale tu meta nueva hasta que hagas tu compromiso de la semana.' ] },
     { v: 'V13.47', f: '13 de octubre de 2026', n: [
       'En Inicio, <b>Grupo de apoyo</b> dice «Compromiso pendiente» cuando aún no has dicho cuántas veces practicarás esta semana. Al tocarlo, vas directo a hacerlo.' ] },
     { v: 'V13.46', f: '13 de octubre de 2026', n: [
@@ -11955,4 +11959,4 @@ lo que haces cada día es lo que vas a ser.`;
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V13.47 · App Metas Amables · 2026-10-13 23:41==== -->
+<!-- ==== Fin del index V13.48 · App Metas Amables · 2026-10-13 23:42==== -->
