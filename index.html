@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V13.33 · App Metas Amables · 2026-10-13 19:27==== -->
+<!-- ==== index V13.34 · App Metas Amables · 2026-10-13 19:27==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2358,7 +2358,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V13.33';
+  const APP_VERSION = 'V13.34';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -3786,7 +3786,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
         return;
       }
       zona.innerHTML = activas.map((m, i) => '<div class="ms-tarjeta' + (i ? ' ms-b' : '') + '" data-id="' + escapeAttr(m.id) + '"><p class="ms-nombre"><i class="ms-punto"></i>' + escapeAttr(m.nombre) + '</p>'
-          + '<p class="ms-dias-plan">📆 ' + textoDiasSencilla(m) + '</p><p class="ms-cuenta">' + cuenta(m) + '</p>' + sieteDiasSencillaHTML(m) + LEYENDA_SENCILLA
+          + (vecesSemanaSencilla(m) ? '<p class="ms-dias-plan">📆 ' + textoDiasSencilla(m) + '</p>' : '') + '<p class="ms-cuenta">' + cuenta(m) + '</p>' + sieteDiasSencillaHTML(m) + LEYENDA_SENCILLA
           + '<button type="button" class="ms-btn ms-cambiar">Cambiar mi ' + TXT_SENCILLA.toLowerCase() + ' →</button>'
           + '<button type="button" class="ms-btn ms-ver-cal">📅 Calendario</button><div class="ms-cal" hidden></div></div>').join('')
         + (activas.length < max ? '<button type="button" class="ms-btn ms-crear">' + (activas.length ? '＋ Crear otra ' : 'Crear mi ') + TXT_SENCILLA.toLowerCase() + ' →</button>' : '')
@@ -3829,7 +3829,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     if(!activas.length) return null;
     const caja = el('<div class="rp-sencillas"><p class="abonar-tit">5 · ✔️ Tus ' + TXT_SENCILLAS.toLowerCase() + '</p>' + LEYENDA_SENCILLA + '</div>').firstElementChild;
     activas.forEach((m, i) => {
-      const f = el('<div class="ms-reg' + (i ? ' ms-b' : '') + '"><p class="ms-nombre"><i class="ms-punto"></i>' + escapeAttr(m.nombre) + ' <small>· ' + textoDiasSencilla(m) + '</small></p>' + sieteDiasSencillaHTML(m) + '</div>').firstElementChild;
+      const f = el('<div class="ms-reg' + (i ? ' ms-b' : '') + '"><p class="ms-nombre"><i class="ms-punto"></i>' + escapeAttr(m.nombre) + (vecesSemanaSencilla(m) ? ' <small>· ' + textoDiasSencilla(m) + '</small>' : '') + '</p>' + sieteDiasSencillaHTML(m) + '</div>').firstElementChild;
       caja.appendChild(f);
       enlazarDiasSencilla(f, m.id, (est, b) => pintarDiaSencilla(b, est));
     });
@@ -11786,4 +11786,4 @@ lo que haces cada día es lo que vas a ser.`;
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V13.33 · App Metas Amables · 2026-10-13 19:27==== -->
+<!-- ==== Fin del index V13.34 · App Metas Amables · 2026-10-13 19:27==== -->
