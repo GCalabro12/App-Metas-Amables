@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V13.52 · App Metas Amables · 2026-10-13 23:51==== -->
+<!-- ==== index V13.53 · App Metas Amables · 2026-10-13 23:53==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2375,7 +2375,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V13.52';
+  const APP_VERSION = 'V13.53';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -5107,6 +5107,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
+    { v: 'V13.53', f: '13 de octubre de 2026', n: [
+      'Moderadores: en «Tus primeros 15 registros» (Registro y compromiso) también salen las flechas para pasar los días.' ] },
     { v: 'V13.52', f: '13 de octubre de 2026', n: [
       'El paso c de Inicio se llama ahora <b>Registro y compromiso</b>: en la app registras; la práctica la haces fuera.',
       'En su recuadro hay dos accesos: «💧 Registra hoy» (tu clima, tu entorno y tu práctica) y, abajo, «📜 Tu compromiso: contrato, notas a tu yo y más».' ] },
@@ -8152,7 +8154,8 @@ lo que haces cada día es lo que vas a ser.`;
           + Array.from({ length: 15 }, (z, i) => { const f = i % 5, fila = Math.floor(i / 5), x = fila === 1 ? 33 - f * 6.5 : 7 + f * 6.5, y = 7 + fila * 15; return '<circle cx="' + x + '" cy="' + y + '" r="2.2" fill="' + (i < nReto ? '#6FAE4A' : '#FFFFFF') + '" stroke="' + (i < nReto ? '#4E8A32' : '#A8905F') + '" stroke-width="1.2"/>'; }).join('') + '</svg>';
         const reto = el('<button type="button" class="card ps-reto">' + caminoMini + '<span><b>Tus primeros 15 registros</b><small>'
           + (nReto >= RETO_DIAS ? '¡Completados! Con tu meta actual llevas ' + diasRegistradosMeta() + ' días registrados.' : nReto ? 'Llevas ' + nReto + ' de 15. Mira tu camino y tus regalos.' : 'Registra tu primer día para empezar el camino.') + '</small></span><span class="opcion-flecha">›</span></button>').firstElementChild;
-        reto.onclick = () => abrirRetoDia(Math.max(1, Math.min(nReto, RETO_DIAS)), true);
+        // Los moderadores ven también aquí las flechas para pasar los días (como en la vista previa del panel)
+        reto.onclick = () => abrirRetoDia(Math.max(1, Math.min(nReto, RETO_DIAS)), true, soyModerador());
         app.appendChild(reto);
       } catch(e){ console.error('Reto:', e); }
       try { app.appendChild(tarjetaAvisosMovil()); } catch(e){ console.error('Avisos:', e); }
@@ -11982,4 +11985,4 @@ lo que haces cada día es lo que vas a ser.`;
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V13.52 · App Metas Amables · 2026-10-13 23:51==== -->
+<!-- ==== Fin del index V13.53 · App Metas Amables · 2026-10-13 23:53==== -->
