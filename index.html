@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V13.35 · App Metas Amables · 2026-10-13 19:28==== -->
+<!-- ==== index V13.36 · App Metas Amables · 2026-10-13 19:33==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1292,7 +1292,11 @@ textarea.ms-nombre-in:focus{outline:none;border-color:#C9942D;box-shadow:0 0 0 3
 .ms-dia-m.hecho,.ms-dia.hecho{background:#4C8C4A;border-color:#4C8C4A;color:#fff}
 .ms-dia-m.fallo,.ms-dia.fallo{background:#D9483B;border-color:#D9483B;color:#fff}
 .ms-dia-m.libre,.ms-dia.libre{background:#2B2B2B;border-color:#2B2B2B;color:#fff}
-.ms-dia.con-nota,.ms-dia-m.con-nota{box-shadow:inset 0 -4px 0 #5B3FA8}
+.ms-dia,.ms-dia-m{position:relative}
+.ms-dia.con-nota::after,.ms-dia-m.con-nota::after{content:'•••';position:absolute;left:0;right:0;bottom:2px;font-size:8px;line-height:1;letter-spacing:1px;text-align:center;color:currentColor;opacity:.85}
+.ms-notas{margin:10px 0 0;padding-top:8px;border-top:1px solid rgba(0,0,0,.08)}.ms-notas p{display:flex;gap:10px;margin:6px 0;font-size:14.5px}.ms-notas b{min-width:22px;text-align:right}
+.ms-sin-notas{color:var(--ink-soft);font-size:13.5px}
+.ms-cuenta-ayuda{margin:-4px 0 8px;font-size:12px;color:var(--ink-soft)}
 .ms-leyenda .ly{display:inline-block;width:11px;height:11px;border-radius:50%;margin:0 4px 0 6px;vertical-align:-1px}.ms-leyenda .ly.hecho{background:#4C8C4A;margin-left:0}.ms-leyenda .ly.fallo{background:#D9483B}.ms-leyenda .ly.libre{background:#2B2B2B}.ms-leyenda b{margin:0 2px 0 6px}
 .ms-pop .o-nota{width:240px;max-width:70vw;min-height:54px;border:1.5px solid #D9CFB8;border-radius:10px;padding:8px 10px;font:600 15px Karla,sans-serif;box-sizing:border-box;resize:vertical}
 .ms-pop .o-guardar{background:#8A5A2E;color:#fff}
@@ -2360,7 +2364,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V13.35';
+  const APP_VERSION = 'V13.36';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -3701,6 +3705,44 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     return s + '</div>';
   }
   const LEYENDA_SENCILLA = '<p class="ms-leyenda">En color, los días en que te toca. Toca un día para marcarlo:<br><i class="ly hecho"></i>hecho <i class="ly fallo"></i>no hecho <i class="ly libre"></i>no tocaba <b>•••</b> comentario</p>';
+  // Racha: días seguidos hechos (solo cuentan los días que tocan; «no tocaba» y los días que no tocan no la rompen;
+  // hoy, si aún no está marcado, tampoco). Por semana: semanas seguidas con las veces cumplidas.
+  // Cumplido: % de los días que te tocaban desde que la creaste (por semana: de las veces que tocaban cada semana)
+  function estadisticasSencilla(m){
+    const hoy = hoyISO(), desde = m.desde && m.desde <= hoy ? m.desde : hoy, hechos = new Set(m.dias || []), libres = new Set(m.libres || []);
+    const v = vecesSemanaSencilla(m), dia = iso => { const d = new Date(iso + 'T12:00:00'); return d; };
+    const atras = (iso, n) => { const d = dia(iso); d.setDate(d.getDate() - n); return isoLocal(d); };
+    if(v){
+      // Semanas de lunes a domingo desde la de «desde» hasta esta
+      const semanas = [];
+      for(let l = isoLocal(lunesDe(dia(desde))); l <= hoy; l = atras(l, -7)) semanas.push(l);
+      const enSemana = l => (m.dias || []).filter(x => x >= l && x <= atras(l, -6) && x >= desde).length;
+      let racha = 0;
+      for(let k = semanas.length - 1; k >= 0; k--){
+        const ok = enSemana(semanas[k]) >= v;
+        if(k === semanas.length - 1 && !ok) continue;   // la semana de ahora aún no ha terminado
+        if(ok) racha++; else break;
+      }
+      let logro = 0, toca = 0;
+      semanas.forEach((l, k) => { const h = Math.min(v, enSemana(l)); logro += h; toca += k === semanas.length - 1 ? h : v; });
+      return { racha, unidad: racha === 1 ? 'semana' : 'semanas', pct: toca ? Math.round(100 * logro / toca) : null };
+    }
+    const plan = diasPlanSencilla(m), tocaDia = iso => plan.includes(DIAS_SEMANA[(dia(iso).getDay() + 6) % 7]) && !libres.has(iso);
+    let racha = 0;
+    for(let iso = hoy; iso >= desde; iso = atras(iso, 1)){
+      if(!tocaDia(iso)) continue;
+      if(hechos.has(iso)) racha++;
+      else if(iso === hoy) continue;
+      else break;
+    }
+    let logro = 0, toca = 0;
+    for(let iso = desde; iso <= hoy; iso = atras(iso, -1)){
+      if(!tocaDia(iso)) continue;
+      if(iso === hoy && !hechos.has(iso)) continue;   // hoy aún estás a tiempo
+      toca++; if(hechos.has(iso)) logro++;
+    }
+    return { racha, unidad: racha === 1 ? 'día' : 'días', pct: toca ? Math.round(100 * logro / toca) : null };
+  }
   // El calendario de un mes, con los días marcados
   function mesSencillaHTML(m, y, mes){
     const hoy = hoyISO(), hueco = (new Date(y, mes, 1).getDay() + 6) % 7, n = new Date(y, mes + 1, 0).getDate();
@@ -3711,7 +3753,10 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       const f = new Date(y, mes, d), iso = isoLocal(f), L = DIAS_SEMANA[(f.getDay() + 6) % 7];
       s += '<button type="button" class="ms-dia-m' + claseDiaSencilla(m, iso, L) + (iso === hoy ? ' hoy' : '') + '" data-iso="' + iso + '"' + (iso > hoy ? ' disabled' : '') + '>' + d + '</button>';
     }
-    return s + '</div>';
+    const pre = y + '-' + String(mes + 1).padStart(2, '0') + '-', notas = Object.entries(m.notas || {}).filter(([k]) => k.startsWith(pre)).sort(([a], [b]) => a.localeCompare(b));
+    return s + '</div><div class="ms-notas">' + (notas.length
+      ? notas.map(([k, t]) => '<p><b>' + Number(k.slice(8)) + '</b><span>' + escapeAttr(t) + '</span></p>').join('')
+      : '<p class="ms-sin-notas">Sin comentarios este mes.</p>') + '</div>';
   }
   // En la pantalla de Metas: su propio recuadro, con crear, cambiar, calendario y el historial
   function bloqueSencillas(){
@@ -3719,7 +3764,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     const caja = el('<div class="card panel-section s2 ms-bloque"><h3 class="metas-sub">✔️ ' + TXT_SENCILLAS + '</h3>'
       + '<p class="ms-ayuda">Un hábito sencillo, con un calendario para marcar los días que lo haces. No cambia tu planta ni tu montaña.</p><div class="ms-lista"></div></div>').firstElementChild;
     const zona = caja.querySelector('.ms-lista');
-    const cuenta = m => { const n = (m.dias || []).length, v = vecesSemanaSencilla(m); return n + (n === 1 ? ' día hecho' : ' días hechos') + (v ? ' · esta semana ' + hechosSemanaSencilla(m) + ' de ' + v : '') + ((m.dias || []).includes(hoyISO()) ? ' · hoy ✓' : ''); };
+    const cuenta = m => { const e = estadisticasSencilla(m), v = vecesSemanaSencilla(m);
+      return '🔥 Racha: ' + e.racha + ' ' + e.unidad + ' · ✅ Cumplido: ' + (e.pct === null ? '—' : e.pct + ' %') + (v ? ' · esta semana ' + hechosSemanaSencilla(m) + ' de ' + v : '') + ((m.dias || []).includes(hoyISO()) ? ' · hoy ✓' : ''); };
     const archivada = (m, motivo) => ({ id: m.id, nombre: m.nombre, desde: m.desde || hoyISO(), hasta: hoyISO(), motivo, n: (m.dias || []).length });
     let pintar = null;
     const guardar = async (lista, archivo, boton) => {
@@ -3788,7 +3834,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
         return;
       }
       zona.innerHTML = activas.map((m, i) => '<div class="ms-tarjeta' + (i ? ' ms-b' : '') + '" data-id="' + escapeAttr(m.id) + '"><p class="ms-nombre">' + escapeAttr(m.nombre) + '</p>'
-          + (vecesSemanaSencilla(m) ? '<p class="ms-dias-plan">📆 ' + textoDiasSencilla(m) + '</p>' : '') + '<p class="ms-cuenta">' + cuenta(m) + '</p>' + sieteDiasSencillaHTML(m) + LEYENDA_SENCILLA
+          + (vecesSemanaSencilla(m) ? '<p class="ms-dias-plan">📆 ' + textoDiasSencilla(m) + '</p>' : '') + '<p class="ms-cuenta">' + cuenta(m) + '</p><p class="ms-cuenta-ayuda">Cumplido: ' + (vecesSemanaSencilla(m) ? 'de las veces que te tocaban cada semana' : 'de los días que te tocaban') + ' desde que la creaste' + (m.desde ? ' (' + fechaCorta(new Date(m.desde + 'T12:00:00')) + ')' : '') + '.</p>' + sieteDiasSencillaHTML(m) + LEYENDA_SENCILLA
           + '<button type="button" class="ms-btn ms-cambiar">Cambiar mi ' + TXT_SENCILLA.toLowerCase() + ' →</button>'
           + '<button type="button" class="ms-btn ms-ver-cal">📅 Calendario</button><div class="ms-cal" hidden></div></div>').join('')
         + (activas.length < max ? '<button type="button" class="ms-btn ms-crear">' + (activas.length ? '＋ Crear otra ' : 'Crear mi ') + TXT_SENCILLA.toLowerCase() + ' →</button>' : '')
@@ -4970,6 +5016,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
+    { v: 'V13.36', f: '13 de octubre de 2026', n: [
+      'Cada <b>meta sencilla</b> muestra su <b>racha</b> (días seguidos hechos) y cuánto has <b>cumplido</b> desde que la creaste. Debajo del calendario ves tus comentarios del mes.' ] },
     { v: 'V13.31', f: '13 de octubre de 2026', n: [
       'Tu <b>meta sencilla</b> puede ser de días concretos o de <b>veces por semana</b> (por ejemplo, 3 veces por semana, el día que tú elijas).',
       'Si tienes dos metas sencillas, la segunda va en un marrón más oscuro para distinguirlas.' ] },
@@ -11788,4 +11836,4 @@ lo que haces cada día es lo que vas a ser.`;
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V13.35 · App Metas Amables · 2026-10-13 19:28==== -->
+<!-- ==== Fin del index V13.36 · App Metas Amables · 2026-10-13 19:33==== -->
