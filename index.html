@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V13.24 · App Metas Amables · 2026-10-13 13:26==== -->
+<!-- ==== index V13.25 · App Metas Amables · 2026-10-13 15:31==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1251,6 +1251,27 @@ body.riego-abierto{overflow:hidden}
 .riego-capa .abonar,.riego-capa .rp-seccion,.riego-capa .entorno.rp-marco{border:2px solid rgba(169,50,38,.35);box-shadow:0 4px 14px rgba(0,0,0,.06)}
 .riego-capa .entorno.rp-marco{width:min(420px,100%);max-width:none;margin:16px auto 0;padding:16px 12px 14px;border-radius:20px;background:rgba(255,255,255,.88);text-align:center;box-sizing:border-box}
 .riego-capa .abonar,.riego-capa .rp-seccion{margin-top:16px}
+.metas-sub{margin:14px 0 8px;font:700 18px Lora,serif;color:#5B4A1E}
+.ms-bloque{margin-top:18px;padding-top:6px;border-top:1px dashed rgba(0,0,0,.15)}
+.ms-ayuda,.ms-nota{font-size:14px;color:var(--ink-soft);margin:0 0 10px}.ms-nota{margin:8px 0 0;font-size:13px}
+.ms-tarjeta{margin:0 0 12px;padding:12px;border:1.5px solid #D9CFB8;border-radius:14px;background:#FFFDF7}
+.ms-nombre{margin:0;font-weight:800;font-size:16px;color:var(--ink)}.ms-cuenta{margin:2px 0 8px;font-size:13.5px;color:#4C8C4A;font-weight:700}
+.ms-mes-cab{display:flex;align-items:center;justify-content:space-between;margin:0 0 6px}.ms-mes-cab b{text-transform:capitalize;font-size:14.5px}
+.ms-mes-cab button{border:none;background:#F1ECDF;border-radius:8px;width:34px;height:30px;font-size:18px;cursor:pointer;color:var(--ink)}.ms-mes-cab button:disabled{opacity:.3;cursor:default}
+.ms-mes{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}.ms-mes-l{text-align:center;font:700 11px Karla,sans-serif;color:var(--ink-soft)}
+.ms-dia-m{aspect-ratio:1;border:1.5px solid #E2DACA;border-radius:8px;background:#fff;font:700 13px Karla,sans-serif;color:var(--ink);cursor:pointer;padding:0}
+.ms-dia-m.hecho,.ms-dia.hecho{background:#4C8C4A;border-color:#4C8C4A;color:#fff}.ms-dia-m.hoy,.ms-dia.hoy{border-color:#E8B400}.ms-dia-m:disabled,.ms-dia:disabled{opacity:.35;cursor:default}
+.ms-acciones{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:10px}
+.ms-acciones button,.ms-anadir{flex:1;min-width:110px;padding:9px 10px;border-radius:10px;border:1.5px solid #A0703C;background:#fff;color:#6B4A26;font:700 14px Karla,sans-serif;cursor:pointer}
+.ms-acciones .ms-si,.ms-anadir{background:#8A5A2E;border-color:#8A5A2E;color:#fff}.ms-pregunta{width:100%;font-size:14px}
+.ms-nueva{display:flex;gap:8px;margin:4px 0 0}.ms-input{flex:1;min-width:0;width:100%;padding:10px 12px;border:1.5px solid #D9CFB8;border-radius:10px;font-size:15px;box-sizing:border-box}
+.ms-acciones .ms-input{flex-basis:100%}
+.ms-historial{margin-top:12px;font-size:14px}.ms-historial summary{cursor:pointer;font-weight:700;color:var(--ink-soft)}.ms-historial p{margin:6px 0}.ms-historial small{display:block;color:var(--ink-soft)}
+.ms-corona{width:100%;padding:12px;border-radius:12px;border:1.5px dashed #C9A227;background:#FFFBEF;color:#8A6A10;font:700 15px Karla,sans-serif;cursor:pointer}
+.riego-capa .rp-sencillas{width:min(420px,100%);margin:16px auto 0;padding:16px 14px;box-sizing:border-box;border:2px solid rgba(169,50,38,.35);border-radius:20px;background:rgba(255,255,255,.92);text-align:left}
+.ms-reg{margin-top:10px}.ms-semana{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-top:6px}
+.ms-dia{height:52px;border:2px solid #d8d3c6;border-radius:12px;background:#FCFCF9;font-family:Karla,sans-serif;color:var(--ink);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0}
+.ms-dia span{font-size:11px;font-weight:700;opacity:.8}.ms-dia b{font-size:15px}
 .riego-capa .rp-semana{width:min(420px,100%);margin:16px auto 0;box-sizing:border-box;border:2px solid rgba(169,50,38,.35);border-radius:20px;background:rgba(255,255,255,.92);text-align:left}
 .rp-seccion .riego-consejo{margin:4px auto 0;padding:0;background:none;font-size:13.5px;line-height:1.35;color:#5A5A50}
 .rp-practica{margin:2px 0 0;font:italic 700 clamp(18px,5vw,21px)/1.3 Lora,serif;color:#4F7A43}
@@ -2293,7 +2314,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V13.24';
+  const APP_VERSION = 'V13.25';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -2846,6 +2867,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       'Todo lo del Plan Libre',
       'Tu guía de prácticas personalizada, <b>nueva cada semana</b>',
       'Puedes cambiar tu meta hasta 2 veces por trimestre (y recibes una guía nueva)',
+      'Una <b>meta sencilla</b> más, con su calendario',
       'Habla con Prácti: 30 preguntas al día, adaptado a tu guía y tu motivación',
       'Todos los fondos de las frases motivadoras y toda la música motivacional'
     ]},
@@ -2854,6 +2876,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       'Sesiones online cada 15 días, en grupo reducido',
       'Registro semanal de compromiso y logros, con tu calendario de semanas',
       'Grupo de WhatsApp y «Mi grupo» en la app',
+      'Hasta <b>2 metas sencillas</b>, cada una con su calendario',
       'Insignias que reconocen tu constancia',
       'Habla con Prácti sin límite'
     ]}
@@ -3517,6 +3540,145 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     if(!nodo || !g || !nodo.animacion) return;
     nodo.animacion.addEventListener('enterFrame', e => g.setAttribute('transform', 'translate(0 ' + (3 - 3 * Math.cos(Math.PI * e.currentTime / 10)).toFixed(2) + ')'));
   }
+  // ===== Metas sencillas (13-10-2026): solo un nombre y su calendario propio. No tocan la planta, la montaña, la guía,
+  // la racha ni las insignias. Plan Guías: 1; Plan Guías + Grupo: 2; Plan Libre: ninguna (candado). Se guardan en «Datos formulario»
+  const TXT_SENCILLA = 'Meta sencilla', TXT_SENCILLAS = 'Metas sencillas';
+  function maxSencillas(){ return tienePlan('sesiones') ? 2 : tienePlan('guias') ? 1 : 0; }
+  function datosSencillas(){
+    const d = (state.gamifica && state.gamifica.datosFormulario) || {};
+    return { lista: Array.isArray(d.metasSencillas) ? d.metasSencillas : [], archivo: Array.isArray(d.metasSencillasArchivo) ? d.metasSencillasArchivo : [] };
+  }
+  function sencillasActivas(){ return datosSencillas().lista.slice(0, maxSencillas()); }
+  async function guardarSencillas(lista, archivo){
+    const r = await api('/metas-sencillas', { lista, archivo });
+    if(state.gamifica && r.datosFormulario) state.gamifica.datosFormulario = r.datosFormulario;
+  }
+  // Marca o desmarca un día (devuelve si queda marcado)
+  async function marcarDiaSencilla(id, iso){
+    const { lista, archivo } = datosSencillas(), copia = JSON.parse(JSON.stringify(lista)), m = copia.find(x => x.id === id);
+    if(!m) return false;
+    const dias = new Set(m.dias || []);
+    if(dias.has(iso)) dias.delete(iso); else dias.add(iso);
+    m.dias = [...dias].sort();
+    await guardarSencillas(copia, archivo);
+    return dias.has(iso);
+  }
+  // Los botones de día (de la semana o del mes) marcan y desmarcan; al acabar se llama a «despues»
+  function enlazarDiasSencilla(raiz, id, despues){
+    raiz.querySelectorAll('[data-iso]').forEach(b => b.onclick = async () => {
+      if(b.disabled) return;
+      b.disabled = true;
+      try {
+        const on = await marcarDiaSencilla(id, b.dataset.iso);
+        if(on) try { sonidoLogro(); } catch(e){}
+        if(despues) despues(on, b);
+      } catch(err){ avisoBreve('No se pudo guardar. Revisa tu conexión e inténtalo de nuevo.'); }
+      b.disabled = false;
+    });
+  }
+  // La semana actual (L…D), para «Registros amables»
+  function semanaSencillaHTML(m){
+    const l = lunesDe(new Date()), hoy = hoyISO(), hechos = new Set(m.dias || []);
+    return '<div class="ms-semana">' + DIAS_SEMANA.map((L, i) => {
+      const d = new Date(l.getFullYear(), l.getMonth(), l.getDate() + i), iso = isoLocal(d);
+      return '<button type="button" class="ms-dia' + (hechos.has(iso) ? ' hecho' : '') + (iso === hoy ? ' hoy' : '') + '" data-iso="' + iso + '" data-n="' + d.getDate() + '"' + (iso > hoy ? ' disabled' : '')
+        + '><span>' + L + '</span><b>' + (hechos.has(iso) ? '✓' : d.getDate()) + '</b></button>';
+    }).join('') + '</div>';
+  }
+  // El calendario de un mes, con los días marcados
+  function mesSencillaHTML(m, y, mes){
+    const hechos = new Set(m.dias || []), hoy = hoyISO(), hueco = (new Date(y, mes, 1).getDay() + 6) % 7, n = new Date(y, mes + 1, 0).getDate();
+    let s = '<div class="ms-mes-cab"><button type="button" class="ms-mes-ant" aria-label="Mes anterior">‹</button><b>' + monthNamesEs[mes] + ' ' + y + '</b>'
+      + '<button type="button" class="ms-mes-sig" aria-label="Mes siguiente">›</button></div><div class="ms-mes">'
+      + DIAS_SEMANA.map(L => '<span class="ms-mes-l">' + L + '</span>').join('') + '<span></span>'.repeat(hueco);
+    for(let d = 1; d <= n; d++){
+      const iso = isoLocal(new Date(y, mes, d));
+      s += '<button type="button" class="ms-dia-m' + (hechos.has(iso) ? ' hecho' : '') + (iso === hoy ? ' hoy' : '') + '" data-iso="' + iso + '"' + (iso > hoy ? ' disabled' : '') + '>' + d + '</button>';
+    }
+    return s + '</div>';
+  }
+  // En la pantalla de Metas: las metas sencillas, añadir, cambiar, archivar y el historial
+  function bloqueSencillas(){
+    const max = maxSencillas(), meses = {};
+    const caja = el('<div class="ms-bloque"><h3 class="metas-sub">✔️ ' + TXT_SENCILLAS + '</h3>'
+      + '<p class="ms-ayuda">Solo un nombre y un calendario para marcar los días que la haces. No cambian tu planta ni tu montaña.</p><div class="ms-lista"></div></div>').firstElementChild;
+    const zona = caja.querySelector('.ms-lista');
+    const cuenta = m => { const n = (m.dias || []).length; return n + (n === 1 ? ' día registrado' : ' días registrados') + ((m.dias || []).includes(hoyISO()) ? ' · hoy ✓' : ''); };
+    const nueva = nombre => ({ id: Date.now().toString(36), nombre, desde: hoyISO(), dias: [] });
+    const archivada = (m, motivo) => ({ id: m.id, nombre: m.nombre, desde: m.desde || hoyISO(), hasta: hoyISO(), motivo, n: (m.dias || []).length });
+    let pintar = null;
+    const guardar = async (lista, archivo, boton) => {
+      if(boton){ boton.disabled = true; boton.textContent = 'Guardando…'; }
+      try { await guardarSencillas(lista, archivo); }
+      catch(err){ avisoBreve('No se pudo guardar. Revisa tu conexión e inténtalo de nuevo.'); }
+      pintar();
+    };
+    pintar = () => {
+      const { lista, archivo } = datosSencillas(), activas = lista.slice(0, max);
+      if(!max){
+        zona.innerHTML = '<button type="button" class="ms-corona">👑 Las ' + TXT_SENCILLAS.toLowerCase() + ' son del Plan Guías</button>';
+        zona.querySelector('.ms-corona').onclick = irAPlanes;
+        return;
+      }
+      zona.innerHTML = activas.map(m => '<div class="ms-tarjeta" data-id="' + escapeAttr(m.id) + '"><p class="ms-nombre">' + escapeAttr(m.nombre) + '</p><p class="ms-cuenta">' + cuenta(m) + '</p>'
+          + '<div class="ms-cal"></div><div class="ms-acciones"><button type="button" class="ms-cambiar">Cambiar por otra</button><button type="button" class="ms-archivar">Archivar</button></div></div>').join('')
+        + (activas.length < max ? '<div class="ms-nueva"><input type="text" class="ms-input" maxlength="80" placeholder="Ej.: beber 2 litros de agua al día" aria-label="Nombre de tu ' + TXT_SENCILLA.toLowerCase() + '"><button type="button" class="ms-anadir">Añadir</button></div>' : '')
+        + (max === 1 ? '<p class="ms-nota">Con el Plan Guías + Grupo puedes tener 2.</p>' : '')
+        + (archivo.length ? '<details class="ms-historial"><summary>Historial (' + archivo.length + ')</summary>' + archivo.slice().reverse().map(a => '<p>' + escapeAttr(a.nombre)
+            + '<small>' + fechaCorta(new Date(a.desde + 'T12:00:00')) + ' – ' + fechaCorta(new Date(a.hasta + 'T12:00:00')) + ' · ' + (a.n || 0) + (a.n === 1 ? ' día' : ' días') + (a.motivo === 'cambiada' ? ' · cambiada' : '') + '</small></p>').join('') + '</details>' : '');
+      zona.querySelectorAll('.ms-tarjeta').forEach(t => {
+        const id = t.dataset.id, m = activas.find(x => x.id === id), hoy = new Date();
+        const ver = () => {
+          const [y, mes] = meses[id] || [hoy.getFullYear(), hoy.getMonth()];
+          const cal = t.querySelector('.ms-cal');
+          cal.innerHTML = mesSencillaHTML(datosSencillas().lista.find(x => x.id === id) || m, y, mes);
+          cal.querySelector('.ms-mes-ant').onclick = () => { meses[id] = mes === 0 ? [y - 1, 11] : [y, mes - 1]; ver(); };
+          const sig = cal.querySelector('.ms-mes-sig');
+          if(y > hoy.getFullYear() || (y === hoy.getFullYear() && mes >= hoy.getMonth())) sig.disabled = true;
+          sig.onclick = () => { meses[id] = mes === 11 ? [y + 1, 0] : [y, mes + 1]; ver(); };
+          enlazarDiasSencilla(cal, id, () => { ver(); t.querySelector('.ms-cuenta').textContent = cuenta(datosSencillas().lista.find(x => x.id === id) || m); });
+        };
+        ver();
+        const acc = t.querySelector('.ms-acciones');
+        t.querySelector('.ms-archivar').onclick = () => {
+          acc.innerHTML = '<span class="ms-pregunta">¿Archivar «' + escapeAttr(m.nombre) + '»?</span><button type="button" class="ms-si">Sí, archivar</button><button type="button" class="ms-no">No</button>';
+          acc.querySelector('.ms-no').onclick = pintar;
+          acc.querySelector('.ms-si').onclick = e => { const d = datosSencillas(), ya = d.lista.find(x => x.id === id) || m; guardar(d.lista.filter(x => x.id !== id), d.archivo.concat(archivada(ya, 'archivada')), e.currentTarget); };
+        };
+        t.querySelector('.ms-cambiar').onclick = () => {
+          acc.innerHTML = '<input type="text" class="ms-input" maxlength="80" placeholder="Nombre de la nueva meta" aria-label="Nombre de la nueva meta"><button type="button" class="ms-si">Guardar</button><button type="button" class="ms-no">Cancelar</button>';
+          const inp = acc.querySelector('.ms-input'); inp.focus();
+          acc.querySelector('.ms-no').onclick = pintar;
+          acc.querySelector('.ms-si').onclick = e => {
+            const nombre = inp.value.replace(/\s+/g, ' ').trim(); if(!nombre){ inp.focus(); return; }
+            const d = datosSencillas(), ya = d.lista.find(x => x.id === id) || m;
+            guardar(d.lista.map(x => x.id === id ? nueva(nombre) : x), d.archivo.concat(archivada(ya, 'cambiada')), e.currentTarget);
+          };
+        };
+      });
+      const anadir = zona.querySelector('.ms-anadir');
+      if(anadir) anadir.onclick = e => {
+        const inp = zona.querySelector('.ms-nueva .ms-input'), nombre = inp.value.replace(/\s+/g, ' ').trim();
+        if(!nombre){ inp.focus(); return; }
+        const d = datosSencillas();
+        guardar(d.lista.slice(0, max).concat(nueva(nombre)), d.archivo, e.currentTarget);
+      };
+    };
+    pintar();
+    return caja;
+  }
+  // En «Registros amables», debajo de todo lo de la meta con guía: la semana de cada meta sencilla
+  function registroSencillas(){
+    const activas = sencillasActivas();
+    if(!activas.length) return null;
+    const caja = el('<div class="rp-sencillas"><p class="abonar-tit">5 · ✔️ Tus ' + TXT_SENCILLAS.toLowerCase() + '</p><p class="abonar-sub">Toca los días en que la hiciste.</p></div>').firstElementChild;
+    activas.forEach(m => {
+      const f = el('<div class="ms-reg"><p class="ms-nombre">' + escapeAttr(m.nombre) + '</p>' + semanaSencillaHTML(m) + '</div>').firstElementChild;
+      caja.appendChild(f);
+      enlazarDiasSencilla(f, m.id, (on, b) => { b.classList.toggle('hecho', on); b.querySelector('b').textContent = on ? '✓' : b.dataset.n; });
+    });
+    return caja;
+  }
   // Fecha en que empezó la meta actual (formulario de meta): el contador de días vuelve a cero con cada meta nueva
   function fechaMetaActual(){
     const dfm = (state.gamifica && state.gamifica.datosFormulario) || {};
@@ -3774,7 +3936,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     const libre = !tienePlan('guias');
     // Pasos con las mismas letras que los botones del ciclo: 0 = meta, a, b, c (y d con sesiones)
     const pasos = [
-      ['0', 'Formulario de meta trimestral.', metaHechaYa() ? 'Ya tienes rellenado tu formulario.' : 'Tienes pendiente rellenarlo (el primer botón).'],
+      ['0', 'Metas.', metaHechaYa() ? 'Ya tienes rellenado tu formulario.' : 'Tienes pendiente rellenarlo (el primer botón).'],
       ['a', 'Guía semanal.', 'Recibirás tu guía de prácticas ' + (libre ? 'la primera semana de cada mes.' : 'cada semana.')],
       ['b', 'Compromiso y práctica.', 'Cada día marca los días en que la hiciste.'],
     ];
@@ -4650,6 +4812,10 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
+    { v: 'V13.25', f: '13 de octubre de 2026', n: [
+      'El primer paso de Inicio se llama ahora <b>Metas</b>. Dentro están tu <b>meta con guía</b> (la de siempre, con formulario y guía) y las nuevas <b>metas sencillas</b>.',
+      'Una <b>meta sencilla</b> es solo un nombre y un calendario para marcar los días que la haces. No cambia tu planta ni tu montaña. Puedes cambiarla por otra o archivarla, y queda en tu historial.',
+      'Plan Guías: 1 meta sencilla. Plan Guías + Grupo: 2. Se marcan también en <b>Registros amables</b>, en el apartado 5.' ] },
     { v: 'V13.24', f: '13 de octubre de 2026', n: [
       'En <b>Tus 15 primeros registros</b>, al tocar la «?» de un regalo se abre un bocadillo grande que apunta a ese regalo.' ] },
     { v: 'V13.23', f: '13 de octubre de 2026', n: [
@@ -6919,9 +7085,9 @@ lo que haces cada día es lo que vas a ser.`;
           '<button type="button" class="hablar-practi-btn">💬 Quiero hablar con Prácti</button>'
           + '<button type="button" class="opcion-inicio ciclo-btn ciclo-meta' + (metaHecha ? ' hecha' : ' pendiente') + act('meta') + '" data-ir="s4">'
           + '<span class="ciclo-icono">' + iconoCiclo('cero') + '</span>'
-          + '<span class="opcion-tx"><b>Formulario de meta trimestral</b>'
+          + '<span class="opcion-tx"><b>Metas</b>'
           + (metaHecha
-              ? '<small>Ya está definida para el ' + trimestreMeta() + (limiteMetaIntentos() > 1 ? ' · puedes cambiarla hasta ' + limiteMetaIntentos() + ' veces' : '') + '</small>'
+              ? '<small>Meta con guía definida para el ' + trimestreMeta() + (sencillasActivas().length ? ' · ' + sencillasActivas().length + ' ' + (sencillasActivas().length === 1 ? TXT_SENCILLA : TXT_SENCILLAS).toLowerCase() : '') + (limiteMetaIntentos() > 1 ? ' · puedes cambiarla hasta ' + limiteMetaIntentos() + ' veces' : '') + '</small>'
                 + '<span class="etiqueta-recibida">Hecha</span>'
               : '<small style="color:#B94A3A;font-weight:700">⚠️ Pendiente: empieza por aquí</small>')
           + '</span><span class="opcion-flecha">›</span></button>'
@@ -7103,18 +7269,19 @@ lo que haces cada día es lo que vas a ser.`;
       if(metaHechaYa()){
         // Ya está hecha: en el Plan Libre no se vuelve a abrir el formulario
         s2.innerHTML = `
-          ${badgeSeccion('cero', 'Formulario de meta trimestral')}
+          ${badgeSeccion('cero', 'Metas')}<h3 class="metas-sub">🌱 Meta con guía</h3>
           <p style="background:var(--honey-tint);border-radius:10px;padding:12px 14px">✅ <b>Ya tienes el formulario rellenado</b>${enviado ? ' (el ' + enviado.getDate() + '/' + (enviado.getMonth() + 1) + ')' : ''}: tu meta está definida para el <b>${trimestreMeta()}</b>.<br>
           ${state.guiaTexto ? 'Tu guía ya está lista en <b>«b · Guía semanal»</b>.' : 'En breve tendrás tu guía de prácticas en <b>«b · Guía semanal»</b>.'}</p>
           <p style="font-size:13px;color:var(--ink-soft)">${reglaMeta}</p>
           ${cambios > 1 ? '<button type="button" class="panel-link-btn honey fm-abrir" style="width:100%;border:none;cursor:pointer">Cambiar mi meta →</button>' : ''}`;
       } else s2.innerHTML = `
-        ${badgeSeccion('cero', 'Formulario de meta trimestral')}
+        ${badgeSeccion('cero', 'Metas')}<h3 class="metas-sub">🌱 Meta con guía</h3>
         <p>Rellena el formulario para definir tu meta trimestral más importante para ti, tus dificultades y a qué ritmo quieres ir. Te crearemos tu guía de prácticas.</p>
         <p style="background:var(--honey-tint);border-radius:10px;padding:10px 12px;font-size:14px">${reglaMeta}</p>
         <button type="button" class="panel-link-btn honey fm-abrir" style="width:100%;border:none;cursor:pointer">Rellenar formulario de meta →</button>
         <p style="font-size:12px;text-align:center;margin:8px 0 0"><a style="color:var(--ink-soft)" href="${urlFormulario()}" target="_blank" rel="noopener">o rellénalo en Google Forms</a></p>
       `;
+      try { s2.appendChild(bloqueSencillas()); } catch(e){ console.error('Metas sencillas:', e); }
 
       // Bloque 3: Guía mensual — ahora un único botón de acceso; el contenido vive en la vista 'practicas'
       const s3 = document.createElement('div');
@@ -9469,6 +9636,8 @@ lo que haces cada día es lo que vas a ser.`;
       } catch(e){ console.error('Semana:', e); }
     };
     ponerSemana();
+    // 5 · Las metas sencillas, debajo de todo lo de la meta con guía
+    try { const ms = registroSencillas(); if(ms) capa.appendChild(ms); } catch(e){ console.error('Metas sencillas:', e); }
     // Abajo del todo, el mismo «Ir a Metas Amables» que arriba (la semana se repinta en su sitio, así que este botón sigue el último)
     const irAbajo = el('<button type="button" class="riego-ir-abajo">← Volver a Metas Amables</button>').firstElementChild;
     capa.appendChild(irAbajo);
@@ -11445,4 +11614,4 @@ lo que haces cada día es lo que vas a ser.`;
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V13.24 · App Metas Amables · 2026-10-13 13:26==== -->
+<!-- ==== Fin del index V13.25 · App Metas Amables · 2026-10-13 15:31==== -->
