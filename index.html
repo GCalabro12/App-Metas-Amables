@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V13.40 · App Metas Amables · 2026-10-13 19:44==== -->
+<!-- ==== index V13.41 · App Metas Amables · 2026-10-13 19:47==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1273,6 +1273,8 @@ textarea.ms-nombre-in:focus{outline:none;border-color:#C9942D;box-shadow:0 0 0 3
 .ms-veces{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px}.ms-vez{aspect-ratio:1;width:100%;max-width:50px;margin:auto;border-radius:50%;border:2px solid #D9CFB8;background:#fff;font:800 17px Karla,sans-serif;color:var(--ink);cursor:pointer;padding:0}.ms-vez.on{background:#C9942D;border-color:#C9942D;color:#fff}
 .ms-rapidos{display:flex;gap:8px;margin-top:8px}.ms-rapidos button{flex:1;padding:7px;border-radius:999px;border:1.5px solid #D9CFB8;background:#fff;font:700 13px Karla,sans-serif;color:#6B4A26;cursor:pointer}
 .ms-aviso{font-size:12.5px;color:var(--ink-soft);margin:10px 0 0}
+.ms-fin{display:flex;justify-content:center;gap:22px;margin-top:6px}.ms-capa .ms-borrar{display:block;margin:12px 0 0;border:none;background:none;color:#7A6A5A;font:700 14px Karla,sans-serif;text-decoration:underline;cursor:pointer}
+.ms-capa .ms-acciones .ms-rojo{background:#B3261E;border-color:#B3261E;color:#fff}
 .ms-capa .ms-archivar{display:block;margin:12px auto 0;border:none;background:none;color:#A93226;font:700 14px Karla,sans-serif;text-decoration:underline;cursor:pointer}
 .ms-reg .ms-nombre small{font-weight:600;color:var(--ink-soft);font-size:13px}
 .ms-ayuda,.ms-nota{font-size:14px;color:var(--ink-soft);margin:0 0 10px}.ms-nota{margin:8px 0 0;font-size:13px}
@@ -1301,6 +1303,8 @@ textarea.ms-nombre-in:focus{outline:none;border-color:#C9942D;box-shadow:0 0 0 3
 .ms-capa-cal .ms-mes{gap:8px 6px}.ms-capa-cal .ms-dia-m{max-width:60px;font-size:16px}
 .ms-capa-cal .ms-mes-cab b{font-size:18px}.ms-capa-cal .ms-mes-cab button{width:44px;height:38px;font-size:22px}
 .ms-desliza{margin:12px 0 0;text-align:center;font-size:12.5px;color:var(--ink-soft)}
+.ms-hist{display:flex;align-items:center;gap:10px;margin:6px 0}.ms-hist p{flex:1;margin:0}
+.ms-recuperar{flex:none;padding:7px 12px;border-radius:999px;border:1.5px solid #A0703C;background:#fff;color:#6B4A26;font:700 13.5px Karla,sans-serif;cursor:pointer}
 .ms-sin-notas{color:var(--ink-soft);font-size:13.5px}
 .ms-cuenta span{display:block}.ms-cuenta small{font-weight:600;color:var(--ink-soft)}
 .ms-cuenta-ayuda{margin:-4px 0 8px;font-size:12px;color:var(--ink-soft)}
@@ -2371,7 +2375,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V13.40';
+  const APP_VERSION = 'V13.41';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -3815,7 +3819,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       + '<p class="ms-ayuda">Un hábito sencillo, con un calendario para marcar los días que lo haces. No cambia tu planta ni tu montaña.</p><div class="ms-lista"></div></div>').firstElementChild;
     const zona = caja.querySelector('.ms-lista');
     const cuenta = textoCuentaSencilla;
-    const archivada = (m, motivo) => ({ id: m.id, nombre: m.nombre, desde: m.desde || hoyISO(), hasta: hoyISO(), motivo, n: (m.dias || []).length });
+    const archivada = (m, motivo) => Object.assign({}, m, { desde: m.desde || hoyISO(), hasta: hoyISO(), motivo, n: (m.dias || []).length });
     let pintar = null;
     const guardar = async (lista, archivo, boton) => {
       if(boton){ boton.disabled = true; boton.textContent = 'Guardando…'; }
@@ -3838,7 +3842,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
         + '<p class="ms-aviso">Cualquier día de la semana vale: tú eliges cuándo.</p></div>'
         + (m ? '<p class="ms-aviso">Si cambias el nombre, la meta anterior pasa a tu historial con sus días.</p>' : '')
         + '<div class="ms-acciones"><button type="button" class="ms-no">Cancelar</button><button type="button" class="ms-si">Guardar</button></div>'
-        + (m ? '<button type="button" class="ms-archivar">Archivar esta meta</button>' : '') + '</div></div>').firstElementChild;
+        + (m ? '<div class="ms-fin"><button type="button" class="ms-archivar">Archivar esta meta</button><button type="button" class="ms-borrar">Borrar esta meta</button></div>' : '') + '</div></div>').firstElementChild;
       document.body.appendChild(f);
       document.body.classList.add('ms-capa-abierta');
       const cerrar = () => { f.remove(); document.body.classList.remove('ms-capa-abierta'); };
@@ -3868,11 +3872,14 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
         if(nombre === ya.nombre) guardarYCerrar(d.lista.map(x => x.id === m.id ? Object.assign({}, x, frec) : x), d.archivo, e.currentTarget);
         else guardarYCerrar(d.lista.map(x => x.id === m.id ? Object.assign({ id: Date.now().toString(36), nombre, desde: hoyISO(), dias: [] }, frec) : x), d.archivo.concat(archivada(ya, 'cambiada')), e.currentTarget);
       };
-      const arch = f.querySelector('.ms-archivar');
-      if(arch) arch.onclick = () => {
-        arch.outerHTML = '<div class="ms-acciones"><span class="ms-pregunta">¿Archivar «' + escapeAttr(m.nombre) + '»? Quedará en tu historial.</span><button type="button" class="ms-no2">No</button><button type="button" class="ms-si2">Sí, archivar</button></div>';
+      // Archivar: directo (se puede recuperar desde el historial). Borrar: pregunta antes; deja de verse,
+      // pero se guarda aparte (borrada: true) por si hiciera falta
+      const arch = f.querySelector('.ms-archivar'), borr = f.querySelector('.ms-borrar');
+      if(arch) arch.onclick = e => { const d = datosSencillas(), ya = d.lista.find(x => x.id === m.id) || m; guardarYCerrar(d.lista.filter(x => x.id !== m.id), d.archivo.concat(archivada(ya, 'archivada')), e.currentTarget); };
+      if(borr) borr.onclick = () => {
+        f.querySelector('.ms-fin').outerHTML = '<div class="ms-acciones"><span class="ms-pregunta">¿Seguro que quieres borrar «' + escapeAttr(m.nombre) + '»? Ya no la verás ni la podrás recuperar.</span><button type="button" class="ms-no2">No</button><button type="button" class="ms-si2 ms-rojo">Sí, borrar</button></div>';
         f.querySelector('.ms-no2').onclick = () => { cerrar(); pintar(); };
-        f.querySelector('.ms-si2').onclick = e => { const d = datosSencillas(), ya = d.lista.find(x => x.id === m.id) || m; guardarYCerrar(d.lista.filter(x => x.id !== m.id), d.archivo.concat(archivada(ya, 'archivada')), e.currentTarget); };
+        f.querySelector('.ms-si2').onclick = e => { const d = datosSencillas(), ya = d.lista.find(x => x.id === m.id) || m; guardarYCerrar(d.lista.filter(x => x.id !== m.id), d.archivo.concat(Object.assign(archivada(ya, 'borrada'), { borrada: true })), e.currentTarget); };
       };
     };
     pintar = () => {
@@ -3888,8 +3895,9 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
           + '<button type="button" class="ms-btn ms-ver-cal">📅 Calendario</button></div>').join('')
         + (activas.length < max ? '<button type="button" class="ms-btn ms-crear">' + (activas.length ? '＋ Crear otra ' : 'Crear mi ') + TXT_SENCILLA.toLowerCase() + ' →</button>' : '')
         + (max === 1 ? '<p class="ms-nota">Con el Plan Guías + Grupo puedes tener 2.</p>' : '')
-        + (archivo.length ? '<details class="ms-historial"><summary>Historial (' + archivo.length + ')</summary>' + archivo.slice().reverse().map(a => '<p>' + escapeAttr(a.nombre)
-            + '<small>' + fechaCorta(new Date(a.desde + 'T12:00:00')) + ' – ' + fechaCorta(new Date(a.hasta + 'T12:00:00')) + ' · ' + (a.n || 0) + (a.n === 1 ? ' día' : ' días') + (a.motivo === 'cambiada' ? ' · cambiada' : '') + '</small></p>').join('') + '</details>' : '');
+        + (archivo.some(a => !a.borrada) ? '<details class="ms-historial"><summary>Historial (' + archivo.filter(a => !a.borrada).length + ')</summary>' + archivo.map((a, k) => [a, k]).filter(([a]) => !a.borrada).reverse().map(([a, k]) => '<div class="ms-hist"><p>' + escapeAttr(a.nombre)
+            + '<small>' + fechaCorta(new Date(a.desde + 'T12:00:00')) + ' – ' + fechaCorta(new Date(a.hasta + 'T12:00:00')) + ' · ' + (a.n || 0) + (a.n === 1 ? ' día' : ' días') + (a.motivo === 'cambiada' ? ' · cambiada' : '') + '</small></p>'
+            + '<button type="button" class="ms-recuperar" data-k="' + k + '">Recuperar</button></div>').join('') + '</details>' : '');
       zona.querySelectorAll('.ms-tarjeta').forEach(t => {
         const id = t.dataset.id, m = activas.find(x => x.id === id), verCal = () => abrirCalendarioSencilla(id, pintar);
         // Al marcar un día en la fila se pone al día la racha y el cumplido
@@ -3902,6 +3910,15 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
         t.querySelector('.ms-ver-cal').onclick = verCal;
         enlazarDiasSencilla(t.querySelector('.ms-semana'), id, refrescar, verCal);
         t.querySelector('.ms-cambiar').onclick = () => editor(t, m);
+      });
+      // Recuperar una meta del historial: vuelve activa con sus días (si cabe en el plan)
+      zona.querySelectorAll('.ms-recuperar').forEach(b => b.onclick = () => {
+        const d = datosSencillas(), activasYa = d.lista.slice(0, max);
+        if(activasYa.length >= max){ avisoBreve(max === 1 ? 'Ya tienes una meta sencilla activa: archívala antes de recuperar otra.' : 'Ya tienes ' + max + ' metas sencillas activas: archiva una antes de recuperar otra.'); return; }
+        const k = Number(b.dataset.k), a = d.archivo[k]; if(!a) return;
+        const vuelta = Object.assign({}, a, { dias: a.dias || [], fallos: a.fallos || [], libres: a.libres || [], notas: a.notas || {} });
+        delete vuelta.hasta; delete vuelta.motivo; delete vuelta.n;
+        guardar(activasYa.concat(vuelta), d.archivo.filter((x, i) => i !== k), b);
       });
       const crear = zona.querySelector('.ms-crear');
       if(crear) crear.onclick = () => editor(crear, null);
@@ -5054,6 +5071,9 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
+    { v: 'V13.41', f: '13 de octubre de 2026', n: [
+      'Las <b>metas sencillas</b> archivadas se pueden <b>recuperar</b> desde el historial, con todos sus días.',
+      'Al cambiar una meta sencilla puedes <b>archivarla</b> (la recuperas cuando quieras) o <b>borrarla</b> (te pregunta antes).' ] },
     { v: 'V13.36', f: '13 de octubre de 2026', n: [
       'Cada <b>meta sencilla</b> muestra su <b>racha</b> (días seguidos hechos) y cuánto has <b>cumplido</b> desde que la creaste. Debajo del calendario ves tus comentarios del mes.' ] },
     { v: 'V13.31', f: '13 de octubre de 2026', n: [
@@ -11874,4 +11894,4 @@ lo que haces cada día es lo que vas a ser.`;
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V13.40 · App Metas Amables · 2026-10-13 19:44==== -->
+<!-- ==== Fin del index V13.41 · App Metas Amables · 2026-10-13 19:47==== -->
