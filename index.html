@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V13.42 · App Metas Amables · 2026-10-13 19:50==== -->
+<!-- ==== index V13.43 · App Metas Amables · 2026-10-13 21:42==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2375,7 +2375,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V13.42';
+  const APP_VERSION = 'V13.43';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -8154,6 +8154,7 @@ lo que haces cada día es lo que vas a ser.`;
 
       app.appendChild(el(cienciaHTML()));
       if(botonPruebaHTML()){ const bp = el('<div class="prueba-caja">' + botonPruebaHTML() + '</div>').firstElementChild; app.appendChild(bp); bp.querySelector('#btnPruebaGuias').onclick = ev => empezarPrueba(ev.currentTarget); }
+      if(botonPruebaGrupoHTML()) app.appendChild(el('<div class="prueba-caja">' + botonPruebaGrupoHTML() + '</div>').firstElementChild);
       // Primero el plan de la persona, después los que puede añadir
       const actual = (!state.plan || state.plan === 'gratis') ? 'libre' : state.plan;
       // El Plan Libre solo se enseña a quien lo tiene: a quien paga no se le ofrece
@@ -8176,7 +8177,7 @@ lo que haces cada día es lo que vas a ser.`;
             (p.precio2 ? '<p class="plan-precio" style="margin-top:-4px;font-size:15px">' + p.precio2 + '</p>' : '')) +
           '<ul class="plan-lista">' + p.incluye.map(i => '<li>' + i + '</li>').join('') + '</ul>' +
           (esElSuyo
-            ? '<p class="plan-tienes">✔️ Es el que tienes ahora</p>'
+            ? '<p class="plan-tienes">✔️ Es el que tienes ahora' + (clave === 'sesiones' ? textoPruebaGrupo() : '') + '</p>'
             : (tienePlan(clave)
                 ? '<p class="plan-tienes">✔️ Incluido en tu plan</p>'
                 : MODO_PLAY ? '' : ((p.pagos || []).map(pg => '<a class="panel-link-btn" style="margin-top:8px" target="_blank" rel="noopener" href="' + enlacePago(pg.url) + '">' + pg.txt + '</a>').join('') +
@@ -11401,6 +11402,20 @@ lo que haces cada día es lo que vas a ser.`;
       ? '<button type="button" class="btn btn-yes prueba-guias" id="btnPruebaGuias" style="text-align:center">🎁 Prueba el Plan Guías 1 mes gratis</button><p class="prueba-nota">Sin tarjeta y sin compromiso. Al acabar el mes vuelves al Plan Libre si no quieres seguir.</p>'
       : '';
   }
+  // Prueba de 45 días del Plan Guías + Grupo (con tarjeta, por Stripe): solo para quien no la ha tenido y no está en el grupo.
+  // PRUEBA_GRUPO_URL: el Payment Link de Stripe (trimestral de 105 € con 45 días de prueba); sin él, no se enseña el botón
+  const PRUEBA_GRUPO_URL = '';
+  function botonPruebaGrupoHTML(){
+    return (!MODO_PLAY && PRUEBA_GRUPO_URL && !tienePlan('sesiones') && !datosForm().pruebaGrupo)
+      ? '<a class="btn btn-yes prueba-grupo" style="display:block;text-align:center;text-decoration:none" target="_blank" rel="noopener" href="' + enlacePago(PRUEBA_GRUPO_URL) + '">👥 Prueba el grupo 45 días gratis</a>'
+        + '<p class="prueba-nota">Incluye 3 sesiones de grupo. No se cobra nada hasta el día 46; si cancelas antes, no pagas. Después, 105 € al trimestre.</p>'
+      : '';
+  }
+  // Mientras dura la prueba del grupo: «prueba gratis hasta el…»
+  function textoPruebaGrupo(){
+    const pg = datosForm().pruebaGrupo;
+    return state.plan === 'sesiones' && pg && pg.hasta >= hoyISO() ? ' · prueba gratis hasta el ' + pg.hasta.split('-').reverse().join('/') : '';
+  }
   async function empezarPrueba(boton){
     boton.disabled = true; boton.textContent = 'Activando…';
     try {
@@ -11894,4 +11909,4 @@ lo que haces cada día es lo que vas a ser.`;
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V13.42 · App Metas Amables · 2026-10-13 19:50==== -->
+<!-- ==== Fin del index V13.43 · App Metas Amables · 2026-10-13 21:42==== -->
