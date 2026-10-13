@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V13.44 · App Metas Amables · 2026-10-13 22:20==== -->
+<!-- ==== index V13.45 · App Metas Amables · 2026-10-13 22:37==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2375,7 +2375,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V13.44';
+  const APP_VERSION = 'V13.45';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -2398,6 +2398,28 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   // La app ya no ve el token de Airtable: todo pasa por el Worker, que comprueba
   // la sesión de cada persona y solo le deja leer y escribir lo suyo.
   const API_URL = 'https://metas-amables-api.proud-hill-016b.workers.dev';
+  // Camino de reserva (13-10-2026): en España, durante los partidos de LaLiga, algunas operadoras bloquean las IPs de
+  // Cloudflare y el Worker no responde. Entonces se pasa por un intermediario en Deno Deploy (fuera de Cloudflare)
+  // que reenvía todo al Worker. Si la reserva funciona, se usa primero durante 30 minutos.
+  const API_RESERVA = 'https://rigid-thrush-3387.gcalabro12.deno.net';
+  async function apiFetch(ruta, opciones){
+    opciones = opciones || {};
+    const esPost = (opciones.method || 'GET') !== 'GET';
+    let usarReserva = false; try { usarReserva = Date.now() - Number(sessionStorage.getItem('api_reserva') || 0) < 30 * 60000; } catch(e){}
+    const probar = async (base, segundos) => {
+      const ctl = new AbortController(), t = setTimeout(() => ctl.abort(), segundos * 1000);
+      try { return await fetch(base + ruta, Object.assign({}, opciones, { signal: ctl.signal })); } finally { clearTimeout(t); }
+    };
+    const [primero, segundo] = usarReserva ? [API_RESERVA, API_URL] : [API_URL, API_RESERVA];
+    try { return await probar(primero, esPost ? 40 : 12); }
+    catch(err){
+      // Un POST que solo tardó (no que no conectó) no se repite, para no guardar dos veces
+      if(esPost && err.name === 'AbortError') throw err;
+      const res = await probar(segundo, esPost ? 40 : 15);
+      try { if(segundo === API_RESERVA) sessionStorage.setItem('api_reserva', String(Date.now())); else sessionStorage.removeItem('api_reserva'); } catch(e){}
+      return res;
+    }
+  }
   const AIR = {
     fields: { alumno: 'Practicante', semana: 'Semana', cumplida: 'Cumplida', notas: 'Notas', metaTrim: 'Meta trimestre', metaSem: 'Meta semana', identidad: 'Identidad', grupo: 'Grupo MAC', urlGuia: 'URL Guías Mensuales', fechasSesiones: 'Fechas Sesiones', guiaTexto: 'Guía Trimestral Texto', valoracion: 'Valoracion', oportunidades: 'Opo estimadas', compromisoVeces: 'Me comprometo a', vecesRealizadas: 'Veces realizado', estadoSemana: 'Estado Semana', enlaceGamifica: 'Practicantes', diasHechos: 'Días hechos', abonos: 'Abonos' }
   };
@@ -2426,7 +2448,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       opciones.headers['Content-Type'] = 'application/json';
       opciones.body = JSON.stringify(cuerpo);
     }
-    const res = await fetch(API_URL + ruta, opciones);
+    const res = await apiFetch(ruta, opciones);
     let data = {};
     try { data = await res.json(); } catch(e){}
     if(!res.ok){
@@ -5071,6 +5093,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
+    { v: 'V13.45', f: '13 de octubre de 2026', n: [
+      'Si durante los partidos de fútbol tu conexión bloquea la app (pasa en España con algunas operadoras), ahora la app sigue funcionando por un camino de reserva.' ] },
     { v: 'V13.44', f: '13 de octubre de 2026', n: [
       'Nuevo en <b>Tu plan</b>: <b>prueba el grupo 45 días gratis</b>. Incluye 3 sesiones de grupo; no se cobra nada hasta el día 46 y, si cancelas antes, no pagas.' ] },
     { v: 'V13.41', f: '13 de octubre de 2026', n: [
@@ -5506,7 +5530,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   async function cargarFrases(){
     if(utilEstado.frases) return utilEstado.frases;
-    try { const r = await fetch(API_URL + '/frases'); const d = await r.json(); if(d.frases && d.frases.length) utilEstado.frases = d.frases.map(f => f.frase); } catch(e){}
+    try { const r = await apiFetch('/frases'); const d = await r.json(); if(d.frases && d.frases.length) utilEstado.frases = d.frases.map(f => f.frase); } catch(e){}
     if(!utilEstado.frases) utilEstado.frases = FRASES_RESERVA.slice();
     utilEstado.i = Math.floor(Math.random() * utilEstado.frases.length);
     return utilEstado.frases;
@@ -9731,7 +9755,7 @@ lo que haces cada día es lo que vas a ser.`;
   function isoLocal(d){ return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
   async function vozDescargar(lunesISO){
     const ses = leerSesion();
-    const r = await fetch(API_URL + '/voz-semana?lunes=' + lunesISO, { headers: ses ? { 'Authorization': 'Bearer ' + ses } : {} });
+    const r = await apiFetch('/voz-semana?lunes=' + lunesISO, { headers: ses ? { 'Authorization': 'Bearer ' + ses } : {} });
     if(!r.ok || !/^audio\//.test(r.headers.get('Content-Type') || '')) return null;
     return URL.createObjectURL(await r.blob());
   }
@@ -11911,4 +11935,4 @@ lo que haces cada día es lo que vas a ser.`;
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V13.44 · App Metas Amables · 2026-10-13 22:20==== -->
+<!-- ==== Fin del index V13.45 · App Metas Amables · 2026-10-13 22:37==== -->
