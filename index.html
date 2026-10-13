@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V13.38 · App Metas Amables · 2026-10-13 19:36==== -->
+<!-- ==== index V13.39 · App Metas Amables · 2026-10-13 19:39==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1296,6 +1296,11 @@ textarea.ms-nombre-in:focus{outline:none;border-color:#C9942D;box-shadow:0 0 0 3
 .ms-dia-m.con-nota::after{content:'•••';position:absolute;left:0;right:0;bottom:3px;font-size:12px;font-weight:900;line-height:.6;letter-spacing:1px;text-align:center;color:currentColor}
 .ms-dia-m.con-nota{padding-bottom:6px}
 .ms-notas{margin:10px 0 0;padding-top:8px;border-top:1px solid rgba(0,0,0,.08)}.ms-notas p{display:flex;gap:10px;margin:6px 0;font-size:14.5px}.ms-notas b{min-width:22px;text-align:right}
+.ms-capa-cal .ms-nombre{margin:4px 0 8px;padding:12px 14px;border-radius:12px;background:var(--ms-n,#FCEFC2);font-size:18px;font-weight:800;line-height:1.3}
+.ms-capa-cal .ms-cuenta{margin:0 0 14px;font-size:14.5px}
+.ms-capa-cal .ms-mes{gap:8px 6px}.ms-capa-cal .ms-dia-m{max-width:60px;font-size:16px}
+.ms-capa-cal .ms-mes-cab b{font-size:18px}.ms-capa-cal .ms-mes-cab button{width:44px;height:38px;font-size:22px}
+.ms-desliza{margin:12px 0 0;text-align:center;font-size:12.5px;color:var(--ink-soft)}
 .ms-sin-notas{color:var(--ink-soft);font-size:13.5px}
 .ms-cuenta-ayuda{margin:-4px 0 8px;font-size:12px;color:var(--ink-soft)}
 .ms-leyenda .ly{display:inline-block;width:11px;height:11px;border-radius:50%;margin:0 4px 0 6px;vertical-align:-1px}.ms-leyenda .ly.hecho{background:#4C8C4A;margin-left:0}.ms-leyenda .ly.fallo{background:#D9483B}.ms-leyenda .ly.libre{background:#2B2B2B}.ms-leyenda b{margin:0 2px 0 6px}
@@ -2365,7 +2370,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V13.38';
+  const APP_VERSION = 'V13.39';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -3744,6 +3749,48 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     }
     return { racha, unidad: racha === 1 ? 'día' : 'días', pct: toca ? Math.round(100 * logro / toca) : null };
   }
+  function textoCuentaSencilla(m){
+    const e = estadisticasSencilla(m), v = vecesSemanaSencilla(m);
+    return '🔥 Racha: ' + e.racha + ' ' + e.unidad + ' · ✅ Cumplido: ' + (e.pct === null ? '—' : e.pct + ' %') + (v ? ' · esta semana ' + hechosSemanaSencilla(m) + ' de ' + v : '');
+  }
+  // El calendario en su propia pantalla, a todo lo ancho; deslizando a los lados se pasa de mes
+  function abrirCalendarioSencilla(id, alCerrar){
+    document.querySelectorAll('.ms-capa').forEach(x => x.remove());
+    const hoy = new Date(), ya = () => datosSencillas().lista.find(x => x.id === id);
+    let y = hoy.getFullYear(), mes = hoy.getMonth();
+    const m0 = ya(); if(!m0) return;
+    const f = el('<div class="ms-capa ms-capa-cal' + (datosSencillas().lista.indexOf(m0) > 0 ? ' ms-b' : '') + '" role="dialog" aria-label="Calendario"><div class="ms-capa-in">'
+      + '<div class="ms-capa-cab"><button type="button" class="back-btn ms-cerrar">← Volver</button><b>📅 Calendario</b></div>'
+      + '<p class="ms-nombre">' + escapeAttr(m0.nombre) + '</p><p class="ms-cuenta"></p><div class="ms-cal"></div>'
+      + '<p class="ms-desliza">Desliza a los lados para cambiar de mes.</p>' + LEYENDA_SENCILLA + '</div></div>').firstElementChild;
+    document.body.appendChild(f);
+    document.body.classList.add('ms-capa-abierta');
+    const cal = f.querySelector('.ms-cal'), esteMes = () => y === hoy.getFullYear() && mes === hoy.getMonth();
+    const mover = paso => {
+      if(paso > 0 && esteMes()) return;
+      mes += paso; if(mes < 0){ mes = 11; y--; } if(mes > 11){ mes = 0; y++; }
+      ver();
+    };
+    const ver = () => {
+      const m = ya(); if(!m) return;
+      f.querySelector('.ms-cuenta').textContent = textoCuentaSencilla(m);
+      cal.innerHTML = mesSencillaHTML(m, y, mes);
+      cal.querySelector('.ms-mes-ant').onclick = () => mover(-1);
+      const sig = cal.querySelector('.ms-mes-sig'); sig.disabled = esteMes(); sig.onclick = () => mover(1);
+      enlazarDiasSencilla(cal, id, ver);
+    };
+    ver();
+    // Deslizar con el dedo: a la izquierda, el mes siguiente; a la derecha, el anterior
+    let x0 = null, y0 = null;
+    f.addEventListener('touchstart', e => { const t = e.touches[0]; x0 = t.clientX; y0 = t.clientY; }, { passive: true });
+    f.addEventListener('touchend', e => {
+      if(x0 === null) return;
+      const t = e.changedTouches[0], dx = t.clientX - x0, dy = t.clientY - y0; x0 = null;
+      if(Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5) mover(dx < 0 ? 1 : -1);
+    }, { passive: true });
+    f.classList.add('no-deslizar');
+    f.querySelector('.ms-cerrar').onclick = () => { f.remove(); document.body.classList.remove('ms-capa-abierta'); if(alCerrar) alCerrar(); };
+  }
   // El calendario de un mes, con los días marcados
   function mesSencillaHTML(m, y, mes){
     const hoy = hoyISO(), hueco = (new Date(y, mes, 1).getDay() + 6) % 7, n = new Date(y, mes + 1, 0).getDate();
@@ -3761,12 +3808,11 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
   // En la pantalla de Metas: su propio recuadro, con crear, cambiar, calendario y el historial
   function bloqueSencillas(){
-    const max = maxSencillas(), meses = {}, abiertos = {};
+    const max = maxSencillas();
     const caja = el('<div class="card panel-section s2 ms-bloque"><h3 class="metas-sub">✔️ ' + TXT_SENCILLAS + '</h3>'
       + '<p class="ms-ayuda">Un hábito sencillo, con un calendario para marcar los días que lo haces. No cambia tu planta ni tu montaña.</p><div class="ms-lista"></div></div>').firstElementChild;
     const zona = caja.querySelector('.ms-lista');
-    const cuenta = m => { const e = estadisticasSencilla(m), v = vecesSemanaSencilla(m);
-      return '🔥 Racha: ' + e.racha + ' ' + e.unidad + ' · ✅ Cumplido: ' + (e.pct === null ? '—' : e.pct + ' %') + (v ? ' · esta semana ' + hechosSemanaSencilla(m) + ' de ' + v : ''); };
+    const cuenta = textoCuentaSencilla;
     const archivada = (m, motivo) => ({ id: m.id, nombre: m.nombre, desde: m.desde || hoyISO(), hasta: hoyISO(), motivo, n: (m.dias || []).length });
     let pintar = null;
     const guardar = async (lista, archivo, boton) => {
@@ -3837,33 +3883,22 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       zona.innerHTML = activas.map((m, i) => '<div class="ms-tarjeta' + (i ? ' ms-b' : '') + '" data-id="' + escapeAttr(m.id) + '"><p class="ms-nombre">' + escapeAttr(m.nombre) + '</p>'
           + (vecesSemanaSencilla(m) ? '<p class="ms-dias-plan">📆 ' + textoDiasSencilla(m) + '</p>' : '') + '<p class="ms-cuenta">' + cuenta(m) + '</p><p class="ms-cuenta-ayuda">Cumplido: ' + (vecesSemanaSencilla(m) ? 'de las veces que te tocaban cada semana' : 'de los días que te tocaban') + ' desde que la creaste' + (m.desde ? ' (' + fechaCorta(new Date(m.desde + 'T12:00:00')) + ')' : '') + '.</p>' + sieteDiasSencillaHTML(m) + LEYENDA_SENCILLA
           + '<button type="button" class="ms-btn ms-cambiar">Cambiar mi ' + TXT_SENCILLA.toLowerCase() + ' →</button>'
-          + '<button type="button" class="ms-btn ms-ver-cal">📅 Calendario</button><div class="ms-cal" hidden></div></div>').join('')
+          + '<button type="button" class="ms-btn ms-ver-cal">📅 Calendario</button></div>').join('')
         + (activas.length < max ? '<button type="button" class="ms-btn ms-crear">' + (activas.length ? '＋ Crear otra ' : 'Crear mi ') + TXT_SENCILLA.toLowerCase() + ' →</button>' : '')
         + (max === 1 ? '<p class="ms-nota">Con el Plan Guías + Grupo puedes tener 2.</p>' : '')
         + (archivo.length ? '<details class="ms-historial"><summary>Historial (' + archivo.length + ')</summary>' + archivo.slice().reverse().map(a => '<p>' + escapeAttr(a.nombre)
             + '<small>' + fechaCorta(new Date(a.desde + 'T12:00:00')) + ' – ' + fechaCorta(new Date(a.hasta + 'T12:00:00')) + ' · ' + (a.n || 0) + (a.n === 1 ? ' día' : ' días') + (a.motivo === 'cambiada' ? ' · cambiada' : '') + '</small></p>').join('') + '</details>' : '');
       zona.querySelectorAll('.ms-tarjeta').forEach(t => {
-        const id = t.dataset.id, m = activas.find(x => x.id === id), hoy = new Date(), cal = t.querySelector('.ms-cal'), bCal = t.querySelector('.ms-ver-cal');
-        const ver = () => {
-          const [y, mes] = meses[id] || [hoy.getFullYear(), hoy.getMonth()];
-          cal.innerHTML = mesSencillaHTML(datosSencillas().lista.find(x => x.id === id) || m, y, mes);
-          cal.querySelector('.ms-mes-ant').onclick = () => { meses[id] = mes === 0 ? [y - 1, 11] : [y, mes - 1]; ver(); };
-          const sig = cal.querySelector('.ms-mes-sig');
-          if(y > hoy.getFullYear() || (y === hoy.getFullYear() && mes >= hoy.getMonth())) sig.disabled = true;
-          sig.onclick = () => { meses[id] = mes === 11 ? [y + 1, 0] : [y, mes + 1]; ver(); };
-          enlazarDiasSencilla(cal, id, () => { ver(); refrescar(); });
-        };
-        // Al marcar un día (en la fila o en el calendario) se pone al día todo lo de esta meta
+        const id = t.dataset.id, m = activas.find(x => x.id === id), verCal = () => abrirCalendarioSencilla(id, pintar);
+        // Al marcar un día en la fila se pone al día la racha y el cumplido
         const refrescar = () => {
           const ya = datosSencillas().lista.find(x => x.id === id) || m;
           t.querySelector('.ms-cuenta').textContent = cuenta(ya);
           const fila = t.querySelector('.ms-semana'), nueva = el(sieteDiasSencillaHTML(ya)).firstElementChild;
-          fila.replaceWith(nueva); enlazarDiasSencilla(nueva, id, () => { refrescar(); if(!cal.hidden) ver(); }, () => abrir(true));
+          fila.replaceWith(nueva); enlazarDiasSencilla(nueva, id, refrescar, verCal);
         };
-        const abrir = si => { abiertos[id] = si; cal.hidden = !si; bCal.textContent = si ? '📅 Ocultar calendario' : '📅 Calendario'; if(si) ver(); };
-        abrir(!!abiertos[id]);
-        bCal.onclick = () => abrir(cal.hidden);
-        enlazarDiasSencilla(t.querySelector('.ms-semana'), id, () => { refrescar(); if(!cal.hidden) ver(); }, () => abrir(true));
+        t.querySelector('.ms-ver-cal').onclick = verCal;
+        enlazarDiasSencilla(t.querySelector('.ms-semana'), id, refrescar, verCal);
         t.querySelector('.ms-cambiar').onclick = () => editor(t, m);
       });
       const crear = zona.querySelector('.ms-crear');
@@ -11837,4 +11872,4 @@ lo que haces cada día es lo que vas a ser.`;
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V13.38 · App Metas Amables · 2026-10-13 19:36==== -->
+<!-- ==== Fin del index V13.39 · App Metas Amables · 2026-10-13 19:39==== -->
