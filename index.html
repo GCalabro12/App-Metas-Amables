@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V13.26 · App Metas Amables · 2026-10-13 15:35==== -->
+<!-- ==== index V13.27 · App Metas Amables · 2026-10-13 15:41==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1251,8 +1251,22 @@ body.riego-abierto{overflow:hidden}
 .riego-capa .abonar,.riego-capa .rp-seccion,.riego-capa .entorno.rp-marco{border:2px solid rgba(169,50,38,.35);box-shadow:0 4px 14px rgba(0,0,0,.06)}
 .riego-capa .entorno.rp-marco{width:min(420px,100%);max-width:none;margin:16px auto 0;padding:16px 12px 14px;border-radius:20px;background:rgba(255,255,255,.88);text-align:center;box-sizing:border-box}
 .riego-capa .abonar,.riego-capa .rp-seccion{margin-top:16px}
-.metas-sub{margin:14px 0 8px;font:700 18px Lora,serif;color:#5B4A1E}
-.ms-bloque{margin-top:18px;padding-top:6px;border-top:1px dashed rgba(0,0,0,.15)}
+.metas-sub{margin:2px 0 10px;font:800 17px Karla,sans-serif;letter-spacing:.04em;text-transform:uppercase;color:#5B4A1E}
+.metas-cab{display:flex;align-items:center;gap:14px;margin:0 0 12px}.metas-cab .panel-badge{margin:0}
+.ms-bloque{margin-top:14px}
+.ms-btn{display:block;width:100%;margin:8px 0 0;padding:12px;border-radius:12px;border:none;background:#C9942D;color:#fff;font:700 15px Karla,sans-serif;cursor:pointer}
+.ms-btn.ms-ver-cal{background:#fff;color:#6B4A26;border:1.5px solid #A0703C}
+.ms-dias-plan{margin:2px 0 0;font-size:13.5px;color:var(--ink-soft)}
+.ms-editor{margin:0 0 12px;padding:14px;border:1.5px solid #C9942D;border-radius:14px;background:#FFFBF2}
+.ms-et{display:block;margin:10px 0 6px;font-weight:800;font-size:15px}.ms-et:first-child{margin-top:0}
+.ms-elegir{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}
+.ms-elige{height:42px;border-radius:50%;aspect-ratio:1;margin:auto;width:100%;max-width:44px;border:2px solid #D9CFB8;background:#fff;font:800 15px Karla,sans-serif;color:var(--ink);cursor:pointer;padding:0}
+.ms-elige.on{background:#C9942D;border-color:#C9942D;color:#fff}
+.ms-rapidos{display:flex;gap:8px;margin-top:8px}.ms-rapidos button{flex:1;padding:7px;border-radius:999px;border:1.5px solid #D9CFB8;background:#fff;font:700 13px Karla,sans-serif;color:#6B4A26;cursor:pointer}
+.ms-aviso{font-size:12.5px;color:var(--ink-soft);margin:10px 0 0}
+.ms-editor .ms-archivar{display:block;margin:12px auto 0;border:none;background:none;color:#A93226;font:700 14px Karla,sans-serif;text-decoration:underline;cursor:pointer}
+.ms-dia-m.libre,.ms-dia.libre{opacity:.55}.ms-dia-m.libre.hecho,.ms-dia.libre.hecho{opacity:1}
+.ms-reg .ms-nombre small{font-weight:600;color:var(--ink-soft);font-size:13px}
 .ms-ayuda,.ms-nota{font-size:14px;color:var(--ink-soft);margin:0 0 10px}.ms-nota{margin:8px 0 0;font-size:13px}
 .ms-tarjeta{margin:0 0 12px;padding:12px;border:1.5px solid #D9CFB8;border-radius:14px;background:#FFFDF7}
 .ms-nombre{margin:0;font-weight:800;font-size:16px;color:var(--ink)}.ms-cuenta{margin:2px 0 8px;font-size:13.5px;color:#4C8C4A;font-weight:700}
@@ -2314,7 +2328,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V13.26';
+  const APP_VERSION = 'V13.27';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -3540,8 +3554,9 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     if(!nodo || !g || !nodo.animacion) return;
     nodo.animacion.addEventListener('enterFrame', e => g.setAttribute('transform', 'translate(0 ' + (3 - 3 * Math.cos(Math.PI * e.currentTime / 10)).toFixed(2) + ')'));
   }
-  // ===== Metas sencillas (13-10-2026): solo un nombre y su calendario propio. No tocan la planta, la montaña, la guía,
-  // la racha ni las insignias. Plan Guías: 1; Plan Guías + Grupo: 2; Plan Libre: ninguna (candado). Se guardan en «Datos formulario»
+  // ===== Metas sencillas (13-10-2026): un nombre, los días de la semana en que quieres hacerla y su calendario propio.
+  // No tocan la planta, la montaña, la guía, la racha ni las insignias. Plan Guías: 1; Plan Guías + Grupo: 2; Plan Libre: ninguna
+  // (candado). Se guardan en «Datos formulario»: metasSencillas [{id, nombre, diasSemana, desde, dias}] y metasSencillasArchivo
   const TXT_SENCILLA = 'Meta sencilla', TXT_SENCILLAS = 'Metas sencillas';
   function maxSencillas(){ return tienePlan('sesiones') ? 2 : tienePlan('guias') ? 1 : 0; }
   function datosSencillas(){
@@ -3549,6 +3564,15 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     return { lista: Array.isArray(d.metasSencillas) ? d.metasSencillas : [], archivo: Array.isArray(d.metasSencillasArchivo) ? d.metasSencillasArchivo : [] };
   }
   function sencillasActivas(){ return datosSencillas().lista.slice(0, maxSencillas()); }
+  // Los días elegidos (si no eligió ninguno, todos)
+  function diasPlanSencilla(m){ const l = Array.isArray(m.diasSemana) ? m.diasSemana.filter(x => DIAS_SEMANA.includes(x)) : []; return l.length ? l : DIAS_SEMANA.slice(); }
+  function textoDiasSencilla(m){
+    const l = diasPlanSencilla(m);
+    if(l.length === 7) return 'Todos los días';
+    if(l.join('') === 'LMXJV') return 'De lunes a viernes';
+    const n = { L: 'lun', M: 'mar', X: 'mié', J: 'jue', V: 'vie', S: 'sáb', D: 'dom' };
+    return l.map(x => n[x]).join(', ');
+  }
   async function guardarSencillas(lista, archivo){
     const r = await api('/metas-sencillas', { lista, archivo });
     if(state.gamifica && r.datosFormulario) state.gamifica.datosFormulario = r.datosFormulario;
@@ -3576,35 +3600,34 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       b.disabled = false;
     });
   }
-  // La semana actual (L…D), para «Registros amables»
+  // La semana actual (L…D), para «Registros amables»; los días que no tocan se ven más claros (pero se pueden marcar)
   function semanaSencillaHTML(m){
-    const l = lunesDe(new Date()), hoy = hoyISO(), hechos = new Set(m.dias || []);
+    const l = lunesDe(new Date()), hoy = hoyISO(), hechos = new Set(m.dias || []), plan = diasPlanSencilla(m);
     return '<div class="ms-semana">' + DIAS_SEMANA.map((L, i) => {
       const d = new Date(l.getFullYear(), l.getMonth(), l.getDate() + i), iso = isoLocal(d);
-      return '<button type="button" class="ms-dia' + (hechos.has(iso) ? ' hecho' : '') + (iso === hoy ? ' hoy' : '') + '" data-iso="' + iso + '" data-n="' + d.getDate() + '"' + (iso > hoy ? ' disabled' : '')
+      return '<button type="button" class="ms-dia' + (hechos.has(iso) ? ' hecho' : '') + (iso === hoy ? ' hoy' : '') + (plan.includes(L) ? '' : ' libre') + '" data-iso="' + iso + '" data-n="' + d.getDate() + '"' + (iso > hoy ? ' disabled' : '')
         + '><span>' + L + '</span><b>' + (hechos.has(iso) ? '✓' : d.getDate()) + '</b></button>';
     }).join('') + '</div>';
   }
   // El calendario de un mes, con los días marcados
   function mesSencillaHTML(m, y, mes){
-    const hechos = new Set(m.dias || []), hoy = hoyISO(), hueco = (new Date(y, mes, 1).getDay() + 6) % 7, n = new Date(y, mes + 1, 0).getDate();
+    const hechos = new Set(m.dias || []), hoy = hoyISO(), plan = diasPlanSencilla(m), hueco = (new Date(y, mes, 1).getDay() + 6) % 7, n = new Date(y, mes + 1, 0).getDate();
     let s = '<div class="ms-mes-cab"><button type="button" class="ms-mes-ant" aria-label="Mes anterior">‹</button><b>' + monthNamesEs[mes] + ' ' + y + '</b>'
       + '<button type="button" class="ms-mes-sig" aria-label="Mes siguiente">›</button></div><div class="ms-mes">'
       + DIAS_SEMANA.map(L => '<span class="ms-mes-l">' + L + '</span>').join('') + '<span></span>'.repeat(hueco);
     for(let d = 1; d <= n; d++){
-      const iso = isoLocal(new Date(y, mes, d));
-      s += '<button type="button" class="ms-dia-m' + (hechos.has(iso) ? ' hecho' : '') + (iso === hoy ? ' hoy' : '') + '" data-iso="' + iso + '"' + (iso > hoy ? ' disabled' : '') + '>' + d + '</button>';
+      const f = new Date(y, mes, d), iso = isoLocal(f), L = DIAS_SEMANA[(f.getDay() + 6) % 7];
+      s += '<button type="button" class="ms-dia-m' + (hechos.has(iso) ? ' hecho' : '') + (iso === hoy ? ' hoy' : '') + (plan.includes(L) ? '' : ' libre') + '" data-iso="' + iso + '"' + (iso > hoy ? ' disabled' : '') + '>' + d + '</button>';
     }
     return s + '</div>';
   }
-  // En la pantalla de Metas: las metas sencillas, añadir, cambiar, archivar y el historial
+  // En la pantalla de Metas: su propio recuadro, con crear, cambiar, calendario y el historial
   function bloqueSencillas(){
-    const max = maxSencillas(), meses = {};
-    const caja = el('<div class="ms-bloque"><h3 class="metas-sub">✔️ ' + TXT_SENCILLAS + '</h3>'
-      + '<p class="ms-ayuda">Solo un nombre y un calendario para marcar los días que la haces. No cambian tu planta ni tu montaña.</p><div class="ms-lista"></div></div>').firstElementChild;
+    const max = maxSencillas(), meses = {}, abiertos = {};
+    const caja = el('<div class="card panel-section s2 ms-bloque"><h3 class="metas-sub">✔️ ' + TXT_SENCILLAS + '</h3>'
+      + '<p class="ms-ayuda">Un hábito sencillo, con un calendario para marcar los días que lo haces. No cambia tu planta ni tu montaña.</p><div class="ms-lista"></div></div>').firstElementChild;
     const zona = caja.querySelector('.ms-lista');
     const cuenta = m => { const n = (m.dias || []).length; return n + (n === 1 ? ' día registrado' : ' días registrados') + ((m.dias || []).includes(hoyISO()) ? ' · hoy ✓' : ''); };
-    const nueva = nombre => ({ id: Date.now().toString(36), nombre, desde: hoyISO(), dias: [] });
     const archivada = (m, motivo) => ({ id: m.id, nombre: m.nombre, desde: m.desde || hoyISO(), hasta: hoyISO(), motivo, n: (m.dias || []).length });
     let pintar = null;
     const guardar = async (lista, archivo, boton) => {
@@ -3613,6 +3636,39 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       catch(err){ avisoBreve('No se pudo guardar. Revisa tu conexión e inténtalo de nuevo.'); }
       pintar();
     };
+    // Crear o cambiar: el nombre y los días de la semana (como en las apps de hábitos)
+    const editor = (destino, m) => {
+      const plan = m ? diasPlanSencilla(m) : DIAS_SEMANA.slice();
+      const f = el('<div class="ms-editor">'
+        + '<label class="ms-et">¿Qué quieres hacer?</label><input type="text" class="ms-input" maxlength="80" placeholder="Ej.: beber 2 litros de agua, caminar 20 minutos…" value="' + escapeAttr(m ? m.nombre : '') + '">'
+        + '<label class="ms-et">¿Qué días?</label><div class="ms-elegir">' + DIAS_SEMANA.map(L => '<button type="button" class="ms-elige' + (plan.includes(L) ? ' on' : '') + '" data-l="' + L + '">' + L + '</button>').join('') + '</div>'
+        + '<div class="ms-rapidos"><button type="button" data-r="todos">Todos los días</button><button type="button" data-r="semana">De lunes a viernes</button></div>'
+        + (m ? '<p class="ms-aviso">Si cambias el nombre, la meta anterior pasa a tu historial con sus días.</p>' : '')
+        + '<div class="ms-acciones"><button type="button" class="ms-no">Cancelar</button><button type="button" class="ms-si">Guardar</button></div>'
+        + (m ? '<button type="button" class="ms-archivar">Archivar esta meta</button>' : '') + '</div>').firstElementChild;
+      destino.replaceWith(f);
+      const inp = f.querySelector('.ms-input'); inp.focus();
+      const elegidos = () => [...f.querySelectorAll('.ms-elige.on')].map(b => b.dataset.l);
+      f.querySelectorAll('.ms-elige').forEach(b => b.onclick = () => b.classList.toggle('on'));
+      f.querySelectorAll('.ms-rapidos button').forEach(b => b.onclick = () => f.querySelectorAll('.ms-elige').forEach(x => x.classList.toggle('on', b.dataset.r === 'todos' || 'LMXJV'.includes(x.dataset.l))));
+      f.querySelector('.ms-no').onclick = pintar;
+      f.querySelector('.ms-si').onclick = e => {
+        const nombre = inp.value.replace(/\s+/g, ' ').trim(), dias = elegidos();
+        if(!nombre){ inp.focus(); return; }
+        if(!dias.length){ avisoBreve('Elige al menos un día.'); return; }
+        const d = datosSencillas();
+        if(!m){ guardar(d.lista.slice(0, max).concat({ id: Date.now().toString(36), nombre, diasSemana: dias, desde: hoyISO(), dias: [] }), d.archivo, e.currentTarget); return; }
+        const ya = d.lista.find(x => x.id === m.id) || m;
+        if(nombre === ya.nombre) guardar(d.lista.map(x => x.id === m.id ? Object.assign({}, x, { diasSemana: dias }) : x), d.archivo, e.currentTarget);
+        else guardar(d.lista.map(x => x.id === m.id ? { id: Date.now().toString(36), nombre, diasSemana: dias, desde: hoyISO(), dias: [] } : x), d.archivo.concat(archivada(ya, 'cambiada')), e.currentTarget);
+      };
+      const arch = f.querySelector('.ms-archivar');
+      if(arch) arch.onclick = () => {
+        arch.outerHTML = '<div class="ms-acciones"><span class="ms-pregunta">¿Archivar «' + escapeAttr(m.nombre) + '»? Quedará en tu historial.</span><button type="button" class="ms-no2">No</button><button type="button" class="ms-si2">Sí, archivar</button></div>';
+        f.querySelector('.ms-no2').onclick = pintar;
+        f.querySelector('.ms-si2').onclick = e => { const d = datosSencillas(), ya = d.lista.find(x => x.id === m.id) || m; guardar(d.lista.filter(x => x.id !== m.id), d.archivo.concat(archivada(ya, 'archivada')), e.currentTarget); };
+      };
+    };
     pintar = () => {
       const { lista, archivo } = datosSencillas(), activas = lista.slice(0, max);
       if(!max){
@@ -3620,17 +3676,18 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
         zona.querySelector('.ms-corona').onclick = irAPlanes;
         return;
       }
-      zona.innerHTML = activas.map(m => '<div class="ms-tarjeta" data-id="' + escapeAttr(m.id) + '"><p class="ms-nombre">' + escapeAttr(m.nombre) + '</p><p class="ms-cuenta">' + cuenta(m) + '</p>'
-          + '<div class="ms-cal"></div><div class="ms-acciones"><button type="button" class="ms-cambiar">Cambiar por otra</button><button type="button" class="ms-archivar">Archivar</button></div></div>').join('')
-        + (activas.length < max ? '<div class="ms-nueva"><input type="text" class="ms-input" maxlength="80" placeholder="Ej.: beber 2 litros de agua al día" aria-label="Nombre de tu ' + TXT_SENCILLA.toLowerCase() + '"><button type="button" class="ms-anadir">Añadir</button></div>' : '')
+      zona.innerHTML = activas.map(m => '<div class="ms-tarjeta" data-id="' + escapeAttr(m.id) + '"><p class="ms-nombre">' + escapeAttr(m.nombre) + '</p>'
+          + '<p class="ms-dias-plan">📆 ' + textoDiasSencilla(m) + '</p><p class="ms-cuenta">' + cuenta(m) + '</p>'
+          + '<button type="button" class="ms-btn ms-cambiar">Cambiar mi ' + TXT_SENCILLA.toLowerCase() + ' →</button>'
+          + '<button type="button" class="ms-btn ms-ver-cal">📅 Calendario</button><div class="ms-cal" hidden></div></div>').join('')
+        + (activas.length < max ? '<button type="button" class="ms-btn ms-crear">' + (activas.length ? '＋ Crear otra ' : 'Crear mi ') + TXT_SENCILLA.toLowerCase() + ' →</button>' : '')
         + (max === 1 ? '<p class="ms-nota">Con el Plan Guías + Grupo puedes tener 2.</p>' : '')
         + (archivo.length ? '<details class="ms-historial"><summary>Historial (' + archivo.length + ')</summary>' + archivo.slice().reverse().map(a => '<p>' + escapeAttr(a.nombre)
             + '<small>' + fechaCorta(new Date(a.desde + 'T12:00:00')) + ' – ' + fechaCorta(new Date(a.hasta + 'T12:00:00')) + ' · ' + (a.n || 0) + (a.n === 1 ? ' día' : ' días') + (a.motivo === 'cambiada' ? ' · cambiada' : '') + '</small></p>').join('') + '</details>' : '');
       zona.querySelectorAll('.ms-tarjeta').forEach(t => {
-        const id = t.dataset.id, m = activas.find(x => x.id === id), hoy = new Date();
+        const id = t.dataset.id, m = activas.find(x => x.id === id), hoy = new Date(), cal = t.querySelector('.ms-cal'), bCal = t.querySelector('.ms-ver-cal');
         const ver = () => {
           const [y, mes] = meses[id] || [hoy.getFullYear(), hoy.getMonth()];
-          const cal = t.querySelector('.ms-cal');
           cal.innerHTML = mesSencillaHTML(datosSencillas().lista.find(x => x.id === id) || m, y, mes);
           cal.querySelector('.ms-mes-ant').onclick = () => { meses[id] = mes === 0 ? [y - 1, 11] : [y, mes - 1]; ver(); };
           const sig = cal.querySelector('.ms-mes-sig');
@@ -3638,31 +3695,13 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
           sig.onclick = () => { meses[id] = mes === 11 ? [y + 1, 0] : [y, mes + 1]; ver(); };
           enlazarDiasSencilla(cal, id, () => { ver(); t.querySelector('.ms-cuenta').textContent = cuenta(datosSencillas().lista.find(x => x.id === id) || m); });
         };
-        ver();
-        const acc = t.querySelector('.ms-acciones');
-        t.querySelector('.ms-archivar').onclick = () => {
-          acc.innerHTML = '<span class="ms-pregunta">¿Archivar «' + escapeAttr(m.nombre) + '»?</span><button type="button" class="ms-si">Sí, archivar</button><button type="button" class="ms-no">No</button>';
-          acc.querySelector('.ms-no').onclick = pintar;
-          acc.querySelector('.ms-si').onclick = e => { const d = datosSencillas(), ya = d.lista.find(x => x.id === id) || m; guardar(d.lista.filter(x => x.id !== id), d.archivo.concat(archivada(ya, 'archivada')), e.currentTarget); };
-        };
-        t.querySelector('.ms-cambiar').onclick = () => {
-          acc.innerHTML = '<input type="text" class="ms-input" maxlength="80" placeholder="Nombre de la nueva meta" aria-label="Nombre de la nueva meta"><button type="button" class="ms-si">Guardar</button><button type="button" class="ms-no">Cancelar</button>';
-          const inp = acc.querySelector('.ms-input'); inp.focus();
-          acc.querySelector('.ms-no').onclick = pintar;
-          acc.querySelector('.ms-si').onclick = e => {
-            const nombre = inp.value.replace(/\s+/g, ' ').trim(); if(!nombre){ inp.focus(); return; }
-            const d = datosSencillas(), ya = d.lista.find(x => x.id === id) || m;
-            guardar(d.lista.map(x => x.id === id ? nueva(nombre) : x), d.archivo.concat(archivada(ya, 'cambiada')), e.currentTarget);
-          };
-        };
+        const abrir = si => { abiertos[id] = si; cal.hidden = !si; bCal.textContent = si ? '📅 Ocultar calendario' : '📅 Calendario'; if(si) ver(); };
+        abrir(!!abiertos[id]);
+        bCal.onclick = () => abrir(cal.hidden);
+        t.querySelector('.ms-cambiar').onclick = () => editor(t, m);
       });
-      const anadir = zona.querySelector('.ms-anadir');
-      if(anadir) anadir.onclick = e => {
-        const inp = zona.querySelector('.ms-nueva .ms-input'), nombre = inp.value.replace(/\s+/g, ' ').trim();
-        if(!nombre){ inp.focus(); return; }
-        const d = datosSencillas();
-        guardar(d.lista.slice(0, max).concat(nueva(nombre)), d.archivo, e.currentTarget);
-      };
+      const crear = zona.querySelector('.ms-crear');
+      if(crear) crear.onclick = () => editor(crear, null);
     };
     pintar();
     return caja;
@@ -3673,7 +3712,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     if(!activas.length) return null;
     const caja = el('<div class="rp-sencillas"><p class="abonar-tit">5 · ✔️ Tus ' + TXT_SENCILLAS.toLowerCase() + '</p><p class="abonar-sub">Toca los días en que la hiciste.</p></div>').firstElementChild;
     activas.forEach(m => {
-      const f = el('<div class="ms-reg"><p class="ms-nombre">' + escapeAttr(m.nombre) + '</p>' + semanaSencillaHTML(m) + '</div>').firstElementChild;
+      const f = el('<div class="ms-reg"><p class="ms-nombre">' + escapeAttr(m.nombre) + ' <small>· ' + textoDiasSencilla(m) + '</small></p>' + semanaSencillaHTML(m) + '</div>').firstElementChild;
       caja.appendChild(f);
       enlazarDiasSencilla(f, m.id, (on, b) => { b.classList.toggle('hecho', on); b.querySelector('b').textContent = on ? '✓' : b.dataset.n; });
     });
@@ -4812,6 +4851,9 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
+    { v: 'V13.27', f: '13 de octubre de 2026', n: [
+      'En <b>Metas</b>, la meta con guía y las metas sencillas tienen cada una su recuadro.',
+      'Al crear tu <b>meta sencilla</b> eliges qué quieres hacer y qué días de la semana. Después tienes «Cambiar mi meta sencilla» y su <b>calendario</b>.' ] },
     { v: 'V13.25', f: '13 de octubre de 2026', n: [
       'El primer paso de Inicio se llama ahora <b>Metas</b>. Dentro están tu <b>meta con guía</b> (la de siempre, con formulario y guía) y las nuevas <b>metas sencillas</b>.',
       'Una <b>meta sencilla</b> es solo un nombre y un calendario para marcar los días que la haces. No cambia tu planta ni tu montaña. Puedes cambiarla por otra o archivarla, y queda en tu historial.',
@@ -7140,6 +7182,11 @@ lo que haces cada día es lo que vas a ser.`;
             hueco.replaceWith(tg);
           } catch(e){ hueco.remove(); }
         }
+      } else if(state.panelSub === 's4'){
+        const fila = el('<div class="metas-cab"></div>').firstElementChild;
+        fila.appendChild(botonVolver());
+        fila.insertAdjacentHTML('beforeend', badgeSeccion('cero', 'Metas'));
+        app.appendChild(fila);
       } else {
         app.appendChild(botonVolver());
       }
@@ -7269,19 +7316,18 @@ lo que haces cada día es lo que vas a ser.`;
       if(metaHechaYa()){
         // Ya está hecha: en el Plan Libre no se vuelve a abrir el formulario
         s2.innerHTML = `
-          ${badgeSeccion('cero', 'Metas')}<h3 class="metas-sub">🌱 Meta con guía</h3>
+          <h3 class="metas-sub">🌱 Meta con guía</h3>
           <p style="background:var(--honey-tint);border-radius:10px;padding:12px 14px">✅ <b>Ya tienes el formulario rellenado</b>${enviado ? ' (el ' + enviado.getDate() + '/' + (enviado.getMonth() + 1) + ')' : ''}: tu meta está definida para el <b>${trimestreMeta()}</b>.<br>
           ${state.guiaTexto ? 'Tu guía ya está lista en <b>«b · Guía semanal»</b>.' : 'En breve tendrás tu guía de prácticas en <b>«b · Guía semanal»</b>.'}</p>
           <p style="font-size:13px;color:var(--ink-soft)">${reglaMeta}</p>
-          ${cambios > 1 ? '<button type="button" class="panel-link-btn honey fm-abrir" style="width:100%;border:none;cursor:pointer">Cambiar mi meta →</button>' : ''}`;
+          ${cambios > 1 ? '<button type="button" class="panel-link-btn honey fm-abrir" style="width:100%;border:none;cursor:pointer">Cambiar mi meta con guía →</button>' : ''}`;
       } else s2.innerHTML = `
-        ${badgeSeccion('cero', 'Metas')}<h3 class="metas-sub">🌱 Meta con guía</h3>
+        <h3 class="metas-sub">🌱 Meta con guía</h3>
         <p>Rellena el formulario para definir tu meta trimestral más importante para ti, tus dificultades y a qué ritmo quieres ir. Te crearemos tu guía de prácticas.</p>
         <p style="background:var(--honey-tint);border-radius:10px;padding:10px 12px;font-size:14px">${reglaMeta}</p>
         <button type="button" class="panel-link-btn honey fm-abrir" style="width:100%;border:none;cursor:pointer">Rellenar formulario de meta →</button>
         <p style="font-size:12px;text-align:center;margin:8px 0 0"><a style="color:var(--ink-soft)" href="${urlFormulario()}" target="_blank" rel="noopener">o rellénalo en Google Forms</a></p>
       `;
-      try { s2.appendChild(bloqueSencillas()); } catch(e){ console.error('Metas sencillas:', e); }
 
       // Bloque 3: Guía mensual — ahora un único botón de acceso; el contenido vive en la vista 'practicas'
       const s3 = document.createElement('div');
@@ -7346,6 +7392,7 @@ lo que haces cada día es lo que vas a ser.`;
           app.appendChild(el(`<div class="card bloqueado-card">${practiHTML('calma','🔒',96)}<p style="font-weight:700;margin:10px 0 6px;text-align:center">Ya has visto tu práctica de este mes</p><p style="font-size:14px;color:var(--ink-soft);text-align:center;margin:0">Con la membresía tendrías una práctica nueva <b>cada semana</b>, escrita a partir de tu meta.</p></div>`));
         } else {
           app.appendChild(elegido);
+          if(state.panelSub === 's4') try { app.appendChild(bloqueSencillas()); } catch(e){ console.error('Metas sencillas:', e); }
         }
       }
 
@@ -11614,4 +11661,4 @@ lo que haces cada día es lo que vas a ser.`;
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V13.26 · App Metas Amables · 2026-10-13 15:35==== -->
+<!-- ==== Fin del index V13.27 · App Metas Amables · 2026-10-13 15:41==== -->
