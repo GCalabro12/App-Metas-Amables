@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V13.54 · App Metas Amables · 2026-10-13 23:55==== -->
+<!-- ==== index V13.55 · App Metas Amables · 2026-10-13 23:57==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2375,7 +2375,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V13.54';
+  const APP_VERSION = 'V13.55';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -3974,6 +3974,14 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
   function diasRegistradosMeta(){ return diasRegistradosReto(fechaMetaActual()); }
   // Después del reto: solo Prácti con el cartel de los días registrados con esta meta, sin camino ni regalos
+  // El cartel de los días (reto y días con la meta) es una capa encima de la pantalla: el botón «atrás» del móvil la cierra
+  // (sin repintar lo de debajo). Al abrirla se apunta una entrada en el historial; si se cierra con un botón, se gasta con history.back()
+  let retoHist = false, retoIgnorarPop = false;
+  function retoApuntarHist(){ if(!retoHist){ try { history.pushState({ ma: 1, reto: 1 }, ''); retoHist = true; } catch(e){} } }
+  function retoCerrarCapa(capa, sinVolver){
+    capa.remove();
+    if(retoHist){ retoHist = false; if(!sinVolver){ retoIgnorarPop = true; try { history.back(); } catch(e){ retoIgnorarPop = false; } } }
+  }
   function abrirDiasMeta(n){
     document.querySelectorAll('.reto-capa').forEach(x => x.remove());
     const capa = el('<div class="reto-capa" role="dialog" aria-label="Días registrados"><div class="reto-card">'
@@ -3984,7 +3992,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     document.body.appendChild(capa);
     try { activarPracti(capa); moverCartelConPracti(capa); } catch(e){}
     try { launchConfetti(); musicaCartel(); } catch(e){}
-    capa.querySelector('.reto-ok').onclick = () => capa.remove();
+    retoApuntarHist();
+    capa.querySelector('.reto-ok').onclick = () => retoCerrarCapa(capa);
   }
   // pasarDias (vista previa del panel): flechas arriba para ir del día 1 al 15 y ver cómo cambia la pantalla
   function abrirRetoDia(n, soloVer, pasarDias){
@@ -4005,11 +4014,20 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     document.body.appendChild(capa);
     try { activarPracti(capa); moverCartelConPracti(capa); } catch(e){}
     try { launchConfetti(); musicaCartel(); } catch(e){}   // siempre que sale el número: confeti y un poco de música
-    const cerrar = () => capa.remove();
-    capa.querySelector('.reto-ok').onclick = cerrar;
+    retoApuntarHist();
+    const cerrar = sinVolver => retoCerrarCapa(capa, sinVolver);
+    capa.querySelector('.reto-ok').onclick = () => cerrar();
     if(pasarDias){
-      capa.querySelector('.reto-pasar-ant').onclick = () => abrirRetoDia(Math.max(1, n - 1), soloVer, true);
-      capa.querySelector('.reto-pasar-sig').onclick = () => abrirRetoDia(Math.min(RETO_DIAS, n + 1), soloVer, true);
+      const ir = d => { if(d >= 1 && d <= RETO_DIAS && d !== n) abrirRetoDia(d, soloVer, true); };
+      capa.querySelector('.reto-pasar-ant').onclick = () => ir(n - 1);
+      capa.querySelector('.reto-pasar-sig').onclick = () => ir(n + 1);
+      // Deslizando: hacia la izquierda, el día siguiente; hacia la derecha, el anterior
+      let x0 = null, y0 = 0;
+      capa.addEventListener('touchstart', e => { const t = e.touches[0]; x0 = t.clientX; y0 = t.clientY; }, { passive: true });
+      capa.addEventListener('touchend', e => {
+        if(x0 === null) return; const t = e.changedTouches[0], dx = t.clientX - x0, dy = t.clientY - y0; x0 = null;
+        if(Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5) ir(dx < 0 ? n + 1 : n - 1);
+      });
     }
     // La «?» de cada regalo lo explica en un bocadillo grande que apunta al regalo tocado
     const card = capa.querySelector('.reto-card');
@@ -4038,7 +4056,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     card.addEventListener('click', e => { if(!e.target.closest('.reto-pop, .reto-regalo')) quitarPop(); });
     const pb = capa.querySelector('.reto-premio-btn');
     if(pb) pb.onclick = () => {
-      cerrar();
+      cerrar(true);   // va a otra pantalla: la entrada del historial se queda y «atrás» se la salta
       if(premio.id === 'cancion'){ try { localStorage.setItem('musica_letra', '1'); } catch(e){} state.view = 'musica'; window.scrollTo(0, 0); render(); }
       else if(premio.id === 'nota'){ state.prevView = 'practicaSemanal'; state.view = 'posit'; window.scrollTo(0, 0); render(); }
       else if(premio.id === 'juego'){ abrirJuegoVallas(); }
@@ -5107,6 +5125,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
+    { v: 'V13.55', f: '13 de octubre de 2026', n: [
+      'En el cartel de tus registros, el botón «atrás» del móvil cierra el cartel. En la vista previa de los moderadores, también se pasa de día deslizando.' ] },
     { v: 'V13.53', f: '13 de octubre de 2026', n: [
       'Moderadores: en «Tus primeros 15 registros» (Registro y compromiso) también salen las flechas para pasar los días.' ] },
     { v: 'V13.52', f: '13 de octubre de 2026', n: [
@@ -6867,7 +6887,11 @@ lo que haces cada día es lo que vas a ser.`;
   }
   window.addEventListener('popstate', e => {
     if(juegoAbierto){ cerrarJuegoVallas(); return; }
+    if(retoIgnorarPop){ retoIgnorarPop = false; return; }   // cartel cerrado con su botón
+    const capaReto = document.querySelector('.reto-capa');
+    if(capaReto && retoHist){ retoHist = false; capaReto.remove(); return; }   // «atrás» cierra el cartel
     const d = e.state;
+    if(d && d.reto){ history.back(); return; }   // entrada vieja de un cartel: se salta
     if(!d || !d.ma || !state.me) return;
     state.view = d.view; state.panelSub = d.panelSub; state.altaPaso = d.altaPaso;
     state.menuOpen = !!d.menuOpen; state.prevView = d.prevView;
@@ -11985,4 +12009,4 @@ lo que haces cada día es lo que vas a ser.`;
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V13.54 · App Metas Amables · 2026-10-13 23:55==== -->
+<!-- ==== Fin del index V13.55 · App Metas Amables · 2026-10-13 23:57==== -->
