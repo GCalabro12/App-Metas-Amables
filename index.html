@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V13.43 · App Metas Amables · 2026-10-13 21:42==== -->
+<!-- ==== index V13.44 · App Metas Amables · 2026-10-13 22:20==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2375,7 +2375,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V13.43';
+  const APP_VERSION = 'V13.44';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -5071,6 +5071,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
+    { v: 'V13.44', f: '13 de octubre de 2026', n: [
+      'Nuevo en <b>Tu plan</b>: <b>prueba el grupo 45 días gratis</b>. Incluye 3 sesiones de grupo; no se cobra nada hasta el día 46 y, si cancelas antes, no pagas.' ] },
     { v: 'V13.41', f: '13 de octubre de 2026', n: [
       'Las <b>metas sencillas</b> archivadas se pueden <b>recuperar</b> desde el historial, con todos sus días.',
       'Al cambiar una meta sencilla puedes <b>archivarla</b> (la recuperas cuando quieras) o <b>borrarla</b> (te pregunta antes).' ] },
@@ -11404,7 +11406,7 @@ lo que haces cada día es lo que vas a ser.`;
   }
   // Prueba de 45 días del Plan Guías + Grupo (con tarjeta, por Stripe): solo para quien no la ha tenido y no está en el grupo.
   // PRUEBA_GRUPO_URL: el Payment Link de Stripe (trimestral de 105 € con 45 días de prueba); sin él, no se enseña el botón
-  const PRUEBA_GRUPO_URL = '';
+  const PRUEBA_GRUPO_URL = 'https://buy.stripe.com/3cIcN47ep9Bt4Dv5yKbZe0m';
   function botonPruebaGrupoHTML(){
     return (!MODO_PLAY && PRUEBA_GRUPO_URL && !tienePlan('sesiones') && !datosForm().pruebaGrupo)
       ? '<a class="btn btn-yes prueba-grupo" style="display:block;text-align:center;text-decoration:none" target="_blank" rel="noopener" href="' + enlacePago(PRUEBA_GRUPO_URL) + '">👥 Prueba el grupo 45 días gratis</a>'
@@ -11909,4 +11911,4 @@ lo que haces cada día es lo que vas a ser.`;
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V13.43 · App Metas Amables · 2026-10-13 21:42==== -->
+<!-- ==== Fin del index V13.44 · App Metas Amables · 2026-10-13 22:20==== -->
