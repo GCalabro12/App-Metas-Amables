@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V13.58 · App Metas Amables · 2026-10-14 12:46==== -->
+<!-- ==== index V13.59 · App Metas Amables · 2026-10-14 13:05==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -901,6 +901,8 @@ body.con-fondo-vivo .lema, body.con-fondo-vivo .fecha-hoy{color:#E6DEFF}
 body.con-fondo-vivo .version-tag{color:#CFC3F5}
 body.con-fondo-vivo .saludo-inicio > div:not(.practi-inicio){color:#FFFFFF !important}
 body.con-fondo-vivo .pie-derechos, body.con-fondo-vivo .pie-derechos a{color:#CFC3F5}
+body.con-fondo-vivo .pi-seal{color:#CFC3F5;border-color:rgba(207,195,245,.45)}
+body.con-fondo-vivo .pi-seal:hover{color:#FFFFFF;border-color:#4ADE80}
 body.con-fondo-vivo .ciclo-flecha path{stroke:#FFFFFF}
 body.con-fondo-vivo .ciclo-flecha path[fill]{fill:#FFFFFF}
 .fondo-vivo{position:fixed;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(#2B1E78,#4632A6 40%,#7650BE 72%,#B8679E)}
@@ -1723,6 +1725,12 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   .inst-nota{font-size:13px;color:var(--ink-soft);margin:6px 0 0}
   .pie-derechos{margin:36px 0 0;text-align:center;font-size:11px;color:var(--ink-soft);line-height:1.5}
   .pie-derechos a{color:var(--ink-soft)}
+  /* Sello común de las apps de Práctica Integral (como en PC & Body-mind), con los colores sobrios de esta app */
+  .pi-seal-fila{margin:32px 0 0;text-align:center}
+  .pi-seal{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:600;letter-spacing:.3px;color:var(--ink-soft);border:1px solid var(--border);border-radius:999px;padding:6px 12px;text-decoration:none}
+  .pi-seal::before{content:"";width:7px;height:7px;border-radius:50%;background:#4ADE80}
+  .pi-seal:hover{color:var(--ink);border-color:#4ADE80}
+  .pi-seal-fila + .pie-derechos{margin-top:14px}
   .practi-tocable{cursor:pointer;position:relative;display:inline-block;line-height:0;-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;outline:none}
   .practi-tocable *{-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none}
   .dias-card{padding-left:12px;padding-right:12px}
@@ -2378,7 +2386,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V13.58';
+  const APP_VERSION = 'V13.59';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -5128,6 +5136,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
+    { v: 'V13.59', f: '14 de octubre de 2026', n: [
+      'Nuevo sello <b>«by Práctica Integral»</b> en la pantalla de entrada y abajo del todo en Inicio: es la firma común de las apps de Práctica Integral y lleva a practicaintegral.club.' ] },
     { v: 'V13.58', f: '14 de octubre de 2026', n: [
       'En tu <b>Perfil</b> ya no salen puntos: ves el año en que estás en tu montaña interior.' ] },
     { v: 'V13.57', f: '14 de octubre de 2026', n: [
@@ -6856,6 +6866,9 @@ lo que haces cada día es lo que vas a ser.`;
     try { barraInferior(); } catch(e){}
     try { anotarVisita(); } catch(e){}
     try { botonesMenuConAvatar(); } catch(e){}
+    // Sello «by Práctica Integral»: en la pantalla de entrada y abajo del todo en Inicio
+    if(state.view === 'pick' || (state.me && state.view === 'panel' && !state.panelSub))
+      app.appendChild(el('<p class="pi-seal-fila"><a class="pi-seal" href="https://practicaintegral.club" target="_blank" rel="noopener">by Práctica Integral</a></p>'));
     if(state.view !== 'loading' && state.view !== 'bienvenidaAlta') app.appendChild(el('<p class="pie-derechos">© ' + new Date().getFullYear() + ' Gustavo Calabró · Práctica Integral Club. Todos los derechos reservados. · <a href="privacidad.html" target="_blank" rel="noopener">Privacidad</a> · <a href="terminos.html" target="_blank" rel="noopener">Términos de uso</a></p>'));
     activarPracti(app);
     activarBocadillos(app);
@@ -12012,4 +12025,4 @@ lo que haces cada día es lo que vas a ser.`;
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V13.58 · App Metas Amables · 2026-10-14 12:46==== -->
+<!-- ==== Fin del index V13.59 · App Metas Amables · 2026-10-14 13:05==== -->
