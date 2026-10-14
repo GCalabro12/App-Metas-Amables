@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V13.59 · App Metas Amables · 2026-10-14 13:05==== -->
+<!-- ==== index V13.60 · App Metas Amables · 2026-10-14 17:42==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1354,7 +1354,7 @@ textarea.ms-nombre-in:focus{outline:none;border-color:#C9942D;box-shadow:0 0 0 3
 .av-card{padding:12px 16px}.av-cab{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}.av-cab .av-tit{white-space:nowrap}
 .ps-en-dias{margin:4px 0 10px;padding:0 0 10px;border-bottom:1px solid #EFE6E2}
 .ps-registra .ps-en-dias{border-bottom:0;padding-bottom:0}.rec-abrir{display:flex;align-items:center;justify-content:space-between;width:100%;padding:10px 12px;border:2px solid #E2DDD0;border-radius:12px;background:#fff;font:700 15px Karla,sans-serif;color:var(--ink);cursor:pointer;text-align:left}
-.rec-abrir span{font-size:13px;color:var(--ink-soft)}.rec-cuerpo{margin-top:10px}
+.rec-abrir span{font-size:13px;color:var(--ink-soft)}.rec-cuerpo{margin-top:10px}.ms-rec{margin:8px 0 0}
 .ps-reg-icos{display:inline-flex;align-items:center;gap:8px;font-size:20px}.ps-reg-icos .entorno-ico{width:20px;height:20px}
 .ps-reg-tit{margin:0 0 6px;font-size:16px;font-weight:700}
 .ps-reg-btn{display:flex;align-items:center;justify-content:space-between;width:100%;padding:14px;border:0;border-radius:14px;background:#C0392B;color:#fff;font:800 18px Karla,sans-serif;cursor:pointer;box-shadow:0 4px 12px rgba(192,57,43,.25)}.ps-en-dias .ps-practica{font-size:17px}.av-fila{display:flex;align-items:center;gap:10px}.av-tit{flex:1;font-weight:700;cursor:pointer}.av-flecha{font-size:13px;color:var(--ink-soft)}.av-estado{font-size:13px;color:var(--ink-soft)}
@@ -2386,7 +2386,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V13.59';
+  const APP_VERSION = 'V13.60';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -3931,7 +3931,9 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       zona.innerHTML = activas.map((m, i) => '<div class="ms-tarjeta' + (i ? ' ms-b' : '') + '" data-id="' + escapeAttr(m.id) + '"><p class="ms-nombre">' + escapeAttr(m.nombre) + '</p>'
           + (vecesSemanaSencilla(m) ? '<p class="ms-dias-plan">📆 ' + textoDiasSencilla(m) + '</p>' : '') + '<p class="ms-cuenta">' + cuenta(m) + '</p>' + sieteDiasSencillaHTML(m) + LEYENDA_SENCILLA
           + '<button type="button" class="ms-btn ms-cambiar">Cambiar mi ' + TXT_SENCILLA.toLowerCase() + ' →</button>'
-          + '<button type="button" class="ms-btn ms-ver-cal">📅 Calendario</button></div>').join('')
+          + '<button type="button" class="ms-btn ms-ver-cal">📅 Calendario</button>'
+          + (modoMinimal() ? '' : '<div class="ms-rec"><button type="button" class="rec-abrir">⏰ ¿Te lo recuerdo? <span>▾</span></button><div class="rec-cuerpo" hidden><div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><label style="font-size:14px">A las <input type="time" class="rec-hora" value="18:00" style="font-size:16px;padding:6px 8px;border:1px solid var(--border);border-radius:8px"></label><button type="button" class="panel-link-btn rec-btn" style="border:0;cursor:pointer;margin:0;flex:1;min-width:160px">Poner recordatorio en el calendario del móvil</button></div><p style="font-size:12px;color:var(--ink-soft);margin:6px 0 0">' + (vecesSemanaSencilla(m) ? 'Te avisa cada día' : 'Te avisa ' + (diasPlanSencilla(m).length === 7 ? 'cada día' : 'los días que elegiste (' + textoDiasSencilla(m) + ')')) + ', en el calendario de tu móvil. Lo quitas cuando quieras desde el propio calendario.</p></div></div>')
+          + '</div>').join('')
         + (activas.length < max ? '<button type="button" class="ms-btn ms-crear">' + (activas.length ? '＋ Crear otra ' : 'Crear mi ') + TXT_SENCILLA.toLowerCase() + ' →</button>' : '')
         + (max === 1 ? '<p class="ms-nota">Con el Plan Guías + Grupo puedes tener 2.</p>' : '')
         + (archivo.some(a => !a.borrada) ? '<details class="ms-historial"><summary>Historial (' + archivo.filter(a => !a.borrada).length + ')</summary>' + archivo.map((a, k) => [a, k]).filter(([a]) => !a.borrada).reverse().map(([a, k]) => '<div class="ms-hist"><p>' + escapeAttr(a.nombre)
@@ -3947,6 +3949,15 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
           fila.replaceWith(nueva); enlazarDiasSencilla(nueva, id, refrescar, verCal);
         };
         t.querySelector('.ms-ver-cal').onclick = verCal;
+        const rec = t.querySelector('.ms-rec');
+        if(rec){
+          rec.querySelector('.rec-abrir').onclick = () => { const cu = rec.querySelector('.rec-cuerpo'); cu.hidden = !cu.hidden; rec.querySelector('.rec-abrir span').textContent = cu.hidden ? '▾' : '▴'; };
+          rec.querySelector('.rec-btn').onclick = () => {
+            const [hh, mm] = (rec.querySelector('.rec-hora').value || '18:00').split(':').map(Number);
+            const nombre = String(m.nombre || '').trim().replace(/[.。]+$/, '');
+            ponerRecordatorioCalendario('✔️ ' + (nombre.length > 70 ? nombre.slice(0, 69).trim() + '…' : nombre), 'Tu meta sencilla de Metas Amables. Márcala aquí: https://app.practicaintegral.club', hh, mm, vecesSemanaSencilla(m) ? null : diasPlanSencilla(m));
+          };
+        }
         enlazarDiasSencilla(t.querySelector('.ms-semana'), id, refrescar, verCal);
         t.querySelector('.ms-cambiar').onclick = () => editor(t, m);
       });
@@ -5136,6 +5147,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
+    { v: 'V13.60', f: '14 de octubre de 2026', n: [
+      'En cada <b>meta sencilla</b>: «⏰ ¿Te lo recuerdo?» pone un aviso en el calendario de tu móvil, a la hora que elijas y solo los días de esa meta. Es opcional.' ] },
     { v: 'V13.59', f: '14 de octubre de 2026', n: [
       'Nuevo sello <b>«by Práctica Integral»</b> en la pantalla de entrada y abajo del todo en Inicio: es la firma común de las apps de Práctica Integral y lleva a practicaintegral.club.' ] },
     { v: 'V13.58', f: '14 de octubre de 2026', n: [
@@ -8688,6 +8701,33 @@ lo que haces cada día es lo que vas a ser.`;
 
   // Recordatorio diario en el calendario del móvil (una web no puede poner alarmas):
   // en iPhone, archivo .ics con aviso; en Android y ordenador, Google Calendar.
+  // Crea un aviso repetido en el calendario del móvil (iPhone: archivo .ics; Android y ordenador: Google Calendar).
+  // dias: letras L…D en que avisa (todas o ninguna: cada día)
+  function ponerRecordatorioCalendario(titulo, detalle, hh, mm, dias){
+    const BY = { L: 'MO', M: 'TU', X: 'WE', J: 'TH', V: 'FR', S: 'SA', D: 'SU' };
+    const lista = (dias || []).filter(x => BY[x]), todos = !lista.length || lista.length === 7;
+    const rrule = todos ? 'RRULE:FREQ=DAILY' : 'RRULE:FREQ=WEEKLY;BYDAY=' + lista.map(x => BY[x]).join(',');
+    const ini = new Date(); ini.setHours(hh, mm, 0, 0);
+    if(ini < new Date()) ini.setDate(ini.getDate() + 1);
+    if(!todos) for(let k = 0; k < 7 && !lista.includes(DIAS_SEMANA[(ini.getDay() + 6) % 7]); k++) ini.setDate(ini.getDate() + 1);   // el primer día que toca
+    const fin = new Date(ini.getTime() + 10 * 60000);
+    const loc = d => d.getFullYear() + String(d.getMonth() + 1).padStart(2, '0') + String(d.getDate()).padStart(2, '0') + 'T' + String(d.getHours()).padStart(2, '0') + String(d.getMinutes()).padStart(2, '0') + '00';
+    const ios = /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    if(ios){
+      const esc = t => t.replace(/\\/g, '\\\\').replace(/\n/g, '\\n').replace(/[,;]/g, m => '\\' + m);
+      const ics = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Metas Amables//ES', 'BEGIN:VEVENT',
+        'UID:practica-' + Date.now() + '@practicaintegral.club', 'DTSTAMP:' + new Date().toISOString().replace(/[-:]/g, '').slice(0, 15) + 'Z',
+        'DTSTART:' + loc(ini), 'DTEND:' + loc(fin), rrule, 'SUMMARY:' + esc(titulo), 'DESCRIPTION:' + esc(detalle),
+        'BEGIN:VALARM', 'TRIGGER:PT0M', 'ACTION:DISPLAY', 'DESCRIPTION:' + esc(titulo), 'END:VALARM', 'END:VEVENT', 'END:VCALENDAR'].join('\r\n');
+      const a = document.createElement('a');
+      a.href = 'data:text/calendar;charset=utf-8,' + encodeURIComponent(ics);
+      a.download = 'recordatorio-metas-amables.ics';
+      document.body.appendChild(a); a.click(); a.remove();
+    } else {
+      const p = new URLSearchParams({ action: 'TEMPLATE', text: titulo, details: detalle, dates: loc(ini) + '/' + loc(fin), recur: rrule });
+      window.open('https://calendar.google.com/calendar/render?' + p.toString(), '_blank', 'noopener');
+    }
+  }
   function recordatorioDiarioHTML(){
     if(modoMinimal()) return document.createDocumentFragment();   // modo minimalista: sin el recordatorio del calendario
     const caja = document.createElement('div');
@@ -8711,25 +8751,7 @@ lo que haces cada día es lo que vas a ser.`;
       const textoRec = (meta || (ultima ? ultima.metaSem : '') || 'Mi práctica de Metas Amables').trim().replace(/[.。]+$/, '');
       const titulo = '🌱 ' + (textoRec.length > 70 ? textoRec.slice(0, 69).trim() + '…' : textoRec);
       const detalle = (ultima ? 'Tu práctica: ' + ultima.metaSem + '\n\n' : '') + 'Metas Amables · primero mira cómo está tu clima y después registra si hiciste tu práctica: https://app.practicaintegral.club';
-      const ini = new Date(); ini.setHours(hh, mm, 0, 0);
-      if(ini < new Date()) ini.setDate(ini.getDate() + 1);
-      const fin = new Date(ini.getTime() + 10 * 60000);
-      const loc = d => d.getFullYear() + String(d.getMonth() + 1).padStart(2, '0') + String(d.getDate()).padStart(2, '0') + 'T' + String(d.getHours()).padStart(2, '0') + String(d.getMinutes()).padStart(2, '0') + '00';
-      const ios = /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-      if(ios){
-        const esc = t => t.replace(/\\/g, '\\\\').replace(/\n/g, '\\n').replace(/[,;]/g, m => '\\' + m);
-        const ics = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Metas Amables//ES', 'BEGIN:VEVENT',
-          'UID:practica-' + Date.now() + '@practicaintegral.club', 'DTSTAMP:' + new Date().toISOString().replace(/[-:]/g, '').slice(0, 15) + 'Z',
-          'DTSTART:' + loc(ini), 'DTEND:' + loc(fin), 'RRULE:FREQ=DAILY', 'SUMMARY:' + esc(titulo), 'DESCRIPTION:' + esc(detalle),
-          'BEGIN:VALARM', 'TRIGGER:PT0M', 'ACTION:DISPLAY', 'DESCRIPTION:' + esc(titulo), 'END:VALARM', 'END:VEVENT', 'END:VCALENDAR'].join('\r\n');
-        const a = document.createElement('a');
-        a.href = 'data:text/calendar;charset=utf-8,' + encodeURIComponent(ics);
-        a.download = 'recordatorio-metas-amables.ics';
-        document.body.appendChild(a); a.click(); a.remove();
-      } else {
-        const p = new URLSearchParams({ action: 'TEMPLATE', text: titulo, details: detalle, dates: loc(ini) + '/' + loc(fin), recur: 'RRULE:FREQ=DAILY' });
-        window.open('https://calendar.google.com/calendar/render?' + p.toString(), '_blank', 'noopener');
-      }
+      ponerRecordatorioCalendario(titulo, detalle, hh, mm, null);
     };
     return caja;
   }
@@ -12025,4 +12047,4 @@ lo que haces cada día es lo que vas a ser.`;
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V13.59 · App Metas Amables · 2026-10-14 13:05==== -->
+<!-- ==== Fin del index V13.60 · App Metas Amables · 2026-10-14 17:42==== -->
