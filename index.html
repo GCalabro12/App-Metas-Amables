@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V13.61 · App Metas Amables · 2026-10-14 23:35==== -->
+<!-- ==== index V13.62 · App Metas Amables · 2026-10-15 00:41==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2386,7 +2386,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V13.61';
+  const APP_VERSION = 'V13.62';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -2523,6 +2523,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   // puntos, las fechas de sesiones y (en Guías + Grupo) el resumen de su grupo.
   async function refreshAll(){
     const d = await api('/datos' + (PLAY_AHORA ? '?play=1' : ''));
+    state.datosOk = true;   // los datos han llegado (si /datos falla, se queda en false y no se pide el formulario por error)
     state.me = d.nombre;
     state.checkins = {};
     state.checkins[d.nombre] = recordsToCheckins(d.filas || []).byName[d.nombre] || [];
@@ -2810,7 +2811,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     try{ altaPendiente = localStorage.getItem('ma_alta_' + name); }catch(e){}
     state.view = altaPendiente ? 'bienvenidaAlta' : 'panel'; if(altaPendiente && !state.altaPaso) state.altaPaso = 1;
     window.scrollTo(0,0); render();
-    try { await refreshAll(); } catch(e){ console.error('Error cargando datos:', e); if(!e.status) state.plan = 'gratis'; }
+    state.datosOk = false;
+    try { await refreshAll(); } catch(e){ console.error('Error cargando datos:', e); if(!e.status) state.plan = 'gratis'; avisoBreve('No se han podido cargar tus datos. Revisa la conexión y vuelve a abrir la app.'); }
     if(!state.me) return;   // la sesión había caducado: ya se muestra la pantalla de entrada
     // Si el móvil ya da permiso de avisos (la app de Google Play en Android anterior al 13), se activan solos
     try { if(pushPosible() && Notification.permission === 'granted' && !pushActivo() && localStorage.getItem('push_off_' + state.me) !== '1') activarAvisosPlanta(true); } catch(e){}
@@ -2834,7 +2836,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     // Enlace de los emails (?meta=1): el formulario de la meta, o su sección si ya está rellenado.
     // ?meta=seguir («Seguir con mi meta»): el formulario ya relleno con las respuestas del trimestre anterior
     try { const pm = new URLSearchParams(location.search).get('meta'); if(pm === '1' || pm === 'seguir'){ history.replaceState(null, '', location.pathname);
-      setTimeout(() => { if(metaHechaYa()){ state.view = 'panel'; state.panelSub = 's4'; window.scrollTo(0, 0); render(); } else abrirFormularioMeta(pm === 'seguir'); }, 900); } } catch(e){}
+      setTimeout(() => { if(metaHechaYa() || !state.datosOk){ state.view = 'panel'; state.panelSub = 's4'; window.scrollTo(0, 0); render(); } else abrirFormularioMeta(pm === 'seguir'); }, 900); } } catch(e){}
     // Enlace del resumen de Telegram (?panel=1): abre «Panel de control admin Metas A.»
     try { if(new URLSearchParams(location.search).get('panel') === '1'){ history.replaceState(null, '', location.pathname); if(soyModerador()) abrirPanelFacilitador(); } } catch(e){}
     const list = state.checkins[state.me] || [];
@@ -4220,7 +4222,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   function registraLunes(){ return tienePlan('sesiones'); }
 
   function tareaDelDia(){
-    if(!metaHechaYa()) return 'meta';
+    if(!metaHechaYa()) return state.datosOk ? 'meta' : 'b';   // sin datos (cargando o sin conexión) no se pide el formulario
     if(guiaPendienteDeAbrir()) return 'a';
     if(tienePlan('sesiones') && (haySesionEnDias(0) || haySesionEnDias(1))) return 'd';
     if(!registraLunes()) return 'b';
@@ -5147,6 +5149,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
+    { v: 'V13.62', f: '15 de octubre de 2026', n: [
+      'Si la app no consigue cargar tus datos (por la conexión), ya no te pide rellenar otra vez el formulario de tu meta: te avisa de que revises la conexión.' ] },
     { v: 'V13.61', f: '14 de octubre de 2026', n: [
       'Para <b>cambiar tu meta con guía</b> hay dos botones: «✏️ Modificar algo», que abre el formulario con tus respuestas (por ejemplo, para cambiar solo el tiempo), y «🌱 Empezar una meta nueva», que lo abre vacío.' ] },
     { v: 'V13.60', f: '14 de octubre de 2026', n: [
@@ -12056,4 +12060,4 @@ lo que haces cada día es lo que vas a ser.`;
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V13.61 · App Metas Amables · 2026-10-14 23:35==== -->
+<!-- ==== Fin del index V13.62 · App Metas Amables · 2026-10-15 00:41==== -->
