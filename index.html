@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V13.60 · App Metas Amables · 2026-10-14 17:42==== -->
+<!-- ==== index V13.61 · App Metas Amables · 2026-10-14 23:35==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2386,7 +2386,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V13.60';
+  const APP_VERSION = 'V13.61';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -5147,6 +5147,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
+    { v: 'V13.61', f: '14 de octubre de 2026', n: [
+      'Para <b>cambiar tu meta con guía</b> hay dos botones: «✏️ Modificar algo», que abre el formulario con tus respuestas (por ejemplo, para cambiar solo el tiempo), y «🌱 Empezar una meta nueva», que lo abre vacío.' ] },
     { v: 'V13.60', f: '14 de octubre de 2026', n: [
       'En cada <b>meta sencilla</b>: «⏰ ¿Te lo recuerdo?» pone un aviso en el calendario de tu móvil, a la hora que elijas y solo los días de esa meta. Es opcional.' ] },
     { v: 'V13.59', f: '14 de octubre de 2026', n: [
@@ -7661,7 +7663,7 @@ lo que haces cada día es lo que vas a ser.`;
       const enviado = formularioEnviado();
       const cambios = limiteMetaIntentos();   // Plan Libre: 1 vez por trimestre; planes de pago: hasta 2
       const reglaMeta = cambios > 1
-        ? 'Puedes cambiar tu meta <b>hasta ' + cambios + ' veces por trimestre</b>: vuelve a rellenarlo y te enviaremos una guía nueva. Te saldrá vacío: es normal.'
+        ? 'Puedes cambiar tu meta <b>hasta ' + cambios + ' veces por trimestre</b>: puedes <b>modificar algo</b> (el formulario sale con tus respuestas) o <b>empezar una meta nueva</b> (sale vacío). Te enviaremos una guía nueva.'
         : 'En el Plan Libre, el formulario <b>solo se puede rellenar una vez por trimestre</b>.';
       if(metaHechaYa()){
         // Ya está hecha: en el Plan Libre no se vuelve a abrir el formulario
@@ -7671,7 +7673,7 @@ lo que haces cada día es lo que vas a ser.`;
           <p style="font-size:13px;color:var(--ink-soft)">${reglaMeta}</p>
           <p style="background:var(--honey-tint);border-radius:10px;padding:12px 14px">✅ <b>Ya tienes el formulario rellenado</b>${enviado ? ' (' + fechaCorta(enviado) + ')' : ''}: tu meta está definida para el <b>${trimestreMeta()}</b>.<br>
           ${state.guiaTexto ? 'Tu guía ya está lista en <b>«b · Guía semanal»</b>.' : 'En breve tendrás tu guía de prácticas en <b>«b · Guía semanal»</b>.'}</p>
-          ${cambios > 1 ? '<button type="button" class="panel-link-btn honey fm-abrir" style="width:100%;border:none;cursor:pointer">Cambiar mi meta con guía →</button>' : ''}`;
+          ${cambios > 1 ? '<p style="font-weight:700;margin:14px 0 6px">Cambiar mi meta con guía:</p><button type="button" class="panel-link-btn honey fm-abrir" data-modo="cambiar" style="width:100%;border:none;cursor:pointer;margin:0 0 8px">✏️ Modificar algo (sale con tus respuestas) →</button><button type="button" class="panel-link-btn fm-abrir" data-modo="nueva" style="width:100%;border:2px solid #C9942D;background:#fff;color:#8A5A1E;cursor:pointer">🌱 Empezar una meta nueva (sale vacío) →</button>' : ''}`;
       } else s2.innerHTML = `
         <h3 class="metas-sub">🌱 Meta con guía</h3>
         <p style="font-size:15.5px"><b>Será tu meta más importante para este trimestre.</b></p>
@@ -8961,7 +8963,7 @@ lo que haces cada día es lo que vas a ser.`;
   // Cualquier botón con la clase «fm-abrir» abre el formulario dentro de la app
   document.addEventListener('click', e => {
     const b = e.target.closest && e.target.closest('.fm-abrir');
-    if(b){ e.preventDefault(); abrirFormularioMeta(); }
+    if(b){ e.preventDefault(); abrirFormularioMeta(false, b.dataset.modo === 'cambiar'); }   // «Modificar algo»: sale relleno; «meta nueva»: vacío
   });
   // ===== Plazo de la meta =====
   // Con plazo de 1 o 2 meses (formulario de la app), al cumplirse se pregunta si la consiguió.
@@ -11598,7 +11600,8 @@ lo que haces cada día es lo que vas a ser.`;
     };
   }
 
-  function abrirFormularioMeta(seguir){
+  // seguir: trimestre nuevo con la misma meta · cambiar: cambio de meta dentro del trimestre (las dos, con las respuestas de antes)
+  function abrirFormularioMeta(seguir, cambiar){
     let previo = null;
     try { previo = JSON.parse(localStorage.getItem(fmClave()) || 'null'); } catch(e){}
     if(!previo){
@@ -11606,7 +11609,13 @@ lo que haces cada día es lo que vas a ser.`;
       previo = { paso: 0, email: g.email || state.miCorreo || '', r: { '1139323880': d.nombre || state.me || '', '82527459': d.ciudad || '', '1313109576': d.genero || '', '838787571': d.edad || '' }, preguntado: {} };
       // Los datos personales que ya tenemos no se vuelven a preguntar (se envían igual)
       previo.saltar = FM_PREGUNTAS.filter(p => p.datos && String(previo.r[p.id] || '').trim()).map(p => p.id);
-      if(seguir && d.metaTexto) rellenarConMetaAnterior(previo, d);
+      if((seguir || cambiar) && d.metaTexto) rellenarConMetaAnterior(previo, d);
+      if(cambiar && !seguir && d.metaTexto){
+        // Cambio dentro del trimestre: no es «seguir con la meta anterior»; la disposición, la que puso entonces
+        previo.seguir = false; previo.cambiar = true;
+        const disp = String((d.motivacion || {}).disposicion || ''), P = FM_PREGUNTAS.find(x => x.id === '1469069724');
+        if(P && P.opciones.some(o => (Array.isArray(o) ? o[0] : o) === disp)) previo.r['1469069724'] = disp; else delete previo.r['1469069724'];
+      }
     }
     state.fm = previo;
     // Música de fondo suave (se puede quitar; se recuerda la elección). No pisa la música que ya esté sonando.
@@ -11690,7 +11699,7 @@ lo que haces cada día es lo que vas a ser.`;
     if(fm.paso === 0){
       const conocido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test((state.gamifica && state.gamifica.email) || '');
       if(conocido) fm.email = state.gamifica.email;
-      card.innerHTML = barra + `<div class="practi-inicio">${practiReaccionHTML('pensativo','empujonPensando',90)}${bocadilloPracti(fm.seguir ? 'Seguimos con tu meta. Te he dejado tus respuestas del trimestre anterior: repásalas y cambia lo que quieras.' : 'Vamos a definir tu meta del trimestre. Son unos 5 minutos y con tus respuestas te preparo tu guía de prácticas.', 'tono-calma')}</div>
+      card.innerHTML = barra + `<div class="practi-inicio">${practiReaccionHTML('pensativo','empujonPensando',90)}${bocadilloPracti(fm.seguir ? 'Seguimos con tu meta. Te he dejado tus respuestas del trimestre anterior: repásalas y cambia lo que quieras.' : fm.cambiar ? 'Te he dejado tus respuestas: cambia solo lo que quieras (por ejemplo, el tiempo) y envíalo. Te prepararé una guía nueva.' : 'Vamos a definir tu meta del trimestre. Son unos 5 minutos y con tus respuestas te preparo tu guía de prácticas.', 'tono-calma')}</div>
         ${conocido ? '' : `<label class="note-label strong" for="fmEmail" style="margin-top:14px">📧 ¿A qué correo te avisamos?</label>
         <p style="font-size:13px;color:var(--ink-soft);margin:0 0 6px">Lo necesitamos para enviarte tu guía de prácticas. Solo te lo pedimos esta vez.</p>
         <input id="fmEmail" type="email" inputmode="email" autocomplete="email" value="${escapeAttr(fm.email)}" placeholder="tu@correo.com" style="width:100%;box-sizing:border-box;font-size:17px;padding:12px 14px">`}
@@ -12047,4 +12056,4 @@ lo que haces cada día es lo que vas a ser.`;
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V13.60 · App Metas Amables · 2026-10-14 17:42==== -->
+<!-- ==== Fin del index V13.61 · App Metas Amables · 2026-10-14 23:35==== -->
