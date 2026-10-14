@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V13.57 · App Metas Amables · 2026-10-14 00:06==== -->
+<!-- ==== index V13.58 · App Metas Amables · 2026-10-14 12:46==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2378,7 +2378,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V13.57';
+  const APP_VERSION = 'V13.58';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -5128,6 +5128,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
+    { v: 'V13.58', f: '14 de octubre de 2026', n: [
+      'En tu <b>Perfil</b> ya no salen puntos: ves el año en que estás en tu montaña interior.' ] },
     { v: 'V13.57', f: '14 de octubre de 2026', n: [
       'El día de registro cambia a las <b>5 de la mañana</b> (hora de tu móvil), no a medianoche: si te acuestas tarde, lo que registras antes de las 5 cuenta para el día que acaba.' ] },
     { v: 'V13.56', f: '14 de octubre de 2026', n: [
@@ -6236,7 +6238,7 @@ lo que haces cada día es lo que vas a ser.`;
         const rec = g ? { fields: { 'Cumplidas semanas': g.cumplidas, 'Insignia': g.insignia } } : null;
         const box = card.querySelector('#insigniaActualBox');
         if(!rec){
-          box.innerHTML = `<p style="font-size:13px;color:var(--ink-soft)"><em>Aún no tenemos tu conteo de puntos.</em></p>`;
+          box.innerHTML = `<p style="font-size:13px;color:var(--ink-soft)"><em>Aún no tenemos tus datos.</em></p>`;
           return;
         }
         const cumplidas = rec.fields['Cumplidas semanas'] || 0;
@@ -6247,8 +6249,8 @@ lo que haces cada día es lo que vas a ser.`;
             <div class="badge-medal-current">
               <div class="medal-icon">👑👑</div>
               <div class="medal-text">
-                <div class="medal-label">Tus puntos</div>
-                <div class="medal-name">${fmtPuntos(cumplidas)} puntos</div>
+                <div class="medal-label">Tu montaña interior</div>
+                <div class="medal-name">Año ${(() => { try { return datosMontana().anio; } catch(e){ return 1; } })()}</div>
                 <div class="medal-count">Las insignias son del Plan Guías + Grupo</div>
               </div>
             </div>
@@ -12010,4 +12012,4 @@ lo que haces cada día es lo que vas a ser.`;
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V13.57 · App Metas Amables · 2026-10-14 00:06==== -->
+<!-- ==== Fin del index V13.58 · App Metas Amables · 2026-10-14 12:46==== -->
