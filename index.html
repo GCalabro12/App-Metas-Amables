@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V13.64 · App Metas Amables · 2026-10-15 12:32==== -->
+<!-- ==== index V13.65 · App Metas Amables · 2026-10-15 13:02==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -901,8 +901,8 @@ body.con-fondo-vivo .lema, body.con-fondo-vivo .fecha-hoy{color:#E6DEFF}
 body.con-fondo-vivo .version-tag{color:#CFC3F5}
 body.con-fondo-vivo .saludo-inicio > div:not(.practi-inicio){color:#FFFFFF !important}
 body.con-fondo-vivo .pie-derechos, body.con-fondo-vivo .pie-derechos a{color:#CFC3F5}
-body.con-fondo-vivo .pi-seal{color:#CFC3F5;border-color:rgba(207,195,245,.45)}
-body.con-fondo-vivo .pi-seal:hover{color:#FFFFFF;border-color:#4ADE80}
+body.con-fondo-vivo .pi-seal,body.con-fondo-vivo .gp-seal{color:#CFC3F5;border-color:rgba(207,195,245,.45)}
+body.con-fondo-vivo .pi-seal:hover{color:#FFFFFF;border-color:#4ADE80}body.con-fondo-vivo .gp-seal:hover{color:#FFFFFF;border-color:#8b5cf6}
 body.con-fondo-vivo .ciclo-flecha path{stroke:#FFFFFF}
 body.con-fondo-vivo .ciclo-flecha path[fill]{fill:#FFFFFF}
 .fondo-vivo{position:fixed;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(#2B1E78,#4632A6 40%,#7650BE 72%,#B8679E)}
@@ -1727,15 +1727,14 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   .pie-derechos a{color:var(--ink-soft)}
   /* Sello común de las apps de Práctica Integral (como en PC & Body-mind), con los colores sobrios de esta app */
   .pi-seal-fila{margin:32px 0 0;text-align:center}
-  .pi-seal{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:600;letter-spacing:.3px;color:var(--ink-soft);border:1px solid var(--border);border-radius:999px;padding:6px 12px;text-decoration:none}
+  /* Sellos comunes (Grow Panel/SELLO.md, 15-10-2026): dos botones; si no caben, el segundo baja y quedan centrados.
+     line-height fijo para que la mini flor no haga el botón más alto (30 px, como el sello de antes) */
+  .sellos{display:flex;flex-wrap:wrap;justify-content:center;gap:8px}
+  .pi-seal,.gp-seal{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:600;letter-spacing:.3px;line-height:16px;color:var(--ink-soft);border:1px solid var(--border);border-radius:999px;padding:6px 12px;text-decoration:none}
   .pi-seal::before{content:"";width:7px;height:7px;border-radius:50%;background:#4ADE80}
+  .gp-seal svg{width:14px;height:14px;flex:none}
   .pi-seal:hover{color:var(--ink);border-color:#4ADE80}
-  /* «with Grow Panel» (15-10-2026): en la misma píldora; si no cabe en una línea, baja a la segunda, un poco más pequeño */
-  .pi-seal-tx{display:inline-flex;flex-wrap:wrap;justify-content:center;align-items:baseline;column-gap:4px;line-height:1.35}
-  .pi-seal-gp{font-size:.92em}
-  /* Dos enlaces dentro del sello: «by Práctica Integral» → la web y «Grow Panel» → su página explicativa */
-  .pi-seal-a{color:inherit;text-decoration:none}
-  .pi-seal-gp-a:hover,.pi-seal-gp-a:focus-visible{text-decoration:underline}
+  .gp-seal:hover{color:var(--ink);border-color:#8b5cf6}
   .pi-seal-fila + .pie-derechos{margin-top:14px}
   .practi-tocable{cursor:pointer;position:relative;display:inline-block;line-height:0;-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;outline:none}
   .practi-tocable *{-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none}
@@ -2392,7 +2391,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V13.64';
+  const APP_VERSION = 'V13.65';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -5155,6 +5154,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
+    { v: 'V13.65', f: '15 de octubre de 2026', n: [
+      'Abajo hay ahora dos sellos: «by Práctica Integral» (a la web) y «with Grow Panel», con su mini flor, que lleva a la página de Grow Panel.' ] },
     { v: 'V13.64', f: '15 de octubre de 2026', n: [
       'En el sello de abajo, «Grow Panel» lleva a su página, donde se explica qué es; «by Práctica Integral» sigue llevando a la web.' ] },
     { v: 'V13.63', f: '15 de octubre de 2026', n: [
@@ -6897,7 +6898,7 @@ lo que haces cada día es lo que vas a ser.`;
     try { botonesMenuConAvatar(); } catch(e){}
     // Sello «by Práctica Integral»: en la pantalla de entrada y abajo del todo en Inicio
     if(state.view === 'pick' || (state.me && state.view === 'panel' && !state.panelSub))
-      app.appendChild(el('<p class="pi-seal-fila"><span class="pi-seal"><span class="pi-seal-tx"><a class="pi-seal-a" href="https://practicaintegral.club" target="_blank" rel="noopener">by Práctica Integral</a> <span class="pi-seal-gp">with <a class="pi-seal-a pi-seal-gp-a" href="https://practicaintegral.club/grow-panel/" target="_blank" rel="noopener">Grow Panel</a></span></span></span></p>'));
+      app.appendChild(el('<div class="pi-seal-fila"><div class="sellos"><a class="pi-seal" href="https://practicaintegral.club" target="_blank" rel="noopener">by Práctica Integral</a><a class="gp-seal" href="https://practicaintegral.club/grow-panel/" target="_blank" rel="noopener"><svg viewBox="0 0 512 512" aria-hidden="true"><circle cx="256" cy="107.5" r="69.1" fill="#f59e0b"/><circle cx="397.2" cy="210.1" r="69.1" fill="#0f766e"/><circle cx="343.3" cy="376.1" r="69.1" fill="#8b5cf6"/><circle cx="168.7" cy="376.1" r="69.1" fill="#3b82f6"/><circle cx="114.8" cy="210.1" r="69.1" fill="#ef4444"/><circle cx="256" cy="256" r="79.4" fill="#6b7280"/></svg>with Grow Panel</a></div></div>'));
     if(state.view !== 'loading' && state.view !== 'bienvenidaAlta') app.appendChild(el('<p class="pie-derechos">© ' + new Date().getFullYear() + ' Gustavo Calabró · Práctica Integral Club. Todos los derechos reservados. · <a href="privacidad.html" target="_blank" rel="noopener">Privacidad</a> · <a href="terminos.html" target="_blank" rel="noopener">Términos de uso</a></p>'));
     activarPracti(app);
     activarBocadillos(app);
@@ -12070,4 +12071,4 @@ lo que haces cada día es lo que vas a ser.`;
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V13.64 · App Metas Amables · 2026-10-15 12:32==== -->
+<!-- ==== Fin del index V13.65 · App Metas Amables · 2026-10-15 13:02==== -->
