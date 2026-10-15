@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V13.66 · App Metas Amables · 2026-10-15 19:57==== -->
+<!-- ==== index V13.67 · App Metas Amables · 2026-10-15 21:21==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -854,6 +854,7 @@ button, input, textarea, select{ font-family:inherit; }
 .habla-medio{position:relative;width:100%;display:flex;justify-content:center;margin-top:14px}
 .habla-practi{width:min(62vw,240px);height:min(66vw,254px);padding:0;border:0;background:none;cursor:pointer;-webkit-tap-highlight-color:transparent}
 .habla-voz{position:absolute;right:0;top:4px;width:46px;height:46px;display:flex;align-items:center;justify-content:center;padding:0;border-radius:50%;border:2px solid #7B5FB8;background:#fff;color:#7B5FB8;cursor:pointer}
+.habla-privado{margin:0 0 8px;font-size:13px;line-height:1.4;color:var(--ink-soft);text-align:center}
 .habla-voz.apagada{border-color:#999;color:#999}
 .habla-quedan{margin:4px 0 2px;font-size:14px;font-weight:700;color:#7B5FB8;text-align:center}
 .habla-ver{margin:4px 0 10px;padding:6px 14px;border-radius:99px;border:2px solid #7B5FB8;background:#fff;color:#7B5FB8;font-weight:700;font-size:14px;cursor:pointer}
@@ -2391,7 +2392,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V13.66';
+  const APP_VERSION = 'V13.67';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -2528,7 +2529,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   // puntos, las fechas de sesiones y (en Guías + Grupo) el resumen de su grupo.
   async function refreshAll(){
     const d = await api('/datos' + (PLAY_AHORA ? '?play=1' : ''));
-    state.datosOk = true;   // los datos han llegado (si /datos falla, se queda en false y no se pide el formulario por error)
+    state.datosOk = true;
+    { const h = new Date(); state.datosHora = String(h.getHours()).padStart(2, '0') + ':' + String(h.getMinutes()).padStart(2, '0'); }   // los datos han llegado (si /datos falla, se queda en false y no se pide el formulario por error)
     state.me = d.nombre;
     state.checkins = {};
     state.checkins[d.nombre] = recordsToCheckins(d.filas || []).byName[d.nombre] || [];
@@ -4645,7 +4647,19 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     renderBackTopbar('');
     app.appendChild(el('<h2 style="text-align:center;margin:4px 0 4px">👥 Situación de los practicantes</h2><p style="text-align:center;font-size:13px;color:var(--ink-soft);margin:0 0 12px">Para preparar la sesión. Solo lo ves tú, como moderador.</p>'));
     // Sin las cuentas de prueba ni la del revisor de Google
-    const nombres = Object.keys(state.situacion || {}).filter(n => !/\(moderador\)\s*$/i.test(n) && n !== 'Revisor Google').sort((a, b) => a.localeCompare(b, 'es'));
+    const nombres = Object.keys(state.situacion || {}).filter(n => !/\(moderador\)\s*$/i.test(n) && n !== 'Revisor Google' && !/^Prueba /i.test(n) && n !== state.me).sort((a, b) => a.localeCompare(b, 'es'));
+    // Los datos son los de la última carga (el Worker los guarda hasta 10 minutos): se pueden volver a pedir
+    const act = el('<p style="text-align:center;margin:0 0 12px;font-size:13px;color:var(--ink-soft)">Datos de las ' + (state.datosHora || '—') + ' · <button type="button" class="link-quiet" id="sitActualizar" style="padding:0">↻ Actualizar</button></p>');
+    act.querySelector('#sitActualizar').onclick = async e => { e.currentTarget.textContent = 'Actualizando…'; try { await refreshAll(); } catch(err){ avisoBreve('No se pudo actualizar. Revisa la conexión.'); } render(); };
+    app.appendChild(act);
+    // Tú, arriba, con tus propios datos de moderador
+    try {
+      const mias = ((state.checkins && state.checkins[state.me]) || []).map(c => ({ semana: c.week, estado: c.estadoSemana || '', comp: c.compromisoVeces, hechas: c.vecesRealizadas, dias: c.diasHechos || '' }));
+      let miMeta = ''; try { miMeta = metaFinalViaje().texto || ''; } catch(err){}
+      state.situacion = state.situacion || {};
+      state.situacion[state.me] = { meta: miMeta || textosCiclo().meta, practica: textosCiclo().practica, semanas: mias, yo: true };
+      nombres.unshift(state.me);
+    } catch(err){}
     if(!nombres.length){
       app.appendChild(el('<div class="card"><p style="margin:0">Todavía no hay datos de tu grupo. Comprueba que en Airtable tienes «Moderador» en «Grupo MAC» y vuelve a abrir la app.</p></div>'));
       return;
@@ -4657,7 +4671,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       const s = state.situacion[n], act = resumenTrimestre(s.semanas, 0), ant = resumenTrimestre(s.semanas, -1);
       const ultima = [...s.semanas].reverse().find(x => x.estado || x.comp);
       return `<div class="card" style="margin-bottom:10px">
-        <p style="font-weight:700;font-size:16px;margin:0 0 6px">${escapeAttr(conAvatar(n))}</p>
+        <p style="font-weight:700;font-size:16px;margin:0 0 6px">${escapeAttr(conAvatar(n))}${s.yo ? ' <span style="font-size:12px;font-weight:700;color:#5B3FA8;background:#EFE9FB;border-radius:999px;padding:2px 8px;margin-left:4px">Tú · moderador</span>' : ''}</p>
         <p style="margin:0 0 4px;font-size:14px">🎯 <b>Meta:</b> ${s.meta ? escapeAttr(s.meta) : '<span style="color:var(--ink-soft)">sin meta escrita</span>'}</p>
         ${s.practica ? `<p style="margin:0 0 6px;font-size:14px">🏃 <b>Práctica:</b> ${escapeAttr(s.practica)}</p>` : ''}
         <p style="margin:0 0 2px;font-size:13px">📅 <b>Este trimestre</b> (${act.nombre}): ${fila(act)}</p>
@@ -5154,6 +5168,9 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
+    { v: 'V13.67', f: '15 de octubre de 2026', n: [
+      'En <b>Habla con Prácti</b>: un aviso deja claro que lo que escribes es privado y no se guarda; y mientras Prácti habla, la música baja para que se le oiga bien.',
+      'Moderadores: en «Situación de los practicantes» sales tú arriba con tus datos, ya no salen las cuentas de prueba, y hay un botón para actualizar los datos.' ] },
     { v: 'V13.66', f: '15 de octubre de 2026', n: [
       'Si usas varias apps de Práctica Integral, arriba en Inicio sale el botón de <b>Grow Panel</b> (la mini flor), que las reúne todas; su tarjeta de Metas Amables muestra cómo vas hoy.' ] },
     { v: 'V13.65', f: '15 de octubre de 2026', n: [
@@ -5752,12 +5769,13 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     };
     const vozMovil = () => { if(!('speechSynthesis' in window)){ hablado = true; fin(); return; } try {
         window.speechSynthesis.cancel();
+        musicaBajaParaVoz(true);
         const u = new SpeechSynthesisUtterance(sinEmojis(texto));
         u.lang = 'es-ES'; u.rate = Math.min(2, 0.95 * velocidadLector()); u.pitch = tonoLector();
         const v = vozEspanol(); if(v) u.voice = v;
-        u.onend = u.onerror = () => { hablado = true; fin(); };
+        u.onend = u.onerror = () => { musicaBajaParaVoz(false); hablado = true; fin(); };
         window.speechSynthesis.speak(u);
-      } catch(e){ hablado = true; fin(); } };
+      } catch(e){ musicaBajaParaVoz(false); hablado = true; fin(); } };
     if(!habla.voz){ escribir(); return; }
     escribir(); vozMovil();
   }
@@ -5785,7 +5803,26 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     return c;
   }
 
-  function hablaCallar(){ try { window.speechSynthesis.cancel(); } catch(e){} try { if(habla.audio){ habla.audio.pause(); habla.audio = null; } } catch(e){} }
+  // La música (la oficial, la de la montaña o un vídeo de Música) baja al 15 % mientras habla Prácti, para que se le oiga
+  let musicaBajada = null;
+  function musicaBajaParaVoz(bajar){
+    try {
+      const yt = vol => { const f = document.querySelector('#musicaBarra iframe'); if(f && f.contentWindow) f.contentWindow.postMessage(JSON.stringify({ event: 'command', func: 'setVolume', args: [vol] }), '*'); };
+      if(bajar){
+        if(musicaBajada) return;
+        musicaBajada = { s: (typeof sintonia !== 'undefined' && sintonia && !sintonia.paused) ? sintonia.volume : null,
+                         m: (typeof musicaMontana !== 'undefined' && musicaMontana && !musicaMontana.paused) ? musicaMontana.volume : null };
+        if(musicaBajada.s != null) sintonia.volume = musicaBajada.s * 0.15;
+        if(musicaBajada.m != null) musicaMontana.volume = musicaBajada.m * 0.15;
+        yt(15);
+      } else if(musicaBajada){
+        if(musicaBajada.s != null && sintonia) sintonia.volume = musicaBajada.s;
+        if(musicaBajada.m != null && musicaMontana) musicaMontana.volume = musicaBajada.m;
+        yt(100); musicaBajada = null;
+      }
+    } catch(e){ musicaBajada = null; }
+  }
+  function hablaCallar(){ try { window.speechSynthesis.cancel(); } catch(e){} musicaBajaParaVoz(false); try { if(habla.audio){ habla.audio.pause(); habla.audio = null; } } catch(e){} }
 
   async function hablaEnviar(){
     const campo = app.querySelector('#hablaPregunta'); if(!campo || habla.esperando) return;
@@ -5857,6 +5894,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
         <p class="habla-quedan" id="hablaQuedan"></p>
         <button type="button" class="habla-ver" id="hablaVer">📜 Ver la conversación de hoy</button>
         <div class="habla-abajo">
+          <p class="habla-privado">🔒 Lo que escribes aquí es privado: no se guarda en Metas Amables y nadie lo lee, tampoco tu facilitador. La conversación de hoy solo queda en tu móvil.</p>
           <textarea id="hablaPregunta" rows="2" placeholder="Escribe aquí tu pregunta…"></textarea>
           <div class="habla-botones">
             <button type="button" class="habla-mic" id="hablaMic" aria-label="Dictar con el micrófono">${ICONO_MIC}</button>
@@ -12096,4 +12134,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Metas Amables" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V13.66 · App Metas Amables · 2026-10-15 19:57==== -->
+<!-- ==== Fin del index V13.67 · App Metas Amables · 2026-10-15 21:21==== -->
