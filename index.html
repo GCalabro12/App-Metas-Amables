@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V13.68 · App Metas Amables · 2026-10-15 21:27==== -->
+<!-- ==== index V13.69 · App Metas Amables · 2026-10-15 21:29==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -312,6 +312,14 @@ button, input, textarea, select{ font-family:inherit; }
   }
   .roster-row:last-child{ border-bottom:none; }
   .roster-name{ font-weight: 500; }
+.planta-compa-sw{display:flex;gap:12px;align-items:flex-start;cursor:pointer;margin:0 0 12px}.planta-compa-sw input{width:22px;height:22px;flex:none;margin:2px 0 0;accent-color:#4C8C4A}.planta-compa-sw small{display:block;font-size:13px;color:var(--ink-soft);margin-top:2px}
+.planta-compa-btn{margin:0 8px 0 auto;padding:4px 10px;border-radius:99px;border:1.5px solid #4C8C4A;background:#fff;color:#2F5A23;font:700 13px Karla,sans-serif;cursor:pointer;white-space:nowrap}
+.planta-compa-capa{position:fixed;inset:0;z-index:9600;background:rgba(30,20,10,.5);display:flex;align-items:center;justify-content:center;padding:14px;box-sizing:border-box;overflow:auto}
+.planta-compa-card{position:relative;width:min(420px,100%);max-height:100%;overflow:auto;background:#FFFDF8;border-radius:20px;padding:18px 16px;box-sizing:border-box;text-align:center}
+.planta-compa-card h2{margin:0 0 4px;font-size:20px}.planta-compa-sub{margin:0 0 10px;font-size:14px;color:var(--ink-soft)}
+.planta-compa-svg{display:flex;justify-content:center}.planta-compa-svg svg{max-width:100%;height:auto}
+.planta-compa-x{position:absolute;top:8px;right:10px;border:0;background:none;font-size:22px;cursor:pointer;color:var(--ink-soft)}
+
   .perfil-cabecera{ display:flex; align-items:center; gap:12px; margin:0 0 4px; }
   .avatar-grande{ width:52px; height:52px; border-radius:50%; background:var(--honey-tint); border:1px solid var(--border); display:flex; align-items:center; justify-content:center; font-size:28px; flex-shrink:0; }
   .avatar-grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(46px, 1fr)); gap:8px; margin:10px 0 4px; }
@@ -2394,7 +2402,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V13.68';
+  const APP_VERSION = 'V13.69';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -2558,6 +2566,9 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     state.avatares = {};
     state.avatares[d.nombre] = state.gamifica ? state.gamifica.avatar || '' : '';
     (d.companeros || []).forEach(p => { state.avatares[p.nombre] = p.avatar || ''; });
+    // Plantas de los compañeros que han dado permiso (solo semanas y números)
+    state.plantasCompas = {};
+    (d.companeros || []).forEach(p => { if(Array.isArray(p.planta)) state.plantasCompas[p.nombre] = p.planta; });
     cargarNivel();
     state.loadError = null;
   }
@@ -4683,6 +4694,26 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     }).join('')));
   }
 
+  // La planta del trimestre de un compañero que ha dado permiso: cada planta por separado, sin comparar
+  function verPlantaCompa(nombre){
+    const filas = (state.plantasCompas || {})[nombre]; if(!filas) return;
+    const datos = {};
+    filas.forEach(f => { const l = lunesDeSemanaTexto(f.semana); if(l) datos[isoLocal(l)] = f; });
+    const qi = trimDe(lunesHoy);
+    const semanas = lunesDelTrimestre(qi).map(l => { const r = datos[isoLocal(l)] || { dias: 0, cumple: false };
+      return { lunes: l, etiqueta: etiquetaSemana(l), dias: r.dias, cumple: r.cumple, futura: l > lunesHoy, hoy: isoLocal(l) === isoLocal(lunesHoy) }; });
+    const b = { i: 0, qi, semanas, hojas: semanas.filter(s => s.dias > 0).length, flores: semanas.filter(s => s.cumple).length };
+    document.querySelectorAll('.planta-compa-capa').forEach(x => x.remove());
+    const capa = el('<div class="planta-compa-capa" role="dialog" aria-label="Planta de ' + escapeAttr(nombre) + '"><div class="planta-compa-card">'
+      + '<button type="button" class="planta-compa-x" aria-label="Cerrar">✕</button>'
+      + '<h2>🌿 La planta de ' + escapeAttr(String(nombre).split(' ')[0]) + '</h2>'
+      + '<p class="planta-compa-sub">' + b.hojas + (b.hojas === 1 ? ' semana' : ' semanas') + ' con registro este trimestre' + (b.flores ? ' · ' + b.flores + (b.flores === 1 ? ' flor' : ' flores') : '') + '</p>'
+      + '<div class="planta-compa-svg">' + plantaSVG(b, 30, true) + '</div></div></div>').firstElementChild;
+    document.body.appendChild(capa);
+    const cerrar = () => capa.remove();
+    capa.querySelector('.planta-compa-x').onclick = cerrar;
+    capa.onclick = e => { if(e.target === capa) cerrar(); };
+  }
   function soyModerador(){
     const g = (state.groups && state.groups[state.me]) || [];
     return (Array.isArray(g) ? g : [g]).some(x => String(x).toLowerCase().includes('moderador'));
@@ -5170,6 +5201,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
+    { v: 'V13.69', f: '15 de octubre de 2026', n: [
+      'En <b>Mi grupo</b>: puedes dejar que tus compañeros vean tu planta del trimestre (viene apagado; lo decides tú). Si un compañero lo ha activado, con «🌿 Ver su planta» la ves, cada una por separado.' ] },
     { v: 'V13.67', f: '15 de octubre de 2026', n: [
       'En <b>Habla con Prácti</b>: el botón «Privacidad», a la izquierda de Prácti, explica que lo que escribes es privado y no se guarda; «Conversación de hoy» pasa a la derecha y el cuadro para escribir queda justo debajo. Mientras Prácti habla, la música baja para que se le oiga bien.',
       'Moderadores: en «Situación de los practicantes» sales tú arriba con tus datos, ya no salen las cuentas de prueba, y hay un botón para actualizar los datos.' ] },
@@ -8450,6 +8483,16 @@ lo que haces cada día es lo que vas a ser.`;
       nav.querySelector('#toCheckin').onclick = () => { state.view='checkin'; state.regPaso = null; window.scrollTo(0,0); render(); };
 
       app.appendChild(el(`<h1>Registro de los compañeros</h1><p class="lead">${currentWeekLabel}</p>`));
+      // «Mis compañeros pueden ver mi planta»: apagado por defecto; lo decide cada persona
+      const vis = !!(state.gamifica && state.gamifica.plantaVisible);
+      const sw = el('<label class="card planta-compa-sw"><input type="checkbox" id="plantaVisible"' + (vis ? ' checked' : '') + '><span><b>🌿 Mis compañeros pueden ver mi planta</b><small>Solo tu planta del trimestre (las hojas y las flores), sin textos. Puedes cambiarlo cuando quieras.</small></span></label>').firstElementChild;
+      app.appendChild(sw);
+      sw.querySelector('input').onchange = async e => {
+        const c = e.currentTarget, v = c.checked; c.disabled = true;
+        try { await api('/planta-visible', { visible: v }); if(state.gamifica) state.gamifica.plantaVisible = v; avisoBreve(v ? '🌿 Tus compañeros ya pueden ver tu planta' : 'Tu planta ya no se ve en el grupo'); }
+        catch(err){ c.checked = !v; avisoBreve('No se pudo guardar. Revisa la conexión e inténtalo de nuevo.'); }
+        c.disabled = false;
+      };
 
       if(state.loadError){
         app.appendChild(el(`<div class="card" style="border-color:var(--honey);color:var(--ink-soft);font-size:13px">No se pudo conectar con la base de datos. Comprueba tu conexión a internet y vuelve a intentarlo.</div>`));
@@ -8469,10 +8512,12 @@ lo que haces cada día es lo que vas a ser.`;
           const pill = entry
             ? (entry.cumplida ? `<span class="status-pill status-yes">Cumplida ✓</span>` : `<span class="status-pill status-no">Sin cumplir</span>`)
             : `<span class="status-pill status-no">Aún no responde</span>`;
-          return `<div class="roster-row"><span class="roster-name">${escapeAttr(conAvatar(m))}</span>${pill}</div>`;
+          const planta = m !== state.me && state.plantasCompas && state.plantasCompas[m] ? `<button type="button" class="planta-compa-btn" data-n="${escapeAttr(m)}">🌿 Ver su planta</button>` : '';
+          return `<div class="roster-row"><span class="roster-name">${escapeAttr(conAvatar(m))}</span>${planta}${pill}</div>`;
         }).join('');
       }
       app.appendChild(card);
+      card.querySelectorAll('.planta-compa-btn').forEach(b => b.onclick = () => verPlantaCompa(b.dataset.n));
       return;
     }
   }
@@ -12141,4 +12186,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Metas Amables" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V13.68 · App Metas Amables · 2026-10-15 21:27==== -->
+<!-- ==== Fin del index V13.69 · App Metas Amables · 2026-10-15 21:29==== -->
