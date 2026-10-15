@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V13.63 · App Metas Amables · 2026-10-15 12:27==== -->
+<!-- ==== index V13.64 · App Metas Amables · 2026-10-15 12:32==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1733,6 +1733,9 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   /* «with Grow Panel» (15-10-2026): en la misma píldora; si no cabe en una línea, baja a la segunda, un poco más pequeño */
   .pi-seal-tx{display:inline-flex;flex-wrap:wrap;justify-content:center;align-items:baseline;column-gap:4px;line-height:1.35}
   .pi-seal-gp{font-size:.92em}
+  /* Dos enlaces dentro del sello: «by Práctica Integral» → la web y «Grow Panel» → su página explicativa */
+  .pi-seal-a{color:inherit;text-decoration:none}
+  .pi-seal-gp-a:hover,.pi-seal-gp-a:focus-visible{text-decoration:underline}
   .pi-seal-fila + .pie-derechos{margin-top:14px}
   .practi-tocable{cursor:pointer;position:relative;display:inline-block;line-height:0;-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;outline:none}
   .practi-tocable *{-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none}
@@ -2389,7 +2392,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V13.63';
+  const APP_VERSION = 'V13.64';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -5152,6 +5155,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
+    { v: 'V13.64', f: '15 de octubre de 2026', n: [
+      'En el sello de abajo, «Grow Panel» lleva a su página, donde se explica qué es; «by Práctica Integral» sigue llevando a la web.' ] },
     { v: 'V13.63', f: '15 de octubre de 2026', n: [
       'El sello de abajo dice ahora «by Práctica Integral with Grow Panel»: Grow Panel es el panel que une las apps de Práctica Integral.' ] },
     { v: 'V13.62', f: '15 de octubre de 2026', n: [
@@ -6892,7 +6897,7 @@ lo que haces cada día es lo que vas a ser.`;
     try { botonesMenuConAvatar(); } catch(e){}
     // Sello «by Práctica Integral»: en la pantalla de entrada y abajo del todo en Inicio
     if(state.view === 'pick' || (state.me && state.view === 'panel' && !state.panelSub))
-      app.appendChild(el('<p class="pi-seal-fila"><a class="pi-seal" href="https://practicaintegral.club" target="_blank" rel="noopener"><span class="pi-seal-tx"><span>by Práctica Integral</span> <span class="pi-seal-gp">with Grow Panel</span></span></a></p>'));
+      app.appendChild(el('<p class="pi-seal-fila"><span class="pi-seal"><span class="pi-seal-tx"><a class="pi-seal-a" href="https://practicaintegral.club" target="_blank" rel="noopener">by Práctica Integral</a> <span class="pi-seal-gp">with <a class="pi-seal-a pi-seal-gp-a" href="https://practicaintegral.club/grow-panel/" target="_blank" rel="noopener">Grow Panel</a></span></span></span></p>'));
     if(state.view !== 'loading' && state.view !== 'bienvenidaAlta') app.appendChild(el('<p class="pie-derechos">© ' + new Date().getFullYear() + ' Gustavo Calabró · Práctica Integral Club. Todos los derechos reservados. · <a href="privacidad.html" target="_blank" rel="noopener">Privacidad</a> · <a href="terminos.html" target="_blank" rel="noopener">Términos de uso</a></p>'));
     activarPracti(app);
     activarBocadillos(app);
@@ -12065,4 +12070,4 @@ lo que haces cada día es lo que vas a ser.`;
 </script>
 </body>
 </html>
-<!-- ==== Fin del index V13.63 · App Metas Amables · 2026-10-15 12:27==== -->
+<!-- ==== Fin del index V13.64 · App Metas Amables · 2026-10-15 12:32==== -->
