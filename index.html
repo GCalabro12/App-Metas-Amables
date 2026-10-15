@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V13.65 · App Metas Amables · 2026-10-15 13:02==== -->
+<!-- ==== index V13.66 · App Metas Amables · 2026-10-15 19:57==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2391,7 +2391,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V13.65';
+  const APP_VERSION = 'V13.66';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -5154,6 +5154,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
+    { v: 'V13.66', f: '15 de octubre de 2026', n: [
+      'Si usas varias apps de Práctica Integral, arriba en Inicio sale el botón de <b>Grow Panel</b> (la mini flor), que las reúne todas; su tarjeta de Metas Amables muestra cómo vas hoy.' ] },
     { v: 'V13.65', f: '15 de octubre de 2026', n: [
       'Abajo hay ahora dos sellos: «by Práctica Integral» (a la web) y «with Grow Panel», con su mini flor, que lleva a la página de Grow Panel.' ] },
     { v: 'V13.64', f: '15 de octubre de 2026', n: [
@@ -6884,6 +6886,27 @@ lo que haces cada día es lo que vas a ser.`;
       caja.appendChild(b);
     });
   }
+  // Grow Panel (15-10-2026): resumen del día para la tarjeta de Metas Amables. Solo números y una frase, nada personal.
+  // Se llama tras cada pintado: así también se vuelve a poner el botón de la mini flor (la cabecera se repinta).
+  function resumenGrowPanel(){
+    if(!state.me || !state.datosOk) return;
+    const hoyReg = registradoHoy();
+    const sencillas = sencillasActivas(), hoyIso = hoyISO(), L = DIAS_SEMANA[(ahoraRegistro().getDay() + 6) % 7];
+    const tocanHoy = sencillas.filter(m => diasPlanSencilla(m).includes(L));
+    const hechasHoy = tocanHoy.filter(m => (m.dias || []).includes(hoyIso)).length;
+    const pendSencillas = tocanHoy.length - hechasHoy;
+    const mensaje = !metaHechaYa() ? 'Define tu meta del trimestre'
+      : !hoyReg ? 'Hoy te falta registrar tu clima, tu entorno o tu práctica'
+      : pendSencillas > 0 ? 'Hoy ya has registrado ✓ · ' + (pendSencillas === 1 ? 'te queda 1 meta sencilla' : 'te quedan ' + pendSencillas + ' metas sencillas')
+      : 'Hoy ya has registrado ✓';
+    const fila = filaSemanaActual(), dias = Object.keys(leerDias(fila && fila.diasHechos)).length;
+    const comp = fila && Number(fila.compromisoVeces) > 0 ? Number(fila.compromisoVeces) : 0;
+    const cifras = [{ valor: diasRegistradosMeta(), etiqueta: 'días registrados con tu meta' },
+      { valor: comp ? dias + '/' + comp : dias + '/7', etiqueta: comp ? 'prácticas de tu compromiso' : 'días de práctica esta semana' }];
+    if(tocanHoy.length) cifras.push({ valor: hechasHoy + '/' + tocanHoy.length, etiqueta: 'metas sencillas hoy' });
+    const r = { estado: (hoyReg && !pendSencillas && metaHechaYa()) ? 'ok' : 'aviso', mensaje, cifras, version: APP_VERSION };
+    if(window.GrowPanel && window.GrowPanel.resumen) window.GrowPanel.resumen(r); else window.growPanelResumen = r;
+  }
   function render(){
     lectorParar(); lector.caja = null;
     if(relojFecha){ clearInterval(relojFecha); relojFecha = null; }
@@ -6895,6 +6918,7 @@ lo que haces cada día es lo que vas a ser.`;
     else if(state.desdeViaje) app.querySelectorAll('.back-btn').forEach(b => b.onclick = () => { state.desdeViaje = false; state.view = 'viaje'; state.panelSub = null; window.scrollTo(0,0); render(); });
     try { barraInferior(); } catch(e){}
     try { anotarVisita(); } catch(e){}
+    try { resumenGrowPanel(); } catch(e){}
     try { botonesMenuConAvatar(); } catch(e){}
     // Sello «by Práctica Integral»: en la pantalla de entrada y abajo del todo en Inicio
     if(state.view === 'pick' || (state.me && state.view === 'panel' && !state.panelSub))
@@ -7403,7 +7427,7 @@ lo que haces cada día es lo que vas a ser.`;
     if(state.view === 'panel'){
 
       const nombrePlan = state.plan === 'sesiones' ? 'Plan Guías + Grupo' : (state.plan === 'guias' ? 'Plan Guías' : (state.plan ? 'Plan Libre' : ''));
-      const topbarPanel = el(`<div class="topbar">${nombrePlan ? `<button type="button" class="etiqueta-plan-cab" id="btnPlanCab">⭐ ${nombrePlan} ›</button>` : '<span></span>'}<div class="topbar-der"><a class="cab-insta" href="https://www.instagram.com/practicaintegral.club/" target="_blank" rel="noopener" aria-label="Instagram de Práctica Integral Club"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.4" cy="6.6" r="1.1" fill="currentColor" stroke="none"/></svg></a>${nivelBadgeHTML()}<button class="hamburger-btn-text" id="btnMenuOpen" aria-label="Menú">☰ Menú</button></div></div>`);
+      const topbarPanel = el(`<div class="topbar">${nombrePlan ? `<button type="button" class="etiqueta-plan-cab" id="btnPlanCab">⭐ ${nombrePlan} ›</button>` : '<span></span>'}<div class="topbar-der"><span id="grow-panel-boton"></span><a class="cab-insta" href="https://www.instagram.com/practicaintegral.club/" target="_blank" rel="noopener" aria-label="Instagram de Práctica Integral Club"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.4" cy="6.6" r="1.1" fill="currentColor" stroke="none"/></svg></a>${nivelBadgeHTML()}<button class="hamburger-btn-text" id="btnMenuOpen" aria-label="Menú">☰ Menú</button></div></div>`);
       const nivelBtnPanel = topbarPanel.querySelector('#nivelBadgeBtn');
       const btnMenuOpenPanel = topbarPanel.querySelector('#btnMenuOpen');
       // Buscar el botón ANTES de insertarlo: el() devuelve un fragmento que se
@@ -12069,6 +12093,7 @@ lo que haces cada día es lo que vas a ser.`;
   }
 })();
 </script>
+<script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Metas Amables" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V13.65 · App Metas Amables · 2026-10-15 13:02==== -->
+<!-- ==== Fin del index V13.66 · App Metas Amables · 2026-10-15 19:57==== -->
