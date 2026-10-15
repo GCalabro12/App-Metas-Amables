@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V13.71 · App Metas Amables · 2026-10-15 21:35==== -->
+<!-- ==== index V13.72 · App Metas Amables · 2026-10-15 21:35==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2402,7 +2402,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V13.71';
+  const APP_VERSION = 'V13.72';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -5201,6 +5201,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
+    { v: 'V13.72', f: '15 de octubre de 2026', n: [
+      'En <b>Grupo de apoyo</b> hay un acceso directo: «🤝 Ver mi grupo y sus plantas».' ] },
     { v: 'V13.70', f: '15 de octubre de 2026', n: [
       'Terminada la prueba de Google Play, quien la probaba en Android ya puede volver a entrar también desde el navegador.' ] },
     { v: 'V13.69', f: '15 de octubre de 2026', n: [
@@ -7841,6 +7843,7 @@ lo que haces cada día es lo que vas a ser.`;
           ? '<p style="font-size:14px;color:var(--ink-soft);margin:0 0 8px">Cada 15 días, en grupo reducido, para desatascar situaciones y automotivarte. Están incluidas en el Plan Guías + Grupo.</p><a class="panel-link-btn honey" id="btnVerPlanes" href="#">Ver planes →</a>'
           : `<p style="margin:0 0 8px">${proxSesion ? '📅 ' + proxSesion : 'Cada 15 días, en grupo reducido.'}</p>
         <button id="btnAbrirCalSesiones2" style="width:100%;text-align:center;padding:12px 16px;border-radius:10px;background:#fff;border:2px solid #6B9362;color:#4E7446;font-weight:700;font-size:14px;cursor:pointer;margin:8px 0">📅 Calendario sesiones</button>
+        <button id="btnVerMiGrupo" style="width:100%;text-align:center;padding:12px 16px;border-radius:10px;background:#fff;border:2px solid #6B9362;color:#4E7446;font-weight:700;font-size:14px;cursor:pointer;margin:0 0 8px">🤝 Ver mi grupo y sus plantas</button>
         <a class="panel-link-btn" href="https://meet.google.com/qvf-aefv-trc" target="_blank" style="background:#6B9362">Enlace a la llamada →</a>
         ${soyModerador() ? '<button type="button" id="btnSituacion" style="width:100%;text-align:center;padding:12px 16px;border-radius:10px;background:#fff;border:2px solid #6B9362;color:#4E7446;font-weight:700;font-size:14px;cursor:pointer;margin:10px 0 0">👥 Situación de los practicantes de tu grupo</button>' : ''}`}
         </div>
@@ -7848,6 +7851,7 @@ lo que haces cada día es lo que vas a ser.`;
       // c = verde, como su botón en el ciclo
       s5.style.border = '2px solid #93BF80';
       if(s5.querySelector('#btnSituacion')) s5.querySelector('#btnSituacion').onclick = () => { state.prevView = 'panel'; state.view = 'situacion'; window.scrollTo(0,0); render(); };
+      if(s5.querySelector('#btnVerMiGrupo')) s5.querySelector('#btnVerMiGrupo').onclick = openGroupPanel;
       if(s5.querySelector('#btnAbrirCalSesiones2')) s5.querySelector('#btnAbrirCalSesiones2').onclick = () => { state.view = 'sesionesCal'; window.scrollTo(0,0); render(); };
       if(s5.querySelector('#btnVerPlanes')) s5.querySelector('#btnVerPlanes').onclick = (e) => { e.preventDefault(); state.prevView = 'panel'; state.view = 'planes'; window.scrollTo(0,0); render(); };
 
@@ -12188,4 +12192,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Metas Amables" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V13.71 · App Metas Amables · 2026-10-15 21:35==== -->
+<!-- ==== Fin del index V13.72 · App Metas Amables · 2026-10-15 21:35==== -->
