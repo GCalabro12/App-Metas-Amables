@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V13.67 · App Metas Amables · 2026-10-15 21:21==== -->
+<!-- ==== index V13.68 · App Metas Amables · 2026-10-15 21:27==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -847,18 +847,20 @@ button, input, textarea, select{ font-family:inherit; }
 [data-vista="frases"] .btn-yes{background:#7B5FB8 !important;border:0 !important;border-radius:999px !important;padding:14px 26px !important;font-size:18px !important;font-weight:800 !important;color:#fff !important;box-shadow:0 3px 0 #4F3A86}
 .frase-botones .btn-yes{flex:1;min-width:140px}
 
-.habla-caja{display:flex;flex-direction:column;align-items:center;min-height:calc(100vh - 150px)}
+.habla-caja{display:flex;flex-direction:column;align-items:center}
 .habla-burbuja{position:relative;width:100%;min-height:120px;background:#fff;border:3px solid #101010;border-radius:22px;padding:14px 18px;margin-top:6px;box-sizing:border-box}
 .habla-burbuja p{margin:0;font-size:18px;line-height:1.4;color:#101010}
 .habla-burbuja::after{content:"";position:absolute;left:46%;bottom:-18px;width:26px;height:26px;background:#fff;border-right:3px solid #101010;border-bottom:3px solid #101010;transform:rotate(45deg)}
 .habla-medio{position:relative;width:100%;display:flex;justify-content:center;margin-top:14px}
 .habla-practi{width:min(62vw,240px);height:min(66vw,254px);padding:0;border:0;background:none;cursor:pointer;-webkit-tap-highlight-color:transparent}
 .habla-voz{position:absolute;right:0;top:4px;width:46px;height:46px;display:flex;align-items:center;justify-content:center;padding:0;border-radius:50%;border:2px solid #7B5FB8;background:#fff;color:#7B5FB8;cursor:pointer}
-.habla-privado{margin:0 0 8px;font-size:13px;line-height:1.4;color:var(--ink-soft);text-align:center}
+.habla-lado{position:absolute;bottom:14px;max-width:calc(50% - 64px);padding:6px 10px;border-radius:14px;border:2px solid #7B5FB8;background:#fff;color:#7B5FB8;font-weight:700;font-size:13px;line-height:1.25;cursor:pointer;margin:0}
+.habla-priv{left:0}.habla-lado.habla-ver{right:0;margin:0;padding:6px 10px;border-radius:14px;font-size:13px}
+.habla-priv-pop{position:absolute;left:0;bottom:62px;width:min(260px,80%);margin:0;padding:10px 12px;border-radius:14px;border:2px solid #7B5FB8;background:#fff;color:#2B2420;font-size:14px;line-height:1.4;box-shadow:0 8px 22px rgba(60,30,120,.18);z-index:2}
 .habla-voz.apagada{border-color:#999;color:#999}
 .habla-quedan{margin:4px 0 2px;font-size:14px;font-weight:700;color:#7B5FB8;text-align:center}
 .habla-ver{margin:4px 0 10px;padding:6px 14px;border-radius:99px;border:2px solid #7B5FB8;background:#fff;color:#7B5FB8;font-weight:700;font-size:14px;cursor:pointer}
-.habla-abajo{width:100%;margin-top:auto;display:flex;flex-direction:column;gap:6px;background:#fff;border:3px solid #101010;border-radius:18px;padding:10px;box-sizing:border-box}
+.habla-abajo{width:100%;margin-top:6px;display:flex;flex-direction:column;gap:6px;background:#fff;border:3px solid #101010;border-radius:18px;padding:10px;box-sizing:border-box}
 .habla-abajo textarea{width:100%;min-width:0;padding:4px 6px;box-sizing:border-box;border:0;outline:none;resize:none;font:inherit;font-size:17px;background:transparent}
 .habla-botones{display:flex;gap:10px;align-items:center;justify-content:flex-end}
 .habla-mic{width:46px;height:46px;flex:0 0 46px;display:flex;align-items:center;justify-content:center;padding:0;border-radius:50%;border:2px solid #7B5FB8;background:#fff;color:#7B5FB8;cursor:pointer}
@@ -2392,7 +2394,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V13.67';
+  const APP_VERSION = 'V13.68';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -5169,7 +5171,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
     { v: 'V13.67', f: '15 de octubre de 2026', n: [
-      'En <b>Habla con Prácti</b>: un aviso deja claro que lo que escribes es privado y no se guarda; y mientras Prácti habla, la música baja para que se le oiga bien.',
+      'En <b>Habla con Prácti</b>: el botón «Privacidad», a la izquierda de Prácti, explica que lo que escribes es privado y no se guarda; «Conversación de hoy» pasa a la derecha y el cuadro para escribir queda justo debajo. Mientras Prácti habla, la música baja para que se le oiga bien.',
       'Moderadores: en «Situación de los practicantes» sales tú arriba con tus datos, ya no salen las cuentas de prueba, y hay un botón para actualizar los datos.' ] },
     { v: 'V13.66', f: '15 de octubre de 2026', n: [
       'Si usas varias apps de Práctica Integral, arriba en Inicio sale el botón de <b>Grow Panel</b> (la mini flor), que las reúne todas; su tarjeta de Metas Amables muestra cómo vas hoy.' ] },
@@ -5890,11 +5892,12 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
         <div class="habla-medio">
           <button type="button" class="habla-practi" id="hablaPracti" aria-label="Prácti: tócale para que repita la respuesta"><span class="habla-anim"></span><span class="habla-pensando" aria-label="Prácti pensando"></span></button>
           <button type="button" class="habla-voz" id="hablaVoz"></button>
+          <button type="button" class="habla-lado habla-priv" id="hablaPriv" aria-expanded="false">Privacidad</button>
+          <button type="button" class="habla-lado habla-ver" id="hablaVer">📜 Conversación de hoy</button>
+          <p class="habla-priv-pop" id="hablaPrivPop" hidden>Lo que escribes aquí es privado: no se guarda en Metas Amables y nadie lo lee, tampoco tu facilitador. La conversación de hoy solo queda en tu móvil.</p>
         </div>
         <p class="habla-quedan" id="hablaQuedan"></p>
-        <button type="button" class="habla-ver" id="hablaVer">📜 Ver la conversación de hoy</button>
         <div class="habla-abajo">
-          <p class="habla-privado">🔒 Lo que escribes aquí es privado: no se guarda en Metas Amables y nadie lo lee, tampoco tu facilitador. La conversación de hoy solo queda en tu móvil.</p>
           <textarea id="hablaPregunta" rows="2" placeholder="Escribe aquí tu pregunta…"></textarea>
           <div class="habla-botones">
             <button type="button" class="habla-mic" id="hablaMic" aria-label="Dictar con el micrófono">${ICONO_MIC}</button>
@@ -5916,6 +5919,10 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       else if(habla.ultima && !habla.esperando) hablaDecir(habla.ultima); };
     caja.querySelector('#hablaPracti').onclick = () => { if(habla.ultima && !habla.esperando) hablaDecir(habla.ultima); };
     caja.querySelector('#hablaVer').onclick = hablaVerConversacion;
+    // «Privacidad»: abre y cierra el aviso (también se cierra tocando fuera)
+    const priv = caja.querySelector('#hablaPriv'), pop = caja.querySelector('#hablaPrivPop');
+    priv.onclick = e => { e.stopPropagation(); pop.hidden = !pop.hidden; priv.setAttribute('aria-expanded', String(!pop.hidden)); };
+    caja.addEventListener('click', e => { if(!pop.hidden && !pop.contains(e.target) && e.target !== priv){ pop.hidden = true; priv.setAttribute('aria-expanded', 'false'); } });
     caja.querySelector('#hablaEnviar').onclick = hablaEnviar;
     campo.addEventListener('keydown', ev => { if(ev.key === 'Enter' && !ev.shiftKey){ ev.preventDefault(); hablaEnviar(); } });
     // Prácti hablando (animación propia: se mueve solo mientras habla)
@@ -12134,4 +12141,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Metas Amables" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V13.67 · App Metas Amables · 2026-10-15 21:21==== -->
+<!-- ==== Fin del index V13.68 · App Metas Amables · 2026-10-15 21:27==== -->
