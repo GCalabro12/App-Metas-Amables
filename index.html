@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V13.69 · App Metas Amables · 2026-10-15 21:29==== -->
+<!-- ==== index V13.70 · App Metas Amables · 2026-10-15 21:32==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2402,7 +2402,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V13.69';
+  const APP_VERSION = 'V13.70';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -5201,6 +5201,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
+    { v: 'V13.70', f: '15 de octubre de 2026', n: [
+      'Terminada la prueba de Google Play, quien la probaba en Android ya puede volver a entrar también desde el navegador.' ] },
     { v: 'V13.69', f: '15 de octubre de 2026', n: [
       'En <b>Mi grupo</b>: puedes dejar que tus compañeros vean tu planta del trimestre (viene apagado; lo decides tú). Si un compañero lo ha activado, con «🌿 Ver su planta» la ves, cada una por separado.' ] },
     { v: 'V13.67', f: '15 de octubre de 2026', n: [
@@ -7103,7 +7105,7 @@ lo que haces cada día es lo que vas a ser.`;
 
     // Solo para estas personas (acordado con Gustavo): en un Android, la app web se bloquea
     // y se les pide entrar por la app de Google Play (prueba cerrada). Nadie más se ve afectado.
-    const SOLO_PLAY = ['Ana María', 'Empar Luna', 'Shayo Rodriguez'];
+    const SOLO_PLAY = [];   // 15-10-2026: terminó la prueba cerrada de Google Play; ya pueden entrar también desde la web
     if(state.me && SOLO_PLAY.includes(state.me) && !MODO_PLAY && /android/i.test(navigator.userAgent)){
       app.appendChild(el(`<div class="card" style="text-align:center;margin-top:20px">
         <p style="font-size:40px;margin:0">📲</p>
@@ -12186,4 +12188,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Metas Amables" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V13.69 · App Metas Amables · 2026-10-15 21:29==== -->
+<!-- ==== Fin del index V13.70 · App Metas Amables · 2026-10-15 21:32==== -->
