@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V13.72 · App Metas Amables · 2026-10-15 21:35==== -->
+<!-- ==== index V13.73 · App Metas Amables · 2026-10-16 04:12==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2402,7 +2402,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V13.72';
+  const APP_VERSION = 'V13.73';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -2458,7 +2458,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   // Sesión caducada o cuenta borrada: se vuelve a la pantalla de entrada
   function sesionCaducada(mensaje){
     guardarSesion(null);
-    try{ localStorage.removeItem('ma_user'); }catch(e){}
+    try{ localStorage.removeItem('ma_user'); if(state.me) localStorage.removeItem('ma_datos_' + state.me); }catch(e){}
     state.me = null;
     state.view = 'pick'; state.loginView = 'login';
     state.loginError = mensaje || 'Vuelve a entrar con tu contraseña.';
@@ -2537,8 +2537,18 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   // Trae del Worker lo de la persona que ha entrado: sus filas, su plan, sus
   // puntos, las fechas de sesiones y (en Guías + Grupo) el resumen de su grupo.
+  // Copia de los últimos datos buenos en el móvil: si un día no cargan (mala conexión), se enseñan esos
+  // en vez de una app vacía que dice «Plan Libre» y pide otra vez el formulario (Daniela Mercado Antezana, 15-10-2026)
+  const claveDatosGuardados = n => 'ma_datos_' + n;
+  function datosGuardados(){
+    try { const n = state.me || localStorage.getItem('ma_user'); const c = n && JSON.parse(localStorage.getItem(claveDatosGuardados(n)) || 'null'); return c && c.d && c.d.nombre ? c : null; } catch(e){ return null; }
+  }
   async function refreshAll(){
     const d = await api('/datos' + (PLAY_AHORA ? '?play=1' : ''));
+    try { localStorage.setItem(claveDatosGuardados(d.nombre), JSON.stringify({ d, hora: Date.now() })); } catch(e){}
+    aplicarDatos(d);
+  }
+  function aplicarDatos(d){
     state.datosOk = true;
     { const h = new Date(); state.datosHora = String(h.getHours()).padStart(2, '0') + ':' + String(h.getMinutes()).padStart(2, '0'); }   // los datos han llegado (si /datos falla, se queda en false y no se pide el formulario por error)
     state.me = d.nombre;
@@ -2832,7 +2842,18 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     state.view = altaPendiente ? 'bienvenidaAlta' : 'panel'; if(altaPendiente && !state.altaPaso) state.altaPaso = 1;
     window.scrollTo(0,0); render();
     state.datosOk = false;
-    try { await refreshAll(); } catch(e){ console.error('Error cargando datos:', e); if(!e.status) state.plan = 'gratis'; avisoBreve('No se han podido cargar tus datos. Revisa la conexión y vuelve a abrir la app.'); }
+    try { await refreshAll(); } catch(e){
+      console.error('Error cargando datos:', e);
+      const g = !e.status || e.status >= 500 ? datosGuardados() : null;
+      if(g){
+        aplicarDatos(g.d);
+        const h = new Date(g.hora); state.datosHora = String(h.getHours()).padStart(2, '0') + ':' + String(h.getMinutes()).padStart(2, '0');
+        avisoBreve('Sin conexión: te enseño tus datos de la última vez. Lo que registres puede no guardarse hasta que vuelva la conexión.');
+      } else {
+        if(!e.status) state.plan = 'gratis';
+        avisoBreve('No se han podido cargar tus datos. Revisa la conexión y vuelve a abrir la app.');
+      }
+    }
     if(!state.me) return;   // la sesión había caducado: ya se muestra la pantalla de entrada
     // Si el móvil ya da permiso de avisos (la app de Google Play en Android anterior al 13), se activan solos
     try { if(pushPosible() && Notification.permission === 'granted' && !pushActivo() && localStorage.getItem('push_off_' + state.me) !== '1') activarAvisosPlanta(true); } catch(e){}
@@ -3507,7 +3528,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   function switchUser(){
     state.me = null;
     guardarSesion(null);
-    try{ localStorage.removeItem('ma_user'); }catch(e){}
+    try{ localStorage.removeItem('ma_user'); if(state.me) localStorage.removeItem('ma_datos_' + state.me); }catch(e){}
     state.view = 'pick'; window.scrollTo(0,0); render();
   }
 
@@ -5201,6 +5222,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
+    { v: 'V13.73', f: '16 de octubre de 2026', n: [
+      'Si un día la app no consigue cargar tus datos (mala conexión), te enseña los de la última vez en lugar de una app vacía con «Plan Libre» y el formulario por rellenar.' ] },
     { v: 'V13.72', f: '15 de octubre de 2026', n: [
       'En <b>Grupo de apoyo</b> hay un acceso directo: «🤝 Ver mi grupo y sus plantas».' ] },
     { v: 'V13.70', f: '15 de octubre de 2026', n: [
@@ -12192,4 +12215,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Metas Amables" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V13.72 · App Metas Amables · 2026-10-15 21:35==== -->
+<!-- ==== Fin del index V13.73 · App Metas Amables · 2026-10-16 04:12==== -->
