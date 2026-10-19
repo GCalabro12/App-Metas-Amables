@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V13.73 · App Metas Amables · 2026-10-16 04:12==== -->
+<!-- ==== index V13.74 · App Metas Amables · 2026-10-19 23:37==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2402,7 +2402,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V13.73';
+  const APP_VERSION = 'V13.74';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -5222,6 +5222,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
+    { v: 'V13.74', f: '19 de octubre de 2026', n: [
+      'En <b>Mi calendario de prácticas</b> puedes tocar un día pasado para marcar (o quitar) que hiciste tu práctica, también de semanas anteriores.' ] },
     { v: 'V13.73', f: '16 de octubre de 2026', n: [
       'Si un día la app no consigue cargar tus datos (mala conexión), te enseña los de la última vez en lugar de una app vacía con «Plan Libre» y el formulario por rellenar.' ] },
     { v: 'V13.72', f: '15 de octubre de 2026', n: [
@@ -8615,7 +8617,7 @@ lo que haces cada día es lo que vas a ser.`;
       const m0 = new Date(l.getFullYear(), l.getMonth(), 1);
       if(m0 < primero) primero = m0;
     });
-    const caja = el('<div class="cal-vertical"><p class="cv-intro">Cada día es un cuadrado: el borde es tu entorno, el círculo tu clima (verde si solo regaste) y la tilde, que hiciste tu práctica. En blanco, los días sin registro. Desliza hacia arriba para ver los meses anteriores.</p></div>').firstElementChild;
+    const caja = el('<div class="cal-vertical"><p class="cv-intro">Cada día es un cuadrado: el borde es tu entorno, el círculo tu clima (verde si solo regaste) y la tilde, que hiciste tu práctica. En blanco, los días sin registro. <b>Toca un día para marcar (o quitar) que hiciste tu práctica</b>, también de semanas anteriores. Desliza hacia arriba para ver los meses anteriores.</p></div>').firstElementChild;
     for(let d = new Date(primero); d <= hoy; d = new Date(d.getFullYear(), d.getMonth() + 1, 1)){
       const y = d.getFullYear(), m = d.getMonth(), huecos = (new Date(y, m, 1).getDay() + 6) % 7, n = new Date(y, m + 1, 0).getDate();
       let celdas = '', total = 0;
@@ -8623,12 +8625,30 @@ lo que haces cada día es lo que vas a ser.`;
       for(let k = 1; k <= n; k++){
         const dd = new Date(y, m, k), futuro = dd > hoy, hh = futuro ? 0 : diaHechoFecha(dd);
         if(hh) total++;
-        celdas += celdaDiaHTML(dd, hoy, 'span');
+        celdas += futuro ? celdaDiaHTML(dd, hoy, 'span') : celdaDiaHTML(dd, hoy, 'button', ' type="button" data-iso="' + isoLocal(dd) + '" aria-label="Marcar o quitar el ' + k + ' de ' + monthNamesEs[m] + '"');
       }
       caja.appendChild(el('<div class="card cv-mes"><p class="cv-titulo"><b>' + monthNamesEs[m].charAt(0).toUpperCase() + monthNamesEs[m].slice(1) + ' ' + y + '</b><span>' + (total ? total + (total === 1 ? ' día hecho' : ' días hechos') : '') + '</span></p>'
         + '<div class="cd-grid">' + DIAS_SEMANA.map(l => '<span class="cd-sem">' + l + '</span>').join('') + celdas + '</div>' + resumenSemanasMes(y, m) + '</div>').firstElementChild);
     }
     app.appendChild(caja);
+    // Tocar un día pasado: marca o quita «hice mi práctica» (en la fila de su semana; el clima y el entorno no se tocan)
+    caja.querySelectorAll('button.dc[data-iso]').forEach(b => b.onclick = async () => {
+      if(b.disabled) return;
+      const d = new Date(b.dataset.iso + 'T12:00:00'), wk = weekShort(lunesDe(d)), L = DIAS_SEMANA[(d.getDay() + 6) % 7];
+      const lista = state.checkins[state.me] || (state.checkins[state.me] = []);
+      let fila = lista.find(c => c.week === wk);
+      const dias = leerDias(fila && fila.diasHechos), quitar = !!dias[L];
+      if(quitar) delete dias[L]; else dias[L] = 1;
+      b.disabled = true;
+      try {
+        const campos = {}; campos[AIR.fields.semana] = wk; campos[AIR.fields.diasHechos] = escribirDias(dias);
+        const data = await guardarSemana(campos);
+        if(!fila){ fila = { id: data.id, week: wk, label: wk, cumplida: false, nota: '', estadoSemana: '', compromisoVeces: null, vecesRealizadas: null }; lista.push(fila); }
+        fila.diasHechos = escribirDias(dias);
+        avisoBreve(quitar ? 'Quitado el ' + d.getDate() + ' de ' + monthNamesEs[d.getMonth()] : '✓ Práctica marcada el ' + d.getDate() + ' de ' + monthNamesEs[d.getMonth()]);
+        const y = window.scrollY; render(); window.scrollTo(0, y);
+      } catch(e){ b.disabled = false; avisoBreve('No se pudo guardar. Revisa la conexión e inténtalo de nuevo.'); }
+    });
     const meses = caja.querySelectorAll('.cv-mes');
     if(meses.length > 1) setTimeout(() => { const r = meses[meses.length - 1].getBoundingClientRect(); window.scrollTo(0, window.scrollY + r.top - 80); }, 60);
   }
@@ -12215,4 +12235,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Metas Amables" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V13.73 · App Metas Amables · 2026-10-16 04:12==== -->
+<!-- ==== Fin del index V13.74 · App Metas Amables · 2026-10-19 23:37==== -->
