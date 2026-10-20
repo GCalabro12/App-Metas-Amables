@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V13.80 · App Amable Vision · 2026-10-20 18:57==== -->
+<!-- ==== index V13.81 · App Amable Vision · 2026-10-20 19:19==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2403,7 +2403,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V13.80';
+  const APP_VERSION = 'V13.81';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -2415,6 +2415,17 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       return localStorage.getItem('ma_origen') === 'play';
     } catch(e){ return false; }
   })();
+  // Testers de la prueba cerrada de Google Play (nombres tal como son sus cuentas de la app)
+  const TESTERS_PLAY = ['Joel Terceros', 'Daniela Mercado Antezana', 'Sandy Mora', 'Shayo Rodriguez', 'Fernando Calabró', 'Paco Muñoz', 'André Zavaleta',
+    'Silvia Tirado', 'Sandra Cañón García', 'Joaquín Juárez', 'Maria de Lourdes Ontiveros', 'Andrea Calabró', 'Oscar Cosio', 'Rosa Mª Giralt', 'MONICA LUQUE',
+    'Empar Luna', 'Ana María'];
+  // Cómo se llama a cada tester en la app (si no está aquí, la primera palabra de su nombre)
+  const NOMBRE_TESTER = { 'Maria de Lourdes Ontiveros': 'Lourdes', 'Ana María': 'Maru' };
+  function nombreTester(){
+    if(NOMBRE_TESTER[state.me]) return NOMBRE_TESTER[state.me];
+    const n = String(state.me || '').replace(/\(.*?\)/g, '').trim().split(/\s+/)[0] || '';
+    return n.charAt(0).toUpperCase() + n.slice(1).toLowerCase();
+  }
   // ¿Esta vez se ha abierto desde la app de Google Play? (no el recuerdo guardado):
   // se apunta en Airtable («Usa app Play») para saber qué testers la tienen instalada
   const PLAY_AHORA = (function(){
@@ -7164,14 +7175,12 @@ lo que haces cada día es lo que vas a ser.`;
     // y se les pide entrar por la app de Google Play (prueba cerrada). Nadie más se ve afectado.
     // Segunda prueba cerrada de Google Play (21-10 a ~4-11-2026): los testers con Android entran SOLO por la app de Play,
     // porque Google solo cuenta el uso dentro de esa app. Nombres tal como son sus cuentas de la app.
-    const SOLO_PLAY = ['Joel Terceros', 'Daniela Mercado Antezana', 'Sandy Mora', 'Shayo Rodriguez', 'Fernando Calabró', 'Paco Muñoz', 'André Zavaleta',
-      'Silvia Tirado', 'Sandra Cañón García', 'Joaquín Juárez', 'Maria de Lourdes Ontiveros', 'Andrea Calabró', 'Oscar Cosio', 'Rosa Mª Giralt', 'MONICA LUQUE',
-      'Empar Luna', 'Ana María'];
+    const SOLO_PLAY = TESTERS_PLAY;
     if(state.me && SOLO_PLAY.includes(state.me) && !MODO_PLAY && /android/i.test(navigator.userAgent)){
       app.appendChild(el(`<div class="card" style="text-align:center;margin-top:20px">
         <p style="font-size:40px;margin:0">📲</p>
         <h2 style="margin:6px 0 10px">Entra desde la app de Google Play</h2>
-        <p style="margin:0 0 14px">Hola, ${escapeAttr(String(state.me).split(' ')[0])}. Para ayudarnos con la prueba de Google, a partir de ahora usa la app de <b>Google Play</b>. Es la misma app y entras con tu nombre y contraseña de siempre: no pierdes nada.</p>
+        <p style="margin:0 0 14px">Hola, ${escapeAttr(nombreTester())}. Para ayudarnos con la prueba de Google, a partir de ahora usa la app de <b>Google Play</b>. Es la misma app y entras con tu nombre y contraseña de siempre: no pierdes nada.</p>
         <ol style="text-align:left;margin:0 0 16px;padding-left:22px;line-height:1.5">
           <li>Toca el botón de abajo.</li>
           <li>Pulsa el botón azul <b>«Become a tester»</b>.</li>
@@ -7248,6 +7257,8 @@ lo que haces cada día es lo que vas a ser.`;
     const avisoPlazo = (state.me && state.view === 'panel' && !state.panelSub) ? tarjetaPlazoMeta() : null;
     if(state.me && state.view === 'panel' && !state.panelSub){ try { if(reflexionPendiente() && !sessionStorage.getItem('ma_reflexion_vista')){ sessionStorage.setItem('ma_reflexion_vista', '1'); setTimeout(abrirReflexion, 600); } } catch(e){} }
     if(avisoPlazo) app.appendChild(avisoPlazo);
+    const avisoOpinion = (state.me && state.view === 'panel' && !state.panelSub) ? tarjetaOpinionPlay() : null;
+    if(avisoOpinion) app.appendChild(avisoOpinion);
     if(state.me && state.view === 'panel' && !state.panelSub && puedeNotaMes() && !modoMinimal()){
       const ep = estadoPosit(), clave = 'posit_visto_' + state.me + '_' + (ep.p ? (ep.p.mes || ep.p.trimestre) : '');
       let visto = false; try { visto = !!localStorage.getItem(clave); } catch(e){}
@@ -11361,6 +11372,39 @@ lo que haces cada día es lo que vas a ser.`;
     return t;
   }
   // prueba: { paso } para la vista previa del panel admin (no guarda nada y sigue de verdad a la pantalla siguiente)
+  // ===== Opinión en Google Play (20-10-2026, texto aprobado por Gustavo): desde el 23-10-2026, solo testers y solo en la app de Play.
+  // «Ya lo hice» la quita para siempre; «Más tarde», 3 días. Se guarda en este móvil. =====
+  let opinionPaso = 0;
+  function tarjetaOpinionPlay(prueba){
+    if(!prueba){
+      if(!MODO_PLAY || !TESTERS_PLAY.includes(state.me) || ahoraRegistro() < new Date(2026, 9, 23)) return null;
+      try {
+        if(localStorage.getItem('opinion_play_hecho') === '1') return null;
+        if(Number(localStorage.getItem('opinion_play_luego') || 0) > Date.now()) return null;
+      } catch(e){}
+    }
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.style.cssText = 'border:2px solid #6B9362';
+    const nombre = escapeAttr(prueba ? 'Lourdes' : nombreTester());
+    if(opinionPaso === 1){
+      card.innerHTML = '<h3 style="margin:0 0 8px">💬 Gracias, ' + nombre + '</h3>'
+        + '<p style="margin:0 0 12px">Baja hasta <b>«Enviar comentarios»</b> (o «Comentarios privados al desarrollador») y escríbenos lo que quieras. ¡Gracias!</p>'
+        + '<a class="panel-link-btn op-ir" style="background:#6B9362" href="https://play.google.com/store/apps/details?id=club.practicaintegral.metasamables" target="_blank" rel="noopener">Ir a Google Play →</a>';
+      card.querySelector('.op-ir').addEventListener('click', () => { opinionPaso = 0; try { localStorage.setItem('opinion_play_luego', String(Date.now() + 3 * 864e5)); } catch(e){} setTimeout(render, 500); });
+      return card;
+    }
+    card.innerHTML = '<h3 style="margin:0 0 8px">💬 ' + nombre + ', gracias por probar Amable Vision</h3>'
+      + '<p style="margin:0 0 12px">¿Nos dejas tu opinión en Google Play? Cuéntanos qué te gusta o qué mejorarías. Nos ayuda mucho a que la publiquen para todo el mundo 🙏</p>'
+      + '<button type="button" class="btn btn-yes op-dejar" style="text-align:center;width:100%;margin:0 0 8px">Dejar mi comentario</button>'
+      + '<div style="display:flex;gap:8px"><button type="button" class="btn op-hecho" style="flex:1;text-align:center">Ya lo hice</button>'
+      + '<button type="button" class="btn op-luego" style="flex:1;text-align:center">Más tarde</button></div>';
+    card.querySelector('.op-dejar').onclick = () => { opinionPaso = 1; if(prueba) card.replaceWith(tarjetaOpinionPlay(prueba)); else render(); };
+    card.querySelector('.op-hecho').onclick = () => { try { localStorage.setItem('opinion_play_hecho', '1'); } catch(e){} try { avisoBreve('¡Gracias de corazón! 🌱'); } catch(e){} if(!prueba) render(); };
+    card.querySelector('.op-luego').onclick = () => { try { localStorage.setItem('opinion_play_luego', String(Date.now() + 3 * 864e5)); } catch(e){} if(!prueba) render(); };
+    return card;
+  }
+
   function tarjetaPlazoMeta(prueba){
     const d = (state.gamifica && state.gamifica.datosFormulario) || {};
     const vence = vencimientoMeta();
@@ -12260,4 +12304,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Vision" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V13.80 · App Amable Vision · 2026-10-20 18:57==== -->
+<!-- ==== Fin del index V13.81 · App Amable Vision · 2026-10-20 19:19==== -->
