@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V13.79 · App Amable Vision · 2026-10-20 18:38==== -->
+<!-- ==== index V13.80 · App Amable Vision · 2026-10-20 18:57==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2403,7 +2403,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V13.79';
+  const APP_VERSION = 'V13.80';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -5236,6 +5236,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
+    { v: 'V13.80', f: '20 de octubre de 2026', n: [
+      'El compromiso del lunes es más sencillo: ya no se pregunta cuántas oportunidades tienes, solo <b>cuántas veces te comprometes</b> (contando los días en que de verdad tendrás un hueco).' ] },
     { v: 'V13.79', f: '20 de octubre de 2026', n: [
       'Si te molesta que Prácti se mueva, en <b>Utilidades › La simplicidad voluntaria</b> (última página) puedes <b>dejarlo quieto</b> sin quitar nada más. Si lo tocas, se mueve un momento.' ] },
     { v: 'V13.78', f: '20 de octubre de 2026', n: [
@@ -8171,9 +8173,6 @@ lo que haces cada día es lo que vas a ser.`;
       }
 
       // ===== PASO 2: Compromiso para la nueva semana =====
-      const oportunidadesVal = (state.oportunidadesDraft !== null && state.oportunidadesDraft !== undefined)
-        ? state.oportunidadesDraft
-        : ((thisWeek && thisWeek.oportunidades !== null && thisWeek.oportunidades !== undefined) ? thisWeek.oportunidades : '');
       const compromisoVal = (state.compromisoDraft !== null && state.compromisoDraft !== undefined)
         ? state.compromisoDraft
         : ((thisWeek && thisWeek.compromisoVeces !== null && thisWeek.compromisoVeces !== undefined) ? thisWeek.compromisoVeces : '');
@@ -8213,14 +8212,11 @@ lo que haces cada día es lo que vas a ser.`;
         <textarea id="metaSem" placeholder="Cuando me levante, haré mi práctica durante 10 minutos" style="min-height:44px;margin-bottom:${metaSemPrevia ? '6px' : '16px'}">${curMetaSem}</textarea>
         ${metaSemPrevia ? `<button type="button" class="link-quiet" id="btnUsarMetaSemPrevia" style="padding:0;margin:0 0 16px;text-align:left;display:${curMetaSem ? 'none' : 'block'}">↺ Usar el de la semana pasada: <i>«${escapeAttr(metaSemPrevia.length > 60 ? metaSemPrevia.slice(0, 60) + '…' : metaSemPrevia)}»</i></button>` : ''}
 
-        <label class="note-label strong" for="oportunidades">¿Cuántas oportunidades tienes de hacer tu práctica esta semana? (solo el número)</label>
-        <input type="number" id="oportunidades" min="0" value="${oportunidadesVal}" placeholder="Ej: 4"
-          style="width:100%;border:1px solid var(--border);border-radius:10px;padding:12px;font-family:'Karla';font-size:16px;margin-bottom:16px;background:#FCFCF9;box-sizing:border-box">
-
+        <!-- 20-10-2026: quitada la pregunta de las oportunidades (confundía); solo queda a cuántas veces te comprometes -->
         <label class="note-label strong" for="compromisoVeces">¿Cuántas veces te comprometes a hacerlo esta semana? (solo el número)</label>
         <input type="number" id="compromisoVeces" min="0" value="${compromisoVal}" placeholder="Ej: 3"
           style="width:100%;border:1px solid var(--border);border-radius:10px;padding:12px;font-family:'Karla';font-size:16px;margin-bottom:4px;background:#FCFCF9;box-sizing:border-box">
-        <p style="font-size:13px;color:var(--ink-soft);margin:0 0 14px">Sin forzarte: elige un número que puedas sostener.</p>
+        <p style="font-size:13px;color:var(--ink-soft);margin:0 0 14px">Mira tu semana y cuenta solo los días en que de verdad tendrás un hueco.</p>
 
         <button class="btn btn-yes" id="btnRegistrarTodo" style="text-align:center">${!tienePlan('guias') ? '✅ Registrar mi compromiso' : (tienePlan('sesiones') ? '📲 Registrar y compartir en WhatsApp' : '📲 Registrar y compartir con tu socio de compromiso')}</button>
         ${!tienePlan('guias') ? '<button type="button" class="link-quiet" id="btnCompartirBloq" style="padding:0;margin-top:8px;text-align:left">👑 Compartir tu compromiso por WhatsApp con tu socio de compromiso <small>(Plan Guías)</small></button>' : (tienePlan('sesiones') ? '' : '<p style="font-size:13px;color:var(--ink-soft);margin:6px 0 0">Tu <b>socio de compromiso</b> es alguien de confianza a quien le cuentas tu compromiso cada semana. Decirlo en voz alta hace que se cumpla mucho más.</p>')}
@@ -8232,7 +8228,6 @@ lo que haces cada día es lo que vas a ser.`;
       const metaTrimEl = compCard.querySelector('#metaTrim');
       const identidadEl = compCard.querySelector('#identidad');
       const metaSemEl = compCard.querySelector('#metaSem');
-      const oportEl = compCard.querySelector('#oportunidades');
       const compEl = compCard.querySelector('#compromisoVeces');
 
       function limpiarFalta(e){ e.target.classList.remove('campo-falta'); state.compromisoMsg = ''; state.mensajeWhatsApp = ''; }
@@ -8253,7 +8248,6 @@ lo que haces cada día es lo que vas a ser.`;
           metaSemEl.setSelectionRange(metaSemEl.value.length, metaSemEl.value.length);
         };
       }
-      oportEl.oninput = (e) => { state.oportunidadesDraft = e.target.value; limpiarFalta(e); };
       compEl.oninput = (e) => { state.compromisoDraft = e.target.value; limpiarFalta(e); };
 
       enlacesRegistro();
@@ -8274,7 +8268,6 @@ lo que haces cada día es lo que vas a ser.`;
           { el: metaTrimEl,   nombre: 'tu meta del trimestre' },
           { el: identidadEl,  nombre: 'tu identidad de meta' },
           { el: metaSemEl,    nombre: 'la frase Cuando…, haré…' },
-          { el: oportEl,      nombre: 'las oportunidades que estimas' },
           { el: compEl,       nombre: 'a cuántas veces te comprometes' }
         ];
         compCard.querySelectorAll('.campo-falta').forEach(n => n.classList.remove('campo-falta'));
@@ -8326,7 +8319,7 @@ lo que haces cada día es lo que vas a ser.`;
         if(metaSemTxt) msg += '\n📌 ' + metaSemTxt;
 
         // Guardar el compromiso y compartir
-        saveCompromisoSemana(oportEl.value, compEl.value, identidadEl.value, metaTrimEl.value, metaSemEl.value)
+        saveCompromisoSemana(null, compEl.value, identidadEl.value, metaTrimEl.value, metaSemEl.value)
           .then(() => {
             if(tienePlan('guias')){
               state.mensajeWhatsApp = msg;
@@ -12267,4 +12260,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Vision" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V13.79 · App Amable Vision · 2026-10-20 18:38==== -->
+<!-- ==== Fin del index V13.80 · App Amable Vision · 2026-10-20 18:57==== -->
