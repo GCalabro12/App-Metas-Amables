@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V13.77 · App Amable Vision · 2026-10-20 15:51==== -->
+<!-- ==== index V13.78 · App Amable Vision · 2026-10-20 17:24==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2402,7 +2402,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V13.77';
+  const APP_VERSION = 'V13.78';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -5222,6 +5222,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
+    { v: 'V13.78', f: '20 de octubre de 2026', n: [
+      'Testers con Android: durante la segunda prueba de Google Play (hasta el 4 de noviembre), la app se abre desde Google Play.' ] },
     { v: 'V13.77', f: '20 de octubre de 2026', n: [
       'En <b>Tu entorno de hoy</b>, nombres nuevos: «Entorno tranquilo», «Entorno acelerado», «Fuera de la rutina» (visitas, viajes, imprevistos) y «Enfermo o cuidando a alguien». Lo que ya marcaste no cambia.' ] },
     { v: 'V13.76', f: '20 de octubre de 2026', n: [
@@ -7138,7 +7140,11 @@ lo que haces cada día es lo que vas a ser.`;
 
     // Solo para estas personas (acordado con Gustavo): en un Android, la app web se bloquea
     // y se les pide entrar por la app de Google Play (prueba cerrada). Nadie más se ve afectado.
-    const SOLO_PLAY = [];   // 15-10-2026: terminó la prueba cerrada de Google Play; ya pueden entrar también desde la web
+    // Segunda prueba cerrada de Google Play (21-10 a ~4-11-2026): los testers con Android entran SOLO por la app de Play,
+    // porque Google solo cuenta el uso dentro de esa app. Nombres tal como son sus cuentas de la app.
+    const SOLO_PLAY = ['Joel Terceros', 'Daniela Mercado Antezana', 'Sandy Mora', 'Shayo Rodriguez', 'Fernando Calabró', 'Paco Muñoz', 'André Zavaleta',
+      'Silvia Tirado', 'Sandra Cañón García', 'Joaquín Juárez', 'Maria de Lourdes Ontiveros', 'Andrea Calabró', 'Oscar Cosio', 'Rosa Mª Giralt', 'MONICA LUQUE',
+      'Empar Luna', 'Ana María'];
     if(state.me && SOLO_PLAY.includes(state.me) && !MODO_PLAY && /android/i.test(navigator.userAgent)){
       app.appendChild(el(`<div class="card" style="text-align:center;margin-top:20px">
         <p style="font-size:40px;margin:0">📲</p>
@@ -12241,4 +12247,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Vision" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V13.77 · App Amable Vision · 2026-10-20 15:51==== -->
+<!-- ==== Fin del index V13.78 · App Amable Vision · 2026-10-20 17:24==== -->
