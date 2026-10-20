@@ -1,4 +1,4 @@
-// ==== Service worker de la App Metas Amables ====
+// ==== Service worker de la App Amable Vision ====
 // Permite instalar la app. Siempre pide la versión nueva a GitHub; solo si no
 // hay conexión muestra la última que guardó. No toca las llamadas al Worker.
 // Avisos en el móvil: el Worker manda un aviso sin contenido y aquí se pone el texto.

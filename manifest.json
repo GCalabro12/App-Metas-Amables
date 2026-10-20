@@ -1,8 +1,8 @@
 {
   "id": "./",
-  "name": "Metas Amables",
-  "short_name": "Metas Amables",
-  "description": "Registro semanal, panel de control y comunidad de Metas Amables",
+  "name": "Amable Vision",
+  "short_name": "Amable Vision",
+  "description": "Registro semanal, panel de control y comunidad de Amable Vision",
   "lang": "es",
   "start_url": "./",
   "scope": "./",
