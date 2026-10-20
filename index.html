@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V13.78 · App Amable Vision · 2026-10-20 17:24==== -->
+<!-- ==== index V13.79 · App Amable Vision · 2026-10-20 18:38==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1725,6 +1725,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   .practi-balanceo .practi-hueco.quieto, #practiQuieto:not(.oculto){display:inline-block;animation:balanceo 2.6s ease-in-out infinite;transform-origin:50% 100%}
   @keyframes balanceo{0%,100%{transform:rotate(-2deg) translateY(0)}50%{transform:rotate(2deg) translateY(-3px)}}
   @media (prefers-reduced-motion: reduce){.practi-balanceo .practi-hueco.quieto, #practiQuieto{animation:none}}
+  html.practi-quieto .practi-balanceo .practi-hueco.quieto, html.practi-quieto #practiQuieto:not(.oculto){animation:none}
   .guia-nueva{display:inline-block;background:#E8B400;color:#101010;font-weight:700;border-radius:8px;padding:2px 8px;animation:guiaLatido 1.6s ease-in-out infinite}
   @keyframes guiaLatido{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}
   .boton-instalar-arriba{display:block;width:100%;margin:0 0 14px;padding:12px;border:0;border-radius:12px;background:#4C8C4A;color:#fff;font-family:'Karla',sans-serif;font-size:16px;font-weight:700;cursor:pointer}
@@ -2402,7 +2403,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V13.78';
+  const APP_VERSION = 'V13.79';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -3457,6 +3458,16 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     render();
   }
   try { if(modoMinimal()) document.documentElement.classList.add('modo-minimal'); } catch(e){}
+  // Prácti quieto (20-10-2026, a petición de una practicante): solo para el movimiento de Prácti, sin quitar nada más.
+  // Se elige en la misma página del modo minimalista. Al tocarlo se mueve un momento.
+  function practiQuieto(){ try { return localStorage.getItem('practi_quieto') === '1'; } catch(e){ return false; } }
+  function ponerPractiQuieto(si){
+    try { if(si) localStorage.setItem('practi_quieto', '1'); else localStorage.removeItem('practi_quieto'); } catch(e){}
+    document.documentElement.classList.toggle('practi-quieto', !!si);
+    try { destruirPracti(); } catch(e){}
+    render();
+  }
+  try { if(practiQuieto()) document.documentElement.classList.add('practi-quieto'); } catch(e){}
 
   function lanzarAnimacion(tipo){
     if(tipo === 'confeti') return launchConfetti();
@@ -4516,7 +4527,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     }
     const L = window.lottie || window.bodymovin;
     if(!L || !raiz) return;
-    const quieto = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const quieto = (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) || practiQuieto();
     raiz.querySelectorAll('.practi[data-practi]:not(.activo)').forEach(nodo => {
       const datos = PRACTI_ANIM[nodo.getAttribute('data-practi')];
       if(!datos) return;
@@ -4533,6 +4544,9 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
           animationData: JSON.parse(JSON.stringify(datos))   // el reproductor modifica los datos: se pasa una copia
         });
         if(quieto || unaVez) anim.goToAndStop(0, true);        // quien pide menos movimiento ve el muñeco quieto
+        if(quieto && !unaVez) nodo.addEventListener('click', () => {   // quieto: al tocarlo se mueve unos segundos
+          try { clearTimeout(nodo.paraQuieto); anim.loop = true; anim.play(); nodo.paraQuieto = setTimeout(() => { try { anim.goToAndStop(0, true); } catch(e){} }, 4000); } catch(e){}
+        });
         nodo.animacion = anim;
         practiAnims.push(anim);
       } catch(e){ console.warn('Prácti no se pudo animar:', e); }
@@ -5222,6 +5236,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
+    { v: 'V13.79', f: '20 de octubre de 2026', n: [
+      'Si te molesta que Prácti se mueva, en <b>Utilidades › La simplicidad voluntaria</b> (última página) puedes <b>dejarlo quieto</b> sin quitar nada más. Si lo tocas, se mueve un momento.' ] },
     { v: 'V13.78', f: '20 de octubre de 2026', n: [
       'Testers con Android: durante la segunda prueba de Google Play (hasta el 4 de noviembre), la app se abre desde Google Play.' ] },
     { v: 'V13.77', f: '20 de octubre de 2026', n: [
@@ -5541,22 +5557,26 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
         '<p>Si sientes que la app te abruma con tanta información y pantallas, puedes activar el <b>modo minimalista</b>. Se quitan:</p>'
         + '<ul><li>Utilidades (frases, música, formación, Habla con Prácti y el juego),</li><li>Prácti saludando y sus bocadillos,</li><li>las insignias,</li><li>las notas a tu yo del futuro,</li><li>el recordatorio en el calendario del móvil,</li><li>y el fondo de imagen: todo queda en blanco.</li></ul>'
         + '<p>Lo importante sigue igual: tu meta, tu guía, tus registros y tu grupo.</p>'
-        + '<p><b>Siempre puedes volver al modo normal</b> con el interruptor que verás arriba a la derecha.</p>']
+        + '<p><b>Siempre puedes volver al modo normal</b> con el interruptor que verás arriba a la derecha.</p>'
+        + '<p>¿Solo te molesta que Prácti se mueva? Puedes <b>dejarlo quieto</b> sin quitar nada más. Si lo tocas, se mueve un momento.</p>']
     ];
     state.simpTotal = PAGS.length;   // para pasar de página deslizando el dedo
     const i = Math.max(0, Math.min(PAGS.length - 1, state.simpPag || 0)), ultima = i === PAGS.length - 1;
     const card = el('<div class="card simp-card"><h3>' + PAGS[i][0] + '</h3>' + PAGS[i][1]
       + '<div class="simp-puntos">' + PAGS.map((x, n) => '<span' + (n === i ? ' class="on"' : '') + '></span>').join('') + '</div>'
-      + (ultima ? '<button type="button" class="btn btn-yes simp-modo" style="text-align:center;width:100%;margin:0 0 10px">' + (min ? 'Volver al modo normal' : 'Activar el modo minimalista') + '</button>' : '')
+      + (ultima ? '<button type="button" class="btn btn-yes simp-modo" style="text-align:center;width:100%;margin:0 0 10px">' + (min ? 'Volver al modo normal' : 'Activar el modo minimalista') + '</button>'
+        + '<button type="button" class="btn simp-quieto" style="text-align:center;width:100%;margin:0 0 10px">' + (practiQuieto() ? 'Que Prácti vuelva a moverse' : 'Solo dejar a Prácti quieto') + '</button>' : '')
       + '<div class="simp-nav">' + (i > 0 ? '<button type="button" class="btn simp-ant">← Anterior</button>' : '')
       + (!ultima ? '<button type="button" class="btn btn-yes simp-sig">Siguiente →</button>' : '') + '</div>'
-      + (ultima ? '<p class="simp-estado">' + (min ? '✓ Ahora usas el modo minimalista.' : 'Ahora usas el modo normal.') + '</p>' : '') + '</div>').firstElementChild;
+      + (ultima ? '<p class="simp-estado">' + (min ? '✓ Ahora usas el modo minimalista.' : 'Ahora usas el modo normal.') + (practiQuieto() ? ' Prácti está quieto.' : '') + '</p>' : '') + '</div>').firstElementChild;
     app.appendChild(card);
     const ir = n => { state.simpPag = n; window.scrollTo(0, 0); render(); };
     const sig = card.querySelector('.simp-sig'), ant = card.querySelector('.simp-ant'), modo = card.querySelector('.simp-modo'), planes = card.querySelector('.simp-planes');
     if(sig) sig.onclick = () => ir(i + 1);
     if(ant) ant.onclick = () => ir(i - 1);
     if(planes) planes.onclick = irAPlanes;
+    const pq = card.querySelector('.simp-quieto');
+    if(pq) pq.onclick = () => { const q = practiQuieto(); ponerPractiQuieto(!q); try { avisoBreve(q ? 'Prácti vuelve a moverse' : 'Prácti se queda quieto. Tócalo y se moverá un momento'); } catch(e){} };
     if(modo) modo.onclick = () => { ponerModoMinimal(!min); try { avisoBreve(min ? 'Has vuelto al modo normal' : '🍃 Modo minimalista activado'); } catch(e){} };
   }
 
@@ -12247,4 +12267,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Vision" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V13.78 · App Amable Vision · 2026-10-20 17:24==== -->
+<!-- ==== Fin del index V13.79 · App Amable Vision · 2026-10-20 18:38==== -->
