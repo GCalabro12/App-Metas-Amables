@@ -1,8 +1,8 @@
 {
   "id": "./",
-  "name": "Amable Vision",
-  "short_name": "Amable Vision",
-  "description": "Registro semanal, panel de control y comunidad de Amable Vision",
+  "name": "Amable Skills",
+  "short_name": "Amable Skills",
+  "description": "Registro semanal, panel de control y comunidad de Amable Skills",
   "lang": "es",
   "start_url": "./",
   "scope": "./",
