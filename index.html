@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V13.86 · App Amable Skills · 2026-10-23 14:23==== -->
+<!-- ==== index V13.87 · App Amable Skills · 2026-10-23 14:35==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1462,7 +1462,7 @@ textarea.ms-nombre-in:focus{outline:none;border-color:#C9942D;box-shadow:0 0 0 3
 .simp-estado{margin:10px 0 0;font-size:14px;color:#5E6B55;text-align:center}
 html.ocultar-fondo body,html.ocultar-fondo .riego-capa{background:#fff!important}
 html.ocultar-practi .practi-inicio,html.ocultar-practi .practi-bocadillo,html.ocultar-practi .hablar-practi-btn,html.ocultar-insignias #nivelBadgeBtn,html.ocultar-insignias #progNivel,html.ocultar-juego .juego-btn{display:none!important}   /* «Mostrar» */
-.guia-semana .guia-plegar{margin-left:auto;padding-left:8px;font-size:15px;opacity:.75}.guia-semana .ritual-tit{display:flex;align-items:center}.guia-semana .guia-toca{margin:2px 0 0;font-size:14px;opacity:.85}
+.guia-semana .guia-fila{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:2px 0 6px}.guia-semana .guia-toca{font-size:14px;opacity:.85}.guia-semana .guia-plegar{display:inline-flex;align-items:center;gap:6px;font:700 15px Karla,sans-serif;white-space:nowrap}.guia-semana .guia-plegar-tri{font-size:22px;line-height:1}.guia-semana .ritual-guia{white-space:nowrap}
 .mostrar-caja{display:flex;flex-direction:column;align-items:center;gap:2px;width:100%;margin:22px 0 8px;padding:16px 12px;border:2.5px dashed #6E665E;border-radius:22px;background:rgba(255,255,255,.94);cursor:pointer;font-family:Karla,sans-serif;color:#4A443E;box-shadow:0 1px 4px rgba(0,0,0,.08)}
 .mostrar-caja .mostrar-tit{font-size:18px;font-weight:700;color:#3A342E}.mostrar-caja .mostrar-sub{font-size:13.5px;color:#5E574F}
 .mostrar-capa{position:fixed;inset:0;z-index:9000;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;padding:16px}
@@ -2416,7 +2416,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V13.86';
+  const APP_VERSION = 'V13.87';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -5309,7 +5309,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   const NOVEDADES = [
     { v: 'V13.86', f: '23 de octubre de 2026', n: [
       'El recuadro <b>«Mostrar»</b> se ve mejor: blanco y con el borde punteado. Y la nieve de las montañas de Inicio llega hasta las laderas.',
-      '<b>Tu guía de esta semana</b>, en Inicio, sale plegada: tócala para ver tu práctica, y tócala otra vez para ir a tu guía semanal.' ] },
+      '<b>Tu guía de esta semana</b>, en Inicio, sale plegada: toca <b>Ampliar</b> para ver tu práctica y <b>Reducir</b> para plegarla. El botón «Ir a tu guía semanal completa» abre todas las semanas.' ] },
     { v: 'V13.85', f: '23 de octubre de 2026', n: [
       'Los días en que solo registras <b>cómo te sientes</b> también cuentan: si un día estás mal y solo apuntas tu clima, la app no te pregunta por tu meta.' ] },
     { v: 'V13.83', f: '23 de octubre de 2026', n: [
@@ -10247,7 +10247,7 @@ lo que haces cada día es lo que vas a ser.`;
   }
   function claveRitual(){ return 'ritual_' + state.me + '_' + hoyISO(); }   // (antiguo «momento del día»; ya no se pregunta)
   // Paso «a» de Inicio: la guía de esta semana. alIr abre la guía como el antiguo botón «a · Guía semanal»
-  // Empieza plegada (solo el título); un toque la despliega y otro toque abre la guía semanal con todas las semanas
+  // Empieza plegada (solo el título) con «Ampliar ▼»; desplegada, «Reducir ▲» la pliega y el botón abre la guía semanal completa
   let guiaSemanaAbierta = false;
   function tarjetaGuiaSemana(alIr, extraHTML){
     if(!state.me) return null;
@@ -10256,15 +10256,15 @@ lo que haces cada día es lo que vas a ser.`;
     const c = document.createElement('div'); c.className = 'card ritual-card guia-semana ciclo-a';
     // La guía es el tutor (el palo) de la planta: la sostiene para que crezca recta y no se tuerza. Va en el azul de la guía
     const icono = '<span class="guia-semana-ico">' + iconoCiclo('a') + '</span>';   // b · Tu guía de esta semana
-    c.innerHTML = '<span class="etiqueta-recibida">Recibida</span><p class="ritual-tit">' + icono + 'Tu guía de esta semana<span class="guia-plegar" aria-hidden="true">' + (guiaSemanaAbierta ? '▴' : '▾') + '</span></p>' + (extraHTML || '')
-      + (guiaSemanaAbierta ? '' : '<p class="ritual-tx guia-toca">Toca para ver tu práctica de esta semana</p>')
+    c.innerHTML = '<span class="etiqueta-recibida">Recibida</span><p class="ritual-tit">' + icono + 'Tu guía de esta semana</p>' + (extraHTML || '')
+      + '<div class="guia-fila"><span class="guia-toca">' + (guiaSemanaAbierta ? '' : 'Tu práctica de esta semana') + '</span><span class="guia-plegar"><span class="guia-plegar-tx">' + (guiaSemanaAbierta ? 'Reducir' : 'Ampliar') + '</span><span class="guia-plegar-tri" aria-hidden="true">' + (guiaSemanaAbierta ? '▲' : '▼') + '</span></span></div>'
       + '<div class="guia-cuerpo"' + (guiaSemanaAbierta ? '' : ' hidden') + '><p class="ritual-sub">Tu guía es el <b>tutor</b> de tu planta: la sostiene para que crezca recta y no se tuerza.</p>'
       + (pg ? (pg.ejercicio ? '<p class="ritual-practica">' + escapeAttr(pg.ejercicio) + '</p>' : '')
             + (pg.objetivo ? '<p class="ritual-tx">🎯 ' + escapeAttr(pg.objetivo) + '</p>' : '')
             : '<p class="ritual-tx">Tu guía semanal te explica la práctica de esta semana.</p>')
       + (receta ? '<p class="ritual-tx">🔗 <b>Tu disparador:</b> ' + escapeAttr(receta) + '</p>'
                 : '<p class="ritual-tx">🔗 Hazla siempre en el mismo momento, <b>justo después de algo que ya haces cada día</b> (por ejemplo, después del café). <button type="button" class="ritual-cambiar ritual-receta">Elegir mi disparador</button></p>')
-      + '<button type="button" class="ritual-guia">📖 Ir a tu guía semanal</button></div>';
+      + '<button type="button" class="ritual-guia">Ir a tu guía semanal completa</button></div>';
     const irGuia = () => {
       // La guía de esta semana se abre directamente en el capítulo «Tu práctica de la semana»
       if(pg && pg.cap >= 0) (window._capGuia = window._capGuia || {})[pg.clave] = pg.cap;
@@ -10276,8 +10276,8 @@ lo que haces cada día es lo que vas a ser.`;
     c.setAttribute('aria-expanded', guiaSemanaAbierta ? 'true' : 'false');
     const tocar = e => {
       if(e.target.closest('.ritual-receta')) return;
-      if(!guiaSemanaAbierta){ guiaSemanaAbierta = true; c.replaceWith(tarjetaGuiaSemana(alIr, extraHTML)); return; }
-      irGuia();
+      guiaSemanaAbierta = !guiaSemanaAbierta;   // tocar la tarjeta amplía o reduce; la guía completa se abre con su botón
+      c.replaceWith(tarjetaGuiaSemana(alIr, extraHTML));
     };
     c.onclick = tocar;
     c.onkeydown = e => { if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); tocar(e); } };
@@ -12387,4 +12387,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Skills" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V13.86 · App Amable Skills · 2026-10-23 14:23==== -->
+<!-- ==== Fin del index V13.87 · App Amable Skills · 2026-10-23 14:35==== -->
