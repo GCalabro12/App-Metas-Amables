@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V13.87 · App Amable Skills · 2026-10-23 14:35==== -->
+<!-- ==== index V13.88 · App Amable Skills · 2026-10-23 16:52==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2416,7 +2416,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V13.87';
+  const APP_VERSION = 'V13.88';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -5307,6 +5307,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
+    { v: 'V13.88', f: '23 de octubre de 2026', n: [
+      'Si alguna pantalla no se puede mostrar, ahora sale un aviso para volver a intentarlo o mandárselo a tu facilitador, en vez de quedarse en blanco.' ] },
     { v: 'V13.86', f: '23 de octubre de 2026', n: [
       'El recuadro <b>«Mostrar»</b> se ve mejor: blanco y con el borde punteado. Y la nieve de las montañas de Inicio llega hasta las laderas.',
       '<b>Tu guía de esta semana</b>, en Inicio, sale plegada: toca <b>Ampliar</b> para ver tu práctica y <b>Reducir</b> para plegarla. El botón «Ir a tu guía semanal completa» abre todas las semanas.' ] },
@@ -7113,11 +7115,26 @@ lo que haces cada día es lo que vas a ser.`;
     const r = { estado: (hoyReg && !pendSencillas && metaHechaYa()) ? 'ok' : 'aviso', mensaje, cifras, version: APP_VERSION };
     if(window.GrowPanel && window.GrowPanel.resumen) window.GrowPanel.resumen(r); else window.growPanelResumen = r;
   }
+  function pintarErrorPantalla(err){
+    const detalle = (String((err && err.message) || err) + ' · ' + String((err && err.stack) || '').split(String.fromCharCode(10)).slice(1, 3).join(' · ')).slice(0, 400)
+      + ' · ' + APP_VERSION + ' · ' + (state.view || '') + ' · ' + navigator.userAgent.slice(0, 160);
+    const tel = TEL_FACILITADOR.replace(/\D/g, '');
+    app.innerHTML = '';
+    const c = el('<div class="card" style="margin-top:30px;text-align:center"><p style="font-size:34px;margin:0">🌱</p><h2 style="margin:6px 0 10px">Algo no ha ido bien</h2>'
+      + '<p style="margin:0 0 14px">Esta pantalla no se ha podido mostrar. Vuelve a intentarlo y, si sigue igual, mándale este aviso a Gustavo para que lo arregle.</p>'
+      + '<p style="font-size:12px;color:var(--ink-soft);word-break:break-word;background:#F6F3EE;border-radius:10px;padding:10px;text-align:left">' + escapeAttr(detalle) + '</p>'
+      + '<button type="button" class="btn btn-yes er-otra" style="width:100%;text-align:center;margin:0 0 8px">Volver a intentarlo</button>'
+      + '<a class="panel-link-btn" style="background:#6B9362" target="_blank" rel="noopener" href="https://wa.me/' + tel + '?text=' + encodeURIComponent('Hola, la app me da este error: ' + detalle) + '">Mandar el aviso a Gustavo por WhatsApp</a></div>').firstElementChild;
+    app.appendChild(c);
+    c.querySelector('.er-otra').onclick = () => location.reload();
+  }
   function render(){
     lectorParar(); lector.caja = null;
     if(relojFecha){ clearInterval(relojFecha); relojFecha = null; }
     destruirPracti();
-    renderVista();
+    // Si una pantalla falla (por ejemplo en un móvil con un navegador antiguo), en vez de quedarse en blanco
+    // se ve un aviso con el error y un botón para mandárselo a Gustavo por WhatsApp (23-10-2026, caso de Rosa)
+    try { renderVista(); } catch(err){ console.error('Error al pintar la pantalla:', err); pintarErrorPantalla(err); return; }
     try { ojosEnContrasenas(app); } catch(e){}
     // Si se llegó desde el Viaje, todos los «← Volver» de la pantalla llevan de vuelta al Viaje
     if(state.view === 'viaje') state.desdeViaje = false;
@@ -12387,4 +12404,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Skills" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V13.87 · App Amable Skills · 2026-10-23 14:35==== -->
+<!-- ==== Fin del index V13.88 · App Amable Skills · 2026-10-23 16:52==== -->
