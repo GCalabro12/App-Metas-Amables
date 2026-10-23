@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V13.83 · App Amable Skills · 2026-10-23 09:34==== -->
+<!-- ==== index V13.84 · App Amable Skills · 2026-10-23 09:45==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2415,7 +2415,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V13.83';
+  const APP_VERSION = 'V13.84';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -3476,19 +3476,21 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   // ===== «Mostrar» (23-10-2026, idea de Gustavo, como en Sleep as Android): cada persona elige qué partes ver.
   // Sustituye al modo minimalista y a «Prácti quieto». Unas partes son fijas; las demás vienen marcadas de serie.
   // Se guarda en este móvil (localStorage «mostrar_ocultos»: lista de lo que se ha quitado). =====
-  const MOSTRAR_OPC = [
-    { k: 'f1', t: 'Tu meta y los pasos (guía, registro, compromiso y grupo)', fijo: true },
-    { k: 'f2', t: 'Regar tu planta (el registro del día)', fijo: true },
-    { k: 'f3', t: 'Tus metas sencillas', fijo: true },
-    { k: 'practi', t: 'Prácti saludando y sus mensajes' },
-    { k: 'mov', t: 'Prácti en movimiento', d: 'Si lo quitas, queda quieto; al tocarlo se mueve un momento' },
-    { k: 'insignias', t: 'Insignias' },
-    { k: 'util', t: 'Utilidades', d: 'Frases, música, formación y Habla con Prácti' },
-    { k: 'juego', t: 'El juego «Salta con Prácti»' },
-    { k: 'notames', t: 'La nota del mes', d: 'El aviso en Inicio' },
-    { k: 'fondo', t: 'El fondo de imagen', d: 'Sin él, todo queda en blanco' },
-    { k: 'futuro', t: 'Notas a tu yo del futuro', d: 'En Registro y compromiso y en el Viaje' },
-    { k: 'recordatorio', t: 'Recordatorio en el calendario' }
+  const MOSTRAR_OPC = [   // p: pantallas donde sale cada opción (cada pantalla tiene su propio «Mostrar»)
+    { k: 'f1', p: ['inicio'], t: 'Tu meta y los pasos (guía, registro, compromiso y grupo)', fijo: true },
+    { k: 'f2', p: ['inicio'], t: 'Regar tu planta (el registro del día)', fijo: true },
+    { k: 'f3', p: ['inicio'], t: 'Tus metas sencillas', fijo: true },
+    { k: 'practi', p: ['inicio'], t: 'Prácti saludando y sus mensajes' },
+    { k: 'mov', p: ['inicio'], t: 'Prácti en movimiento', d: 'Si lo quitas, queda quieto en toda la app; al tocarlo se mueve un momento' },
+    { k: 'insignias', p: ['inicio'], t: 'Insignias' },
+    { k: 'util', p: ['inicio'], t: 'Utilidades', d: 'Frases, música, formación y Habla con Prácti' },
+    { k: 'juego', p: ['inicio'], t: 'El juego «Salta con Prácti»' },
+    { k: 'notames', p: ['inicio'], t: 'La nota del mes', d: 'El aviso en Inicio' },
+    { k: 'fondo', p: ['inicio'], t: 'El fondo de imagen', d: 'Sin él, todo queda en blanco' },
+    { k: 'f4', p: ['registro'], t: 'Tu registro del día y tu compromiso', fijo: true },
+    { k: 'recordatorio', p: ['registro', 'inicio'], t: 'Recordatorio en el calendario', d: 'El botón para que el móvil te lo recuerde' },
+    { k: 'futuro', p: ['registro', 'viaje'], t: 'Notas a tu yo del futuro', d: 'La nota de voz, la del mes y la del trimestre' },
+    { k: 'f5', p: ['viaje'], t: 'Los pasos de tu viaje', fijo: true }
   ];
   function ocultos(){
     try { const g = JSON.parse(localStorage.getItem('mostrar_ocultos') || 'null'); if(Array.isArray(g)) return g; } catch(e){}
@@ -3514,21 +3516,23 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
   function practiQuieto(){ return oculto('mov'); }
   try { aplicarClasesMostrar(); } catch(e){}
-  // El recuadro de líneas discontinuas «Mostrar», al final de Inicio, de Registro y compromiso y del Viaje
-  function cajaMostrar(){
-    const b = el('<button type="button" class="mostrar-caja"><span class="mostrar-tit">Mostrar</span><span class="mostrar-sub">Elige qué partes ver en la app</span></button>').firstElementChild;
-    b.onclick = abrirMostrar;
+  // El recuadro de líneas discontinuas «Mostrar», al final de Inicio, de Registro y compromiso y del Viaje: cada uno con lo suyo
+  function cajaMostrar(pant){
+    const b = el('<button type="button" class="mostrar-caja"><span class="mostrar-tit">Mostrar</span><span class="mostrar-sub">Elige qué ver en esta pantalla</span></button>').firstElementChild;
+    b.onclick = () => abrirMostrar(pant);
     return b;
   }
-  function abrirMostrar(){
-    const fuera = ocultos();
+  function abrirMostrar(pant){
+    pant = pant || 'inicio';
+    const fuera = ocultos(), opc = MOSTRAR_OPC.filter(o => o.p.includes(pant)).sort((a, b) => (b.fijo ? 1 : 0) - (a.fijo ? 1 : 0));   // las fijas, arriba
     const capa = el('<div class="mostrar-capa" role="dialog" aria-modal="true" aria-label="Mostrar"><div class="mostrar-panel"><h2>Mostrar</h2><div class="mostrar-lista">'
-      + MOSTRAR_OPC.map(o => '<label class="mostrar-op' + (o.fijo ? ' fijo' : '') + '"><input type="checkbox" data-k="' + o.k + '"' + (o.fijo || !fuera.includes(o.k) ? ' checked' : '') + (o.fijo ? ' disabled' : '') + '><span><b>' + escapeAttr(o.t) + '</b>' + (o.fijo ? '<small>Siempre</small>' : (o.d ? '<small>' + escapeAttr(o.d) + '</small>' : '')) + '</span></label>').join('')
+      + opc.map(o => '<label class="mostrar-op' + (o.fijo ? ' fijo' : '') + '"><input type="checkbox" data-k="' + o.k + '"' + (o.fijo || !fuera.includes(o.k) ? ' checked' : '') + (o.fijo ? ' disabled' : '') + '><span><b>' + escapeAttr(o.t) + '</b>' + (o.fijo ? '<small>Siempre</small>' : (o.d ? '<small>' + escapeAttr(o.d) + '</small>' : '')) + '</span></label>').join('')
       + '</div><div class="mostrar-pie"><button type="button" class="mostrar-ok">OK</button></div></div></div>').firstElementChild;
     const cerrar = () => { capa.remove(); };
     capa.onclick = e => { if(e.target === capa) cerrar(); };
     capa.querySelector('.mostrar-ok').onclick = () => {
-      const lista = [...capa.querySelectorAll('input[data-k]')].filter(c => !c.disabled && !c.checked).map(c => c.dataset.k);
+      const aqui = opc.map(o => o.k);   // lo de otras pantallas se queda como estaba
+      const lista = ocultos().filter(k => !aqui.includes(k)).concat([...capa.querySelectorAll('input[data-k]')].filter(c => !c.disabled && !c.checked).map(c => c.dataset.k));
       cerrar();
       if(JSON.stringify(lista.slice().sort()) !== JSON.stringify(ocultos().slice().sort())){ ponerOcultos(lista); try { avisoBreve('Listo: la app muestra lo que has elegido'); } catch(e){} }
     };
@@ -5303,7 +5307,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
     { v: 'V13.83', f: '23 de octubre de 2026', n: [
-      'Nuevo recuadro <b>«Mostrar»</b> al final de Inicio: elige qué partes quieres ver (Prácti, las insignias, Utilidades, el juego, el fondo…). Lo importante (tu meta, tu planta y tus metas sencillas) siempre se queda. Sustituye al modo minimalista.' ] },
+      'Nuevo recuadro <b>«Mostrar»</b> al final de Inicio, de Registro y compromiso y del Viaje: en cada pantalla eliges qué partes quieres ver (Prácti, las insignias, Utilidades, el juego, el fondo, las notas a tu yo del futuro…). Lo importante (tu meta, tu planta y tus metas sencillas) siempre se queda. Sustituye al modo minimalista.' ] },
     { v: 'V13.82', f: '21 de octubre de 2026', n: [
       '<b>Amable Vision pasa a llamarse Amable Skills</b> (habilidades): cada trimestre practicas una habilidad que de verdad te importa. Es la misma app, con tus datos, tu planta y Prácti.' ] },
     { v: 'V13.80', f: '20 de octubre de 2026', n: [
@@ -5626,7 +5630,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
         + '<p>Lo demás (música, frases, juegos…) son ayudas: puedes usarlas o no.</p>'],
       ['¿Te abruma? Elige qué ver',
         '<p>Si sientes que la app te abruma con tanta información, puedes <b>quitar lo que no quieras ver</b>.</p>'
-        + '<p>Al final de Inicio tienes el recuadro <b>«Mostrar»</b>: ahí desmarcas lo que prefieras quitar, por ejemplo Utilidades, el juego, Prácti saludando, las insignias, las notas a tu yo del futuro, el recordatorio o el fondo de imagen. Y si te molesta que Prácti se mueva, puedes dejarlo quieto.</p>'
+        + '<p>Al final de cada pantalla (Inicio, Registro y compromiso, y el Viaje) tienes un recuadro <b>«Mostrar»</b>: ahí desmarcas lo que prefieras quitar de esa pantalla, por ejemplo Utilidades, el juego, Prácti saludando, las insignias, las notas a tu yo del futuro, el recordatorio o el fondo de imagen. Y si te molesta que Prácti se mueva, puedes dejarlo quieto.</p>'
         + '<p>Lo importante siempre se queda: tu meta, tu guía, tu registro y tu grupo.</p>'
         + '<p>Puedes volver a ponerlo todo cuando quieras, desde el mismo recuadro.</p>']
     ];
@@ -5644,7 +5648,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     if(sig) sig.onclick = () => ir(i + 1);
     if(ant) ant.onclick = () => ir(i - 1);
     if(planes) planes.onclick = irAPlanes;
-    if(mostrar) mostrar.onclick = abrirMostrar;
+    if(mostrar) mostrar.onclick = () => abrirMostrar('inicio');
   }
 
   function renderNovedades(){
@@ -8020,7 +8024,7 @@ lo que haces cada día es lo que vas a ser.`;
       const juego = el('<button type="button" class="juego-btn" style="margin-top:18px"><span class="juego-btn-ico">🎮</span><span><b>Salta la valla con Prácti</b><small>Un minuto de juego: cada valla es un obstáculo que superas</small></span></button>').firstElementChild;   // el() da un fragmento: se coge el botón
       juego.onclick = abrirJuegoVallas;
       if(!oculto('juego')) app.appendChild(juego);
-      app.appendChild(cajaMostrar());   // «Mostrar», al final de Inicio
+      app.appendChild(cajaMostrar('inicio'));   // «Mostrar», al final de Inicio
       return;
     }
 
@@ -8479,7 +8483,7 @@ lo que haces cada día es lo que vas a ser.`;
         lunes.querySelector('button').onclick = () => { state.view = 'checkin'; state.regPaso = null; window.scrollTo(0,0); render(); };
         app.appendChild(lunes);
       }
-      if(oculto('futuro')){ app.appendChild(cajaMostrar()); return; }   // «Mostrar» sin las notas a tu yo del futuro
+      if(oculto('futuro')){ app.appendChild(cajaMostrar('registro')); return; }   // «Mostrar» sin las notas a tu yo del futuro
       // «Habla con tu yo del futuro»: título común para las tres notas
       app.appendChild(el('<div class="futuro-cab"><h3>🔮 Habla con tu yo del futuro</h3><p>Cuando le hablas a tu yo de dentro de unos días o unos meses, lo sientes más cercano y cuidas mejor lo que haces hoy por él. Cuéntale cómo te sientes y qué esperas.</p></div>'));
       // Las tres notas a tu yo, seguidas: la de voz (semana), la del mes y la del trimestre
@@ -8499,7 +8503,7 @@ lo que haces cada día es lo que vas a ser.`;
         state.prevView = 'practicaSemanal'; state.view = 'carta'; window.scrollTo(0,0); render();
       };
       app.appendChild(carta);
-      app.appendChild(cajaMostrar());
+      app.appendChild(cajaMostrar('registro'));
       return;
     }
 
@@ -9964,7 +9968,7 @@ lo que haces cada día es lo que vas a ser.`;
     const fin = caja.querySelector('.viaje-final'); if(fin) fin.onclick = () => { state.prevView = 'viaje'; state.view = 'panel'; state.panelSub = 's4'; window.scrollTo(0,0); render(); };
     caja.querySelectorAll('.viaje-paso[data-id]').forEach(b => b.onclick = () => { const p = r.pasos.find(x => x.id === b.dataset.id); if(p) irAPaso(p); });
     app.appendChild(caja);
-    app.appendChild(cajaMostrar());
+    app.appendChild(cajaMostrar('viaje'));
   }
   // ===== Avisos en el móvil: «Tu planta tiene sed» a las 20:00 si aún no has marcado tu práctica =====
   function vapidPublica(){ return 'BLrN-xVzI9ViyFZSu3ff9RvFQTcxzDqOIEp6byKztnXsKIy_FKzjUF6Iyj_lh6KTOuoZZMKscaVEv_sNXj6D0wQ'; }
@@ -12359,4 +12363,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Skills" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V13.83 · App Amable Skills · 2026-10-23 09:34==== -->
+<!-- ==== Fin del index V13.84 · App Amable Skills · 2026-10-23 09:45==== -->
