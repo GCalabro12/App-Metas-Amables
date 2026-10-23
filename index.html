@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V13.84 · App Amable Skills · 2026-10-23 09:45==== -->
+<!-- ==== index V13.85 · App Amable Skills · 2026-10-23 10:07==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2415,7 +2415,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V13.84';
+  const APP_VERSION = 'V13.85';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -5306,10 +5306,10 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
+    { v: 'V13.85', f: '23 de octubre de 2026', n: [
+      'Los días en que solo registras <b>cómo te sientes</b> también cuentan: si un día estás mal y solo apuntas tu clima, la app no te pregunta por tu meta.' ] },
     { v: 'V13.83', f: '23 de octubre de 2026', n: [
       'Nuevo recuadro <b>«Mostrar»</b> al final de Inicio, de Registro y compromiso y del Viaje: en cada pantalla eliges qué partes quieres ver (Prácti, las insignias, Utilidades, el juego, el fondo, las notas a tu yo del futuro…). Lo importante (tu meta, tu planta y tus metas sencillas) siempre se queda. Sustituye al modo minimalista.' ] },
-    { v: 'V13.82', f: '21 de octubre de 2026', n: [
-      '<b>Amable Vision pasa a llamarse Amable Skills</b> (habilidades): cada trimestre practicas una habilidad que de verdad te importa. Es la misma app, con tus datos, tu planta y Prácti.' ] },
     { v: 'V13.80', f: '20 de octubre de 2026', n: [
       'El compromiso del lunes es más sencillo: ya no se pregunta cuántas oportunidades tienes, solo <b>cuántas veces te comprometes</b> (contando los días en que de verdad tendrás un hueco).' ] },
     { v: 'V13.79', f: '20 de octubre de 2026', n: [
@@ -5318,10 +5318,6 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       'Testers con Android: durante la segunda prueba de Google Play (hasta el 4 de noviembre), la app se abre desde Google Play.' ] },
     { v: 'V13.77', f: '20 de octubre de 2026', n: [
       'En <b>Tu entorno de hoy</b>, nombres nuevos: «Entorno tranquilo», «Entorno acelerado», «Fuera de la rutina» (visitas, viajes, imprevistos) y «Enfermo o cuidando a alguien». Lo que ya marcaste no cambia.' ] },
-    { v: 'V13.76', f: '20 de octubre de 2026', n: [
-      'El logo de la pantalla de entrada ya dice <b>Amable Vision</b>, con Prácti y la mano con corazones de siempre.' ] },
-    { v: 'V13.75', f: '20 de octubre de 2026', n: [
-      '<b>Metas Amables pasa a llamarse Amable Vision.</b> Es la misma app, con tus datos, tu planta y Prácti: solo cambia el nombre, para que se entienda también en inglés, como el resto de la familia Amable (Amable Life, Amable PC, Amable Sleep).' ] },
     { v: 'V13.74', f: '19 de octubre de 2026', n: [
       'En <b>Mi calendario de prácticas</b> puedes tocar un día pasado para marcar (o quitar) que hiciste tu práctica, también de semanas anteriores.' ] },
     { v: 'V13.73', f: '16 de octubre de 2026', n: [
@@ -9621,9 +9617,19 @@ lo que haces cada día es lo que vas a ser.`;
       localStorage.setItem(k, String(ahora));
     } catch(e){}
   }
+  // Un día cuenta si marcó su práctica o si registró cómo se sentía (su clima) o su entorno (23-10-2026, Gustavo:
+  // quien está malo y solo apunta cómo se siente no debe recibir «Una pausa para tu meta»)
+  function climaFecha(d){
+    const lista = (state.checkins && state.checkins[state.me]) || [];
+    const fila = lista.find(c => c.week === weekShort(lunesDe(d)));
+    if(!fila) return false;
+    const letra = ['L', 'M', 'X', 'J', 'V', 'S', 'D'][(d.getDay() + 6) % 7];
+    const cl = leerAbonos(fila.abonos)[letra];
+    return !!((Array.isArray(cl) ? cl.length : cl) || leerEntornos(fila.abonos)[letra]);
+  }
   function diasSinPractica(){
     const d = ahoraRegistro(); d.setHours(0, 0, 0, 0);
-    for(let i = 0; i <= 30; i++){ if(diaHechoFecha(d) > 0) return i; d.setDate(d.getDate() - 1); }
+    for(let i = 0; i <= 30; i++){ if(diaHechoFecha(d) > 0 || climaFecha(d)) return i; d.setDate(d.getDate() - 1); }
     return 99;
   }
   function reflexionPendiente(){
@@ -9843,10 +9849,10 @@ lo que haces cada día es lo que vas a ser.`;
     let diasFuera = 0;
     try { const au = Number(localStorage.getItem('ma_ausencia_' + state.me) || 0); if(au && Date.now() - au < 2 * 86400000) diasFuera = Number(localStorage.getItem('ma_ausencia_dias_' + state.me) || 0); } catch(e){}
     const inicio = () => pantalla('Una pausa para tu meta',
-      '<p>' + (diasFuera >= 5 ? 'Llevas ' + diasFuera + ' días sin entrar.' : sin >= 6 && sin < 99 ? 'Hace ' + sin + ' días que no marcas tu práctica.' : 'Hace unos días que no te vemos por aquí.') + ' No pasa nada: a veces la vida se complica.</p>'
+      '<p>' + (diasFuera >= 5 ? 'Llevas ' + diasFuera + ' días sin entrar.' : sin >= 6 && sin < 99 ? 'Hace ' + sin + ' días que no registras nada en la app.' : 'Hace unos días que no te vemos por aquí.') + ' No pasa nada: a veces la vida se complica.</p>'
       + (meta ? '<p>La meta que te habías propuesto es esta:</p><p class="rf-meta">«' + escapeAttr(meta) + '»</p>' : '')
       + '<p><b>¿Sigue teniendo interés para ti?</b></p>',
-      [['Sí, sigue siendo importante', siImportante], ['Ya no me interesa', cambiarla]].concat(oculto('util') ? [] : [['Prefiero hablarlo con Prácti', () => { responder('practi'); cerrar(); state.prevView = state.view; state.view = 'habla'; window.scrollTo(0,0); render(); }]]));
+      [['Sí, sigue siendo importante', siImportante], ['Quiero cambiar mi meta', cambiarla]].concat(oculto('util') ? [] : [['Prefiero hablarlo con Prácti', () => { responder('practi'); cerrar(); state.prevView = state.view; state.view = 'habla'; window.scrollTo(0,0); render(); }]]));
     const siImportante = () => { responder('si'); pantalla('¡Seguimos!',
       '<p>- Un paso pequeño -</p><p>Hoy no hace falta hacerlo todo: <b>haz solo 2 minutos de tu práctica</b> y márcala. Lo importante es volver a empezar.</p><p>Recuerda por qué la elegiste: tu yo del futuro te lo agradecerá.</p>',
       [['¡Entendido!', () => { cerrar(); state.prevView = state.view; state.view = 'practicaSemanal'; window.scrollTo(0,0); render(); }]]); };
@@ -12363,4 +12369,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Skills" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V13.84 · App Amable Skills · 2026-10-23 09:45==== -->
+<!-- ==== Fin del index V13.85 · App Amable Skills · 2026-10-23 10:07==== -->
