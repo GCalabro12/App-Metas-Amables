@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V13.82 · App Amable Skills · 2026-10-21 13:24==== -->
+<!-- ==== index V13.83 · App Amable Skills · 2026-10-23 09:34==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1460,8 +1460,20 @@ textarea.ms-nombre-in:focus{outline:none;border-color:#C9942D;box-shadow:0 0 0 3
 .simp-puntos span{width:9px;height:9px;border-radius:50%;background:#D8D2C4}.simp-puntos span.on{background:#2F4A22}
 .simp-nav{display:flex;gap:10px}.simp-nav .btn{flex:1;text-align:center}
 .simp-estado{margin:10px 0 0;font-size:14px;color:#5E6B55;text-align:center}
-html.modo-minimal body,html.modo-minimal .riego-capa{background:#fff!important}
-html.modo-minimal .practi-inicio,html.modo-minimal .practi-bocadillo,html.modo-minimal .hablar-practi-btn,html.modo-minimal #nivelBadgeBtn,html.modo-minimal #progNivel,html.modo-minimal .juego-btn{display:none!important}   /* sin Prácti saludando, sin bocadillos y sin «Quiero hablar con Prácti» */
+html.ocultar-fondo body,html.ocultar-fondo .riego-capa{background:#fff!important}
+html.ocultar-practi .practi-inicio,html.ocultar-practi .practi-bocadillo,html.ocultar-practi .hablar-practi-btn,html.ocultar-insignias #nivelBadgeBtn,html.ocultar-insignias #progNivel,html.ocultar-juego .juego-btn{display:none!important}   /* «Mostrar» */
+.mostrar-caja{display:flex;flex-direction:column;align-items:center;gap:2px;width:100%;margin:22px 0 8px;padding:16px 12px;border:2px dashed #C9C2B4;border-radius:22px;background:transparent;cursor:pointer;font-family:Karla,sans-serif;color:#6E665E}
+.mostrar-caja .mostrar-tit{font-size:18px;font-weight:700;color:#5E574F}.mostrar-caja .mostrar-sub{font-size:13px}
+.mostrar-capa{position:fixed;inset:0;z-index:9000;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;padding:16px}
+.mostrar-panel{background:#fff;border-radius:22px;width:100%;max-width:420px;max-height:88vh;display:flex;flex-direction:column;overflow:hidden;font-family:Karla,sans-serif}
+.mostrar-panel h2{margin:0;padding:20px 22px 12px;font:700 24px Lora,serif;color:#2B2B2B;border-bottom:1px solid #EAE5DB}
+.mostrar-lista{overflow-y:auto;padding:6px 10px}
+.mostrar-op{display:flex;align-items:flex-start;gap:14px;padding:11px 12px;cursor:pointer;font-size:16px;color:#2B2B2B}
+.mostrar-op input{width:22px;height:22px;margin:1px 0 0;flex:none;accent-color:#6B4FA8;cursor:pointer}
+.mostrar-op small{display:block;font-size:13px;color:#7A736A;margin-top:2px}
+.mostrar-op.fijo{cursor:default;color:#8A847B}.mostrar-op.fijo input{cursor:default}
+.mostrar-pie{display:flex;justify-content:flex-end;padding:10px 16px 14px;border-top:1px solid #EAE5DB}
+.mostrar-ok{border:0;background:transparent;font:700 18px Karla,sans-serif;color:#6B4FA8;padding:10px 18px;cursor:pointer;border-radius:10px}
 .modo-switch-fila{width:100%;display:flex;justify-content:flex-end;margin:0 0 4px}
 .modo-switch{display:flex;align-items:center;gap:8px;padding:4px 4px 4px 12px;border:1px solid var(--border);border-radius:20px;background:#fff;font:700 13px Karla,sans-serif;color:#2F4A22;cursor:pointer}
 .ms-pista{position:relative;width:40px;height:22px;border-radius:11px;background:#639922;transition:background .25s}
@@ -2403,7 +2415,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V13.82';
+  const APP_VERSION = 'V13.83';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -3461,24 +3473,67 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   // ===== Modo minimalista (Utilidades → La simplicidad voluntaria). Se guarda en este móvil.
   // Quita pantallas, no sonidos: sin Utilidades (ni juego), sin las notas a tu yo del futuro, sin el recordatorio del calendario
   // y con fondo blanco. Se vuelve al modo normal con el interruptor de arriba a la derecha =====
-  function modoMinimal(){ try { return localStorage.getItem('modo_minimal') === '1'; } catch(e){ return false; } }
-  function ponerModoMinimal(si){
-    try { if(si) localStorage.setItem('modo_minimal', '1'); else localStorage.removeItem('modo_minimal'); } catch(e){}
-    document.documentElement.classList.toggle('modo-minimal', !!si);
+  // ===== «Mostrar» (23-10-2026, idea de Gustavo, como en Sleep as Android): cada persona elige qué partes ver.
+  // Sustituye al modo minimalista y a «Prácti quieto». Unas partes son fijas; las demás vienen marcadas de serie.
+  // Se guarda en este móvil (localStorage «mostrar_ocultos»: lista de lo que se ha quitado). =====
+  const MOSTRAR_OPC = [
+    { k: 'f1', t: 'Tu meta y los pasos (guía, registro, compromiso y grupo)', fijo: true },
+    { k: 'f2', t: 'Regar tu planta (el registro del día)', fijo: true },
+    { k: 'f3', t: 'Tus metas sencillas', fijo: true },
+    { k: 'practi', t: 'Prácti saludando y sus mensajes' },
+    { k: 'mov', t: 'Prácti en movimiento', d: 'Si lo quitas, queda quieto; al tocarlo se mueve un momento' },
+    { k: 'insignias', t: 'Insignias' },
+    { k: 'util', t: 'Utilidades', d: 'Frases, música, formación y Habla con Prácti' },
+    { k: 'juego', t: 'El juego «Salta con Prácti»' },
+    { k: 'notames', t: 'La nota del mes', d: 'El aviso en Inicio' },
+    { k: 'fondo', t: 'El fondo de imagen', d: 'Sin él, todo queda en blanco' },
+    { k: 'futuro', t: 'Notas a tu yo del futuro', d: 'En Registro y compromiso y en el Viaje' },
+    { k: 'recordatorio', t: 'Recordatorio en el calendario' }
+  ];
+  function ocultos(){
+    try { const g = JSON.parse(localStorage.getItem('mostrar_ocultos') || 'null'); if(Array.isArray(g)) return g; } catch(e){}
+    // Quien usaba el modo minimalista o «Prácti quieto» lo ve igual que antes
+    const o = [];
+    try {
+      if(localStorage.getItem('modo_minimal') === '1') o.push('practi', 'insignias', 'util', 'juego', 'notames', 'fondo', 'futuro', 'recordatorio');
+      if(localStorage.getItem('practi_quieto') === '1') o.push('mov');
+    } catch(e){}
+    return o;
+  }
+  function oculto(k){ return ocultos().includes(k); }
+  function aplicarClasesMostrar(){
+    const h = document.documentElement;
+    ['practi', 'insignias', 'juego', 'fondo'].forEach(k => h.classList.toggle('ocultar-' + k, oculto(k)));
+    h.classList.toggle('practi-quieto', oculto('mov'));
+  }
+  function ponerOcultos(lista){
+    try { localStorage.setItem('mostrar_ocultos', JSON.stringify(lista)); localStorage.removeItem('modo_minimal'); localStorage.removeItem('practi_quieto'); } catch(e){}
+    aplicarClasesMostrar();
     try { destruirPracti(); } catch(e){}
     render();
   }
-  try { if(modoMinimal()) document.documentElement.classList.add('modo-minimal'); } catch(e){}
-  // Prácti quieto (20-10-2026, a petición de una practicante): solo para el movimiento de Prácti, sin quitar nada más.
-  // Se elige en la misma página del modo minimalista. Al tocarlo se mueve un momento.
-  function practiQuieto(){ try { return localStorage.getItem('practi_quieto') === '1'; } catch(e){ return false; } }
-  function ponerPractiQuieto(si){
-    try { if(si) localStorage.setItem('practi_quieto', '1'); else localStorage.removeItem('practi_quieto'); } catch(e){}
-    document.documentElement.classList.toggle('practi-quieto', !!si);
-    try { destruirPracti(); } catch(e){}
-    render();
+  function practiQuieto(){ return oculto('mov'); }
+  try { aplicarClasesMostrar(); } catch(e){}
+  // El recuadro de líneas discontinuas «Mostrar», al final de Inicio, de Registro y compromiso y del Viaje
+  function cajaMostrar(){
+    const b = el('<button type="button" class="mostrar-caja"><span class="mostrar-tit">Mostrar</span><span class="mostrar-sub">Elige qué partes ver en la app</span></button>').firstElementChild;
+    b.onclick = abrirMostrar;
+    return b;
   }
-  try { if(practiQuieto()) document.documentElement.classList.add('practi-quieto'); } catch(e){}
+  function abrirMostrar(){
+    const fuera = ocultos();
+    const capa = el('<div class="mostrar-capa" role="dialog" aria-modal="true" aria-label="Mostrar"><div class="mostrar-panel"><h2>Mostrar</h2><div class="mostrar-lista">'
+      + MOSTRAR_OPC.map(o => '<label class="mostrar-op' + (o.fijo ? ' fijo' : '') + '"><input type="checkbox" data-k="' + o.k + '"' + (o.fijo || !fuera.includes(o.k) ? ' checked' : '') + (o.fijo ? ' disabled' : '') + '><span><b>' + escapeAttr(o.t) + '</b>' + (o.fijo ? '<small>Siempre</small>' : (o.d ? '<small>' + escapeAttr(o.d) + '</small>' : '')) + '</span></label>').join('')
+      + '</div><div class="mostrar-pie"><button type="button" class="mostrar-ok">OK</button></div></div></div>').firstElementChild;
+    const cerrar = () => { capa.remove(); };
+    capa.onclick = e => { if(e.target === capa) cerrar(); };
+    capa.querySelector('.mostrar-ok').onclick = () => {
+      const lista = [...capa.querySelectorAll('input[data-k]')].filter(c => !c.disabled && !c.checked).map(c => c.dataset.k);
+      cerrar();
+      if(JSON.stringify(lista.slice().sort()) !== JSON.stringify(ocultos().slice().sort())){ ponerOcultos(lista); try { avisoBreve('Listo: la app muestra lo que has elegido'); } catch(e){} }
+    };
+    document.body.appendChild(capa);
+  }
 
   function lanzarAnimacion(tipo){
     if(tipo === 'confeti') return launchConfetti();
@@ -3654,7 +3709,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     return desde ? [...dias].filter(x => x >= desde).length : dias.size;
   }
   // Los regalos que se ven: en el modo minimalista no hay juego, así que el día 15 no lleva regalo
-  function premiosReto(){ if(!modoMinimal()) return RETO_PREMIOS; const o = { ...RETO_PREMIOS }; delete o[15]; return o; }
+  function premiosReto(){ if(!oculto('juego')) return RETO_PREMIOS; const o = { ...RETO_PREMIOS }; delete o[15]; return o; }
   function premioRetoDesbloqueado(id){
     const dia = Number(Object.keys(RETO_PREMIOS).find(k => RETO_PREMIOS[k].id === id));
     return diasRegistradosReto() >= dia;
@@ -3997,7 +4052,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
           + (vecesSemanaSencilla(m) ? '<p class="ms-dias-plan">📆 ' + textoDiasSencilla(m) + '</p>' : '') + '<p class="ms-cuenta">' + cuenta(m) + '</p>' + sieteDiasSencillaHTML(m) + LEYENDA_SENCILLA
           + '<button type="button" class="ms-btn ms-cambiar">Cambiar mi ' + TXT_SENCILLA.toLowerCase() + ' →</button>'
           + '<button type="button" class="ms-btn ms-ver-cal">📅 Calendario</button>'
-          + (modoMinimal() ? '' : '<div class="ms-rec"><button type="button" class="rec-abrir">⏰ ¿Te lo recuerdo? <span>▾</span></button><div class="rec-cuerpo" hidden><div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><label style="font-size:14px">A las <input type="time" class="rec-hora" value="18:00" style="font-size:16px;padding:6px 8px;border:1px solid var(--border);border-radius:8px"></label><button type="button" class="panel-link-btn rec-btn" style="border:0;cursor:pointer;margin:0;flex:1;min-width:160px">Poner recordatorio en el calendario del móvil</button></div><p style="font-size:12px;color:var(--ink-soft);margin:6px 0 0">' + (vecesSemanaSencilla(m) ? 'Te avisa cada día' : 'Te avisa ' + (diasPlanSencilla(m).length === 7 ? 'cada día' : 'los días que elegiste (' + textoDiasSencilla(m) + ')')) + ', en el calendario de tu móvil. Lo quitas cuando quieras desde el propio calendario.</p></div></div>')
+          + (oculto('recordatorio') ? '' : '<div class="ms-rec"><button type="button" class="rec-abrir">⏰ ¿Te lo recuerdo? <span>▾</span></button><div class="rec-cuerpo" hidden><div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><label style="font-size:14px">A las <input type="time" class="rec-hora" value="18:00" style="font-size:16px;padding:6px 8px;border:1px solid var(--border);border-radius:8px"></label><button type="button" class="panel-link-btn rec-btn" style="border:0;cursor:pointer;margin:0;flex:1;min-width:160px">Poner recordatorio en el calendario del móvil</button></div><p style="font-size:12px;color:var(--ink-soft);margin:6px 0 0">' + (vecesSemanaSencilla(m) ? 'Te avisa cada día' : 'Te avisa ' + (diasPlanSencilla(m).length === 7 ? 'cada día' : 'los días que elegiste (' + textoDiasSencilla(m) + ')')) + ', en el calendario de tu móvil. Lo quitas cuando quieras desde el propio calendario.</p></div></div>')
           + '</div>').join('')
         + (activas.length < max ? '<button type="button" class="ms-btn ms-crear">' + (activas.length ? '＋ Crear otra ' : 'Crear mi ') + TXT_SENCILLA.toLowerCase() + ' →</button>' : '')
         + (max === 1 ? '<p class="ms-nota">Con el Plan Guías + Grupo puedes tener 2.</p>' : '')
@@ -4164,7 +4219,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
   function abrirJuegoVallas(){
-    if(modoMinimal()){ avisoBreve('El juego no está en el modo minimalista'); return; }
+    if(oculto('juego')){ avisoBreve('El juego está quitado: vuelve a ponerlo en «Mostrar», al final de Inicio'); return; }
     if(!premioRetoDesbloqueado('juego')){ avisoPremioBloqueado('juego'); return; }
     if(juegoAbierto) return;
     const bin = atob(JUEGO_VALLAS_B64), bytes = new Uint8Array(bin.length);
@@ -5225,7 +5280,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     app.appendChild(caja);
     // Al final de todo, más pequeños: la simplicidad voluntaria, el recorrido guiado y las novedades de cada versión
     const simp = el('<button type="button" class="util-nov" style="background:#EEF5E6"><span style="font-size:26px">🍃</span><span><b>Amable Skills: la simplicidad voluntaria</b><small>'
-      + (modoMinimal() ? 'Modo minimalista activado · aquí puedes volver al normal' : 'Por qué la app es sencilla, y el modo minimalista') + '</small></span><span class="opcion-flecha">›</span></button>').firstElementChild;
+      + 'Por qué la app es sencilla, y cómo elegir qué ver' + '</small></span><span class="opcion-flecha">›</span></button>').firstElementChild;
     simp.onclick = () => { state.simpPag = 0; state.view = 'simplicidad'; window.scrollTo(0,0); render(); };
     app.appendChild(simp);
     const guia = el('<button type="button" class="util-nov" style="background:#E9F4E4"><span style="font-size:26px">🧭</span><span><b>¿Cómo se usa la app?</b><small>Un recorrido rápido por Inicio, paso a paso</small></span><span class="opcion-flecha">›</span></button>').firstElementChild;
@@ -5247,6 +5302,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
+    { v: 'V13.83', f: '23 de octubre de 2026', n: [
+      'Nuevo recuadro <b>«Mostrar»</b> al final de Inicio: elige qué partes quieres ver (Prácti, las insignias, Utilidades, el juego, el fondo…). Lo importante (tu meta, tu planta y tus metas sencillas) siempre se queda. Sustituye al modo minimalista.' ] },
     { v: 'V13.82', f: '21 de octubre de 2026', n: [
       '<b>Amable Vision pasa a llamarse Amable Skills</b> (habilidades): cada trimestre practicas una habilidad que de verdad te importa. Es la misma app, con tus datos, tu planta y Prácti.' ] },
     { v: 'V13.80', f: '20 de octubre de 2026', n: [
@@ -5551,7 +5608,6 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   function renderSimplicidad(){
     renderBackTopbar('🍃 La simplicidad voluntaria');
     app.querySelector('#btnVolver').onclick = () => { state.simpPag = 0; state.view = 'utilidades'; window.scrollTo(0,0); render(); };
-    const min = modoMinimal();
     const PAGS = [
       ['Vivir con lo esencial',
         '<p>La <b>simplicidad voluntaria</b> es elegir vivir con menos para dejar sitio a lo que de verdad importa. No es privarte de nada: es decidir, con calma, en qué pones tu tiempo, tu atención y tu energía.</p>'
@@ -5568,31 +5624,27 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
         + '<div class="simp-pieza"><span class="simp-letra">c</span><span><b>Registrar</b> cada día tu clima, tu entorno y tu práctica.</span></div>'
         + '<div class="simp-pieza"><span class="simp-letra">d</span><span><b>Los grupos de apoyo</b> <span style="white-space:nowrap">(<button type="button" class="simp-planes">Plan Guías + Grupo</button>)</span>: personas que caminan contigo.</span></div>'
         + '<p>Lo demás (música, frases, juegos…) son ayudas: puedes usarlas o no.</p>'],
-      ['¿Te abruma? Prueba el modo minimalista',
-        '<p>Si sientes que la app te abruma con tanta información y pantallas, puedes activar el <b>modo minimalista</b>. Se quitan:</p>'
-        + '<ul><li>Utilidades (frases, música, formación, Habla con Prácti y el juego),</li><li>Prácti saludando y sus bocadillos,</li><li>las insignias,</li><li>las notas a tu yo del futuro,</li><li>el recordatorio en el calendario del móvil,</li><li>y el fondo de imagen: todo queda en blanco.</li></ul>'
-        + '<p>Lo importante sigue igual: tu meta, tu guía, tus registros y tu grupo.</p>'
-        + '<p><b>Siempre puedes volver al modo normal</b> con el interruptor que verás arriba a la derecha.</p>'
-        + '<p>¿Solo te molesta que Prácti se mueva? Puedes <b>dejarlo quieto</b> sin quitar nada más. Si lo tocas, se mueve un momento.</p>']
+      ['¿Te abruma? Elige qué ver',
+        '<p>Si sientes que la app te abruma con tanta información, puedes <b>quitar lo que no quieras ver</b>.</p>'
+        + '<p>Al final de Inicio tienes el recuadro <b>«Mostrar»</b>: ahí desmarcas lo que prefieras quitar, por ejemplo Utilidades, el juego, Prácti saludando, las insignias, las notas a tu yo del futuro, el recordatorio o el fondo de imagen. Y si te molesta que Prácti se mueva, puedes dejarlo quieto.</p>'
+        + '<p>Lo importante siempre se queda: tu meta, tu guía, tu registro y tu grupo.</p>'
+        + '<p>Puedes volver a ponerlo todo cuando quieras, desde el mismo recuadro.</p>']
     ];
     state.simpTotal = PAGS.length;   // para pasar de página deslizando el dedo
     const i = Math.max(0, Math.min(PAGS.length - 1, state.simpPag || 0)), ultima = i === PAGS.length - 1;
     const card = el('<div class="card simp-card"><h3>' + PAGS[i][0] + '</h3>' + PAGS[i][1]
       + '<div class="simp-puntos">' + PAGS.map((x, n) => '<span' + (n === i ? ' class="on"' : '') + '></span>').join('') + '</div>'
-      + (ultima ? '<button type="button" class="btn btn-yes simp-modo" style="text-align:center;width:100%;margin:0 0 10px">' + (min ? 'Volver al modo normal' : 'Activar el modo minimalista') + '</button>'
-        + '<button type="button" class="btn simp-quieto" style="text-align:center;width:100%;margin:0 0 10px">' + (practiQuieto() ? 'Que Prácti vuelva a moverse' : 'Solo dejar a Prácti quieto') + '</button>' : '')
+      + (ultima ? '<button type="button" class="btn btn-yes simp-mostrar" style="text-align:center;width:100%;margin:0 0 10px">Abrir «Mostrar»</button>' : '')
       + '<div class="simp-nav">' + (i > 0 ? '<button type="button" class="btn simp-ant">← Anterior</button>' : '')
       + (!ultima ? '<button type="button" class="btn btn-yes simp-sig">Siguiente →</button>' : '') + '</div>'
-      + (ultima ? '<p class="simp-estado">' + (min ? '✓ Ahora usas el modo minimalista.' : 'Ahora usas el modo normal.') + (practiQuieto() ? ' Prácti está quieto.' : '') + '</p>' : '') + '</div>').firstElementChild;
+      + '</div>').firstElementChild;
     app.appendChild(card);
     const ir = n => { state.simpPag = n; window.scrollTo(0, 0); render(); };
-    const sig = card.querySelector('.simp-sig'), ant = card.querySelector('.simp-ant'), modo = card.querySelector('.simp-modo'), planes = card.querySelector('.simp-planes');
+    const sig = card.querySelector('.simp-sig'), ant = card.querySelector('.simp-ant'), mostrar = card.querySelector('.simp-mostrar'), planes = card.querySelector('.simp-planes');
     if(sig) sig.onclick = () => ir(i + 1);
     if(ant) ant.onclick = () => ir(i - 1);
     if(planes) planes.onclick = irAPlanes;
-    const pq = card.querySelector('.simp-quieto');
-    if(pq) pq.onclick = () => { const q = practiQuieto(); ponerPractiQuieto(!q); try { avisoBreve(q ? 'Prácti vuelve a moverse' : 'Prácti se queda quieto. Tócalo y se moverá un momento'); } catch(e){} };
-    if(modo) modo.onclick = () => { ponerModoMinimal(!min); try { avisoBreve(min ? 'Has vuelto al modo normal' : '🍃 Modo minimalista activado'); } catch(e){} };
+    if(mostrar) mostrar.onclick = abrirMostrar;
   }
 
   function renderNovedades(){
@@ -7152,10 +7204,10 @@ lo que haces cada día es lo que vas a ser.`;
         if(paso === 'neutro'){ fondo = ''; }
         else if(paso){ fondo = FONDOS_PASO[paso]; velo = '.35'; }
       }
-      if(modoMinimal()) fondo = '';   // modo minimalista: fondo blanco
+      if(oculto('fondo')) fondo = '';   // «Mostrar» sin fondo de imagen: todo en blanco
       // Inicio: el paisaje vivo de la montaña (sin la montaña), con el color del nivel. Se queda puesto entre repintados
       // para que las animaciones no vuelvan a empezar
-      const vivo = !!(state.me && state.view === 'panel' && !state.panelSub && !modoMinimal());
+      const vivo = !!(state.me && state.view === 'panel' && !state.panelSub && !oculto('fondo'));
       let fv = document.getElementById('fondoVivo');
       if(vivo){
         let nv = 0; try { nv = Math.max(0, Math.min(4, datosMontana().nivel)); } catch(e){}
@@ -7230,7 +7282,7 @@ lo que haces cada día es lo que vas a ser.`;
     header.className = 'top';
     header.innerHTML = `
       <div class="brand-row" style="width:100%">
-        ${state.me && modoMinimal() ? '<div class="modo-switch-fila"><button type="button" class="modo-switch" role="switch" aria-checked="true" aria-label="Modo minimalista activado. Toca para volver al modo normal"><span>Modo minimalista</span><span class="ms-pista"><span class="ms-bola"></span></span></button></div>' : ''}
+        
         <div class="wordmark" style="display:flex;align-items:baseline;justify-content:space-between;width:100%">Amable Skills <small class="version-tag">${APP_VERSION}</small></div>
         <div class="lema">Sin distracciones. Solo tu meta.</div>
       </div>
@@ -7239,8 +7291,6 @@ lo que haces cada día es lo que vas a ser.`;
     app.appendChild(header);
     // «inicio» (cerrar sesión rápido, para pruebas) solo lo ve el moderador
     if(header.querySelector('#switchBtn')) header.querySelector('#switchBtn').onclick = switchUser;
-    const msw = header.querySelector('.modo-switch');
-    if(msw) msw.onclick = () => { msw.classList.add('off'); msw.setAttribute('aria-checked', 'false'); setTimeout(() => { ponerModoMinimal(false); try { avisoBreve('Has vuelto al modo normal'); } catch(e){} }, 280); };
     // Mientras no esté instalada: botón «Instalar la app» arriba en todas las pantallas
     if(state.me && !MODO_PLAY && !appInstalada() && !['pick', 'bienvenidaAlta'].includes(state.view)){
       const b = document.createElement('button');
@@ -7261,7 +7311,7 @@ lo que haces cada día es lo que vas a ser.`;
     if(avisoPlazo) app.appendChild(avisoPlazo);
     const avisoOpinion = (state.me && state.view === 'panel' && !state.panelSub) ? tarjetaOpinionPlay() : null;
     if(avisoOpinion) app.appendChild(avisoOpinion);
-    if(state.me && state.view === 'panel' && !state.panelSub && puedeNotaMes() && !modoMinimal()){
+    if(state.me && state.view === 'panel' && !state.panelSub && puedeNotaMes() && !oculto('notames')){
       const ep = estadoPosit(), clave = 'posit_visto_' + state.me + '_' + (ep.p ? (ep.p.mes || ep.p.trimestre) : '');
       let visto = false; try { visto = !!localStorage.getItem(clave); } catch(e){}
       if(ep.estado === 'abrir' && !visto){
@@ -7689,7 +7739,7 @@ lo que haces cada día es lo que vas a ser.`;
                   ? 'Registro de compromiso cada lunes y sesiones en grupo cada 15 días. Plan Guías + Grupo'
                   : (registroPendienteEstaSemana() ? '✍️ <b>Compromiso pendiente:</b> aún no has dicho cuántas veces practicarás esta semana' : '✍️ Próximo compromiso: ' + textoProximoLunes())
                     + (textoProximaSesion() ? '<br><span style="font-weight:700">📅 ' + textoProximaSesion() + '</span>' : ''), '', sinSesiones && '👑👑')
-          + (modoMinimal() ? '' : '<button type="button" class="opcion-inicio ciclo-formacion" data-ir="util"><span class="ciclo-icono">' + iconoLlave() + '</span><span class="opcion-tx"><b>Utilidades</b><small>Habla con Prácti, formación, frases y música</small></span><span class="opcion-flecha">›</span></button>');
+          + (oculto('util') ? '' : '<button type="button" class="opcion-inicio ciclo-formacion" data-ir="util"><span class="ciclo-icono">' + iconoLlave() + '</span><span class="opcion-tx"><b>Utilidades</b><small>Habla con Prácti, formación, frases y música</small></span><span class="opcion-flecha">›</span></button>');
         app.appendChild(opciones);
         try { const tp = tarjetaPlantaInicio(); if(tp) app.appendChild(tp); } catch(e){ console.error('Planta de Inicio:', e); }
         try { if(localStorage.getItem('tour_' + state.me) === 'pendiente' && state.view === 'panel'){ localStorage.setItem('tour_' + state.me, 'visto'); setTimeout(iniciarTour, 900); } } catch(e){}
@@ -7969,7 +8019,8 @@ lo que haces cada día es lo que vas a ser.`;
       // Juego extra, al final de la pantalla de inicio
       const juego = el('<button type="button" class="juego-btn" style="margin-top:18px"><span class="juego-btn-ico">🎮</span><span><b>Salta la valla con Prácti</b><small>Un minuto de juego: cada valla es un obstáculo que superas</small></span></button>').firstElementChild;   // el() da un fragmento: se coge el botón
       juego.onclick = abrirJuegoVallas;
-      if(!modoMinimal()) app.appendChild(juego);   // en el modo minimalista no hay juego
+      if(!oculto('juego')) app.appendChild(juego);
+      app.appendChild(cajaMostrar());   // «Mostrar», al final de Inicio
       return;
     }
 
@@ -8428,7 +8479,7 @@ lo que haces cada día es lo que vas a ser.`;
         lunes.querySelector('button').onclick = () => { state.view = 'checkin'; state.regPaso = null; window.scrollTo(0,0); render(); };
         app.appendChild(lunes);
       }
-      if(modoMinimal()) return;   // modo minimalista: sin las notas a tu yo del futuro
+      if(oculto('futuro')){ app.appendChild(cajaMostrar()); return; }   // «Mostrar» sin las notas a tu yo del futuro
       // «Habla con tu yo del futuro»: título común para las tres notas
       app.appendChild(el('<div class="futuro-cab"><h3>🔮 Habla con tu yo del futuro</h3><p>Cuando le hablas a tu yo de dentro de unos días o unos meses, lo sientes más cercano y cuidas mejor lo que haces hoy por él. Cuéntale cómo te sientes y qué esperas.</p></div>'));
       // Las tres notas a tu yo, seguidas: la de voz (semana), la del mes y la del trimestre
@@ -8448,6 +8499,7 @@ lo que haces cada día es lo que vas a ser.`;
         state.prevView = 'practicaSemanal'; state.view = 'carta'; window.scrollTo(0,0); render();
       };
       app.appendChild(carta);
+      app.appendChild(cajaMostrar());
       return;
     }
 
@@ -8947,7 +8999,7 @@ lo que haces cada día es lo que vas a ser.`;
     }
   }
   function recordatorioDiarioHTML(){
-    if(modoMinimal()) return document.createDocumentFragment();   // modo minimalista: sin el recordatorio del calendario
+    if(oculto('recordatorio')) return document.createDocumentFragment();   // «Mostrar» sin el recordatorio del calendario
     const caja = document.createElement('div');
     caja.style.cssText = 'border-top:1px solid var(--border);margin-top:14px;padding-top:12px';
     caja.innerHTML = `
@@ -9790,7 +9842,7 @@ lo que haces cada día es lo que vas a ser.`;
       '<p>' + (diasFuera >= 5 ? 'Llevas ' + diasFuera + ' días sin entrar.' : sin >= 6 && sin < 99 ? 'Hace ' + sin + ' días que no marcas tu práctica.' : 'Hace unos días que no te vemos por aquí.') + ' No pasa nada: a veces la vida se complica.</p>'
       + (meta ? '<p>La meta que te habías propuesto es esta:</p><p class="rf-meta">«' + escapeAttr(meta) + '»</p>' : '')
       + '<p><b>¿Sigue teniendo interés para ti?</b></p>',
-      [['Sí, sigue siendo importante', siImportante], ['Ya no me interesa', cambiarla]].concat(modoMinimal() ? [] : [['Prefiero hablarlo con Prácti', () => { responder('practi'); cerrar(); state.prevView = state.view; state.view = 'habla'; window.scrollTo(0,0); render(); }]]));
+      [['Sí, sigue siendo importante', siImportante], ['Ya no me interesa', cambiarla]].concat(oculto('util') ? [] : [['Prefiero hablarlo con Prácti', () => { responder('practi'); cerrar(); state.prevView = state.view; state.view = 'habla'; window.scrollTo(0,0); render(); }]]));
     const siImportante = () => { responder('si'); pantalla('¡Seguimos!',
       '<p>- Un paso pequeño -</p><p>Hoy no hace falta hacerlo todo: <b>haz solo 2 minutos de tu práctica</b> y márcala. Lo importante es volver a empezar.</p><p>Recuerda por qué la elegiste: tu yo del futuro te lo agradecerá.</p>',
       [['¡Entendido!', () => { cerrar(); state.prevView = state.view; state.view = 'practicaSemanal'; window.scrollTo(0,0); render(); }]]); };
@@ -9839,7 +9891,7 @@ lo que haces cada día es lo que vas a ser.`;
     const hd = new Date(), extras = extrasViaje(), ex = extras[(hd.getFullYear() * 400 + hd.getMonth() * 31 + hd.getDate()) % extras.length];
     let extraHecho = false; try { extraHecho = localStorage.getItem('viaje_extra_' + state.me) === hoyISO(); } catch(e){}
     pasos.push({ id: 'extra', titulo: ex.titulo, ir: ex.ir, opcional: true, hecho: extraHecho, bloqueo: alDia ? '' : 'Cuando lo tengas todo al día', sub: extraHecho ? 'Hecho hoy' : ex.sub });
-    return modoMinimal() ? pasos.filter(p => !['nota', 'carta', 'extra'].includes(p.id)) : pasos;
+    return oculto('futuro') ? pasos.filter(p => !['nota', 'carta', 'extra'].includes(p.id)) : pasos;
   }
   function pasoAhora(pasos){
     const orden = ['reflexion', 'meta', 'guia', 'diario', 'lunes', 'contrato', 'nota', 'carta', 'extra'];
@@ -9912,6 +9964,7 @@ lo que haces cada día es lo que vas a ser.`;
     const fin = caja.querySelector('.viaje-final'); if(fin) fin.onclick = () => { state.prevView = 'viaje'; state.view = 'panel'; state.panelSub = 's4'; window.scrollTo(0,0); render(); };
     caja.querySelectorAll('.viaje-paso[data-id]').forEach(b => b.onclick = () => { const p = r.pasos.find(x => x.id === b.dataset.id); if(p) irAPaso(p); });
     app.appendChild(caja);
+    app.appendChild(cajaMostrar());
   }
   // ===== Avisos en el móvil: «Tu planta tiene sed» a las 20:00 si aún no has marcado tu práctica =====
   function vapidPublica(){ return 'BLrN-xVzI9ViyFZSu3ff9RvFQTcxzDqOIEp6byKztnXsKIy_FKzjUF6Iyj_lh6KTOuoZZMKscaVEv_sNXj6D0wQ'; }
@@ -11272,7 +11325,7 @@ lo que haces cada día es lo que vas a ser.`;
       descubre: '<circle cx="12" cy="12" r="8.5"/><path d="m15.5 8.5-2 5-5 2 2-5z"/>'
     };
     const nombres = { inicio: 'Inicio', viaje: 'Viaje', progreso: 'Progreso', descubre: 'Utilidades' };
-    if(modoMinimal()) delete nombres.descubre;   // modo minimalista: sin Utilidades
+    if(oculto('util')) delete nombres.descubre;   // «Mostrar» sin Utilidades
     const nav = document.createElement('nav'); nav.className = 'tabbar'; nav.setAttribute('aria-label', 'Secciones');
     nav.innerHTML = Object.keys(nombres).map(k => '<button type="button" data-tab="' + k + '" class="' + (k === tab ? 'activa' : '') + '"' + (k === tab ? ' aria-current="page"' : '') + '><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + ic[k] + '</svg><span>' + nombres[k] + '</span></button>').join('');
     nav.querySelectorAll('button').forEach(b => b.onclick = () => {
@@ -12306,4 +12359,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Skills" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V13.82 · App Amable Skills · 2026-10-21 13:24==== -->
+<!-- ==== Fin del index V13.83 · App Amable Skills · 2026-10-23 09:34==== -->
