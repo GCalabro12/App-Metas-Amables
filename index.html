@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V13.85 · App Amable Skills · 2026-10-23 10:07==== -->
+<!-- ==== index V13.86 · App Amable Skills · 2026-10-23 14:23==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1462,8 +1462,9 @@ textarea.ms-nombre-in:focus{outline:none;border-color:#C9942D;box-shadow:0 0 0 3
 .simp-estado{margin:10px 0 0;font-size:14px;color:#5E6B55;text-align:center}
 html.ocultar-fondo body,html.ocultar-fondo .riego-capa{background:#fff!important}
 html.ocultar-practi .practi-inicio,html.ocultar-practi .practi-bocadillo,html.ocultar-practi .hablar-practi-btn,html.ocultar-insignias #nivelBadgeBtn,html.ocultar-insignias #progNivel,html.ocultar-juego .juego-btn{display:none!important}   /* «Mostrar» */
-.mostrar-caja{display:flex;flex-direction:column;align-items:center;gap:2px;width:100%;margin:22px 0 8px;padding:16px 12px;border:2px dashed #C9C2B4;border-radius:22px;background:transparent;cursor:pointer;font-family:Karla,sans-serif;color:#6E665E}
-.mostrar-caja .mostrar-tit{font-size:18px;font-weight:700;color:#5E574F}.mostrar-caja .mostrar-sub{font-size:13px}
+.guia-semana .guia-plegar{margin-left:auto;padding-left:8px;font-size:15px;opacity:.75}.guia-semana .ritual-tit{display:flex;align-items:center}.guia-semana .guia-toca{margin:2px 0 0;font-size:14px;opacity:.85}
+.mostrar-caja{display:flex;flex-direction:column;align-items:center;gap:2px;width:100%;margin:22px 0 8px;padding:16px 12px;border:2.5px dashed #6E665E;border-radius:22px;background:rgba(255,255,255,.94);cursor:pointer;font-family:Karla,sans-serif;color:#4A443E;box-shadow:0 1px 4px rgba(0,0,0,.08)}
+.mostrar-caja .mostrar-tit{font-size:18px;font-weight:700;color:#3A342E}.mostrar-caja .mostrar-sub{font-size:13.5px;color:#5E574F}
 .mostrar-capa{position:fixed;inset:0;z-index:9000;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;padding:16px}
 .mostrar-panel{background:#fff;border-radius:22px;width:100%;max-width:420px;max-height:88vh;display:flex;flex-direction:column;overflow:hidden;font-family:Karla,sans-serif}
 .mostrar-panel h2{margin:0;padding:20px 22px 12px;font:700 24px Lora,serif;color:#2B2B2B;border-bottom:1px solid #EAE5DB}
@@ -2415,7 +2416,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V13.85';
+  const APP_VERSION = 'V13.86';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -3021,7 +3022,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       'Tu meta del trimestre y una guía de prácticas al mes (la primera semana)',
       'Marca cada día tu práctica y consulta tu calendario',
       'Formación sobre Práctica Integral',
-      'Habla con Prácti: 3 preguntas al día',
+      'Habla con Prácti: 2 preguntas al día',
       'Frases motivadoras con 2 fondos y una música libre en cada módulo'
     ]},
     guias: { nombre: 'Plan Guías', corona: '👑', precio: '49 € al año <span class="plan-precio-paren">(menos de 1 € a la semana)</span>', precio2: 'o 6 € al mes', pagos: [{ txt: 'Pagar anual (49 €) →', url: 'https://buy.stripe.com/28E28q0Q14h96LDbX8bZe0k' }, { txt: 'Pagar mensual (6 €) →', url: 'https://buy.stripe.com/3cI14m2Y9fZR4Dv4uGbZe0j' }], incluye: [
@@ -3029,7 +3030,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       'Tu guía de prácticas personalizada, <b>nueva cada semana</b>',
       'Puedes cambiar tu meta hasta 2 veces por trimestre (y recibes una guía nueva)',
       'Una <b>meta sencilla</b> más, con su calendario',
-      'Habla con Prácti: 30 preguntas al día, adaptado a tu guía y tu motivación',
+      'Habla con Prácti: 5 preguntas al día, adaptado a tu guía y tu motivación',
       'Todos los fondos de las frases motivadoras y toda la música motivacional'
     ]},
     sesiones: { nombre: 'Plan Guías + Grupo', corona: '👑👑', precio: '360 € el primer año <span class="plan-precio-paren">(260 € a partir del segundo)</span>', precio2: 'o 105 € al trimestre', pagos: [{ txt: 'Pagar anual →', url: 'https://buy.stripe.com/7sY8wO0Q14h99XP0eqbZe0h' }, { txt: 'Pagar trimestral →', url: 'https://buy.stripe.com/6oU8wOcyJ00Tee5aT4bZe0e' }], incluye: [
@@ -3039,7 +3040,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       'Grupo de WhatsApp y «Mi grupo» en la app',
       'Hasta <b>2 metas sencillas</b>, cada una con su calendario',
       'Insignias que reconocen tu constancia',
-      'Habla con Prácti sin límite'
+      'Habla con Prácti: 10 preguntas al día'
     ]}
   };
   const ORDEN_PLAN = { gratis: 0, libre: 0, guias: 1, sesiones: 2 };
@@ -5306,6 +5307,9 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
+    { v: 'V13.86', f: '23 de octubre de 2026', n: [
+      'El recuadro <b>«Mostrar»</b> se ve mejor: blanco y con el borde punteado. Y la nieve de las montañas de Inicio llega hasta las laderas.',
+      '<b>Tu guía de esta semana</b>, en Inicio, sale plegada: tócala para ver tu práctica, y tócala otra vez para ir a tu guía semanal.' ] },
     { v: 'V13.85', f: '23 de octubre de 2026', n: [
       'Los días en que solo registras <b>cómo te sientes</b> también cuentan: si un día estás mal y solo apuntas tu clima, la app no te pregunta por tu meta.' ] },
     { v: 'V13.83', f: '23 de octubre de 2026', n: [
@@ -10243,6 +10247,8 @@ lo que haces cada día es lo que vas a ser.`;
   }
   function claveRitual(){ return 'ritual_' + state.me + '_' + hoyISO(); }   // (antiguo «momento del día»; ya no se pregunta)
   // Paso «a» de Inicio: la guía de esta semana. alIr abre la guía como el antiguo botón «a · Guía semanal»
+  // Empieza plegada (solo el título); un toque la despliega y otro toque abre la guía semanal con todas las semanas
+  let guiaSemanaAbierta = false;
   function tarjetaGuiaSemana(alIr, extraHTML){
     if(!state.me) return null;
     const pg = practicaDeLaGuia();
@@ -10250,19 +10256,31 @@ lo que haces cada día es lo que vas a ser.`;
     const c = document.createElement('div'); c.className = 'card ritual-card guia-semana ciclo-a';
     // La guía es el tutor (el palo) de la planta: la sostiene para que crezca recta y no se tuerza. Va en el azul de la guía
     const icono = '<span class="guia-semana-ico">' + iconoCiclo('a') + '</span>';   // b · Tu guía de esta semana
-    c.innerHTML = '<span class="etiqueta-recibida">Recibida</span><p class="ritual-tit">' + icono + 'Tu guía de esta semana</p>' + (extraHTML || '')
-      + '<p class="ritual-sub">Tu guía es el <b>tutor</b> de tu planta: la sostiene para que crezca recta y no se tuerza.</p>'
+    c.innerHTML = '<span class="etiqueta-recibida">Recibida</span><p class="ritual-tit">' + icono + 'Tu guía de esta semana<span class="guia-plegar" aria-hidden="true">' + (guiaSemanaAbierta ? '▴' : '▾') + '</span></p>' + (extraHTML || '')
+      + (guiaSemanaAbierta ? '' : '<p class="ritual-tx guia-toca">Toca para ver tu práctica de esta semana</p>')
+      + '<div class="guia-cuerpo"' + (guiaSemanaAbierta ? '' : ' hidden') + '><p class="ritual-sub">Tu guía es el <b>tutor</b> de tu planta: la sostiene para que crezca recta y no se tuerza.</p>'
       + (pg ? (pg.ejercicio ? '<p class="ritual-practica">' + escapeAttr(pg.ejercicio) + '</p>' : '')
             + (pg.objetivo ? '<p class="ritual-tx">🎯 ' + escapeAttr(pg.objetivo) + '</p>' : '')
             : '<p class="ritual-tx">Tu guía semanal te explica la práctica de esta semana.</p>')
       + (receta ? '<p class="ritual-tx">🔗 <b>Tu disparador:</b> ' + escapeAttr(receta) + '</p>'
                 : '<p class="ritual-tx">🔗 Hazla siempre en el mismo momento, <b>justo después de algo que ya haces cada día</b> (por ejemplo, después del café). <button type="button" class="ritual-cambiar ritual-receta">Elegir mi disparador</button></p>')
-      + '<button type="button" class="ritual-guia">📖 Ir a tu guía semanal</button>';
-    c.querySelector('.ritual-guia').onclick = () => {
+      + '<button type="button" class="ritual-guia">📖 Ir a tu guía semanal</button></div>';
+    const irGuia = () => {
       // La guía de esta semana se abre directamente en el capítulo «Tu práctica de la semana»
       if(pg && pg.cap >= 0) (window._capGuia = window._capGuia || {})[pg.clave] = pg.cap;
       alIr();
     };
+    c.querySelector('.ritual-guia').onclick = e => { e.stopPropagation(); irGuia(); };
+    c.style.cursor = 'pointer';
+    c.setAttribute('role', 'button'); c.tabIndex = 0;
+    c.setAttribute('aria-expanded', guiaSemanaAbierta ? 'true' : 'false');
+    const tocar = e => {
+      if(e.target.closest('.ritual-receta')) return;
+      if(!guiaSemanaAbierta){ guiaSemanaAbierta = true; c.replaceWith(tarjetaGuiaSemana(alIr, extraHTML)); return; }
+      irGuia();
+    };
+    c.onclick = tocar;
+    c.onkeydown = e => { if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); tocar(e); } };
     const r = c.querySelector('.ritual-receta'); if(r) r.onclick = () => abrirHistoria('brecha');
     return c;
   }
@@ -10821,7 +10839,7 @@ lo que haces cada día es lo que vas a ser.`;
       + '</svg>';
     const suelo = '<svg class="fv-suelo" viewBox="0 -60 400 260" preserveAspectRatio="xMidYMax slice" aria-hidden="true">' + estilo
       + '<path d="M0 60 L60 10 L110 32 L180 -40 L230 10 L290 -28 L350 18 L400 -10 V200 H0 Z" fill="#5B45AE"/>'
-      + '<path d="M180 -40 L168 -24 L180 -28 L192 -22 Z M290 -28 L281 -16 L290 -19 L299 -15 Z" fill="#FFFFFF" opacity=".9"/>'
+      + '<path d="M180 -40 L158.6 -18 L165 -21 L171 -15 L178 -21 L186 -14 L194 -20 L202 -18 Z M290 -28 L264.7 -12 L271 -14 L277 -8 L284 -14 L291 -7 L298 -13 L304 -9 L310.9 -12 Z" fill="#FFFFFF" opacity=".9"/>'
       + '<path d="M0 110 Q90 80 190 104 T400 92 V200 H0 Z" fill="' + C[0] + '"/>'
       + pino(40, 110, 1) + pino(64, 114, 0.8) + pino(338, 102, 1.1) + pino(362, 108, 0.85) + pino(212, 106, 0.7)
       + '<path d="M0 162 Q110 136 220 158 T400 148 V200 H0 Z" fill="' + C[1] + '" opacity=".75"/>'
@@ -12369,4 +12387,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Skills" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V13.85 · App Amable Skills · 2026-10-23 10:07==== -->
+<!-- ==== Fin del index V13.86 · App Amable Skills · 2026-10-23 14:23==== -->
