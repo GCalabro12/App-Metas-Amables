@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V13.90 · App Amable Skills · 2026-10-24 09:47==== -->
+<!-- ==== index V13.91 · App Amable Skills · 2026-10-24 09:51==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2431,7 +2431,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V13.90';
+  const APP_VERSION = 'V13.91';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -2896,7 +2896,14 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     }
     if(!state.me) return;   // la sesión había caducado: ya se muestra la pantalla de entrada
     // Si el móvil ya da permiso de avisos (la app de Google Play en Android anterior al 13), se activan solos
-    try { if(pushPosible() && Notification.permission === 'granted' && !pushActivo() && localStorage.getItem('push_off_' + state.me) !== '1') activarAvisosPlanta(true); } catch(e){}
+    try {
+      if(pushPosible() && !pushActivo() && localStorage.getItem('push_off_' + state.me) !== '1'){
+        if(Notification.permission === 'granted') activarAvisosPlanta(true);
+        // En la app de Google Play el permiso es el del móvil: si ya está dado, pedirlo no muestra nada y el aviso se activa solo.
+        // Si no está dado, el móvil pregunta una sola vez (24-10-2026, Gustavo: que no haya que pulsar nada si ya lo permitió)
+        else if(MODO_PLAY && Notification.permission === 'default' && !sessionStorage.getItem('push_pedido')){ sessionStorage.setItem('push_pedido', '1'); activarAvisosPlanta(true); }
+      }
+    } catch(e){}
     try { if(new URLSearchParams(location.search).get('regar') === '1'){ history.replaceState(null, '', location.pathname); if(diaHechoFecha(ahoraRegistro()) === 0) setTimeout(abrirMomentoRiego, 700); else setTimeout(() => avisoBreve('🌱 Hoy ya has regado tu meta'), 700); } } catch(e){}
     // Accesos directos del icono (dejarlo pulsado): «Abonar» y «Mi guía»
     try { const qs = new URLSearchParams(location.search); if(qs.get('abonar') === '1' || qs.get('clima') === '1'){ history.replaceState(null, '', location.pathname); setTimeout(() => abrirMomentoRiego(true), 700); } } catch(e){}
@@ -5324,6 +5331,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
+    { v: 'V13.91', f: '24 de octubre de 2026', n: [
+      'En la app de Google Play, si el móvil ya permite las notificaciones, el aviso diario se activa solo al abrir la app.' ] },
     { v: 'V13.90', f: '24 de octubre de 2026', n: [
       'Si ya diste permiso para los avisos, la app <b>no te lo vuelve a pedir</b>: el aviso se activa solo. Y si aún no lo tienes, basta un toque en «Activar el aviso».',
       'En los móviles estrechos, «Registra cada día» se lee mejor: letra algo más pequeña y textos más cortos.' ] },
@@ -12468,4 +12477,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Skills" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V13.90 · App Amable Skills · 2026-10-24 09:47==== -->
+<!-- ==== Fin del index V13.91 · App Amable Skills · 2026-10-24 09:51==== -->
