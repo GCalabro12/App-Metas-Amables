@@ -28,8 +28,8 @@ self.addEventListener('fetch', e => {
 
 // Aviso de las 20:00 si aún no has marcado tu práctica de hoy: primero tu clima, después registrar la práctica
 self.addEventListener('push', e => {
-  e.waitUntil(self.registration.showNotification('☀️ ¿Cómo está tu clima hoy?', {
-    body: 'Primero mira cómo te sientes y después registra si hiciste tu práctica. Aún estás a tiempo de regar tu meta 🌱',
+  e.waitUntil(self.registration.showNotification('📝 ¿Has registrado hoy?', {
+    body: 'Cuenta cómo te has sentido y cómo ha sido tu entorno, hayas hecho o no tu práctica. Te llevará un minuto 🌱',
     icon: 'icon-192.png', badge: 'badge-96.png', image: 'aviso-planta-sed.jpg', tag: 'planta', renotify: true, data: { url: './?regar=1' }
   }));
 });
