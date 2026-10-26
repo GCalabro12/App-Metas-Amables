@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V13.99 · App Amable Skills · 2026-10-26 14:11==== -->
+<!-- ==== index V14.00 · App Amable Skills · 2026-10-26 14:18==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1380,6 +1380,10 @@ textarea.ms-nombre-in:focus{outline:none;border-color:#C9942D;box-shadow:0 0 0 3
 .ciclo-meta .planta-meta{display:block;font:italic 600 16px/1.35 Nunito,sans-serif;color:#4A3A12}
 .planta-ver-montana{display:block;margin:8px auto 0;padding:8px 16px;border:0;border-radius:999px;background:rgba(255,255,255,.9);color:#2F5A23;font:800 15px Nunito,sans-serif;cursor:pointer}
 .planta-ico-abajo{display:block;width:44px;height:44px;margin:0 0 8px}.planta-ico-abajo svg{width:100%;height:100%}
+.letra-paso{display:inline-flex;align-items:center;justify-content:center;flex:none;width:30px;height:30px;margin-right:10px;border-radius:50%;background:currentColor;-webkit-text-stroke:0}
+.letra-paso i{font:900 18px/1 Nunito,sans-serif;font-style:normal;color:#fff;text-transform:lowercase;-webkit-text-stroke:0}
+.ciclo-btn.tit-arriba{grid-template-columns:1fr auto}.tit-arriba .ciclo-tit{grid-column:1}.tit-arriba .opcion-tx{grid-column:1}.tit-arriba .opcion-flecha{grid-column:2}
+.guia-sub{justify-content:flex-start}
 /* Todos los títulos de Inicio iguales: también Utilidades (26-10-2026) */
 [data-vista="panel"][data-sub=""] .ciclo-formacion .opcion-tx > b{font:800 clamp(15px,4.6vw,18px)/1.25 Nunito,sans-serif;text-transform:uppercase;letter-spacing:.02em}
 .panel-badge > span:last-child{text-transform:uppercase;letter-spacing:.04em;font-weight:800}
@@ -2455,7 +2459,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V13.99';
+  const APP_VERSION = 'V14.00';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -4505,13 +4509,13 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     const nombre = String(state.me || '').split(' ')[0];
     // Los pasos para empezar; en el Plan Libre la guía trae práctica la primera semana de cada mes
     const libre = !tienePlan('guias');
-    // Pasos con las mismas letras que los botones del ciclo: 0 = meta, a, b, c (y d con sesiones)
+    // Pasos con las mismas letras que Inicio: a Metas, b Guía, c Registro (y d Grupo, con sesiones)
     const pasos = [
-      ['0', 'Metas.', metaHechaYa() ? 'Ya tienes rellenado tu formulario.' : 'Tienes pendiente rellenarlo (el primer botón).'],
-      ['a', 'Guía semanal.', 'Recibirás tu guía de prácticas ' + (libre ? 'la primera semana de cada mes.' : 'cada semana.')],
-      ['b', 'Registro y compromiso.', 'Cada día marca los días en que la hiciste.'],
+      ['a', 'Metas.', metaHechaYa() ? 'Ya tienes rellenado tu formulario.' : 'Tienes pendiente rellenarlo (el primer botón).'],
+      ['b', 'Guía semanal.', 'Recibirás tu guía de prácticas ' + (libre ? 'la primera semana de cada mes.' : 'cada semana.')],
+      ['c', 'Registro y compromiso.', 'Cada día marca los días en que la hiciste.'],
     ];
-    if(registraLunes()) pasos.push(['c', 'Grupo de apoyo.', 'Cada lunes haces tu compromiso con el grupo y cada 15 días tienes sesión con él.']);
+    if(registraLunes()) pasos.push(['d', 'Grupo de apoyo.', 'Cada lunes haces tu compromiso con el grupo y cada 15 días tienes sesión con él.']);
     const frase = '¡Hola, ' + nombre + '! Soy Prácti y te acompaño en tus prácticas. Pasos a seguir: '
       + pasos.map(p => 'Paso ' + p[0] + ': ' + p[1] + ' ' + p[2]).join(' ');
     return '<div class="practi-bocadillo bienvenida" id="bienvenidaPracti" data-voz="' + escapeAttr(frase) + '">'
@@ -5418,6 +5422,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
+    { v: 'V14.00', f: '26 de octubre de 2026', n: [
+      'Inicio más ordenado: cada paso lleva su letra delante del título, <b>a</b> Metas, <b>b</b> Tu guía, <b>c</b> Registro y compromiso y <b>d</b> Grupo de apoyo, en lugar de los dibujos.' ] },
     { v: 'V13.99', f: '26 de octubre de 2026', n: [
       'Retoques en Inicio: todos los títulos caben en una línea, la ⓘ de Utilidades también va arriba a la derecha y «Registro y compromiso» empieza a la izquierda.' ] },
     { v: 'V13.98', f: '26 de octubre de 2026', n: [
@@ -7869,8 +7875,7 @@ lo que haces cada día es lo que vas a ser.`;
         const corto = (t, n) => { t = String(t); return t.length > n ? t.slice(0, n - 1).trim() + '…' : t; };
         const boton = (ir, clase, icono, titulo, sub, extra, candado) =>
           '<button type="button" class="opcion-inicio ciclo-btn tit-arriba ' + clase + '" data-ir="' + ir + '">'
-          + '<b class="ciclo-tit">' + titulo + '</b>'
-          + '<span class="ciclo-icono">' + iconoCiclo(icono) + '</span>'
+          + '<b class="ciclo-tit">' + letraPaso(({ a: 'b', b: 'c', cpc: 'd' })[icono] || '') + titulo + '</b>'
           + '<span class="opcion-tx"><small>' + sub + '</small>' + (extra || '') + '</span>'
           + '<span class="opcion-flecha">' + (candado || '›') + '</span></button>';
         // Orden de arriba abajo: primero la meta, después a → b → c → d
@@ -7895,10 +7900,10 @@ lo que haces cada día es lo que vas a ser.`;
         opciones.innerHTML =
           '<button type="button" class="hablar-practi-btn">💬 Quiero hablar con Prácti</button>'
           + '<div role="button" tabindex="0" class="opcion-inicio ciclo-btn tit-arriba ciclo-meta' + (metaHecha ? ' hecha' : ' pendiente') + act('meta') + '" data-ir="s4">'
-          + '<b class="ciclo-tit">Metas' + (metaHecha ? infoBoton('Aquí se guardan tus metas: tu <b>meta con guía</b>, definida para el ' + trimestreMeta()
+          + '<b class="ciclo-tit">' + letraPaso('a') + 'Metas' + (metaHecha ? infoBoton('Aquí se guardan tus metas: tu <b>meta con guía</b>, definida para el ' + trimestreMeta()
                 + (sencillasActivas().length ? (sencillasActivas().length === 1 ? ', y tu <b>' + TXT_SENCILLA.toLowerCase() + '</b>' : ', y tus <b>' + sencillasActivas().length + ' ' + TXT_SENCILLAS.toLowerCase() + '</b>') : '') + '.'
                 + (limiteMetaIntentos() > 1 ? ' Puedes cambiar la meta hasta ' + limiteMetaIntentos() + ' veces por trimestre.' : '')) : '') + '</b>'
-          + '<span class="ciclo-icono">' + iconoCiclo('cero') + '</span><span class="opcion-tx">'
+          + '<span class="opcion-tx">'
           + (metaHecha
               ? '<span class="meta-hueco"></span><span class="etiqueta-recibida">Hecha</span>'
               : '<small style="color:#B94A3A;font-weight:700">⚠️ Pendiente: empieza por aquí</small>')
@@ -10472,6 +10477,8 @@ lo que haces cada día es lo que vas a ser.`;
   // Empieza plegada (solo el título) con «Ampliar ▼»; desplegada, «Reducir ▲» la pliega y el botón abre la guía semanal completa
   let guiaSemanaAbierta = false;
   // Botón ⓘ: al tocarlo explica la tarjeta en una ventanita, sin abrirla (26-10-2026, Gustavo)
+  // Letra del paso de Inicio (a, b, c, d) en un círculo del color de su título (26-10-2026, Gustavo: más ordenado y moderno)
+  function letraPaso(l){ return '<span class="letra-paso" aria-hidden="true"><i>' + l + '</i></span>'; }
   function infoBoton(html){ return '<span class="info-i" role="button" tabindex="0" aria-label="Más información" data-info="' + escapeAttr(html) + '">'
     + '<svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><circle cx="12" cy="12" r="10.4" fill="#fff" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="7.2" r="1.6" fill="currentColor"/><path d="M12 10.6v7" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg></span>'; }
   function abrirInfo(html){
@@ -10498,8 +10505,8 @@ lo que haces cada día es lo que vas a ser.`;
     const c = document.createElement('div'); c.className = 'card ritual-card guia-semana ciclo-a';
     // La guía es el tutor (el palo) de la planta: la sostiene para que crezca recta y no se tuerza. Va en el azul de la guía
     const icono = '<span class="guia-semana-ico">' + iconoCiclo('a') + '</span>';   // b · Tu guía de esta semana
-    c.innerHTML = '<p class="ritual-tit">Tu guía de esta semana' + infoBoton('Aquí tienes la guía de esta semana: lo que vas a trabajar y <b>tu práctica</b>. Toca «Tu práctica de esta semana» para verla aquí mismo, o «Ir a tu guía semanal completa» para leerla entera.') + '</p>'
-      + '<div class="guia-sub">' + icono + '<span class="etiqueta-recibida">Recibida</span></div>' + (extraHTML || '')
+    c.innerHTML = '<p class="ritual-tit">' + letraPaso('b') + 'Tu guía de esta semana' + infoBoton('Aquí tienes la guía de esta semana: lo que vas a trabajar y <b>tu práctica</b>. Toca «Tu práctica de esta semana» para verla aquí mismo, o «Ir a tu guía semanal completa» para leerla entera.') + '</p>'
+      + '<div class="guia-sub"><span class="etiqueta-recibida">Recibida</span></div>' + (extraHTML || '')
       + '<div class="guia-fila"><span class="guia-plegar"><span class="guia-plegar-tx">Tu práctica de esta semana</span><span class="guia-plegar-tri" aria-hidden="true">' + (guiaSemanaAbierta ? '▲' : '▼') + '</span></span></div>'
       + '<div class="guia-cuerpo"' + (guiaSemanaAbierta ? '' : ' hidden') + '><p class="ritual-sub">Tu guía es el <b>tutor</b> de tu planta: la sostiene para que crezca recta y no se tuerza.</p>'
       + (pg ? (pg.ejercicio ? '<p class="ritual-practica">' + escapeAttr(pg.ejercicio) + '</p>' : '')
@@ -10932,9 +10939,9 @@ lo que haces cada día es lo que vas a ser.`;
     const estadoReg = reg
       ? '<p class="planta-reg hecho" role="button" tabindex="0">✓ Hoy ya has registrado</p>'
       : '<p class="planta-reg" role="button" tabindex="0">💧 Registra hoy</p><p class="planta-reg-lista">Te falta registrar tu clima, tu entorno o tu práctica.</p>';
-    const t = el('<div class="card planta-card ciclo-b" role="button" tabindex="0"><b class="planta-tit">Registro y compromiso<span class="planta-ir">›</span></b>'
+    const t = el('<div class="card planta-card ciclo-b" role="button" tabindex="0"><b class="planta-tit">' + letraPaso('c') + 'Registro y compromiso<span class="planta-ir">›</span></b>'
       + '<div class="planta-fila"><span class="planta-fig" title="El tutor de tu planta es tu guía semanal">' + tutor + '<img src="' + e.img + '" alt="">' + lazo + '</span>'
-      + '<div class="planta-tx"><span class="planta-tit-ico planta-ico-abajo">' + iconoCiclo('b') + '</span>' + estadoReg + '</div></div>'
+      + '<div class="planta-tx">' + estadoReg + '</div></div>'
       // Abajo, a la vista: el resto de la tarjeta (contrato, notas a tu yo, meta lograda…) se abre tocándola
       + '<p class="planta-mas">📜 Tu compromiso y más <span>›</span></p></div>').firstElementChild;
     if(alVer){ t.onclick = alVer; t.onkeydown = ev => { if(ev.key === 'Enter' || ev.key === ' '){ ev.preventDefault(); alVer(); } }; }
@@ -12647,4 +12654,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Skills" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V13.99 · App Amable Skills · 2026-10-26 14:11==== -->
+<!-- ==== Fin del index V14.00 · App Amable Skills · 2026-10-26 14:18==== -->
