@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V14.16 · App Amable Skills · 2026-10-26 16:33==== -->
+<!-- ==== index V14.17 · App Amable Skills · 2026-10-26 16:36==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1447,7 +1447,9 @@ body [data-vista="formMeta"] .fm-portada-sub{color:#2B2350}
 [data-vista="panel"][data-sub=""] .tit-arriba .ciclo-tit,[data-vista="panel"][data-sub=""] .card.guia-semana .ritual-tit,[data-vista="panel"][data-sub=""] .planta-card .planta-tit,[data-vista="panel"][data-sub=""] .planta-inicio .planta-tit,[data-vista="panel"][data-sub=""] .ciclo-formacion .opcion-tx > b{font-size:min(calc((100vw - 78px) / 15.4), 28px) !important;padding-right:0 !important;position:relative;overflow:visible}
 [data-vista="panel"][data-sub=""] .ciclo-btn .info-i,[data-vista="panel"][data-sub=""] .ciclo-formacion .info-i,[data-vista="panel"][data-sub=""] .planta-card .info-i,[data-vista="panel"][data-sub=""] .card.guia-semana .info-i{position:absolute !important;left:0 !important;right:auto !important;top:100% !important;margin:5px 0 0 !important;width:21px;height:21px}
 [data-vista="panel"][data-sub=""] .info-i svg{width:21px;height:21px}
-[data-vista="panel"][data-sub=""] .ciclo-c .ciclo-tit,[data-vista="panel"][data-sub=""] .planta-card .planta-tit,[data-vista="panel"][data-sub=""] .ciclo-formacion .opcion-tx > b{margin-bottom:28px !important}
+[data-vista="panel"][data-sub=""] .planta-card .planta-tit{margin-bottom:28px !important}
+/* Utilidades y Grupo de apoyo: la ⓘ en el mismo renglón del título */
+[data-vista="panel"][data-sub=""] .ciclo-c .ciclo-tit .info-i,[data-vista="panel"][data-sub=""] .ciclo-formacion .opcion-tx > b .info-i{position:static !important;margin:0 0 0 10px !important;top:auto !important;left:auto !important;flex:none}
 /* Todos los títulos de Inicio iguales: también Utilidades (26-10-2026) */
 [data-vista="panel"][data-sub=""] .ciclo-formacion .opcion-tx > b{font:800 clamp(15px,4.6vw,18px)/1.25 Nunito,sans-serif;text-transform:uppercase;letter-spacing:.02em}
 .panel-badge > span:last-child{text-transform:uppercase;letter-spacing:.04em;font-weight:800}
@@ -2523,7 +2525,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V14.16';
+  const APP_VERSION = 'V14.17';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -5489,6 +5491,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
+    { v: 'V14.17', f: '26 de octubre de 2026', n: [
+      'En Utilidades y Grupo de apoyo, la ⓘ va en el mismo renglón que el título.' ] },
     { v: 'V14.16', f: '26 de octubre de 2026', n: [
       'En el formulario, «(opcional)» va detrás de la pregunta, no encima.' ] },
     { v: 'V14.15', f: '26 de octubre de 2026', n: [
@@ -12771,4 +12775,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Skills" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V14.16 · App Amable Skills · 2026-10-26 16:33==== -->
+<!-- ==== Fin del index V14.17 · App Amable Skills · 2026-10-26 16:36==== -->
