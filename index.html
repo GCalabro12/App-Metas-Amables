@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V14.23 · App Amable Skills · 2026-10-26 17:00==== -->
+<!-- ==== index V14.24 · App Amable Skills · 2026-10-26 17:15==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1476,9 +1476,9 @@ body [data-vista="formMeta"]::after{content:'';position:fixed;left:0;right:0;bot
 .hn-sig{flex:1;padding:16px;border:0;border-radius:16px;background:#FFFFFF;color:#A93226;font:900 18px Nunito,sans-serif;cursor:pointer}
 .reto-dia{text-align:center;margin:4px 0 6px}.reto-dia span{display:block;font:800 13px Karla,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#7B5FB8}.reto-dia b{display:block;margin-top:2px;font:900 clamp(24px,7vw,30px)/1.15 Nunito,sans-serif;color:#2B2350}
 .reto-cab{position:relative;overflow:hidden}.reto-cab > :not(.reto-rayos){position:relative;z-index:1}
-.reto-rayos{position:absolute;left:50%;top:55%;width:640px;height:640px;margin:-320px 0 0 -320px;border-radius:50%;background:radial-gradient(circle,rgba(255,236,170,.95) 0,rgba(255,236,170,0) 26%),repeating-conic-gradient(from 0deg,rgba(255,170,30,.62) 0deg 8deg,rgba(255,170,30,0) 8deg 20deg);-webkit-mask:radial-gradient(circle,#000 0,#000 34%,transparent 66%);mask:radial-gradient(circle,#000 0,#000 34%,transparent 66%);animation:rayosBoom .7s cubic-bezier(.2,1.6,.4,1) both,rayosGiro 24s linear .7s infinite;z-index:0}
-@keyframes rayosBoom{from{transform:scale(0) rotate(-40deg);opacity:0}to{transform:scale(1) rotate(0);opacity:1}}
-@keyframes rayosGiro{to{transform:rotate(360deg)}}
+.reto-rayos{position:absolute;left:50%;top:55%;width:640px;height:640px;margin:-320px 0 0 -320px;border-radius:50%;background:radial-gradient(circle,rgba(255,236,170,.95) 0,rgba(255,236,170,0) 26%),repeating-conic-gradient(from 0deg,rgba(255,170,30,.62) 0deg 8deg,rgba(255,170,30,0) 8deg 20deg);-webkit-mask:radial-gradient(circle,#000 0,#000 34%,transparent 66%);mask:radial-gradient(circle,#000 0,#000 34%,transparent 66%);animation:rayosBoom 3.6s ease-out both,rayosVaiven 9s ease-in-out 3.6s infinite;z-index:0}
+@keyframes rayosBoom{0%{transform:scale(0);opacity:0}4%{opacity:1}24%{transform:scale(1);opacity:1}30%{transform:scale(1.05);opacity:0}30.1%{transform:scale(0);opacity:0}34%{opacity:1}54%{transform:scale(1);opacity:1}60%{transform:scale(1.05);opacity:0}60.1%{transform:scale(0);opacity:0}64%{opacity:1}100%{transform:scale(1);opacity:1}}
+@keyframes rayosVaiven{0%,100%{transform:rotate(0)}25%{transform:rotate(14deg)}75%{transform:rotate(-14deg)}}
 .fm-opcional{font:600 15px Karla,sans-serif;color:#6B6380;white-space:nowrap}
 .fm-admin{position:fixed;top:calc(10px + env(safe-area-inset-top));right:10px;z-index:61;display:flex;flex-direction:column;align-items:center;gap:3px}.fm-admin > div{display:flex;gap:6px}.fm-admin small{font:700 10.5px Karla,sans-serif;color:#5B3FA8;background:rgba(255,255,255,.85);border-radius:8px;padding:1px 6px}.fm-admin button{width:38px;height:38px;border:0;border-radius:50%;background:#FFD400;color:#3B2A86;font:800 15px Karla,sans-serif;box-shadow:0 2px 8px rgba(0,0,0,.15);cursor:pointer}
 [data-vista="formMeta"]:has(.fm-admin) .fm-prog{right:106px}
@@ -2575,7 +2575,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V14.23';
+  const APP_VERSION = 'V14.24';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -5543,8 +5543,10 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
+    { v: 'V14.24', f: '26 de octubre de 2026', n: [
+      'Los rayos del cartel del reto brotan tres veces desde detrás de Prácti y luego se mecen suavemente.' ] },
     { v: 'V14.23', f: '26 de octubre de 2026', n: [
-      'En el cartel de tus primeros 15 registros, detrás de Prácti salen unos rayos de luz en lugar del confeti.' ] },
+      'En el cartel de tus primeros 15 registros, detrás de Prácti brotan unos rayos de luz en lugar del confeti.' ] },
     { v: 'V14.22', f: '26 de octubre de 2026', n: [
       'El cartel de tus primeros 15 registros dice arriba en qué día del reto vas y te saluda con el día de la semana: «Día 2 · ¡Feliz martes!».' ] },
     { v: 'V14.21', f: '26 de octubre de 2026', n: [
@@ -11703,7 +11705,7 @@ lo que haces cada día es lo que vas a ser.`;
       { img: () => '<div class="hn-practi">' + practiHTML('pizarra', '', 200) + '</div>', tit: 'Apunta bien',
         tx: 'Un buen guerrero sabe adónde va. Elige una meta clara y pequeña, y vuelve a ella cada día.' },
       { img: () => '<img class="hn-img" src="' + imgRegando(3) + '" alt="">', tit: 'Ara bien tu tierra',
-        tx: 'Antes de sembrar, el jardinero prepara su terreno. Tu tierra es tu tiempo y tu energía: cuídala un poco cada día.' },
+        tx: 'Antes de sembrar, el jardinero prepara su terreno. Tu tierra es tu tiempo y tu energía: cuídala un poco cada día. Tu parte guerrera está al servicio de tu Rey interior, para proteger tu reino.' },
       { img: () => '<div class="hn-escudo">' + escudoInsignia(0) + '</div>', tit: 'Pon límites a tu terreno',
         tx: 'Sin exceso, para no abusar de los demás. Sin carencia, para que nadie abuse de ti. Ese es el equilibrio del guerrero jardinero.' }
     ]
@@ -12888,4 +12890,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Skills" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V14.23 · App Amable Skills · 2026-10-26 17:00==== -->
+<!-- ==== Fin del index V14.24 · App Amable Skills · 2026-10-26 17:15==== -->
