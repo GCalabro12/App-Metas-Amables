@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V14.12 · App Amable Skills · 2026-10-26 16:22==== -->
+<!-- ==== index V14.13 · App Amable Skills · 2026-10-26 16:26==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1423,6 +1423,11 @@ body:has([data-vista="formMeta"]) .musica-barra{border:0;box-shadow:0 6px 20px r
 [data-vista="formMeta"] #fmSig,[data-vista="formMeta"] #fmEnviar{position:fixed;left:16px;right:16px;width:auto;bottom:calc(78px + env(safe-area-inset-bottom));margin:0 !important;z-index:55}
 [data-vista="formMeta"]:has(#fmAtras) #fmSig,[data-vista="formMeta"]:has(#fmAtras) #fmEnviar{left:118px}
 [data-vista="formMeta"] #fmAtras{position:fixed;left:16px;width:92px;bottom:calc(78px + env(safe-area-inset-bottom));margin:0 !important;z-index:55;height:48px;border-radius:14px;background:#F3EEFC;color:#5B3FA8;font:800 15px Karla,sans-serif;text-decoration:none;display:flex !important;align-items:center;justify-content:center}
+/* 26-10-2026 (3): títulos de Inicio lo más grandes que quepan («C. Registro y compromiso», el más largo, de lado a lado); la ⓘ, más pequeña y debajo de la letra */
+[data-vista="panel"][data-sub=""] .tit-arriba .ciclo-tit,[data-vista="panel"][data-sub=""] .card.guia-semana .ritual-tit,[data-vista="panel"][data-sub=""] .planta-card .planta-tit,[data-vista="panel"][data-sub=""] .planta-inicio .planta-tit,[data-vista="panel"][data-sub=""] .ciclo-formacion .opcion-tx > b{font-size:min(calc((100vw - 78px) / 15.4), 28px) !important;padding-right:0 !important;position:relative;overflow:visible}
+[data-vista="panel"][data-sub=""] .ciclo-btn .info-i,[data-vista="panel"][data-sub=""] .ciclo-formacion .info-i,[data-vista="panel"][data-sub=""] .planta-card .info-i,[data-vista="panel"][data-sub=""] .card.guia-semana .info-i{position:absolute !important;left:0 !important;right:auto !important;top:100% !important;margin:5px 0 0 !important;width:21px;height:21px}
+[data-vista="panel"][data-sub=""] .info-i svg{width:21px;height:21px}
+[data-vista="panel"][data-sub=""] .ciclo-c .ciclo-tit,[data-vista="panel"][data-sub=""] .planta-card .planta-tit,[data-vista="panel"][data-sub=""] .ciclo-formacion .opcion-tx > b{margin-bottom:28px !important}
 /* Todos los títulos de Inicio iguales: también Utilidades (26-10-2026) */
 [data-vista="panel"][data-sub=""] .ciclo-formacion .opcion-tx > b{font:800 clamp(15px,4.6vw,18px)/1.25 Nunito,sans-serif;text-transform:uppercase;letter-spacing:.02em}
 .panel-badge > span:last-child{text-transform:uppercase;letter-spacing:.04em;font-weight:800}
@@ -2498,7 +2503,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V14.12';
+  const APP_VERSION = 'V14.13';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -5464,6 +5469,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
+    { v: 'V14.13', f: '26 de octubre de 2026', n: [
+      'Los títulos de Inicio, más grandes: ocupan todo el ancho. La ⓘ va debajo de la letra de cada paso.' ] },
     { v: 'V14.11', f: '26 de octubre de 2026', n: [
       'Para el administrador: en el formulario de la meta, ◀ ▶ arriba para pasar las páginas sin rellenarlo, con el aviso «Solo administrador».' ] },
     { v: 'V14.10', f: '26 de octubre de 2026', n: [
@@ -12732,4 +12739,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Skills" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V14.12 · App Amable Skills · 2026-10-26 16:22==== -->
+<!-- ==== Fin del index V14.13 · App Amable Skills · 2026-10-26 16:26==== -->
