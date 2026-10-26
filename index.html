@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V14.28 · App Amable Skills · 2026-10-26 22:59==== -->
+<!-- ==== index V14.29 · App Amable Skills · 2026-10-26 23:19==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2588,7 +2588,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V14.28';
+  const APP_VERSION = 'V14.29';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -5556,6 +5556,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
+    { v: 'V14.29', f: '26 de octubre de 2026', n: [
+      'Al crear una meta nueva ya no te vuelve a pedir tu ciudad, tu género y tu edad: se usan los que pusiste la primera vez.' ] },
     { v: 'V14.28', f: '26 de octubre de 2026', n: [
       'Arreglado un aviso de error que a veces salía unos segundos al abrir la app.' ] },
     { v: 'V14.27', f: '26 de octubre de 2026', n: [
@@ -12455,7 +12457,8 @@ lo que haces cada día es lo que vas a ser.`;
     try { previo = JSON.parse(localStorage.getItem(fmClave()) || 'null'); } catch(e){}
     if(!previo){
       const g = state.gamifica || {}, d = g.datosFormulario || {};
-      previo = { paso: 0, email: g.email || state.miCorreo || '', r: { '1139323880': d.nombre || state.me || '', '82527459': d.ciudad || '', '1313109576': d.genero || '', '838787571': d.edad || '' }, preguntado: {} };
+      let loc = {}; try { loc = JSON.parse(localStorage.getItem('fm_personales_' + state.me) || '{}') || {}; } catch(e){}
+      previo = { paso: 0, email: g.email || state.miCorreo || '', r: { '1139323880': d.nombre || state.me || '', '82527459': d.ciudad || loc.ciudad || '', '1313109576': d.genero || loc.genero || '', '838787571': d.edad || loc.edad || '' }, preguntado: {} };
       // Los datos personales que ya tenemos no se vuelven a preguntar (se envían igual)
       previo.saltar = FM_PREGUNTAS.filter(p => p.datos && String(previo.r[p.id] || '').trim()).map(p => p.id);
       if((seguir || cambiar) && d.metaTexto) rellenarConMetaAnterior(previo, d);
@@ -12594,6 +12597,10 @@ lo que haces cada día es lo que vas a ser.`;
           // Igual que lo guarda el Worker: plazo y meta, para el aviso de «¿La conseguiste?»
           const dfm = Object.assign({}, state.gamifica.datosFormulario || {});
           dfm.plazo = fm.r['1502404995'] || ''; dfm.metaTexto = (fm.r['785855484'] || fm.r['649833281'] || '').slice(0, 600); dfm.fechaMeta = iso; delete dfm.plazoRespondido;
+          // Los datos personales se quedan guardados para la meta siguiente (también en este móvil, por si el servidor aún no los tiene)
+          const pers = {};
+          [['ciudad', '82527459'], ['genero', '1313109576'], ['edad', '838787571']].forEach(([k, id]) => { const v = String(fm.r[id] || '').trim(); if(v){ dfm[k] = v; pers[k] = v; } });
+          try { localStorage.setItem('fm_personales_' + state.me, JSON.stringify(pers)); } catch(e){}
           state.gamifica.datosFormulario = dfm;
           try {
             const sinCambio = localStorage.getItem('meta_sin_cambio_' + state.me) === '1';   // tras lograr la meta: no cuenta como cambio
@@ -12925,4 +12932,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Skills" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V14.28 · App Amable Skills · 2026-10-26 22:59==== -->
+<!-- ==== Fin del index V14.29 · App Amable Skills · 2026-10-26 23:19==== -->
