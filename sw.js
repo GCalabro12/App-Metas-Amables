@@ -11,6 +11,8 @@ self.addEventListener('fetch', e => {
   const req = e.request;
   // Solo los archivos de la propia app (el Worker, Stripe, fuentes… van directos)
   if(req.method !== 'GET' || new URL(req.url).origin !== self.location.origin) return;
+  // Los vídeos van directos (piden trozos sueltos y no se pueden guardar así)
+  if(req.headers.has('range') || /\.mp4$/i.test(new URL(req.url).pathname)) return;
   const pagina = req.mode === 'navigate';
   e.respondWith(
     fetch(req, pagina ? { cache: 'no-cache' } : undefined)
