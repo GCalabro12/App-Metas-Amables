@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V14.00 · App Amable Skills · 2026-10-26 14:18==== -->
+<!-- ==== index V14.01 · App Amable Skills · 2026-10-26 14:21==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1378,7 +1378,7 @@ textarea.ms-nombre-in:focus{outline:none;border-color:#C9942D;box-shadow:0 0 0 3
 [data-vista="panel"][data-sub=""] .ciclo-btn .ciclo-tit,[data-vista="panel"][data-sub=""] .card.guia-semana .ritual-tit,[data-vista="panel"][data-sub=""] .ciclo-formacion .opcion-tx > b{padding-right:34px}
 .ciclo-meta .etiqueta-recibida{position:static;display:inline-block;margin-top:6px}
 .ciclo-meta .planta-meta{display:block;font:italic 600 16px/1.35 Nunito,sans-serif;color:#4A3A12}
-.planta-ver-montana{display:block;margin:8px auto 0;padding:8px 16px;border:0;border-radius:999px;background:rgba(255,255,255,.9);color:#2F5A23;font:800 15px Nunito,sans-serif;cursor:pointer}
+.planta-ver-montana{display:table;margin:12px auto 0;padding:8px 16px;border:0;border-radius:999px;background:rgba(255,255,255,.9);color:#2F5A23;font:800 15px Nunito,sans-serif;cursor:pointer}
 .planta-ico-abajo{display:block;width:44px;height:44px;margin:0 0 8px}.planta-ico-abajo svg{width:100%;height:100%}
 .letra-paso{display:inline-flex;align-items:center;justify-content:center;flex:none;width:30px;height:30px;margin-right:10px;border-radius:50%;background:currentColor;-webkit-text-stroke:0}
 .letra-paso i{font:900 18px/1 Nunito,sans-serif;font-style:normal;color:#fff;text-transform:lowercase;-webkit-text-stroke:0}
@@ -2459,7 +2459,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V14.00';
+  const APP_VERSION = 'V14.01';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -5422,6 +5422,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
+    { v: 'V14.01', f: '26 de octubre de 2026', n: [
+      'La tarjeta de tu planta se llama ahora <b>«Ver cómo crece tu meta»</b>, y «Ver mi montaña» vuelve a estar dentro, abajo, sobre la tierra.' ] },
     { v: 'V14.00', f: '26 de octubre de 2026', n: [
       'Inicio más ordenado: cada paso lleva su letra delante del título, <b>a</b> Metas, <b>b</b> Tu guía, <b>c</b> Registro y compromiso y <b>d</b> Grupo de apoyo, en lugar de los dibujos.' ] },
     { v: 'V13.99', f: '26 de octubre de 2026', n: [
@@ -11508,18 +11510,14 @@ lo que haces cada día es lo que vas a ser.`;
     let d; try { d = datosMontana(); } catch(e){ return null; }
     const b = d.bancal(d.actual), hoy = b.semanas.find(s => s.hoy);
     // El título en una sola línea arriba, a todo lo ancho; debajo, la planta y los datos
-    const c = el('<button type="button" class="card planta-inicio">' + escenaPlanta(d.nivel, true) + '<b class="planta-tit">Tu planta (meta) de este trimestre</b><div class="planta-fila">' + plantaSVG(b, 11, false)
+    const c = el('<button type="button" class="card planta-inicio">' + escenaPlanta(d.nivel, true) + '<b class="planta-tit">Ver cómo crece tu meta</b><div class="planta-fila">' + plantaSVG(b, 11, false)
       + '<span class="planta-tx"><small>' + b.hojas + (b.hojas === 1 ? ' hoja' : ' hojas') + (b.flores ? ' · ' + b.flores + (b.flores === 1 ? ' flor' : ' flores') : '')
       + (hoy ? '<br>Esta es la <b style="display:inline">' + (Math.floor((hoy.lunes.getDate() - 1) / 7) + 1) + 'ª semana de ' + monthNamesEs[hoy.lunes.getMonth()] + '</b>: ' + (hoy.dias ? (hoy.dias === 1 ? '1 día registrado' : hoy.dias + ' días registrados') : 'registra para que salga su hoja') : '') + '</small>'
-      + '<em>Año ' + d.anio + ' · ' + BADGE_SCALE[d.nivel].label + '</em></span></div></button>').firstElementChild;
-    const irMontana = () => { state.view = 'progreso'; window.scrollTo(0, 0); render(); };
-    c.onclick = irMontana;
-    const caja = document.createElement('div'); caja.className = 'planta-inicio-caja';
-    caja.appendChild(c);
-    const ver = el('<button type="button" class="planta-ver-montana">⛰️ Ver mi montaña ›</button>').firstElementChild;
-    ver.onclick = irMontana;
-    caja.appendChild(ver);
-    return caja;
+      + '<em>Año ' + d.anio + ' · ' + BADGE_SCALE[d.nivel].label + '</em></span></div>'
+      // «Ver mi montaña», dentro del recuadro, abajo, sobre la tierra de las margaritas (toda la tarjeta lleva a la montaña)
+      + '<span class="planta-ver-montana">⛰️ Ver mi montaña ›</span></button>').firstElementChild;
+    c.onclick = () => { state.view = 'progreso'; window.scrollTo(0, 0); render(); };
+    return c;
   }
 
   function renderProgreso(){
@@ -12654,4 +12652,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Skills" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V14.00 · App Amable Skills · 2026-10-26 14:18==== -->
+<!-- ==== Fin del index V14.01 · App Amable Skills · 2026-10-26 14:21==== -->
