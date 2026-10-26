@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V13.92 · App Amable Skills · 2026-10-26 13:27==== -->
+<!-- ==== index V13.93 · App Amable Skills · 2026-10-26 13:33==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -777,6 +777,7 @@ button, input, textarea, select{ font-family:inherit; }
   }
   .badge-scale-row.current{ border-color:var(--honey); background:var(--honey-tint); font-weight:700; }
   .nivel-nombre-destacado{ font-weight:800; color:#B00020; }
+  .identidad-ayuda.ayuda-falta{color:#B94A3A !important;font-weight:700}
   .campo-falta{
     border:2px solid #B94A3A !important;
     background:#FDF4F2 !important;
@@ -1431,6 +1432,8 @@ textarea.ms-nombre-in:focus{outline:none;border-color:#C9942D;box-shadow:0 0 0 3
 .pf-sem{display:flex;flex-direction:column;gap:2px;padding:7px 0;border-bottom:1px solid #EEE;font-size:13.5px}.pf-sem:last-child{border-bottom:0}.pf-sem small{color:var(--ink-soft);font-size:12.5px}
 .pf-nota-tx{width:100%;box-sizing:border-box;padding:10px 12px;border:1px solid #DCE6D8;border-radius:10px;font:inherit;font-size:14px;resize:vertical}
 .ritual-tit{margin:0 0 4px;font:700 18px Lora,serif;color:#7A5200}
+.info-i{display:inline-flex;align-items:center;justify-content:center;flex:none;width:22px;height:22px;margin-left:8px;border-radius:50%;border:2px solid currentColor;font:italic 700 13px/1 Georgia,serif;vertical-align:middle;cursor:pointer;opacity:.75}
+.info-capa{position:fixed;inset:0;z-index:9700;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(0,0,0,.45)}.info-panel{max-width:380px;width:100%;background:#fff;border-radius:18px;padding:20px 18px 16px;font:16px/1.5 Karla,sans-serif;color:#2B2B2B;box-shadow:0 10px 30px rgba(0,0,0,.25)}.info-panel p{margin:0 0 14px}.info-ok{width:100%;padding:12px;border:0;border-radius:12px;background:#1A5FD1;color:#fff;font:700 16px Karla,sans-serif;cursor:pointer}
 .ritual-practica{margin:0 0 6px;font:italic 600 15px/1.35 Lora,serif;color:#4F7A43}
 .ritual-tx{margin:0 0 10px;font-size:15px;line-height:1.45}
 .ritual-ops{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
@@ -2431,7 +2434,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V13.92';
+  const APP_VERSION = 'V13.93';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -5336,6 +5339,10 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
+    { v: 'V13.93', f: '26 de octubre de 2026', n: [
+      'En Inicio, <b>Metas</b>, <b>Tu guía de esta semana</b> y <b>Utilidades</b> tienen un botón <b>ⓘ</b> que explica para qué sirve cada una.',
+      'Tu planta dice ahora en qué semana del mes estás, por ejemplo «Esta es la 4ª semana de octubre».',
+      'En el lunes de compromiso, si te falta la identidad de meta, también se marca en rojo su explicación.' ] },
     { v: 'V13.92', f: '26 de octubre de 2026', n: [
       'En tu <b>lunes de compromiso</b>, la meta del trimestre es la que tienes ahora (si la corregiste en la app, esa), y la identidad sale en gris con la de la semana pasada, para que la escribas de nuevo.',
       'El compromiso de la semana ya no dice «Guardado» antes de que lo guardes.' ] },
@@ -7782,10 +7789,11 @@ lo que haces cada día es lo que vas a ser.`;
           '<button type="button" class="hablar-practi-btn">💬 Quiero hablar con Prácti</button>'
           + '<button type="button" class="opcion-inicio ciclo-btn ciclo-meta' + (metaHecha ? ' hecha' : ' pendiente') + act('meta') + '" data-ir="s4">'
           + '<span class="ciclo-icono">' + iconoCiclo('cero') + '</span>'
-          + '<span class="opcion-tx"><b>Metas</b>'
+          + '<span class="opcion-tx"><b>Metas' + (metaHecha ? infoBoton('Aquí se guardan tus metas: tu <b>meta con guía</b>, definida para el ' + trimestreMeta()
+                + (sencillasActivas().length ? (sencillasActivas().length === 1 ? ', y tu <b>' + TXT_SENCILLA.toLowerCase() + '</b>' : ', y tus <b>' + sencillasActivas().length + ' ' + TXT_SENCILLAS.toLowerCase() + '</b>') : '') + '.'
+                + (limiteMetaIntentos() > 1 ? ' Puedes cambiar la meta hasta ' + limiteMetaIntentos() + ' veces por trimestre.' : '')) : '') + '</b>'
           + (metaHecha
-              ? '<small>Meta con guía definida para el ' + trimestreMeta() + (sencillasActivas().length ? ' · ' + sencillasActivas().length + ' ' + (sencillasActivas().length === 1 ? TXT_SENCILLA : TXT_SENCILLAS).toLowerCase() : '') + (limiteMetaIntentos() > 1 ? ' · puedes cambiarla hasta ' + limiteMetaIntentos() + ' veces' : '') + '</small>'
-                + '<span class="etiqueta-recibida">Hecha</span>'
+              ? '<span class="etiqueta-recibida">Hecha</span>'
               : '<small style="color:#B94A3A;font-weight:700">⚠️ Pendiente: empieza por aquí</small>')
           + '</span><span class="opcion-flecha">›</span></button>'
           + flechaAbajo
@@ -7801,7 +7809,7 @@ lo que haces cada día es lo que vas a ser.`;
                   ? 'Registro de compromiso cada lunes y sesiones en grupo cada 15 días. Plan Guías + Grupo'
                   : (registroPendienteEstaSemana() ? '✍️ <b>Compromiso pendiente:</b> aún no has dicho cuántas veces practicarás esta semana' : '✍️ Próximo compromiso: ' + textoProximoLunes())
                     + (textoProximaSesion() ? '<br><span style="font-weight:700">📅 ' + textoProximaSesion() + '</span>' : ''), '', sinSesiones && '👑👑')
-          + (oculto('util') ? '' : '<button type="button" class="opcion-inicio ciclo-formacion" data-ir="util"><span class="ciclo-icono">' + iconoLlave() + '</span><span class="opcion-tx"><b>Utilidades</b><small>Habla con Prácti, formación, frases y música</small></span><span class="opcion-flecha">›</span></button>');
+          + (oculto('util') ? '' : '<button type="button" class="opcion-inicio ciclo-formacion" data-ir="util"><span class="ciclo-icono">' + iconoLlave() + '</span><span class="opcion-tx"><b>Utilidades' + infoBoton('Aquí tienes <b>Habla con Prácti</b> para preguntarle tus dudas, <b>formación</b>, <b>frases motivadoras</b> para compartir y <b>música</b> para tu práctica.') + '</b></span><span class="opcion-flecha">›</span></button>');
         app.appendChild(opciones);
         try { const tp = tarjetaPlantaInicio(); if(tp) app.appendChild(tp); } catch(e){ console.error('Planta de Inicio:', e); }
         try { if(localStorage.getItem('tour_' + state.me) === 'pendiente' && state.view === 'panel'){ localStorage.setItem('tour_' + state.me, 'visto'); setTimeout(iniciarTour, 900); } } catch(e){}
@@ -8330,7 +8338,7 @@ lo que haces cada día es lo que vas a ser.`;
         <textarea id="metaTrim" placeholder="¿Cuál es tu meta para este trimestre?" style="min-height:44px;margin-bottom:16px">${curMetaTrim}</textarea>
 
         <label class="note-label strong" for="identidad">🪞 Mi identidad de meta</label>
-        <p style="font-size:13px;color:var(--ink-soft);margin:0 0 6px">
+        <p class="identidad-ayuda" style="font-size:13px;color:var(--ink-soft);margin:0 0 6px">
           Escríbela de nuevo cada semana: reescribirla ayuda a interiorizarla y a reconocerte en ella.
         </p>
         <textarea id="identidad" placeholder="${identidadPrevia ? escapeAttr(identidadPrevia) : 'Ej: María, la que hace yoga cuatro veces por semana'}" style="min-height:44px;margin-bottom:16px">${curIdentidad}</textarea>
@@ -8361,7 +8369,7 @@ lo que haces cada día es lo que vas a ser.`;
 
       function limpiarFalta(e){ e.target.classList.remove('campo-falta'); state.compromisoMsg = ''; state.mensajeWhatsApp = ''; }
       metaTrimEl.oninput = (e) => { state.metaTrimDraft = e.target.value; state.metaTrimTocado = true; limpiarFalta(e); };
-      identidadEl.oninput = (e) => { state.identidadDraft = e.target.value; limpiarFalta(e); };
+      identidadEl.oninput = (e) => { state.identidadDraft = e.target.value; limpiarFalta(e); const a = compCard.querySelector('.identidad-ayuda'); if(a) a.classList.remove('ayuda-falta'); };
       const btnMetaSemPrevia = compCard.querySelector('#btnUsarMetaSemPrevia');
       metaSemEl.oninput = (e) => {
         state.metaSemDraft = e.target.value; state.metaSemTocado = true; limpiarFalta(e);
@@ -8401,6 +8409,9 @@ lo que haces cada día es lo que vas a ser.`;
         ];
         compCard.querySelectorAll('.campo-falta').forEach(n => n.classList.remove('campo-falta'));
         const faltan = obligatorios.filter(c => String(c.el.value).trim() === '');
+        // Si falta la identidad, también se marca en rojo su explicación («Escríbela de nuevo cada semana…»)
+        const ayudaId = compCard.querySelector('.identidad-ayuda');
+        if(ayudaId) ayudaId.classList.toggle('ayuda-falta', faltan.some(c => c.el === identidadEl));
         if(faltan.length){
           faltan.forEach(c => c.el.classList.add('campo-falta'));
           state.compromisoMsg = (faltan.length === 1)
@@ -10347,6 +10358,25 @@ lo que haces cada día es lo que vas a ser.`;
   // Paso «a» de Inicio: la guía de esta semana. alIr abre la guía como el antiguo botón «a · Guía semanal»
   // Empieza plegada (solo el título) con «Ampliar ▼»; desplegada, «Reducir ▲» la pliega y el botón abre la guía semanal completa
   let guiaSemanaAbierta = false;
+  // Botón ⓘ: al tocarlo explica la tarjeta en una ventanita, sin abrirla (26-10-2026, Gustavo)
+  function infoBoton(html){ return '<span class="info-i" role="button" tabindex="0" aria-label="Más información" data-info="' + escapeAttr(html) + '">i</span>'; }
+  function abrirInfo(html){
+    document.querySelectorAll('.info-capa').forEach(x => x.remove());
+    const capa = el('<div class="info-capa" role="dialog"><div class="info-panel"><p>' + html + '</p><button type="button" class="info-ok">Entendido</button></div></div>').firstElementChild;
+    capa.onclick = e => { if(e.target === capa || e.target.closest('.info-ok')) capa.remove(); };
+    document.body.appendChild(capa);
+  }
+  document.addEventListener('click', e => {
+    const b = e.target.closest && e.target.closest('.info-i');
+    if(!b) return;
+    e.preventDefault(); e.stopPropagation();
+    abrirInfo(b.dataset.info || '');
+  }, true);
+  document.addEventListener('keydown', e => {
+    const b = e.target.closest && e.target.closest('.info-i');
+    if(b && (e.key === 'Enter' || e.key === ' ')){ e.preventDefault(); e.stopPropagation(); abrirInfo(b.dataset.info || ''); }
+  }, true);
+
   function tarjetaGuiaSemana(alIr, extraHTML){
     if(!state.me) return null;
     const pg = practicaDeLaGuia();
@@ -10354,7 +10384,7 @@ lo que haces cada día es lo que vas a ser.`;
     const c = document.createElement('div'); c.className = 'card ritual-card guia-semana ciclo-a';
     // La guía es el tutor (el palo) de la planta: la sostiene para que crezca recta y no se tuerza. Va en el azul de la guía
     const icono = '<span class="guia-semana-ico">' + iconoCiclo('a') + '</span>';   // b · Tu guía de esta semana
-    c.innerHTML = '<span class="etiqueta-recibida">Recibida</span><p class="ritual-tit">' + icono + 'Tu guía de esta semana</p>' + (extraHTML || '')
+    c.innerHTML = '<span class="etiqueta-recibida">Recibida</span><p class="ritual-tit">' + icono + 'Tu guía de esta semana' + infoBoton('Aquí tienes la guía de esta semana: lo que vas a trabajar y <b>tu práctica</b>. Toca «Ampliar» para verla aquí mismo, o «Ir a tu guía semanal completa» para leerla entera.') + '</p>' + (extraHTML || '')
       + '<div class="guia-fila"><span class="guia-toca">' + (guiaSemanaAbierta ? '' : 'Tu práctica de esta semana') + '</span><span class="guia-plegar"><span class="guia-plegar-tx">' + (guiaSemanaAbierta ? 'Reducir' : 'Ampliar') + '</span><span class="guia-plegar-tri" aria-hidden="true">' + (guiaSemanaAbierta ? '▲' : '▼') + '</span></span></div>'
       + '<div class="guia-cuerpo"' + (guiaSemanaAbierta ? '' : ' hidden') + '><p class="ritual-sub">Tu guía es el <b>tutor</b> de tu planta: la sostiene para que crezca recta y no se tuerza.</p>'
       + (pg ? (pg.ejercicio ? '<p class="ritual-practica">' + escapeAttr(pg.ejercicio) + '</p>' : '')
@@ -11350,7 +11380,7 @@ lo que haces cada día es lo que vas a ser.`;
     // El título en una sola línea arriba, a todo lo ancho; debajo, la planta y los datos
     const c = el('<button type="button" class="card planta-inicio">' + escenaPlanta(d.nivel, true) + '<b class="planta-tit">Tu planta (meta) de este trimestre</b><div class="planta-fila">' + plantaSVG(b, 11, false)
       + '<span class="planta-tx"><small>' + b.hojas + (b.hojas === 1 ? ' hoja' : ' hojas') + (b.flores ? ' · ' + b.flores + (b.flores === 1 ? ' flor' : ' flores') : '')
-      + (hoy ? '<br>Esta semana es <b style="display:inline">' + hoy.etiqueta + '</b>: ' + (hoy.dias ? (hoy.dias === 1 ? '1 día registrado' : hoy.dias + ' días registrados') : 'registra para que salga su hoja') : '') + '</small>'
+      + (hoy ? '<br>Esta es la <b style="display:inline">' + (Math.floor((hoy.lunes.getDate() - 1) / 7) + 1) + 'ª semana de ' + monthNamesEs[hoy.lunes.getMonth()] + '</b>: ' + (hoy.dias ? (hoy.dias === 1 ? '1 día registrado' : hoy.dias + ' días registrados') : 'registra para que salga su hoja') : '') + '</small>'
       + '<em>Año ' + d.anio + ' · ' + BADGE_SCALE[d.nivel].label + ' · Ver mi montaña ›</em></span></div></button>').firstElementChild;
     c.onclick = () => { state.view = 'progreso'; window.scrollTo(0, 0); render(); };
     return c;
@@ -12488,4 +12518,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Skills" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V13.92 · App Amable Skills · 2026-10-26 13:27==== -->
+<!-- ==== Fin del index V13.93 · App Amable Skills · 2026-10-26 13:33==== -->
