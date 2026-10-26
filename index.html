@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V14.27 · App Amable Skills · 2026-10-26 22:35==== -->
+<!-- ==== index V14.28 · App Amable Skills · 2026-10-26 22:59==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2588,7 +2588,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V14.27';
+  const APP_VERSION = 'V14.28';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -5556,6 +5556,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
+    { v: 'V14.28', f: '26 de octubre de 2026', n: [
+      'Arreglado un aviso de error que a veces salía unos segundos al abrir la app.' ] },
     { v: 'V14.27', f: '26 de octubre de 2026', n: [
       'En Metas, el botón para crear otra meta es más grande y lleva un «+», para encontrarlo a la primera.' ] },
     { v: 'V14.26', f: '26 de octubre de 2026', n: [
@@ -9044,12 +9046,6 @@ lo que haces cada día es lo que vas a ser.`;
       card.querySelectorAll('.planta-compa-btn').forEach(b => b.onclick = () => verPlantaCompa(b.dataset.n));
       return;
     }
-  }
-
-  try {
-    init();
-  } catch(err){
-    app.innerHTML = '<div style="padding:24px;font-family:Karla,sans-serif">No se pudo iniciar la app: ' + (err && err.message ? err.message : err) + '</div>';
   }
 
   // Instalar en la pantalla de inicio. En Android (Chrome) el navegador nos deja
@@ -12912,6 +12908,14 @@ lo que haces cada día es lo que vas a ser.`;
     return card;
   }
 
+  // La app arranca al final, cuando ya está definido todo el código (antes, si pintaba Inicio enseguida,
+  // algunas partes aún no existían: «Cannot access … before initialization», aviso de Andrea, 24-10-2026)
+  try {
+    init();
+  } catch(err){
+    app.innerHTML = '<div style="padding:24px;font-family:Karla,sans-serif">No se pudo iniciar la app: ' + (err && err.message ? err.message : err) + '</div>';
+  }
+
   // Service worker (sw.js): permite instalar la app en el móvil como una app normal
   if('serviceWorker' in navigator){
     window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js').catch(() => {}); });
@@ -12921,4 +12925,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Skills" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V14.27 · App Amable Skills · 2026-10-26 22:35==== -->
+<!-- ==== Fin del index V14.28 · App Amable Skills · 2026-10-26 22:59==== -->
