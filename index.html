@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V14.19 · App Amable Skills · 2026-10-26 16:40==== -->
+<!-- ==== index V14.20 · App Amable Skills · 2026-10-26 16:42==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1449,6 +1449,15 @@ body [data-vista="formMeta"] .fm-tiempo{margin:0 0 clamp(26px,6vh,52px) !importa
 body [data-vista="formMeta"] .fm-tiempo span{color:#FFFFFF;font:800 19px Nunito,sans-serif;margin:0 0 12px}
 body [data-vista="formMeta"] .fm-tiempo select{min-height:58px;border:0 !important;border-radius:18px;font:700 18px Karla,sans-serif;text-align:center;text-align-last:center;box-shadow:0 4px 14px rgba(0,0,0,.12)}
 body [data-vista="formMeta"] .fm-tiempo select.elegido{background:#FFD400 !important;color:#2B2350}
+/* Respuestas: la marca a la izquierda, centrada en vertical; en las de varias, un círculo vacío hasta marcarlas */
+body [data-vista="formMeta"] .fm-op,body [data-vista="formMeta"] .fm-multi,body [data-vista="formMeta"] .fm-intento{position:relative;padding-left:54px !important;padding-right:54px !important;text-align:center !important;justify-content:center;min-height:64px;margin:0 0 clamp(12px,2.4vh,20px) !important;border:0 !important;background:#FFFFFF !important;border-radius:18px;font-size:18px;box-shadow:0 4px 14px rgba(0,0,0,.12)}
+body [data-vista="formMeta"] .fm-multi .opcion-tx,body [data-vista="formMeta"] .fm-intento .opcion-tx{text-align:center;width:100%}
+body [data-vista="formMeta"] .fm-multi::before{content:'';position:absolute;left:18px;top:50%;width:24px;height:24px;margin-top:-12px;border-radius:50%;border:2px solid #C9BFE6;box-sizing:border-box}
+body [data-vista="formMeta"] .opcion-inicio.sel{background:#FFD400 !important;box-shadow:0 0 0 3px #fff,0 6px 16px rgba(0,0,0,.18)}
+body [data-vista="formMeta"] .opcion-inicio.sel b{color:#2B2350 !important}
+body [data-vista="formMeta"] .opcion-inicio.sel::before{content:'✓';position:absolute;left:18px;top:50%;width:26px;height:26px;margin-top:-13px;border:0;border-radius:50%;background:#2B2350;color:#FFD400;font:900 16px/26px Nunito,sans-serif;text-align:center}
+/* Abajo, detrás de los botones, el color de fondo tapa las respuestas que pasan por debajo al desplazarse */
+body [data-vista="formMeta"]::after{content:'';position:fixed;left:0;right:0;bottom:0;height:calc(150px + env(safe-area-inset-bottom));background:linear-gradient(180deg,transparent 0,var(--fm-b,#C04A8E) 40%);z-index:50;pointer-events:none}
 .fm-opcional{font:600 15px Karla,sans-serif;color:#6B6380;white-space:nowrap}
 .fm-admin{position:fixed;top:calc(10px + env(safe-area-inset-top));right:10px;z-index:61;display:flex;flex-direction:column;align-items:center;gap:3px}.fm-admin > div{display:flex;gap:6px}.fm-admin small{font:700 10.5px Karla,sans-serif;color:#5B3FA8;background:rgba(255,255,255,.85);border-radius:8px;padding:1px 6px}.fm-admin button{width:38px;height:38px;border:0;border-radius:50%;background:#FFD400;color:#3B2A86;font:800 15px Karla,sans-serif;box-shadow:0 2px 8px rgba(0,0,0,.15);cursor:pointer}
 [data-vista="formMeta"]:has(.fm-admin) .fm-prog{right:106px}
@@ -2545,7 +2554,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V14.19';
+  const APP_VERSION = 'V14.20';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -5511,6 +5520,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
+    { v: 'V14.20', f: '26 de octubre de 2026', n: [
+      'En el formulario, la marca ✓ de la respuesta elegida va a la izquierda, centrada, separada del texto.' ] },
     { v: 'V14.19', f: '26 de octubre de 2026', n: [
       'En «¿Cuánto tiempo puedes dedicar…?», las dos preguntas con más aire entre ellas y los desplegables más grandes.' ] },
     { v: 'V14.18', f: '26 de octubre de 2026', n: [
@@ -12513,13 +12524,13 @@ lo que haces cada día es lo que vas a ser.`;
     else if(p.tipo === 'chips'){
       const marcadas = (fm.multi && fm.multi[p.id]) || [];
       campo = p.opciones.map(o => { const sel = marcadas.includes(o);
-          return `<button type="button" class="fm-multi opcion-inicio" data-v="${escapeAttr(o)}" style="width:100%;text-align:left;margin:0 0 8px;${sel ? 'border:2px solid #C9942D;background:#F6EBD3' : ''}"><span class="opcion-tx"><b style="font-weight:${sel ? 700 : 500}">${sel ? '☑️ ' : '⬜ '}${o}</b></span></button>`; }).join('')
+          return `<button type="button" class="fm-multi opcion-inicio${sel ? ' sel' : ''}" data-v="${escapeAttr(o)}" style="width:100%;text-align:left;margin:0 0 8px;${sel ? 'border:2px solid #C9942D;background:#F6EBD3' : ''}"><span class="opcion-tx"><b style="font-weight:${sel ? 700 : 500}">${o}</b></span></button>`; }).join('')
         + `<label for="fmCampo" style="display:block;margin:10px 0 6px;font-size:14.5px;font-weight:600">${p.nota}</label><textarea id="fmCampo" placeholder="${escapeAttr(p.ejemplo || '')}" style="min-height:80px;width:100%;box-sizing:border-box;font-size:16px">${escapeAttr((fm.notas && fm.notas[p.id]) || '')}</textarea>`;
     }
     else if(p.tipo === 'multi'){
       const marcadas = (fm.multi && fm.multi[p.id]) || [];
       const elegida = (fm.intento && fm.intento[p.id]) || '';
-      const boton = (o, sel, clase, marca) => `<button type="button" class="${clase} opcion-inicio" data-v="${escapeAttr(o)}" style="width:100%;text-align:left;margin:0 0 8px;${sel ? 'border:2px solid #C9942D;background:#F6EBD3' : ''}"><span class="opcion-tx"><b style="font-weight:${sel ? 700 : 500}">${marca(sel)}${o}</b></span></button>`;
+      const boton = (o, sel, clase) => `<button type="button" class="${clase} opcion-inicio${sel ? ' sel' : ''}" data-v="${escapeAttr(o)}" style="width:100%;text-align:left;margin:0 0 8px;${sel ? 'border:2px solid #C9942D;background:#F6EBD3' : ''}"><span class="opcion-tx"><b style="font-weight:${sel ? 700 : 500}">${o}</b></span></button>`;
       campo = p.opciones.map(o => boton(o, elegida === o, 'fm-intento', s => s ? '✓ ' : '')).join('')
         + (elegida && elegida !== p.opciones[0]
             ? `<p style="font-weight:700;margin:14px 0 4px">¿Con qué lo intentaste?</p><p style="font-size:13px;color:var(--ink-soft);margin:0 0 8px">Puedes marcar varias.</p>`
@@ -12530,7 +12541,7 @@ lo que haces cada día es lo que vas a ser.`;
     else campo = p.opciones.map(op => {
       const [txt, v] = Array.isArray(op) ? op : [op, op];
       const sel = valor === v;
-      return `<button type="button" class="fm-op opcion-inicio" data-v="${escapeAttr(v)}" style="width:100%;text-align:left;margin:0 0 8px;${sel ? 'border:2px solid #C9942D;background:#F6EBD3' : ''}"><span class="opcion-tx"><b style="font-weight:${sel ? 700 : 500}">${sel ? '✓ ' : ''}${txt}</b></span></button>`;
+      return `<button type="button" class="fm-op opcion-inicio${sel ? ' sel' : ''}" data-v="${escapeAttr(v)}" style="width:100%;text-align:left;margin:0 0 8px;${sel ? 'border:2px solid #C9942D;background:#F6EBD3' : ''}"><span class="opcion-tx"><b style="font-weight:${sel ? 700 : 500}">${txt}</b></span></button>`;
     }).join('');
     const rep = fm.repregunta && fm.repregunta.id === p.id ? fm.repregunta.texto : '';
     card.innerHTML = barra + `<h3 style="margin:0 0 6px">${p.titulo}${p.obligatoria ? '' : ' <span class="fm-opcional">(opcional)</span>'}</h3>
@@ -12799,4 +12810,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Skills" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V14.19 · App Amable Skills · 2026-10-26 16:40==== -->
+<!-- ==== Fin del index V14.20 · App Amable Skills · 2026-10-26 16:42==== -->
