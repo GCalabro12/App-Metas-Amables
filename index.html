@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V13.91 · App Amable Skills · 2026-10-24 09:51==== -->
+<!-- ==== index V13.92 · App Amable Skills · 2026-10-26 13:27==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2431,7 +2431,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V13.91';
+  const APP_VERSION = 'V13.92';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -2561,6 +2561,9 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
         grupo: g || []
       });
     });
+    // Las semanas, siempre en orden de fecha (Airtable no las devuelve ordenadas): «la última» tiene que ser la más reciente (26-10-2026)
+    const lunesMs = c => { const l = lunesDeSemanaTexto(c.week); return l ? l.getTime() : 0; };
+    Object.values(byName).forEach(l => l.sort((a, b) => lunesMs(a) - lunesMs(b)));
     return { byName, groups };
   }
 
@@ -2860,6 +2863,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     state.selection = null;
     state.noteDraft = '';
     state.metaTrimDraft = '';
+    state.metaTrimTocado = false;
     state.metaSemDraft = '';
     state.metaSemTocado = false;
     state.identidadDraft = '';
@@ -2931,7 +2935,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     // Identidad, meta trimestral y URL de guía: del registro más reciente (cualquier semana)
     if(list.length > 0){
       const latest = list[list.length - 1];
-      state.identidadDraft = latest.identidad || '';
+      // La identidad no se arrastra: se reescribe cada lunes (la de la semana pasada sale en gris)
+      state.identidadDraft = '';
       state.metaTrimDraft = latest.metaTrim || '';
       state.guiaUrl = latest.urlGuia || '';
       const conGuia = list.slice().reverse().find(c => c.guiaTexto);
@@ -5331,6 +5336,9 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
+    { v: 'V13.92', f: '26 de octubre de 2026', n: [
+      'En tu <b>lunes de compromiso</b>, la meta del trimestre es la que tienes ahora (si la corregiste en la app, esa), y la identidad sale en gris con la de la semana pasada, para que la escribas de nuevo.',
+      'El compromiso de la semana ya no dice «Guardado» antes de que lo guardes.' ] },
     { v: 'V13.91', f: '24 de octubre de 2026', n: [
       'En la app de Google Play, si el móvil ya permite las notificaciones, el aviso diario se activa solo al abrir la app.' ] },
     { v: 'V13.90', f: '24 de octubre de 2026', n: [
@@ -8110,7 +8118,10 @@ lo que haces cada día es lo que vas a ser.`;
       // así que NO se arrastra la de la semana pasada: esa solo se muestra como pista en gris.
       const identidadEstaSemana = (thisWeek && thisWeek.identidad) ? thisWeek.identidad : '';
       const curIdentidad = state.identidadDraft || identidadEstaSemana;
-      const curMetaTrim = state.metaTrimDraft || (latest ? latest.metaTrim : '') || '';
+      // La meta del trimestre: la que la persona corrigió en la app (si lo hizo); si no, la del último lunes
+      const dfmLunes = (state.gamifica && state.gamifica.datosFormulario) || {};
+      const metaLunes = (dfmLunes.metaCortaPropia && String(dfmLunes.metaCorta || '').trim()) || (latest ? latest.metaTrim : '') || '';
+      const curMetaTrim = state.metaTrimTocado ? state.metaTrimDraft : (metaLunes || state.metaTrimDraft || '');
       let curMetaSem = state.metaSemDraft || (thisWeek ? thisWeek.metaSem : '') || '';
 
       // ===== PASO 1: Cierre de la semana pasada =====
@@ -8338,7 +8349,7 @@ lo que haces cada día es lo que vas a ser.`;
 
         <button class="btn btn-yes" id="btnRegistrarTodo" style="text-align:center">${!tienePlan('guias') ? '✅ Registrar mi compromiso' : (tienePlan('sesiones') ? '📲 Registrar y compartir en WhatsApp' : '📲 Registrar y compartir con tu socio de compromiso')}</button>
         ${!tienePlan('guias') ? '<button type="button" class="link-quiet" id="btnCompartirBloq" style="padding:0;margin-top:8px;text-align:left">👑 Compartir tu compromiso por WhatsApp con tu socio de compromiso <small>(Plan Guías)</small></button>' : (tienePlan('sesiones') ? '' : '<p style="font-size:13px;color:var(--ink-soft);margin:6px 0 0">Tu <b>socio de compromiso</b> es alguien de confianza a quien le cuentas tu compromiso cada semana. Decirlo en voz alta hace que se cumpla mucho más.</p>')}
-        <div class="saved-msg">${state.savedMsg || state.compromisoMsg || ''}</div>
+        <div class="saved-msg">${state.compromisoMsg || ''}</div>
         ${soyModerador() ? '<button class="link-quiet" id="btnVolverCierre" style="padding:0;margin-top:6px">← Ver el cierre de la semana pasada</button>' : ''}
       `;
       app.appendChild(compCard);
@@ -8349,7 +8360,7 @@ lo que haces cada día es lo que vas a ser.`;
       const compEl = compCard.querySelector('#compromisoVeces');
 
       function limpiarFalta(e){ e.target.classList.remove('campo-falta'); state.compromisoMsg = ''; state.mensajeWhatsApp = ''; }
-      metaTrimEl.oninput = (e) => { state.metaTrimDraft = e.target.value; limpiarFalta(e); };
+      metaTrimEl.oninput = (e) => { state.metaTrimDraft = e.target.value; state.metaTrimTocado = true; limpiarFalta(e); };
       identidadEl.oninput = (e) => { state.identidadDraft = e.target.value; limpiarFalta(e); };
       const btnMetaSemPrevia = compCard.querySelector('#btnUsarMetaSemPrevia');
       metaSemEl.oninput = (e) => {
@@ -12477,4 +12488,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Skills" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V13.91 · App Amable Skills · 2026-10-24 09:51==== -->
+<!-- ==== Fin del index V13.92 · App Amable Skills · 2026-10-26 13:27==== -->
