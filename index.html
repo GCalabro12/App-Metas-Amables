@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V13.96 · App Amable Skills · 2026-10-26 13:45==== -->
+<!-- ==== index V13.97 · App Amable Skills · 2026-10-26 13:50==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1363,8 +1363,16 @@ textarea.ms-nombre-in:focus{outline:none;border-color:#C9942D;box-shadow:0 0 0 3
 .ciclo-btn .opcion-tx > b{font:700 clamp(15px,4.6vw,18px)/1.25 Nunito,serif;text-transform:none;letter-spacing:0}
 /* Los pasos del ciclo de Inicio, en mayúsculas (METAS, TU GUÍA DE ESTA SEMANA, REGISTRO Y COMPROMISO, GRUPO DE APOYO) */
 [data-vista="panel"][data-sub=""] .ciclo-btn .opcion-tx > b,[data-vista="panel"][data-sub=""] .ritual-tit,[data-vista="panel"][data-sub=""] .planta-card .planta-tit{text-transform:uppercase;letter-spacing:.02em}
+/* Títulos de Inicio: arriba, a lo ancho, en negrita y del tono oscuro de su recuadro (26-10-2026) */
+.ciclo-btn.tit-arriba{display:grid;grid-template-columns:auto 1fr auto;align-items:center;column-gap:12px;row-gap:6px;text-align:left}
+.tit-arriba .ciclo-tit{grid-column:1 / 3;grid-row:1;display:flex;align-items:center;font:800 clamp(15px,4.6vw,18px)/1.25 Nunito,sans-serif;text-transform:uppercase;letter-spacing:.02em}
+.tit-arriba .ciclo-icono{grid-column:1;grid-row:2}.tit-arriba .opcion-tx{grid-column:2;grid-row:2}.tit-arriba .opcion-flecha{grid-column:3;grid-row:1 / 3}
+[data-vista="panel"][data-sub=""] .ciclo-btn .opcion-tx > b,[data-vista="panel"][data-sub=""] .ciclo-formacion .opcion-tx > b,[data-vista="panel"][data-sub=""] .guia-semana .ritual-tit,[data-vista="panel"][data-sub=""] .planta-tit{font-weight:800;white-space:nowrap}
+.ciclo-meta .opcion-tx > b{display:flex;align-items:center;color:#6B4A12}.ciclo-formacion .opcion-tx > b{display:flex;align-items:center;color:#5B3FA8}
+.ciclo-b .ciclo-tit{color:#B0201A}.ciclo-c .ciclo-tit{color:#2E6B1F}
+.card.guia-semana .ritual-tit{padding-right:0;gap:0;color:#1F4E85}.guia-sub{display:flex;align-items:center;justify-content:space-between;margin:2px 0 6px}.guia-sub .etiqueta-recibida{position:static}
 /* Todos los títulos de Inicio iguales: también Utilidades (26-10-2026) */
-[data-vista="panel"][data-sub=""] .ciclo-formacion .opcion-tx > b{font:700 clamp(15px,4.6vw,18px)/1.25 Nunito,sans-serif;text-transform:uppercase;letter-spacing:.02em}
+[data-vista="panel"][data-sub=""] .ciclo-formacion .opcion-tx > b{font:800 clamp(15px,4.6vw,18px)/1.25 Nunito,sans-serif;text-transform:uppercase;letter-spacing:.02em}
 .panel-badge > span:last-child{text-transform:uppercase;letter-spacing:.04em;font-weight:800}
 .viaje-paso .viaje-tx b{text-transform:uppercase;letter-spacing:.03em;font-size:15px}
 .av-card{padding:12px 16px}.av-cab{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}.av-cab .av-tit{white-space:nowrap}
@@ -1436,7 +1444,7 @@ textarea.ms-nombre-in:focus{outline:none;border-color:#C9942D;box-shadow:0 0 0 3
 .ritual-tit{margin:0 0 4px;font:700 18px Nunito,serif;color:#7A5200}
 .prep-lista{text-align:left;margin:12px 0 4px}.prep-fila{display:flex;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid #EEE}.prep-tx{flex:1}.prep-tx b{display:block;font:700 16px Karla,sans-serif;color:#2B2B2B}.prep-tx small{display:block;font-size:13.5px;color:#666;margin-top:2px}.prep-btn{flex:none;border:0;border-radius:999px;background:#1A5FD1;color:#fff;font:700 14px Karla,sans-serif;padding:8px 16px;cursor:pointer}.prep-hecho{flex:none;width:34px;height:34px;border-radius:50%;background:#3E7A2E;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800}.prep-todo{width:100%;margin-top:14px;padding:13px;border:0;border-radius:12px;background:#3E7A2E;color:#fff;font:700 16px Karla,sans-serif;cursor:pointer}.prep-msg{margin:8px 0 0;font-size:13px;color:#B94A3A}.prep-card{border:2px dashed #1A5FD1}.prep-card-tit{margin:0;font:800 16px Karla,sans-serif;color:#1A3E80}.prep-card-sub{margin:2px 0 0;font-size:13.5px;color:#555}.soporte-tit{margin:0 0 4px;font:800 17px Karla,sans-serif}.soporte-tx{margin:0 0 12px;font-size:14.5px}.soporte-pie{margin:10px 0 0;font-size:12px;color:var(--ink-soft);text-align:center}
 .meta-actual{margin:6px 0 14px;padding:14px 16px;border-radius:14px;background:#FFF7E0;border:2px solid #E0A526;font:700 19px/1.35 Nunito,sans-serif;color:#2B2B2B}.meta-actual span{display:block;margin-bottom:4px;font:800 13px Karla,sans-serif;letter-spacing:.06em;text-transform:uppercase;color:#8A6A2E}
-.info-i{display:inline-flex;align-items:center;justify-content:center;flex:none;width:22px;height:22px;margin-left:8px;border-radius:50%;border:2px solid currentColor;font:italic 700 13px/1 Georgia,serif;vertical-align:middle;cursor:pointer;opacity:.75}
+.info-i{display:inline-flex;align-items:center;justify-content:center;flex:none;width:26px;height:26px;margin-left:8px;vertical-align:middle;cursor:pointer}.info-i svg{display:block}
 .info-capa{position:fixed;inset:0;z-index:9700;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(0,0,0,.45)}.info-panel{max-width:380px;width:100%;background:#fff;border-radius:18px;padding:20px 18px 16px;font:16px/1.5 Karla,sans-serif;color:#2B2B2B;box-shadow:0 10px 30px rgba(0,0,0,.25)}.info-panel p{margin:0 0 14px}.info-ok{width:100%;padding:12px;border:0;border-radius:12px;background:#1A5FD1;color:#fff;font:700 16px Karla,sans-serif;cursor:pointer}
 .ritual-practica{margin:0 0 6px;font:italic 600 15px/1.35 Nunito,serif;color:#4F7A43}
 .ritual-tx{margin:0 0 10px;font-size:15px;line-height:1.45}
@@ -1471,7 +1479,7 @@ textarea.ms-nombre-in:focus{outline:none;border-color:#C9942D;box-shadow:0 0 0 3
 .simp-estado{margin:10px 0 0;font-size:14px;color:#5E6B55;text-align:center}
 html.ocultar-fondo body,html.ocultar-fondo .riego-capa{background:#fff!important}
 html.ocultar-practi .practi-inicio,html.ocultar-practi .practi-bocadillo,html.ocultar-practi .hablar-practi-btn,html.ocultar-insignias #nivelBadgeBtn,html.ocultar-insignias #progNivel,html.ocultar-juego .juego-btn{display:none!important}   /* «Mostrar» */
-.guia-semana .guia-fila{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:2px 0 6px}.guia-semana .guia-toca{font-size:14px;opacity:.85}.guia-semana .guia-plegar{display:inline-flex;align-items:center;gap:6px;font:700 15px Karla,sans-serif;white-space:nowrap}.guia-semana .guia-plegar-tri{font-size:22px;line-height:1}.guia-semana .ritual-guia{white-space:nowrap}
+.guia-semana .guia-fila{display:flex;align-items:center;justify-content:flex-end;gap:10px;margin:2px 0 6px}.guia-semana .guia-toca{font-size:14px;opacity:.85}.guia-semana .guia-plegar{display:inline-flex;align-items:center;gap:6px;font:700 15px Karla,sans-serif;white-space:nowrap}.guia-semana .guia-plegar-tri{font-size:22px;line-height:1}.guia-semana .ritual-guia{white-space:nowrap}
 .mostrar-caja{display:flex;flex-direction:column;align-items:center;gap:2px;width:100%;margin:22px 0 8px;padding:16px 12px;border:2.5px dashed #6E665E;border-radius:22px;background:rgba(255,255,255,.94);cursor:pointer;font-family:Karla,sans-serif;color:#4A443E;box-shadow:0 1px 4px rgba(0,0,0,.08)}
 .mostrar-caja .mostrar-tit{font-size:18px;font-weight:700;color:#3A342E}.mostrar-caja .mostrar-sub{font-size:13.5px;color:#5E574F}
 .mostrar-capa{position:fixed;inset:0;z-index:9000;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;padding:16px}
@@ -2438,7 +2446,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V13.96';
+  const APP_VERSION = 'V13.97';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -2760,10 +2768,11 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     if(k === 'inst'){ abrirInstalar(); return false; }
     return false;
   }
-  function listaPreparar(alCambiar){
+  function listaPreparar(alCambiar, soloFaltan){
     const caja = document.createElement('div'); caja.className = 'prep-lista';
     const pintar = () => {
-      const it = itemsPreparar(), faltan = it.filter(x => !x.ok);
+      const todos = itemsPreparar().filter(x => !(soloFaltan && x.k === 'inst')), faltan = todos.filter(x => !x.ok);
+      const it = soloFaltan ? faltan : todos;   // en la tarjeta de Inicio, solo lo que falta
       caja.innerHTML = it.map(x => '<div class="prep-fila' + (x.ok ? ' ok' : '') + '"><span class="prep-tx"><b>' + x.t + '</b><small>' + x.d + '</small></span>'
           + (x.ok ? '<span class="prep-hecho">✓</span>' : '<button type="button" class="prep-btn" data-k="' + x.k + '">' + (x.k === 'inst' ? 'Instalar' : 'Activar') + '</button>') + '</div>').join('')
         + (faltan.filter(x => x.k !== 'inst').length > 1 ? '<button type="button" class="prep-todo">✅ Activar todo</button>' : '')
@@ -2794,7 +2803,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     try { const luego = Number(localStorage.getItem('prep_luego_' + state.me) || 0); if(Date.now() - luego < 7 * 86400000) return null; } catch(e){}
     const c = el('<div class="card prep-card"><p class="prep-card-tit">⚙️ Te falta activar ' + faltan.map(x => ({ push: 'el aviso diario', wa: 'los mensajes por WhatsApp', em: 'los emails' })[x.k]).join(' y ') + '</p>'
       + '<p class="prep-card-sub">Te ayuda a no abandonar tu meta.</p><div class="prep-hueco"></div><button type="button" class="link-quiet prep-luego">Ahora no</button></div>').firstElementChild;
-    c.querySelector('.prep-hueco').replaceWith(listaPreparar(() => { if(!faltaPreparar().filter(x => x.k !== 'inst').length) c.remove(); }));
+    c.querySelector('.prep-hueco').replaceWith(listaPreparar(() => { if(!faltaPreparar().filter(x => x.k !== 'inst').length) c.remove(); }, true));
     c.querySelector('.prep-luego').onclick = () => { try { localStorage.setItem('prep_luego_' + state.me, String(Date.now())); } catch(e){} c.remove(); };
     return c;
   }
@@ -5399,6 +5408,10 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
+    { v: 'V13.97', f: '26 de octubre de 2026', n: [
+      'Títulos de Inicio en <b>negrita</b>, en una sola línea y del color de su recuadro. El botón de información es ahora la <b>ⓘ</b> de siempre.',
+      'Vuelve a salir tu planta con Prácti en «Registro y compromiso».',
+      'En tu guía de esta semana, toca <b>«Tu práctica de esta semana ▼»</b> para verla.' ] },
     { v: 'V13.96', f: '26 de octubre de 2026', n: [
       'Al crear la cuenta, una sola pantalla, <b>«Prepara tu app»</b>, para activar de una vez el aviso diario, los mensajes por WhatsApp y los emails. Si falta algo, la app te lo recuerda en Inicio, como mucho una vez por semana.',
       'En <b>Ajustes</b>, nuevo apartado <b>«🆘 Ayuda y soporte»</b>: escríbenos por email o WhatsApp con un toque.' ] },
@@ -7838,9 +7851,10 @@ lo que haces cada día es lo que vas a ser.`;
         const tx = textosCiclo();
         const corto = (t, n) => { t = String(t); return t.length > n ? t.slice(0, n - 1).trim() + '…' : t; };
         const boton = (ir, clase, icono, titulo, sub, extra, candado) =>
-          '<button type="button" class="opcion-inicio ciclo-btn ' + clase + '" data-ir="' + ir + '">'
+          '<button type="button" class="opcion-inicio ciclo-btn tit-arriba ' + clase + '" data-ir="' + ir + '">'
+          + '<b class="ciclo-tit">' + titulo + '</b>'
           + '<span class="ciclo-icono">' + iconoCiclo(icono) + '</span>'
-          + '<span class="opcion-tx"><b>' + titulo + '</b><small>' + sub + '</small>' + (extra || '') + '</span>'
+          + '<span class="opcion-tx"><small>' + sub + '</small>' + (extra || '') + '</span>'
           + '<span class="opcion-flecha">' + (candado || '›') + '</span></button>';
         // Orden de arriba abajo: primero la meta, después a → b → c → d
         const metaHecha = !!(formularioEnviado() || state.guiaTexto || tx.meta);
@@ -10436,7 +10450,8 @@ lo que haces cada día es lo que vas a ser.`;
   // Empieza plegada (solo el título) con «Ampliar ▼»; desplegada, «Reducir ▲» la pliega y el botón abre la guía semanal completa
   let guiaSemanaAbierta = false;
   // Botón ⓘ: al tocarlo explica la tarjeta en una ventanita, sin abrirla (26-10-2026, Gustavo)
-  function infoBoton(html){ return '<span class="info-i" role="button" tabindex="0" aria-label="Más información" data-info="' + escapeAttr(html) + '">i</span>'; }
+  function infoBoton(html){ return '<span class="info-i" role="button" tabindex="0" aria-label="Más información" data-info="' + escapeAttr(html) + '">'
+    + '<svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><circle cx="12" cy="12" r="10.4" fill="#fff" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="7.2" r="1.6" fill="currentColor"/><path d="M12 10.6v7" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg></span>'; }
   function abrirInfo(html){
     document.querySelectorAll('.info-capa').forEach(x => x.remove());
     const capa = el('<div class="info-capa" role="dialog"><div class="info-panel"><p>' + html + '</p><button type="button" class="info-ok">Entendido</button></div></div>').firstElementChild;
@@ -10461,8 +10476,9 @@ lo que haces cada día es lo que vas a ser.`;
     const c = document.createElement('div'); c.className = 'card ritual-card guia-semana ciclo-a';
     // La guía es el tutor (el palo) de la planta: la sostiene para que crezca recta y no se tuerza. Va en el azul de la guía
     const icono = '<span class="guia-semana-ico">' + iconoCiclo('a') + '</span>';   // b · Tu guía de esta semana
-    c.innerHTML = '<span class="etiqueta-recibida">Recibida</span><p class="ritual-tit">' + icono + 'Tu guía de esta semana' + infoBoton('Aquí tienes la guía de esta semana: lo que vas a trabajar y <b>tu práctica</b>. Toca «Ampliar» para verla aquí mismo, o «Ir a tu guía semanal completa» para leerla entera.') + '</p>' + (extraHTML || '')
-      + '<div class="guia-fila"><span class="guia-toca">' + (guiaSemanaAbierta ? '' : 'Tu práctica de esta semana') + '</span><span class="guia-plegar"><span class="guia-plegar-tx">' + (guiaSemanaAbierta ? 'Reducir' : 'Ampliar') + '</span><span class="guia-plegar-tri" aria-hidden="true">' + (guiaSemanaAbierta ? '▲' : '▼') + '</span></span></div>'
+    c.innerHTML = '<p class="ritual-tit">Tu guía de esta semana' + infoBoton('Aquí tienes la guía de esta semana: lo que vas a trabajar y <b>tu práctica</b>. Toca «Tu práctica de esta semana» para verla aquí mismo, o «Ir a tu guía semanal completa» para leerla entera.') + '</p>'
+      + '<div class="guia-sub">' + icono + '<span class="etiqueta-recibida">Recibida</span></div>' + (extraHTML || '')
+      + '<div class="guia-fila"><span class="guia-plegar"><span class="guia-plegar-tx">Tu práctica de esta semana</span><span class="guia-plegar-tri" aria-hidden="true">' + (guiaSemanaAbierta ? '▲' : '▼') + '</span></span></div>'
       + '<div class="guia-cuerpo"' + (guiaSemanaAbierta ? '' : ' hidden') + '><p class="ritual-sub">Tu guía es el <b>tutor</b> de tu planta: la sostiene para que crezca recta y no se tuerza.</p>'
       + (pg ? (pg.ejercicio ? '<p class="ritual-practica">' + escapeAttr(pg.ejercicio) + '</p>' : '')
             + (pg.objetivo ? '<p class="ritual-tx">🎯 ' + escapeAttr(pg.objetivo) + '</p>' : '')
@@ -10856,6 +10872,7 @@ lo que haces cada día es lo que vas a ser.`;
     // Debajo del título, la meta de la persona: el resumen corto que hace la IA (dos renglones como mucho);
     // si aún no está, sus palabras recortadas. La planta ES su meta
     let mt = metaVisibleTexto();
+    const dfm = (state.gamifica && state.gamifica.datosFormulario) || {};
     if(mt.length > 100) mt = mt.slice(0, 99).trim() + '…';
     // El tutor (el palo junto a la planta) es la guía semanal: la sostiene para que crezca recta y no se tuerza
     const tutor = '<svg class="planta-tutor" viewBox="0 0 600 640" aria-hidden="true"><rect x="390" y="150" width="16" height="302" rx="2" fill="#D8B26A" stroke="#8A6A2E" stroke-width="3"/>'
@@ -12600,4 +12617,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Skills" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V13.96 · App Amable Skills · 2026-10-26 13:45==== -->
+<!-- ==== Fin del index V13.97 · App Amable Skills · 2026-10-26 13:50==== -->
