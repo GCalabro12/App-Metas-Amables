@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V14.07 · App Amable Skills · 2026-10-26 16:06==== -->
+<!-- ==== index V14.08 · App Amable Skills · 2026-10-26 16:09==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1383,8 +1383,9 @@ textarea.ms-nombre-in:focus{outline:none;border-color:#C9942D;box-shadow:0 0 0 3
 .ciclo-meta .planta-meta{display:block;font:italic 600 16px/1.35 Nunito,sans-serif;color:#4A3A12}
 .planta-ver-montana{display:table;margin:12px auto 0;padding:8px 16px;border:0;border-radius:999px;background:rgba(255,255,255,.9);color:#2F5A23;font:800 15px Nunito,sans-serif;cursor:pointer}
 .planta-ico-abajo{display:block;width:44px;height:44px;margin:0 0 8px}.planta-ico-abajo svg{width:100%;height:100%}
-.letra-paso{display:inline-flex;align-items:center;justify-content:center;flex:none;width:30px;height:30px;margin-right:10px;border-radius:50%;background:currentColor;-webkit-text-stroke:0}
-.letra-paso i{font:900 18px/1 Nunito,sans-serif;font-style:normal;color:#fff;text-transform:lowercase;-webkit-text-stroke:0}
+.letra-paso{display:inline-flex;align-items:baseline;flex:none;margin-right:8px;-webkit-text-stroke:0}
+.letra-paso i{font:900 22px/1 Nunito,sans-serif;font-style:normal;color:currentColor;text-transform:uppercase;-webkit-text-stroke:.35px currentColor}
+.letra-paso::after{content:'.';font:900 22px/1 Nunito,sans-serif;color:currentColor}
 .ciclo-btn.tit-arriba{grid-template-columns:1fr auto}.tit-arriba .ciclo-tit{grid-column:1}.tit-arriba .opcion-tx{grid-column:1}.tit-arriba .opcion-flecha{grid-column:2}
 .guia-sub{justify-content:flex-end}
 [data-vista="panel"][data-sub=""] .opcion-inicio .opcion-flecha{display:none}
@@ -2469,7 +2470,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V14.07';
+  const APP_VERSION = 'V14.08';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -5435,6 +5436,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
+    { v: 'V14.08', f: '26 de octubre de 2026', n: [
+      'La letra de cada paso de Inicio, más proporcionada: <b>A.</b> Metas, <b>B.</b> Tu guía, <b>C.</b> Registro y <b>D.</b> Grupo, sin círculo.' ] },
     { v: 'V14.07', f: '26 de octubre de 2026', n: [
       '«Ver cómo crece tu meta» dice ahora cuántas hojas y flores llevas en tu planta y en qué año de la montaña estás, y hasta cuándo.' ] },
     { v: 'V14.06', f: '26 de octubre de 2026', n: [
@@ -12682,4 +12685,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Skills" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V14.07 · App Amable Skills · 2026-10-26 16:06==== -->
+<!-- ==== Fin del index V14.08 · App Amable Skills · 2026-10-26 16:09==== -->
