@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V13.94 · App Amable Skills · 2026-10-26 13:38==== -->
+<!-- ==== index V13.95 · App Amable Skills · 2026-10-26 13:40==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1434,6 +1434,7 @@ textarea.ms-nombre-in:focus{outline:none;border-color:#C9942D;box-shadow:0 0 0 3
 .pf-sem{display:flex;flex-direction:column;gap:2px;padding:7px 0;border-bottom:1px solid #EEE;font-size:13.5px}.pf-sem:last-child{border-bottom:0}.pf-sem small{color:var(--ink-soft);font-size:12.5px}
 .pf-nota-tx{width:100%;box-sizing:border-box;padding:10px 12px;border:1px solid #DCE6D8;border-radius:10px;font:inherit;font-size:14px;resize:vertical}
 .ritual-tit{margin:0 0 4px;font:700 18px Nunito,serif;color:#7A5200}
+.meta-actual{margin:6px 0 14px;padding:14px 16px;border-radius:14px;background:#FFF7E0;border:2px solid #E0A526;font:700 19px/1.35 Nunito,sans-serif;color:#2B2B2B}.meta-actual span{display:block;margin-bottom:4px;font:800 13px Karla,sans-serif;letter-spacing:.06em;text-transform:uppercase;color:#8A6A2E}
 .info-i{display:inline-flex;align-items:center;justify-content:center;flex:none;width:22px;height:22px;margin-left:8px;border-radius:50%;border:2px solid currentColor;font:italic 700 13px/1 Georgia,serif;vertical-align:middle;cursor:pointer;opacity:.75}
 .info-capa{position:fixed;inset:0;z-index:9700;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(0,0,0,.45)}.info-panel{max-width:380px;width:100%;background:#fff;border-radius:18px;padding:20px 18px 16px;font:16px/1.5 Karla,sans-serif;color:#2B2B2B;box-shadow:0 10px 30px rgba(0,0,0,.25)}.info-panel p{margin:0 0 14px}.info-ok{width:100%;padding:12px;border:0;border-radius:12px;background:#1A5FD1;color:#fff;font:700 16px Karla,sans-serif;cursor:pointer}
 .ritual-practica{margin:0 0 6px;font:italic 600 15px/1.35 Nunito,serif;color:#4F7A43}
@@ -2436,7 +2437,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V13.94';
+  const APP_VERSION = 'V13.95';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -5341,6 +5342,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
+    { v: 'V13.95', f: '26 de octubre de 2026', n: [
+      'Al tocar <b>Metas</b>, lo primero que ves es <b>tu meta</b>.' ] },
     { v: 'V13.94', f: '26 de octubre de 2026', n: [
       'Letra nueva en los títulos, <b>más moderna y redondeada</b>. Y todos los títulos de Inicio tienen el mismo tamaño.' ] },
     { v: 'V13.93', f: '26 de octubre de 2026', n: [
@@ -7986,6 +7989,7 @@ lo que haces cada día es lo que vas a ser.`;
         // Ya está hecha: en el Plan Libre no se vuelve a abrir el formulario
         s2.innerHTML = `
           <h3 class="metas-sub">🌱 Meta con guía</h3>
+          ${metaVisibleTexto() ? '<p class="meta-actual"><span>🎯 Tu meta</span>«' + escapeAttr(metaVisibleTexto()) + '»</p>' : ''}
           <p style="font-size:15.5px"><b>Será tu meta más importante para este trimestre.</b></p>
           <p style="font-size:13px;color:var(--ink-soft)">${reglaMeta}</p>
           <p style="background:var(--honey-tint);border-radius:10px;padding:12px 14px">✅ <b>Ya tienes el formulario rellenado</b>${enviado ? ' (' + fechaCorta(enviado) + ')' : ''}: tu meta está definida para el <b>${trimestreMeta()}</b>.<br>
@@ -10769,15 +10773,20 @@ lo que haces cada día es lo que vas a ser.`;
   function registradoHoy(){
     try { return abonoDeHoy().length > 0 || entornoDeHoy() > 0 || diaHechoFecha(ahoraRegistro()) > 0; } catch(e){ return false; }
   }
+  // La meta tal como se ve en la app: el resumen corto (de la IA o corregido por la persona) o, si no hay, sus palabras
+  function metaVisibleTexto(){
+    let mt = ''; try { mt = metaFinalViaje().texto; } catch(err){}
+    const dfm = (state.gamifica && state.gamifica.datosFormulario) || {};
+    const marca = t => 'v2:' + String(t || '').length + ':' + String(t || '').slice(0, 40);   // la misma marca que pone el Worker
+    if(dfm.metaCorta && dfm.metaTexto && mt === String(dfm.metaTexto).trim() && dfm.metaCortaDe === marca(dfm.metaTexto)) mt = dfm.metaCorta;
+    return String(mt || '').trim();
+  }
   function tarjetaPlanta(alVer){
     if(!state.me) return null;
     const e = estadoPlanta();
     // Debajo del título, la meta de la persona: el resumen corto que hace la IA (dos renglones como mucho);
     // si aún no está, sus palabras recortadas. La planta ES su meta
-    let mt = ''; try { mt = metaFinalViaje().texto; } catch(err){}
-    const dfm = (state.gamifica && state.gamifica.datosFormulario) || {};
-    const marca = t => 'v2:' + String(t || '').length + ':' + String(t || '').slice(0, 40);   // la misma marca que pone el Worker
-    if(dfm.metaCorta && dfm.metaTexto && mt === String(dfm.metaTexto).trim() && dfm.metaCortaDe === marca(dfm.metaTexto)) mt = dfm.metaCorta;
+    let mt = metaVisibleTexto();
     if(mt.length > 100) mt = mt.slice(0, 99).trim() + '…';
     // El tutor (el palo junto a la planta) es la guía semanal: la sostiene para que crezca recta y no se tuerza
     const tutor = '<svg class="planta-tutor" viewBox="0 0 600 640" aria-hidden="true"><rect x="390" y="150" width="16" height="302" rx="2" fill="#D8B26A" stroke="#8A6A2E" stroke-width="3"/>'
@@ -12522,4 +12531,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Skills" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V13.94 · App Amable Skills · 2026-10-26 13:38==== -->
+<!-- ==== Fin del index V13.95 · App Amable Skills · 2026-10-26 13:40==== -->
