@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V14.03 · App Amable Skills · 2026-10-26 14:27==== -->
+<!-- ==== index V14.04 · App Amable Skills · 2026-10-26 14:30==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1385,6 +1385,8 @@ textarea.ms-nombre-in:focus{outline:none;border-color:#C9942D;box-shadow:0 0 0 3
 .ciclo-btn.tit-arriba{grid-template-columns:1fr auto}.tit-arriba .ciclo-tit{grid-column:1}.tit-arriba .opcion-tx{grid-column:1}.tit-arriba .opcion-flecha{grid-column:2}
 .guia-sub{justify-content:flex-end}
 [data-vista="panel"][data-sub=""] .opcion-inicio .opcion-flecha{display:none}
+.planta-card .planta-tit{gap:0}
+[data-vista="panel"][data-sub=""] .opcion-inicio.ciclo-btn{padding-left:16px;padding-right:16px}
 [data-vista="panel"][data-sub=""] .planta-inicio .planta-tit{text-transform:uppercase;letter-spacing:.02em}
 .ciclo-btn.tit-arriba{grid-template-columns:1fr}
 /* Todos los títulos de Inicio iguales: también Utilidades (26-10-2026) */
@@ -2462,7 +2464,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V14.03';
+  const APP_VERSION = 'V14.04';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -5382,8 +5384,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   // Llave fija (mecánica), según el dibujo de Gustavo: cabeza redonda grande con un hueco ancho para la tuerca,
   // mango corto y gordo con la punta redonda. Sin letra: Utilidades no es un paso del ciclo (la «d» es el Grupo de apoyo)
   function iconoLlave(){
-    return '<svg class="ciclo-svg" viewBox="0 0 48 48" aria-hidden="true"><g transform="translate(24 24) rotate(-40) scale(0.78) translate(-28 0)">'
-      + '<path d="M8 -8 L19.9 -8 A18 18 0 0 1 53 -6 L42 -6 L42 6 L53 6 A18 18 0 0 1 19.9 8 L8 8 A8 8 0 0 1 8 -8 Z" fill="#DCCFF5" stroke="#101010" stroke-width="2.6" stroke-linejoin="round"/>'
+    return '<svg class="ciclo-svg" viewBox="0 0 48 48" aria-hidden="true"><g transform="translate(24 24) rotate(-55) scale(0.56) translate(-12.5 0)">'
+      + '<path d="M-20 -8 L19.9 -8 A18 18 0 0 1 53 -8 L35 -8 L35 8 L53 8 A18 18 0 0 1 19.9 8 L-20 8 A8 8 0 0 1 -20 -8 Z" fill="#DCCFF5" stroke="#101010" stroke-width="2.6" stroke-linejoin="round"/>'
       + '</g></svg>';
   }
   function avisoCorona(texto){
@@ -5425,6 +5427,10 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
+    { v: 'V14.04', f: '26 de octubre de 2026', n: [
+      'Nueva llave de <b>Utilidades</b>, con el mango más largo.',
+      'En «Grupo de apoyo», el aviso de tu registro de compromiso sale el domingo, un día antes. Las sesiones en grupo salen siempre.',
+      '«Registro y compromiso» queda alineado a la izquierda, como los demás títulos.' ] },
     { v: 'V14.03', f: '26 de octubre de 2026', n: [
       'En Inicio, «Tu facilitador» va al final, debajo del juego y de «Mostrar». Las tarjetas ya no llevan la flechita a la derecha: se tocan enteras.',
       '«Ver cómo crece tu meta» tiene el mismo tamaño y estilo que los demás títulos.' ] },
@@ -7930,8 +7936,9 @@ lo que haces cada día es lo que vas a ser.`;
           + boton('s1', 'ciclo-c' + (sinSesiones ? ' bloqueada' : '') + (act('c') || act('d')), 'cpc', 'Grupo de apoyo' + infoBoton('Cada <b>lunes</b> haces tu compromiso de la semana: cuántas veces vas a practicar. Con el <b>Plan Guías + Grupo</b>, además, nos vemos en grupo cada 15 días por videollamada para ayudarnos.'),
                 sinSesiones
                   ? 'Registro de compromiso cada lunes y sesiones en grupo cada 15 días. Plan Guías + Grupo'
-                  : (registroPendienteEstaSemana() ? '✍️ <b>Compromiso pendiente:</b> aún no has dicho cuántas veces practicarás esta semana' : '✍️ Próximo registro de tu compromiso: ' + textoProximoLunes())
-                    + (textoProximaSesion() ? '<br><span style="font-weight:700">📅 ' + textoProximaSesion() + '</span>' : ''), '', sinSesiones && '👑👑')
+                  : [registroPendienteEstaSemana() ? '✍️ <b>Compromiso pendiente:</b> aún no has dicho cuántas veces practicarás esta semana'
+                       : new Date().getDay() === 0 ? '✍️ Mañana toca tu registro de compromiso: ' + textoProximoLunes() : '',
+                     textoProximaSesion() ? '<span style="font-weight:700">📅 ' + textoProximaSesion() + '</span>' : ''].filter(Boolean).join('<br>'), '', sinSesiones && '👑👑')
           + (oculto('util') ? '' : '<button type="button" class="opcion-inicio ciclo-formacion" data-ir="util"><span class="ciclo-icono">' + iconoLlave() + '</span><span class="opcion-tx"><b>Utilidades' + infoBoton('Aquí tienes <b>Habla con Prácti</b> para preguntarle tus dudas, <b>formación</b>, <b>frases motivadoras</b> para compartir y <b>música</b> para tu práctica.') + '</b></span><span class="opcion-flecha">›</span></button>');
         app.appendChild(opciones);
         try { const tp = tarjetaPlantaInicio(); if(tp) app.appendChild(tp); } catch(e){ console.error('Planta de Inicio:', e); }
@@ -12660,4 +12667,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Skills" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V14.03 · App Amable Skills · 2026-10-26 14:27==== -->
+<!-- ==== Fin del index V14.04 · App Amable Skills · 2026-10-26 14:30==== -->
