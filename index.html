@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V14.20 · App Amable Skills · 2026-10-26 16:42==== -->
+<!-- ==== index V14.21 · App Amable Skills · 2026-10-26 16:52==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1458,6 +1458,22 @@ body [data-vista="formMeta"] .opcion-inicio.sel b{color:#2B2350 !important}
 body [data-vista="formMeta"] .opcion-inicio.sel::before{content:'✓';position:absolute;left:18px;top:50%;width:26px;height:26px;margin-top:-13px;border:0;border-radius:50%;background:#2B2350;color:#FFD400;font:900 16px/26px Nunito,sans-serif;text-align:center}
 /* Abajo, detrás de los botones, el color de fondo tapa las respuestas que pasan por debajo al desplazarse */
 body [data-vista="formMeta"]::after{content:'';position:fixed;left:0;right:0;bottom:0;height:calc(150px + env(safe-area-inset-bottom));background:linear-gradient(180deg,transparent 0,var(--fm-b,#C04A8E) 40%);z-index:50;pointer-events:none}
+/* Historia de cada nivel de la montaña (diapositivas a pantalla completa) */
+.mont-pista{margin:8px 0 4px;text-align:center;font:700 14px Karla,sans-serif;color:#A93226}
+.hn-capa{position:fixed;inset:0;z-index:9800;display:flex;flex-direction:column;background:radial-gradient(120% 70% at 50% 25%,#B0322B 0%,#5A1A3E 55%,#1E1030 100%);color:#fff;padding:calc(14px + env(safe-area-inset-top)) 22px calc(18px + env(safe-area-inset-bottom));overflow-y:auto}
+.hn-cab{display:flex;align-items:center;justify-content:space-between}
+.hn-nivel{font:800 13px Karla,sans-serif;letter-spacing:.08em;text-transform:uppercase;opacity:.85}
+.hn-x{width:40px;height:40px;border:0;border-radius:50%;background:rgba(255,255,255,.15);color:#fff;font:800 18px Karla,sans-serif;cursor:pointer}
+.hn-ilus{flex:1;display:flex;align-items:center;justify-content:center;min-height:240px}
+.hn-escudo svg{width:min(56vw,230px);height:auto;filter:drop-shadow(0 10px 30px rgba(255,120,80,.45))}
+.hn-img{width:min(64vw,260px);border-radius:28px;box-shadow:0 10px 30px rgba(0,0,0,.35)}
+.hn-practi{background:rgba(255,255,255,.92);border-radius:28px;padding:10px 16px}
+.hn-tx h2{margin:0 0 10px;font:900 clamp(26px,7.4vw,34px)/1.15 Nunito,sans-serif;color:#fff}
+.hn-tx p{margin:0;font:500 18px/1.5 Karla,sans-serif;color:rgba(255,255,255,.92)}
+.hn-pie{margin-top:22px}
+.hn-puntos{display:flex;gap:8px;justify-content:center;margin:0 0 14px}.hn-puntos i{width:9px;height:9px;border-radius:50%;background:rgba(255,255,255,.35)}.hn-puntos i.on{background:#FFD400;transform:scale(1.3)}
+.hn-bts{display:flex;gap:10px}.hn-atras{width:64px;border:0;border-radius:16px;background:rgba(255,255,255,.18);color:#fff;font:800 20px Karla,sans-serif;cursor:pointer}
+.hn-sig{flex:1;padding:16px;border:0;border-radius:16px;background:#FFFFFF;color:#A93226;font:900 18px Nunito,sans-serif;cursor:pointer}
 .fm-opcional{font:600 15px Karla,sans-serif;color:#6B6380;white-space:nowrap}
 .fm-admin{position:fixed;top:calc(10px + env(safe-area-inset-top));right:10px;z-index:61;display:flex;flex-direction:column;align-items:center;gap:3px}.fm-admin > div{display:flex;gap:6px}.fm-admin small{font:700 10.5px Karla,sans-serif;color:#5B3FA8;background:rgba(255,255,255,.85);border-radius:8px;padding:1px 6px}.fm-admin button{width:38px;height:38px;border:0;border-radius:50%;background:#FFD400;color:#3B2A86;font:800 15px Karla,sans-serif;box-shadow:0 2px 8px rgba(0,0,0,.15);cursor:pointer}
 [data-vista="formMeta"]:has(.fm-admin) .fm-prog{right:106px}
@@ -2554,7 +2570,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V14.20';
+  const APP_VERSION = 'V14.21';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -5520,6 +5536,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
+    { v: 'V14.21', f: '26 de octubre de 2026', n: [
+      'En Progreso, toca el nivel rojo de abajo de tu montaña: te cuenta la historia del <b>guerrero jardinero</b>, en cuatro diapositivas.' ] },
     { v: 'V14.20', f: '26 de octubre de 2026', n: [
       'En el formulario, la marca ✓ de la respuesta elegida va a la izquierda, centrada, separada del texto.' ] },
     { v: 'V14.19', f: '26 de octubre de 2026', n: [
@@ -11667,6 +11685,46 @@ lo que haces cada día es lo que vas a ser.`;
     return c;
   }
 
+  const HISTORIAS_NIVEL = {
+    0: [
+      { img: () => '<div class="hn-escudo">' + escudoInsignia(0) + '</div>', tit: 'Actúa como un guerrero jardinero',
+        tx: 'En el primer nivel de la montaña, el rojo, aprendes a cuidar tu meta con fuerza y con cariño, como quien defiende y cultiva su propio huerto.' },
+      { img: () => '<div class="hn-practi">' + practiHTML('pizarra', '', 200) + '</div>', tit: 'Apunta bien',
+        tx: 'Un buen guerrero sabe adónde va. Elige una meta clara y pequeña, y vuelve a ella cada día.' },
+      { img: () => '<img class="hn-img" src="' + imgRegando(3) + '" alt="">', tit: 'Ara bien tu tierra',
+        tx: 'Antes de sembrar, el jardinero prepara su terreno. Tu tierra es tu tiempo y tu energía: cuídala un poco cada día.' },
+      { img: () => '<div class="hn-escudo">' + escudoInsignia(0) + '</div>', tit: 'Pon límites a tu terreno',
+        tx: 'Sin exceso, para no abusar de los demás. Sin carencia, para que nadie abuse de ti. Ese es el equilibrio del guerrero jardinero.' }
+    ]
+  };
+  function abrirHistoriaNivel(n){
+    const diapos = HISTORIAS_NIVEL[n]; if(!diapos) return;
+    document.querySelectorAll('.hn-capa').forEach(x => x.remove());
+    const capa = el('<div class="hn-capa" role="dialog" aria-label="Historia del nivel ' + escapeAttr(BADGE_SCALE[n].label) + '"></div>').firstElementChild;
+    let i = 0;
+    const pintar = () => {
+      const d = diapos[i], ultima = i === diapos.length - 1;
+      capa.innerHTML = '<div class="hn-cab"><span class="hn-nivel">Nivel ' + (n + 1) + ' · ' + escapeAttr(BADGE_SCALE[n].label) + '</span><button type="button" class="hn-x" aria-label="Cerrar">✕</button></div>'
+        + '<div class="hn-ilus">' + d.img() + '</div>'
+        + '<div class="hn-tx"><h2>' + d.tit + '</h2><p>' + d.tx + '</p></div>'
+        + '<div class="hn-pie"><div class="hn-puntos">' + diapos.map((x, k) => '<i class="' + (k === i ? 'on' : '') + '"></i>').join('') + '</div>'
+        + '<div class="hn-bts">' + (i ? '<button type="button" class="hn-atras">←</button>' : '') + '<button type="button" class="hn-sig">' + (ultima ? '¡Vamos!' : 'Siguiente →') + '</button></div></div>';
+      capa.querySelector('.hn-x').onclick = () => capa.remove();
+      capa.querySelector('.hn-sig').onclick = () => { if(ultima) capa.remove(); else { i++; pintar(); } };
+      const at = capa.querySelector('.hn-atras'); if(at) at.onclick = () => { i--; pintar(); };
+      try { activarPracti(capa); } catch(e){}
+    };
+    // Deslizar a la izquierda o a la derecha también pasa las diapositivas
+    let x0 = null;
+    capa.addEventListener('touchstart', e => { x0 = e.touches[0].clientX; }, { passive: true });
+    capa.addEventListener('touchend', e => {
+      if(x0 === null) return; const dx = e.changedTouches[0].clientX - x0; x0 = null;
+      if(dx < -50 && i < diapos.length - 1){ i++; pintar(); } else if(dx > 50 && i > 0){ i--; pintar(); }
+    });
+    pintar();
+    document.body.appendChild(capa);
+  }
+
   function renderProgreso(){
     const hoy = ahoraRegistro(); hoy.setHours(0, 0, 0, 0);
     let semana = 0, mes = 0, trimestre = 0, racha = 0;
@@ -11686,7 +11744,7 @@ lo que haces cada día es lo que vas a ser.`;
       + (dm ? ''
         + '<div class="card mont-card planta-fondo">' + escenaPlanta(dm.nivel) + '<h2>🌿 Tu planta (meta) de este trimestre</h2><p class="mont-sub">Una hoja por cada semana con algún registro: más grande cuantos más días registras, y con flor si cumples tu compromiso. En la guía, los meses.</p><div style="position:relative;display:flex;justify-content:center;padding-bottom:10px"><span class="planta-ley"><svg width="20" height="14" viewBox="0 0 20 14" aria-hidden="true"><g transform="rotate(-20 1 9)"><path d="M1 9 C5 2.5 14 3 19 9 C14 15 5 15.5 1 9 Z" fill="#639922"/><path d="M1 9 L16 9" stroke="#8FC35A" stroke-width="1"/></g></svg>= semana</span>' + plantaSVG(dm.bancal(dm.actual), 30, true) + '</div></div>'
         + '<div class="card mont-card"><h2>⛰️ Tu montaña interior</h2><p class="mont-sub">Año ' + dm.anio + ' · ' + BADGE_SCALE[dm.nivel].label + ' · bancal ' + dm.enAnio + ' de 4 este año. Cada trimestre, tu meta queda plantada en un bancal y la siguiente sube un poco más.</p>'
-        + montanaSVG(dm) + leyendaMontana(dm) + '</div>' : '')
+        + montanaSVG(dm) + '<p class="mont-pista">👆 Toca el nivel rojo de abajo para conocer su historia</p>' + leyendaMontana(dm) + '</div>' : '')
       + '<div class="progreso-grid">'
       + '<div class="progreso-dato"><b>' + racha + '</b><span>' + (racha === 1 ? 'día seguido' : 'días seguidos') + ' practicando</span></div>'
       + '<div class="progreso-dato"><b>' + semana + '/7</b><span>días esta semana</span></div>'
@@ -11701,6 +11759,15 @@ lo que haces cada día es lo que vas a ser.`;
       + '</div>').firstElementChild;
     caja.querySelector('#progCal').appendChild(calendarioDiario(true));
     caja.querySelector('#progViaje').onclick = () => { state.view = 'viaje'; window.scrollTo(0,0); render(); };
+    // Cada nivel de la montaña tendrá su historia; de momento, el primero (Guerrero, el rojo de abajo)
+    const montIlus = caja.querySelector('.mont-ilus');
+    if(montIlus){
+      montIlus.style.cursor = 'pointer';
+      montIlus.addEventListener('click', ev => {
+        const r = montIlus.getBoundingClientRect(), y = (ev.clientY - r.top) * 600 / r.height;
+        if(y >= MT.BY - MT.BANDA - 10) abrirHistoriaNivel(0);
+      });
+    }
     if(caja.querySelector('#progNivel')) caja.querySelector('#progNivel').onclick = () => { state.prevView = 'progreso'; state.view = insigniasBloqueadas() ? 'planes' : 'perfil'; window.scrollTo(0,0); render(); };
     caja.querySelector('#progHist').onclick = () => { state.view = 'historial'; window.scrollTo(0,0); render(); };
     // Música de la montaña: solo el volumen. Empieza sola (salvo con el volumen a cero o si ya suena otra música);
@@ -12810,4 +12877,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Skills" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V14.20 · App Amable Skills · 2026-10-26 16:42==== -->
+<!-- ==== Fin del index V14.21 · App Amable Skills · 2026-10-26 16:52==== -->
