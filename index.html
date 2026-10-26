@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V14.04 · App Amable Skills · 2026-10-26 14:30==== -->
+<!-- ==== index V14.05 · App Amable Skills · 2026-10-26 14:33==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -540,9 +540,9 @@ button, input, textarea, select{ font-family:inherit; }
   .practi-escribe-tx{ font-family:'Nunito',serif; font-size:17px; font-weight:600; color:var(--ink); line-height:1.25; }
   .practi-inicio{ display:flex; align-items:flex-end; gap:10px; margin:0 0 14px; }
   .practi-inicio .practi.activo{ flex-shrink:0; margin:0; }
-  .practi-inicio .practi-bocadillo{ flex:1; margin:0 0 20px; text-align:left; }
+  .practi-inicio .practi-bocadillo{ flex:1; margin:0; text-align:left; }
   .practi-inicio .practi-bocadillo::before{
-    left:-8px; bottom:16px; top:auto; width:13px; height:13px;
+    left:-8px; bottom:min(calc(var(--boca, 64px) - 7px), calc(100% - 24px)); top:auto; width:13px; height:13px;
     border-left:2px solid; border-bottom:2px solid; border-top:none; border-right:none;
     border-color:inherit; transform:rotate(45deg);
   }
@@ -2464,7 +2464,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V14.04';
+  const APP_VERSION = 'V14.05';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -4704,6 +4704,9 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
   function activarPracti(raiz){
+    // Prácti con su bocadillo al lado: los pies de Prácti a la altura de la base del bocadillo y la punta
+    // del bocadillo a la altura de su boca, sea cual sea su tamaño (26-10-2026, Gustavo)
+    try { if(raiz && raiz.querySelectorAll) raiz.querySelectorAll('.practi-inicio').forEach(c => { const p = c.querySelector('.practi[data-tam]'); if(p) c.style.setProperty('--boca', Math.round(Number(p.dataset.tam) * 0.615) + 'px'); }); } catch(e){}
     // El gesto "pensativo" es imagen fija: se pinta siempre, haya reproductor o no
     if(raiz && raiz.querySelectorAll){
       raiz.querySelectorAll('.practi[data-practi="pensativo"]:not(.activo)').forEach(nodo => {
@@ -5427,6 +5430,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
+    { v: 'V14.05', f: '26 de octubre de 2026', n: [
+      'Prácti y sus bocadillos, mejor colocados: sus pies a la altura de la base del bocadillo y la punta a la altura de su boca.' ] },
     { v: 'V14.04', f: '26 de octubre de 2026', n: [
       'Nueva llave de <b>Utilidades</b>, con el mango más largo.',
       'En «Grupo de apoyo», el aviso de tu registro de compromiso sale el domingo, un día antes. Las sesiones en grupo salen siempre.',
@@ -12667,4 +12672,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Skills" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V14.04 · App Amable Skills · 2026-10-26 14:30==== -->
+<!-- ==== Fin del index V14.05 · App Amable Skills · 2026-10-26 14:33==== -->
