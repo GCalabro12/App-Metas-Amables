@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V14.08 · App Amable Skills · 2026-10-26 16:09==== -->
+<!-- ==== index V14.09 · App Amable Skills · 2026-10-26 16:15==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1395,6 +1395,22 @@ textarea.ms-nombre-in:focus{outline:none;border-color:#C9942D;box-shadow:0 0 0 3
 [data-vista="panel"][data-sub=""] .opcion-inicio.ciclo-btn{padding-left:16px;padding-right:16px}
 [data-vista="panel"][data-sub=""] .planta-inicio .planta-tit{text-transform:uppercase;letter-spacing:.02em}
 .ciclo-btn.tit-arriba{grid-template-columns:1fr}
+/* Formulario de la meta: sin cabecera ni marcos, con colores suaves (26-10-2026) */
+[data-vista="formMeta"]{background:linear-gradient(180deg,#FFF6EC 0%,#F6EFFC 60%,#EEF6FB 100%)}
+[data-vista="formMeta"] header.top,[data-vista="formMeta"] .topbar,[data-vista="formMeta"] .boton-instalar-arriba,[data-vista="formMeta"] .pi-seal-fila,[data-vista="formMeta"] .pie-derechos{display:none !important}
+.fm-salir{position:fixed;top:calc(10px + env(safe-area-inset-top));left:10px;z-index:60;width:38px;height:38px;border:0;border-radius:50%;background:rgba(255,255,255,.85);color:#5B3FA8;font:800 18px Karla,sans-serif;box-shadow:0 2px 8px rgba(0,0,0,.12);cursor:pointer}
+[data-vista="formMeta"] h2{margin-top:14px !important;color:#5B3FA8}
+[data-vista="formMeta"] .card{border:0 !important;background:#FFFFFF !important;box-shadow:0 8px 24px rgba(91,63,168,.10) !important;border-radius:22px}
+[data-vista="formMeta"] .practi-bocadillo{border:0 !important;background:#EAF5E3 !important;box-shadow:none}
+[data-vista="formMeta"] .practi-bocadillo::before{border:0 !important;background:#EAF5E3 !important}
+[data-vista="formMeta"] input[type=text],[data-vista="formMeta"] input[type=email],[data-vista="formMeta"] input:not([type]),[data-vista="formMeta"] textarea,[data-vista="formMeta"] select{border:0 !important;background:#F3EEFC !important;border-radius:14px}
+[data-vista="formMeta"] .opcion-inicio{border:0 !important;background:#F3EEFC !important;box-shadow:none}
+[data-vista="formMeta"] .opcion-inicio.elegido,[data-vista="formMeta"] .opcion-inicio.hecho,[data-vista="formMeta"] .elegido,[data-vista="formMeta"] .dia-btn.hecho{background:#7B5FB8 !important;color:#fff !important;border:0 !important}
+[data-vista="formMeta"] .btn.btn-yes{border:0 !important;background:linear-gradient(135deg,#7B5FB8,#C04A8E) !important;color:#fff !important;box-shadow:0 6px 16px rgba(123,95,184,.35)}
+body [data-vista="formMeta"] #fmSig,body [data-vista="formMeta"] #fmSig:hover,body [data-vista="formMeta"] #fmSig:active,body [data-vista="formMeta"] .btn.btn-yes:hover,body [data-vista="formMeta"] .btn.btn-yes:active,body [data-vista="formMeta"] .btn.btn-yes:focus{background:linear-gradient(135deg,#7B5FB8,#C04A8E) !important;border:0 !important;color:#fff !important}
+body:has([data-vista="formMeta"]) .musica-barra{border:0;box-shadow:0 6px 20px rgba(91,63,168,.18)}
+[data-vista="formMeta"] .fm-salir + .card,[data-vista="formMeta"] .fm-salir + h2{margin-top:54px !important}
+.fm-puntos{display:flex;justify-content:center;gap:8px;margin:0 0 16px}.fm-puntos i{width:10px;height:10px;border-radius:50%;background:#E3DAF5}.fm-puntos i.on{background:#7B5FB8}.fm-puntos i.ahora{transform:scale(1.35);background:#C04A8E}
 /* Todos los títulos de Inicio iguales: también Utilidades (26-10-2026) */
 [data-vista="panel"][data-sub=""] .ciclo-formacion .opcion-tx > b{font:800 clamp(15px,4.6vw,18px)/1.25 Nunito,sans-serif;text-transform:uppercase;letter-spacing:.02em}
 .panel-badge > span:last-child{text-transform:uppercase;letter-spacing:.04em;font-weight:800}
@@ -2470,7 +2486,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V14.08';
+  const APP_VERSION = 'V14.09';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -5436,6 +5452,9 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
+    { v: 'V14.09', f: '26 de octubre de 2026', n: [
+      'En el formulario de tu meta, la música se controla solo con el reproductor de abajo: ▶ y ⏸, y el reproductor no desaparece.',
+      'El formulario de tu meta, más limpio: sin cabecera ni marcos y con colores suaves. Para salir, la ✕ de arriba. El avance se ve con puntitos, uno por pregunta.' ] },
     { v: 'V14.08', f: '26 de octubre de 2026', n: [
       'La letra de cada paso de Inicio, más proporcionada: <b>A.</b> Metas, <b>B.</b> Tu guía, <b>C.</b> Registro y <b>D.</b> Grupo, sin círculo.' ] },
     { v: 'V14.07', f: '26 de octubre de 2026', n: [
@@ -6381,7 +6400,7 @@ lo que haces cada día es lo que vas a ser.`;
     const o = document.querySelector('#musicaBarra .musica-onda'); if(o) o.classList.toggle('quieta', musica.pausada);
   }
 
-  function musicaPoner(id){
+  function musicaPoner(id, enPausa){
     const antes = musica.id;
     if(typeof pararSintonia === 'function' && (id || antes === 'oficial')) pararSintonia();
     musica.id = null; musica.pausada = false;
@@ -6395,20 +6414,26 @@ lo que haces cada día es lo que vas a ser.`;
       barra = document.createElement('div'); barra.id = 'musicaBarra'; barra.className = 'musica-barra';
       document.body.appendChild(barra);
     }
-    barra.innerHTML = (id === 'oficial' ? '' : '<div class="musica-video"><iframe src="https://www.youtube.com/embed/' + id + '?autoplay=1&loop=1&playlist=' + id + '&playsinline=1&rel=0&enablejsapi=1" allow="autoplay; encrypted-media" title="' + escapeAttr(c.titulo) + '"></iframe></div>')
+    if(enPausa && id !== 'oficial') musica.pausada = true;
+    barra.innerHTML = (id === 'oficial' ? '' : '<div class="musica-video"><iframe src="https://www.youtube.com/embed/' + id + '?autoplay=' + (musica.pausada ? 0 : 1) + '&loop=1&playlist=' + id + '&playsinline=1&rel=0&enablejsapi=1" allow="autoplay; encrypted-media" title="' + escapeAttr(c.titulo) + '"></iframe></div>')
       + '<span class="musica-onda" aria-hidden="true"><i></i><i></i><i></i></span>'
       + (musica.porFormulario
         ? '<label class="musica-vol"><span aria-hidden="true">🔈</span><input type="range" min="0" max="100" step="5" value="' + musicaVolumen() + '" aria-label="Volumen de la música"><span aria-hidden="true">🔊</span></label>'
         : '<span class="musica-sonando">' + escapeAttr(c.titulo) + '</span>')
-      + '<button type="button" class="musica-parar musica-pausa" aria-label="Pausar la música">' + ICO.pausa + '</button>'
-      + '<button type="button" class="musica-parar" aria-label="Parar la música">' + ICO.parar + '</button>';
-    barra.querySelector('.musica-pausa').onclick = musicaPausar;
+      + '<button type="button" class="musica-parar musica-pausa" aria-label="' + (musica.pausada ? 'Seguir con la música' : 'Pausar la música') + '">' + (musica.pausada ? ICO.play : ICO.pausa) + '</button>'
+      + (musica.porFormulario ? '' : '<button type="button" class="musica-parar" aria-label="Parar la música">' + ICO.parar + '</button>');
+    barra.querySelector('.musica-pausa').onclick = () => {
+      musicaPausar();
+      if(musica.porFormulario){ try { localStorage.setItem('fm_musica', musica.pausada ? '0' : '1'); } catch(e){} }
+    };
+    const onda = barra.querySelector('.musica-onda'); if(onda) onda.classList.toggle('quieta', musica.pausada);
     // Volumen: se aplica al cargar el vídeo y al mover la barra (se recuerda para la próxima vez)
     const fr = barra.querySelector('iframe');
     if(fr) fr.addEventListener('load', () => { [800, 2000, 4000].forEach(t => setTimeout(() => musicaOrden('setVolume', [musicaVolumen()]), t)); });
     const vol = barra.querySelector('.musica-vol input');
     if(vol) vol.oninput = () => { try { localStorage.setItem('musica_vol', vol.value); } catch(e){} musicaOrden('setVolume', [Number(vol.value)]); };
-    barra.querySelector('.musica-parar:not(.musica-pausa)').onclick = () => musicaPoner(null);
+    const bParar = barra.querySelector('.musica-parar:not(.musica-pausa)');
+    if(bParar) bParar.onclick = () => musicaPoner(null);
     if(state.view === 'musica') render();
   }
 
@@ -12248,7 +12273,7 @@ lo que haces cada día es lo que vas a ser.`;
     state.fm = previo;
     // Música de fondo suave (se puede quitar; se recuerda la elección). No pisa la música que ya esté sonando.
     let quiere = true; try { quiere = localStorage.getItem('fm_musica') !== '0'; } catch(e){}
-    if(quiere && !musica.id){ musica.porFormulario = true; musicaPoner(MUSICA_FORMULARIO); }
+    if(!musica.id){ musica.porFormulario = true; musicaPoner(MUSICA_FORMULARIO, !quiere); }
     state.prevView = state.view === 'formMeta' ? 'panel' : state.view;
     state.view = 'formMeta'; window.scrollTo(0,0); render();
   }
@@ -12287,18 +12312,13 @@ lo que haces cada día es lo que vas a ser.`;
 
   function renderFormMeta(){
     renderBackTopbar('');
-    // Título en su propio renglón, debajo de «Volver» y «Menú», en una sola línea
-    app.appendChild(el('<h2 style="text-align:center;margin:4px 0 12px;font-size:clamp(18px,5.5vw,24px);white-space:nowrap">🎯 Tu meta del trimestre</h2>'));
-    const bm = el('<button type="button" class="fm-musica">' + (musica.id ? '🎵 Música de fondo: sí' : '🔇 Música de fondo: no') + '</button>').firstElementChild;
-    bm.onclick = () => {
-      const poner = !musica.id;
-      try { localStorage.setItem('fm_musica', poner ? '1' : '0'); } catch(e){}
-      if(poner){ musica.porFormulario = true; musicaPoner(MUSICA_FORMULARIO); } else { musica.porFormulario = false; musicaPoner(null); }
-      bm.textContent = poner ? '🎵 Música de fondo: sí' : '🔇 Música de fondo: no';
-    };
-    app.appendChild(bm);
+    const salir = el('<button type="button" class="fm-salir" aria-label="Salir del formulario">✕</button>').firstElementChild;
+    salir.onclick = () => { const v = document.getElementById('btnVolver'); if(v) v.click(); };
+    app.appendChild(salir);
     const fm = state.fm;
     if(!fm){ abrirFormularioMeta(); return; }
+    // El título, solo en la primera pantalla (26-10-2026, Gustavo)
+    if(fm.paso === 0) app.appendChild(el('<h2 style="text-align:center;margin:4px 0 12px;font-size:clamp(18px,5.5vw,24px);white-space:nowrap">🎯 Tu meta del trimestre</h2>'));
     const preguntas = fmVisibles();
     const total = preguntas.length + 1;   // +1: el correo, al principio
 
@@ -12318,7 +12338,9 @@ lo que haces cada día es lo que vas a ser.`;
       return;
     }
 
-    const barra = '<div style="height:8px;background:var(--border);border-radius:99px;margin:0 0 14px;overflow:hidden"><div style="height:100%;width:' + Math.round(100 * (fm.paso + 1) / (total + 1)) + '%;background:#C9942D"></div></div>';
+    const hechos = Math.min(fm.paso, preguntas.length);
+    const barra = '<div class="fm-puntos" aria-label="Pregunta ' + Math.max(1, hechos) + ' de ' + preguntas.length + '">'
+      + preguntas.map((x, k) => '<i class="' + (k < hechos ? 'on' : '') + (k === hechos - 1 ? ' ahora' : '') + '"></i>').join('') + '</div>';
     const card = document.createElement('div');
     card.className = 'card';
     app.appendChild(card);
@@ -12418,7 +12440,7 @@ lo que haces cada día es lo que vas a ser.`;
       return `<button type="button" class="fm-op opcion-inicio" data-v="${escapeAttr(v)}" style="width:100%;text-align:left;margin:0 0 8px;${sel ? 'border:2px solid #C9942D;background:#F6EBD3' : ''}"><span class="opcion-tx"><b style="font-weight:${sel ? 700 : 500}">${sel ? '✓ ' : ''}${txt}</b></span></button>`;
     }).join('');
     const rep = fm.repregunta && fm.repregunta.id === p.id ? fm.repregunta.texto : '';
-    card.innerHTML = barra + `<p style="font-size:12px;color:var(--ink-soft);margin:0 0 4px">Pregunta ${fm.paso} de ${preguntas.length}${p.obligatoria ? '' : ' · opcional'}</p>
+    card.innerHTML = barra + `${p.obligatoria ? '' : '<p style="font-size:12px;color:var(--ink-soft);margin:0 0 4px">Opcional</p>'}
       <h3 style="margin:0 0 6px">${p.titulo}</h3>
       ${p.ayuda ? `<p style="font-size:14px;color:var(--ink-soft);margin:0 0 10px">${p.ayuda}</p>` : ''}
       ${p.id === '785855484' ? `<p style="font-size:13px;margin:0 0 6px">Esta es la meta que escribiste, con plazo de <b>${escapeAttr(fm.r['1502404995'] || '')}</b>. Edítala aquí abajo para hacerla más pequeña o cambiar el plazo:</p>` : ''}
@@ -12685,4 +12707,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Skills" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V14.08 · App Amable Skills · 2026-10-26 16:09==== -->
+<!-- ==== Fin del index V14.09 · App Amable Skills · 2026-10-26 16:15==== -->
