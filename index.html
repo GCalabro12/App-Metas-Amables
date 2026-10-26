@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V14.25 · App Amable Skills · 2026-10-26 17:53==== -->
+<!-- ==== index V14.26 · App Amable Skills · 2026-10-26 21:41==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1483,6 +1483,12 @@ body [data-vista="formMeta"]::after{content:'';position:fixed;left:0;right:0;bot
 .reto-rayos{position:absolute;left:50%;top:55%;width:640px;height:640px;margin:-320px 0 0 -320px;border-radius:50%;background:radial-gradient(circle,rgba(255,236,170,.95) 0,rgba(255,236,170,0) 26%),repeating-conic-gradient(from 0deg,rgba(255,170,30,.62) 0deg 8deg,rgba(255,170,30,0) 8deg 20deg);-webkit-mask:radial-gradient(circle,#000 0,#000 34%,transparent 66%);mask:radial-gradient(circle,#000 0,#000 34%,transparent 66%);animation:rayosBoom 3.6s ease-out both,rayosVaiven 9s ease-in-out 3.6s infinite;z-index:0}
 @keyframes rayosBoom{0%{transform:scale(0);opacity:0}4%{opacity:1}24%{transform:scale(1);opacity:1}30%{transform:scale(1.05);opacity:0}30.1%{transform:scale(0);opacity:0}34%{opacity:1}54%{transform:scale(1);opacity:1}60%{transform:scale(1.05);opacity:0}60.1%{transform:scale(0);opacity:0}64%{opacity:1}100%{transform:scale(1);opacity:1}}
 @keyframes rayosVaiven{0%,100%{transform:rotate(0)}25%{transform:rotate(14deg)}75%{transform:rotate(-14deg)}}
+/* Escala del 1 al 5: cabe siempre en la pantalla (26-10-2026, aviso de Felipe) */
+.fm-escala-nums{display:flex;gap:8px}
+.fm-escala-pie{display:flex;justify-content:space-between;margin-top:8px;color:#fff;font:700 14px Karla,sans-serif}
+body [data-vista="formMeta"] .fm-escala .fm-op.dia-btn{flex:1 1 0 !important;min-width:0 !important;height:auto !important;min-height:56px;padding:0 !important;margin:0 !important;text-align:center !important;font:900 22px Nunito,sans-serif}
+body [data-vista="formMeta"] .fm-escala .fm-op.dia-btn::before{content:none}
+body [data-vista="formMeta"] .fm-escala .fm-op.dia-btn.hecho{background:#FFD400 !important;color:#2B2350 !important;box-shadow:0 0 0 3px #fff,0 6px 16px rgba(0,0,0,.18)}
 .fm-opcional{font:600 15px Karla,sans-serif;color:#6B6380;white-space:nowrap}
 .fm-admin{position:fixed;top:calc(10px + env(safe-area-inset-top));right:10px;z-index:61;display:flex;flex-direction:column;align-items:center;gap:3px}.fm-admin > div{display:flex;gap:6px}.fm-admin small{font:700 10.5px Karla,sans-serif;color:#5B3FA8;background:rgba(255,255,255,.85);border-radius:8px;padding:1px 6px}.fm-admin button{width:38px;height:38px;border:0;border-radius:50%;background:#FFD400;color:#3B2A86;font:800 15px Karla,sans-serif;box-shadow:0 2px 8px rgba(0,0,0,.15);cursor:pointer}
 [data-vista="formMeta"]:has(.fm-admin) .fm-prog{right:106px}
@@ -2579,7 +2585,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V14.25';
+  const APP_VERSION = 'V14.26';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -5547,6 +5553,9 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
+    { v: 'V14.26', f: '26 de octubre de 2026', n: [
+      'En el formulario de tu meta, la escala del 1 al 5 vuelve a caber entera en la pantalla.',
+      'La música sigue sonando cuando vuelves a la app tras mirar otra cosa, y suena un poco más bajita.' ] },
     { v: 'V14.25', f: '26 de octubre de 2026', n: [
       'La historia del guerrero jardinero (Progreso, nivel rojo de la montaña) estrena sus dos primeras escenas animadas.' ] },
     { v: 'V14.24', f: '26 de octubre de 2026', n: [
@@ -6516,7 +6525,15 @@ lo que haces cada día es lo que vas a ser.`;
     const fr = document.querySelector('#musicaBarra iframe');
     try { if(fr) fr.contentWindow.postMessage(JSON.stringify({ event: 'command', func, args: args || [] }), '*'); } catch(e){}
   }
-  function musicaVolumen(){ let v = 60; try { const g = localStorage.getItem('musica_vol'); if(g !== null) v = Number(g); } catch(e){} return isNaN(v) ? 60 : Math.max(0, Math.min(100, v)); }
+  function musicaVolumen(){ let v = 45; try { const g = localStorage.getItem('musica_vol'); if(g !== null) v = Number(g); } catch(e){} return isNaN(v) ? 60 : Math.max(0, Math.min(100, v)); }
+  // Al volver a la app (tras cambiar de app o tocar un aviso), la música sigue donde estaba, si no la habías pausado
+  document.addEventListener('visibilitychange', () => {
+    if(document.visibilityState !== 'visible' || !musica.id || musica.pausada) return;
+    setTimeout(() => {
+      if(musica.id === 'oficial'){ try { if(sintonia && sintonia.paused) sintonia.play(); } catch(e){} }
+      else musicaOrden('playVideo');
+    }, 400);
+  });
   function musicaPausar(){
     musica.pausada = !musica.pausada;
     if(musica.id === 'oficial'){ try { if(musica.pausada) sintonia.pause(); else sintonia.play(); } catch(e){} }
@@ -12603,7 +12620,7 @@ lo que haces cada día es lo que vas a ser.`;
     let campo = '';
     if(p.tipo === 'corta') campo = `<input id="fmCampo" type="text" value="${escapeAttr(valor)}" style="width:100%;box-sizing:border-box;font-size:17px;padding:12px 14px">`;
     else if(p.tipo === 'larga') campo = `<textarea id="fmCampo" style="min-height:110px;width:100%;box-sizing:border-box;font-size:16px">${escapeAttr(valor)}</textarea>`;
-    else if(p.tipo === 'escala') campo = `<div style="display:flex;gap:8px;justify-content:space-between;align-items:center"><small>Muy bajo</small>${[1,2,3,4,5].map(n => `<button type="button" class="fm-op dia-btn${valor === String(n) ? ' hecho' : ''}" data-v="${n}" style="flex:1"><span class="dia-letra">${n}</span></button>`).join('')}<small>Muy alto</small></div>`;
+    else if(p.tipo === 'escala') campo = `<div class="fm-escala"><div class="fm-escala-nums">${[1,2,3,4,5].map(n => `<button type="button" class="fm-op dia-btn${valor === String(n) ? ' hecho' : ''}" data-v="${n}"><span class="dia-letra">${n}</span></button>`).join('')}</div><div class="fm-escala-pie"><small>Muy bajo</small><small>Muy alto</small></div></div>`;
     else if(p.tipo === 'tiempo'){
       const m = String(valor).match(/^(\d) días? a la semana, (.+) cada día$/) || [];
       const dSel = m[1] || '', tSel = m[2] || '';
@@ -12899,4 +12916,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Skills" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V14.25 · App Amable Skills · 2026-10-26 17:53==== -->
+<!-- ==== Fin del index V14.26 · App Amable Skills · 2026-10-26 21:41==== -->
