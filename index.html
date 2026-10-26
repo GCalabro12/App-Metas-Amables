@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V14.06 · App Amable Skills · 2026-10-26 16:02==== -->
+<!-- ==== index V14.07 · App Amable Skills · 2026-10-26 16:06==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1548,7 +1548,7 @@ html.ocultar-practi .practi-inicio,html.ocultar-practi .practi-bocadillo,html.oc
 .planta-tx em{display:block;font-style:normal;font-size:13px;font-weight:800;color:#3B6D11;margin-top:6px}
 .planta-inicio{cursor:pointer;width:100%;text-align:left;font:inherit;color:inherit;border:0;position:relative;overflow:hidden;background:#FFF8F0}
 .planta-inicio > :not(.planta-escena){position:relative;z-index:1}
-.planta-inicio .planta-tx{background:rgba(255,252,245,.82);border-radius:12px;padding:8px 10px}
+.planta-inicio .planta-tx{background:rgba(255,252,245,.82);border-radius:10px;padding:5px 9px;align-self:center}.planta-inicio .planta-tx small{font-size:13px;margin:2px 0;line-height:1.35;color:#3D3A33}.planta-inicio .planta-tx small b{display:inline;color:#2F5A23}
 .planta-inicio .planta-tit{display:block;margin:0 0 8px;font:700 clamp(14px,4.4vw,20px)/1.2 Nunito,serif;letter-spacing:-.1px;color:#2F5A23;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .util-nov{display:flex;align-items:center;gap:10px;width:100%;margin:14px 0 0;padding:12px 16px;border:2px solid #101010;border-radius:16px;background:#FFF6DC;font:inherit;color:#101010;text-align:left;cursor:pointer}.util-nov b{display:block;font-size:16px}.util-nov small{display:block;color:var(--ink-soft);font-size:13px}.util-nov .opcion-flecha{margin-left:auto;font-size:22px}
 .nov-lista{display:block}.nov-ver{margin:0 0 14px;padding:14px 16px}.nov-ver h3{margin:0 0 2px;font:700 18px Nunito,serif;color:#2F5A23}.nov-ver .nov-fecha{display:block;margin:0 0 8px;font-size:13px;color:var(--ink-soft)}.nov-ver ul{margin:0;padding-left:20px}.nov-ver li{margin:0 0 6px;line-height:1.45}
@@ -2469,7 +2469,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V14.06';
+  const APP_VERSION = 'V14.07';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -5435,6 +5435,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
+    { v: 'V14.07', f: '26 de octubre de 2026', n: [
+      '«Ver cómo crece tu meta» dice ahora cuántas hojas y flores llevas en tu planta y en qué año de la montaña estás, y hasta cuándo.' ] },
     { v: 'V14.06', f: '26 de octubre de 2026', n: [
       'La insignia de Inicio es ahora el mismo escudo de tu nivel, ocupando todo el círculo.',
       'Fuera las flechas entre los pasos: las letras a, b, c y d ya marcan el recorrido.' ] },
@@ -11536,14 +11538,14 @@ lo que haces cada día es lo que vas a ser.`;
   // Tarjeta de Inicio: la planta de este trimestre (toca para ver la montaña)
   function tarjetaPlantaInicio(){
     let d; try { d = datosMontana(); } catch(e){ return null; }
-    const b = d.bancal(d.actual), hoy = b.semanas.find(s => s.hoy);
+    const b = d.bancal(d.actual);
+    // El año de la montaña acaba con el último trimestre de ese año (4 trimestres por año)
+    const qFin = d.primerQ + d.anio * 4 - 1, finAnio = new Date(Math.floor(qFin / 4), (qFin % 4) * 3 + 3, 0);
     // El título en una sola línea arriba, a todo lo ancho; debajo, la planta y los datos
     const c = el('<button type="button" class="card planta-inicio">' + escenaPlanta(d.nivel, true) + '<b class="planta-tit">Ver cómo crece tu meta</b><div class="planta-fila">' + plantaSVG(b, 11, false)
-      + '<span class="planta-tx"><small>' + b.hojas + (b.hojas === 1 ? ' hoja' : ' hojas') + (b.flores ? ' · ' + b.flores + (b.flores === 1 ? ' flor' : ' flores') : '')
-      + (hoy ? '<br>Esta es la <b style="display:inline">' + (Math.floor((hoy.lunes.getDate() - 1) / 7) + 1) + 'ª semana de ' + monthNamesEs[hoy.lunes.getMonth()] + '</b>: ' + (hoy.dias ? (hoy.dias === 1 ? '1 día registrado' : hoy.dias + ' días registrados') : 'registra para que salga su hoja') : '') + '</small>'
-      + '<em>Año ' + d.anio + ' · ' + BADGE_SCALE[d.nivel].label + '</em></span></div>'
-      // «Ver mi montaña», dentro del recuadro, abajo, sobre la tierra de las margaritas (toda la tarjeta lleva a la montaña)
-      + '<span class="planta-ver-montana">⛰️ Ver mi montaña ›</span></button>').firstElementChild;
+      + '<span class="planta-tx"><small>En tu planta llevas <b>' + b.hojas + (b.hojas === 1 ? ' hoja' : ' hojas') + '</b>'
+      + (b.flores ? ' y <b>' + b.flores + (b.flores === 1 ? ' flor' : ' flores') + '</b>' : '') + '.</small>'
+      + '<small>En tu montaña estás en el <b>año ' + d.anio + ' · ' + BADGE_SCALE[d.nivel].label + '</b> hasta el ' + finAnio.getDate() + ' de ' + monthNamesEs[finAnio.getMonth()] + ' de ' + finAnio.getFullYear() + '.</small></span></div></button>').firstElementChild;
     c.onclick = () => { state.view = 'progreso'; window.scrollTo(0, 0); render(); };
     return c;
   }
@@ -12680,4 +12682,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Skills" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V14.06 · App Amable Skills · 2026-10-26 16:02==== -->
+<!-- ==== Fin del index V14.07 · App Amable Skills · 2026-10-26 16:06==== -->
