@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V14.21 · App Amable Skills · 2026-10-26 16:52==== -->
+<!-- ==== index V14.22 · App Amable Skills · 2026-10-26 16:56==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1474,6 +1474,7 @@ body [data-vista="formMeta"]::after{content:'';position:fixed;left:0;right:0;bot
 .hn-puntos{display:flex;gap:8px;justify-content:center;margin:0 0 14px}.hn-puntos i{width:9px;height:9px;border-radius:50%;background:rgba(255,255,255,.35)}.hn-puntos i.on{background:#FFD400;transform:scale(1.3)}
 .hn-bts{display:flex;gap:10px}.hn-atras{width:64px;border:0;border-radius:16px;background:rgba(255,255,255,.18);color:#fff;font:800 20px Karla,sans-serif;cursor:pointer}
 .hn-sig{flex:1;padding:16px;border:0;border-radius:16px;background:#FFFFFF;color:#A93226;font:900 18px Nunito,sans-serif;cursor:pointer}
+.reto-dia{text-align:center;margin:4px 0 6px}.reto-dia span{display:block;font:800 13px Karla,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#7B5FB8}.reto-dia b{display:block;margin-top:2px;font:900 clamp(24px,7vw,30px)/1.15 Nunito,sans-serif;color:#2B2350}
 .fm-opcional{font:600 15px Karla,sans-serif;color:#6B6380;white-space:nowrap}
 .fm-admin{position:fixed;top:calc(10px + env(safe-area-inset-top));right:10px;z-index:61;display:flex;flex-direction:column;align-items:center;gap:3px}.fm-admin > div{display:flex;gap:6px}.fm-admin small{font:700 10.5px Karla,sans-serif;color:#5B3FA8;background:rgba(255,255,255,.85);border-radius:8px;padding:1px 6px}.fm-admin button{width:38px;height:38px;border:0;border-radius:50%;background:#FFD400;color:#3B2A86;font:800 15px Karla,sans-serif;box-shadow:0 2px 8px rgba(0,0,0,.15);cursor:pointer}
 [data-vista="formMeta"]:has(.fm-admin) .fm-prog{right:106px}
@@ -2570,7 +2571,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V14.21';
+  const APP_VERSION = 'V14.22';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -4380,6 +4381,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     if(siguiente) tx += '<p class="reto-falta">Te ' + (siguiente - n === 1 ? 'falta 1 día' : 'faltan ' + (siguiente - n) + ' días') + ' para tu próximo regalo 🎁</p>';
     const capa = el('<div class="reto-capa" role="dialog" aria-label="Tus primeros 15 registros"><div class="reto-card">'
       + (pasarDias ? '<div class="reto-pasar"><button type="button" class="reto-pasar-ant"' + (n <= 1 ? ' disabled' : '') + '>‹ Día ' + (n - 1) + '</button><b>Día ' + n + ' de ' + RETO_DIAS + '</b><button type="button" class="reto-pasar-sig"' + (n >= RETO_DIAS ? ' disabled' : '') + '>Día ' + (n + 1) + ' ›</button></div>' : '')
+      // Arriba: el día del reto y el día de la semana en que registra («¡Feliz martes!»), aunque se haya saltado alguno (26-10-2026, Gustavo)
+      + '<div class="reto-dia"><span>Día ' + n + '</span><b>¡Feliz ' + DIAS_ES[ahoraRegistro().getDay()] + '!</b></div>'
       + '<div class="reto-cab">' + practiCartelHTML(n, 140) + '</div>'
       + '<div class="reto-cuerpo"><h2>' + tit + '</h2>' + tx + caminoRetoSVG(n)
       + (premio ? '<button type="button" class="reto-btn reto-premio-btn">' + premio.ico + ' ' + premio.boton + '</button>' : '')
@@ -5536,6 +5539,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
+    { v: 'V14.22', f: '26 de octubre de 2026', n: [
+      'El cartel de tus primeros 15 registros dice arriba en qué día del reto vas y te saluda con el día de la semana: «Día 2 · ¡Feliz martes!».' ] },
     { v: 'V14.21', f: '26 de octubre de 2026', n: [
       'En Progreso, toca el nivel rojo de abajo de tu montaña: te cuenta la historia del <b>guerrero jardinero</b>, en cuatro diapositivas.' ] },
     { v: 'V14.20', f: '26 de octubre de 2026', n: [
@@ -12877,4 +12882,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Skills" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V14.21 · App Amable Skills · 2026-10-26 16:52==== -->
+<!-- ==== Fin del index V14.22 · App Amable Skills · 2026-10-26 16:56==== -->
