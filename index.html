@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V13.95 · App Amable Skills · 2026-10-26 13:40==== -->
+<!-- ==== index V13.96 · App Amable Skills · 2026-10-26 13:45==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1434,6 +1434,7 @@ textarea.ms-nombre-in:focus{outline:none;border-color:#C9942D;box-shadow:0 0 0 3
 .pf-sem{display:flex;flex-direction:column;gap:2px;padding:7px 0;border-bottom:1px solid #EEE;font-size:13.5px}.pf-sem:last-child{border-bottom:0}.pf-sem small{color:var(--ink-soft);font-size:12.5px}
 .pf-nota-tx{width:100%;box-sizing:border-box;padding:10px 12px;border:1px solid #DCE6D8;border-radius:10px;font:inherit;font-size:14px;resize:vertical}
 .ritual-tit{margin:0 0 4px;font:700 18px Nunito,serif;color:#7A5200}
+.prep-lista{text-align:left;margin:12px 0 4px}.prep-fila{display:flex;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid #EEE}.prep-tx{flex:1}.prep-tx b{display:block;font:700 16px Karla,sans-serif;color:#2B2B2B}.prep-tx small{display:block;font-size:13.5px;color:#666;margin-top:2px}.prep-btn{flex:none;border:0;border-radius:999px;background:#1A5FD1;color:#fff;font:700 14px Karla,sans-serif;padding:8px 16px;cursor:pointer}.prep-hecho{flex:none;width:34px;height:34px;border-radius:50%;background:#3E7A2E;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800}.prep-todo{width:100%;margin-top:14px;padding:13px;border:0;border-radius:12px;background:#3E7A2E;color:#fff;font:700 16px Karla,sans-serif;cursor:pointer}.prep-msg{margin:8px 0 0;font-size:13px;color:#B94A3A}.prep-card{border:2px dashed #1A5FD1}.prep-card-tit{margin:0;font:800 16px Karla,sans-serif;color:#1A3E80}.prep-card-sub{margin:2px 0 0;font-size:13.5px;color:#555}.soporte-tit{margin:0 0 4px;font:800 17px Karla,sans-serif}.soporte-tx{margin:0 0 12px;font-size:14.5px}.soporte-pie{margin:10px 0 0;font-size:12px;color:var(--ink-soft);text-align:center}
 .meta-actual{margin:6px 0 14px;padding:14px 16px;border-radius:14px;background:#FFF7E0;border:2px solid #E0A526;font:700 19px/1.35 Nunito,sans-serif;color:#2B2B2B}.meta-actual span{display:block;margin-bottom:4px;font:800 13px Karla,sans-serif;letter-spacing:.06em;text-transform:uppercase;color:#8A6A2E}
 .info-i{display:inline-flex;align-items:center;justify-content:center;flex:none;width:22px;height:22px;margin-left:8px;border-radius:50%;border:2px solid currentColor;font:italic 700 13px/1 Georgia,serif;vertical-align:middle;cursor:pointer;opacity:.75}
 .info-capa{position:fixed;inset:0;z-index:9700;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(0,0,0,.45)}.info-panel{max-width:380px;width:100%;background:#fff;border-radius:18px;padding:20px 18px 16px;font:16px/1.5 Karla,sans-serif;color:#2B2B2B;box-shadow:0 10px 30px rgba(0,0,0,.25)}.info-panel p{margin:0 0 14px}.info-ok{width:100%;padding:12px;border:0;border-radius:12px;background:#1A5FD1;color:#fff;font:700 16px Karla,sans-serif;cursor:pointer}
@@ -2437,7 +2438,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V13.95';
+  const APP_VERSION = 'V13.96';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -2739,6 +2740,65 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     }
   }
   // Bienvenida tras crear la cuenta, en dos pantallas; con "Siguiente" se llega al panel
+  // ===== «Prepara tu app»: aviso diario, WhatsApp, emails e instalar. Se pide al crear la cuenta;
+  // si falta algo, una tarjeta en Inicio lo vuelve a pedir (como mucho una vez por semana) =====
+  function itemsPreparar(){
+    const g = state.gamifica || {};
+    const it = [];
+    if(pushPosible()) it.push({ k: 'push', t: '🔔 Aviso diario en el móvil', d: 'A las ' + horaAviso() + ':00, solo si ese día aún no has registrado.', ok: pushActivo() });
+    if(g.tieneTelefono) it.push({ k: 'wa', t: '💬 Mensajes de ánimo por WhatsApp', d: 'De vez en cuando, para no abandonar tu meta.', ok: !!g.aceptaWhatsApp });
+    if(g.tieneEmail) it.push({ k: 'em', t: '📧 Emails que te acompañan', d: 'Pocos, y te puedes dar de baja cuando quieras.', ok: !!g.aceptaEmails });
+    if(!MODO_PLAY && !appInstalada()) it.push({ k: 'inst', t: '📲 La app en tu pantalla de inicio', d: 'Para abrirla con un toque, como cualquier app.', ok: false });
+    return it;
+  }
+  function faltaPreparar(){ return itemsPreparar().filter(x => !x.ok); }
+  async function activarPreparar(k){
+    const g = state.gamifica || (state.gamifica = {});
+    if(k === 'push') return activarAvisosPlanta(true);
+    if(k === 'wa'){ await api('/avisos', { whatsapp: true }); g.aceptaWhatsApp = true; return true; }
+    if(k === 'em'){ await api('/avisos', { emails: true }); g.aceptaEmails = true; if(g.email && !emailConfirmado()) setTimeout(() => abrirConfirmarEmail(g.email, false), 300); return true; }
+    if(k === 'inst'){ abrirInstalar(); return false; }
+    return false;
+  }
+  function listaPreparar(alCambiar){
+    const caja = document.createElement('div'); caja.className = 'prep-lista';
+    const pintar = () => {
+      const it = itemsPreparar(), faltan = it.filter(x => !x.ok);
+      caja.innerHTML = it.map(x => '<div class="prep-fila' + (x.ok ? ' ok' : '') + '"><span class="prep-tx"><b>' + x.t + '</b><small>' + x.d + '</small></span>'
+          + (x.ok ? '<span class="prep-hecho">✓</span>' : '<button type="button" class="prep-btn" data-k="' + x.k + '">' + (x.k === 'inst' ? 'Instalar' : 'Activar') + '</button>') + '</div>').join('')
+        + (faltan.filter(x => x.k !== 'inst').length > 1 ? '<button type="button" class="prep-todo">✅ Activar todo</button>' : '')
+        + '<p class="prep-msg"></p>';
+      caja.querySelectorAll('.prep-btn').forEach(b => b.onclick = async () => {
+        b.disabled = true;
+        try { await activarPreparar(b.dataset.k); } catch(e){ caja.querySelector('.prep-msg').textContent = mensajeError(e, 'No se pudo activar. Inténtalo de nuevo.'); }
+        pintar(); if(alCambiar) alCambiar();
+      });
+      const todo = caja.querySelector('.prep-todo');
+      if(todo) todo.onclick = async () => {
+        todo.disabled = true;
+        // Primero lo que no pide nada al móvil; el permiso de avisos, al final
+        for(const k of ['wa', 'em', 'push']){
+          if(!faltaPreparar().some(x => x.k === k)) continue;
+          try { await activarPreparar(k); } catch(e){ caja.querySelector('.prep-msg').textContent = mensajeError(e, 'No se pudo activar todo. Prueba uno a uno.'); }
+        }
+        pintar(); if(alCambiar) alCambiar();
+      };
+    };
+    pintar();
+    return caja;
+  }
+  function tarjetaPreparar(){
+    if(!state.me || !state.datosOk) return null;
+    const faltan = faltaPreparar().filter(x => x.k !== 'inst');   // instalar ya tiene su botón arriba
+    if(!faltan.length) return null;
+    try { const luego = Number(localStorage.getItem('prep_luego_' + state.me) || 0); if(Date.now() - luego < 7 * 86400000) return null; } catch(e){}
+    const c = el('<div class="card prep-card"><p class="prep-card-tit">⚙️ Te falta activar ' + faltan.map(x => ({ push: 'el aviso diario', wa: 'los mensajes por WhatsApp', em: 'los emails' })[x.k]).join(' y ') + '</p>'
+      + '<p class="prep-card-sub">Te ayuda a no abandonar tu meta.</p><div class="prep-hueco"></div><button type="button" class="link-quiet prep-luego">Ahora no</button></div>').firstElementChild;
+    c.querySelector('.prep-hueco').replaceWith(listaPreparar(() => { if(!faltaPreparar().filter(x => x.k !== 'inst').length) c.remove(); }));
+    c.querySelector('.prep-luego').onclick = () => { try { localStorage.setItem('prep_luego_' + state.me, String(Date.now())); } catch(e){} c.remove(); };
+    return c;
+  }
+
   function renderBienvenidaAlta(){
     let marca = '1';
     try{ marca = localStorage.getItem('ma_alta_' + state.me) || '1'; if(!state.altaPrueba && localStorage.getItem('tour_' + state.me) !== 'visto') localStorage.setItem('tour_' + state.me, 'pendiente'); }catch(e){}
@@ -2782,13 +2842,10 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
         + '<div class="alta-tx"><p>Con Amable Skills conseguirás <b>una meta valiosa para ti cada trimestre</b>, con un registro cada lunes.</p></div>'
         + sigBtn + atrasBtn;
     } else if(paso === 4){
-      // Pantalla 4: pedir el permiso de avisos explicando para qué sirve
-      const yaOn = pushActivo();
-      html += '<h1>Que no se te seque tu meta</h1>'
-        + '<div class="alta-tx"><p>Si a las <b>8 de la tarde</b> aún no has marcado tu práctica, te llegará un aviso al móvil: «🥀 Tu meta tiene sed». Solo uno al día, y solo si te hace falta.</p>'
-        + (yaOn ? '<p class="alta-grande">🔔 Avisos activados ✓</p>'
-          : '<button type="button" class="panel-link-btn" id="btnAltaAvisos" style="background:#7B5FB8;width:100%;border:none;cursor:pointer">🔔 Activar los avisos</button>')
-        + '</div>' + (yaOn ? sigBtn : sigBtn.replace('Siguiente →', 'Ahora no →')) + atrasBtn;
+      // Pantalla 4: «Prepara tu app», todo lo que hay que activar, de una vez (26-10-2026, Gustavo)
+      html += '<h1>Prepara tu app</h1>'
+        + '<div class="alta-tx"><p>Para que la app te acompañe de verdad, activa esto ahora. Solo se pide una vez.</p><div class="prep-hueco"></div></div>'
+        + (faltaPreparar().length ? sigBtn.replace('Siguiente →', 'Ahora no →') : sigBtn) + atrasBtn;
     } else {
       html += '<h1>Siembra tu meta del trimestre</h1>'
         + '<div class="alta-tx"><p>🎯 Para empezar, rellena un formulario con <b>una meta importante para ti</b> <span style="color:#777">(lleva 5 minutos)</span>. Con tus respuestas preparamos tu guía de prácticas.</p>'
@@ -2808,8 +2865,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     if(atras) atras.onclick = () => { state.altaPaso = Math.max(1, paso - 1); window.scrollTo(0,0); render(); };
     const salir = app.querySelector('#btnAltaSalir');
     if(salir) salir.onclick = () => { if(state.sintoniaAlta){ state.sintoniaAlta = false; apagarSintoniaSuave(800); } state.altaPrueba = false; state.altaPaso = null; state.view = 'panelFac'; window.scrollTo(0,0); render(); };
-    const bAv = app.querySelector('#btnAltaAvisos');
-    if(bAv) bAv.onclick = async () => { bAv.disabled = true; if(await activarAvisosPlanta()){ state.altaPaso = 5; window.scrollTo(0,0); render(); } else bAv.disabled = false; };
+    const huecoPrep = app.querySelector('.prep-hueco');
+    if(huecoPrep) huecoPrep.replaceWith(listaPreparar(() => { if(!faltaPreparar().length){ state.altaPaso = 5; window.scrollTo(0,0); render(); } }));
     // Pantalla 3: Prácti riega y la planta crece (animación)
     if(paso === 3){ const img = app.querySelector('.alta-crece img'); if(img) animarPlanta(img, 'practi-crece.json', true); }
   }
@@ -5342,6 +5399,9 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
+    { v: 'V13.96', f: '26 de octubre de 2026', n: [
+      'Al crear la cuenta, una sola pantalla, <b>«Prepara tu app»</b>, para activar de una vez el aviso diario, los mensajes por WhatsApp y los emails. Si falta algo, la app te lo recuerda en Inicio, como mucho una vez por semana.',
+      'En <b>Ajustes</b>, nuevo apartado <b>«🆘 Ayuda y soporte»</b>: escríbenos por email o WhatsApp con un toque.' ] },
     { v: 'V13.95', f: '26 de octubre de 2026', n: [
       'Al tocar <b>Metas</b>, lo primero que ves es <b>tu meta</b>.' ] },
     { v: 'V13.94', f: '26 de octubre de 2026', n: [
@@ -6712,6 +6772,13 @@ lo que haces cada día es lo que vas a ser.`;
     const accAyuda = el('<button type="button" class="card ayuda-acceso"><span>❓ <b>Centro de ayuda</b><small>Preguntas frecuentes, privacidad y soporte</small></span><span>›</span></button>').firstElementChild;
     accAyuda.onclick = () => { state.prevView = 'ajustes'; state.view = 'ayuda'; window.scrollTo(0,0); render(); };
     app.appendChild(accAyuda);
+    // 🆘 Ayuda y soporte: email y WhatsApp con la app y la versión ya escritas (26-10-2026, igual en todas las apps)
+    const cuerpoSoporte = 'Hola, os escribo por Amable Skills (' + APP_VERSION + '). Me pasa esto: ';
+    const soporte = el('<div class="card soporte-card"><p class="soporte-tit">🆘 Ayuda y soporte</p><p class="soporte-tx">¿Algo no funciona o tienes una duda? Escríbenos y te ayudamos.</p>'
+      + '<a class="panel-link-btn" style="width:100%;text-align:center;margin:0 0 8px" href="mailto:info@practicaintegral.club?subject=' + encodeURIComponent('Amable Skills · Ayuda') + '&body=' + encodeURIComponent(cuerpoSoporte) + '">✉️ Escribir a soporte</a>'
+      + '<a class="panel-link-btn" style="width:100%;text-align:center;margin:0;background:#25A366" target="_blank" rel="noopener" href="https://wa.me/34658825799?text=' + encodeURIComponent(cuerpoSoporte) + '">💬 Escribir por WhatsApp</a>'
+      + '<p class="soporte-pie">Email: info@practicaintegral.club · WhatsApp: +34 658 82 57 99</p></div>').firstElementChild;
+    app.appendChild(soporte);
     const card = document.createElement('div');
     card.className = 'card';
     card.innerHTML = `
@@ -7377,6 +7444,8 @@ lo que haces cada día es lo que vas a ser.`;
     // Android con la app web instalada (no la de Google Play): aviso para pasarse a la de Play
     const avisoPlay = (state.me && state.view === 'panel' && !state.panelSub) ? tarjetaPasarseAPlay() : null;
     if(avisoPlay) app.appendChild(avisoPlay);
+    // Lo que falte por activar (avisos, WhatsApp, emails): se vuelve a pedir, como mucho una vez por semana
+    if(state.me && state.view === 'panel' && !state.panelSub){ try { const prep = tarjetaPreparar(); if(prep) app.appendChild(prep); } catch(e){ console.error('Prepara tu app:', e); } }
     // Se cumple el plazo de su meta (1 o 2 meses): «¿La conseguiste?»
     const avisoEmail = (state.me && state.view === 'panel' && !state.panelSub) ? tarjetaConfirmarEmail() : null;
     if(avisoEmail) app.appendChild(avisoEmail);
@@ -12531,4 +12600,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Skills" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V13.95 · App Amable Skills · 2026-10-26 13:40==== -->
+<!-- ==== Fin del index V13.96 · App Amable Skills · 2026-10-26 13:45==== -->
