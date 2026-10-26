@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V14.17 · App Amable Skills · 2026-10-26 16:36==== -->
+<!-- ==== index V14.19 · App Amable Skills · 2026-10-26 16:40==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1429,6 +1429,26 @@ body [data-vista="formMeta"] #fmSig,body [data-vista="formMeta"] #fmEnviar,body 
 body [data-vista="formMeta"] #fmAtras{background:rgba(255,255,255,.22) !important;color:#FFFFFF !important}
 body [data-vista="formMeta"] .fm-portada-sub{color:#2B2350}
 .fm-prog::before{background:rgba(255,255,255,.35)}.fm-prog-relleno{background:#FFD400}.fm-prog i{background:rgba(255,255,255,.55);box-shadow:none}.fm-prog i.on{background:#FFFFFF}.fm-prog i.ahora{background:#FFD400}
+/* 26-10-2026 (5), composición: un solo plano. Título arriba; la pregunta justo debajo, sin recuadro, sobre el color;
+   solo las respuestas llevan caja, anchas y grandes; el espacio se reparte (sin doble borde) */
+body [data-vista="formMeta"] .card{background:transparent !important;border-radius:0;padding:0 2px !important;margin-top:84px !important;box-shadow:none !important}
+body [data-vista="formMeta"] .fm-salir ~ h2{margin-top:76px !important;margin-bottom:6px !important}
+body [data-vista="formMeta"]:has(.fm-admin) .fm-salir ~ h2{margin-top:92px !important}
+body [data-vista="formMeta"] h2 ~ .fm-prog + .card,body [data-vista="formMeta"] h2 ~ .card{margin-top:clamp(18px,4vh,40px) !important}
+body [data-vista="formMeta"]:has(.fm-admin) .card{margin-top:100px !important}
+body [data-vista="formMeta"]:has(.fm-admin) h2 ~ .card{margin-top:clamp(18px,4vh,40px) !important}
+body [data-vista="formMeta"] .card h3{color:#FFFFFF !important;font-size:clamp(24px,7vw,30px) !important;margin:0 0 clamp(18px,4vh,34px) !important}
+body [data-vista="formMeta"] .card h3 .fm-opcional{color:rgba(255,255,255,.75)}
+body [data-vista="formMeta"] .card > p,body [data-vista="formMeta"] .card .note-label{color:rgba(255,255,255,.92) !important;text-align:center}
+body [data-vista="formMeta"] .fm-op{min-height:64px;font-size:18px;margin:0 0 clamp(12px,2.4vh,20px) !important;border-radius:18px;box-shadow:0 4px 14px rgba(0,0,0,.12)}
+body [data-vista="formMeta"] .fm-op[style*="F6EBD3"]{background:#FFD400 !important;box-shadow:0 0 0 3px #fff,0 6px 16px rgba(0,0,0,.18)}
+body [data-vista="formMeta"] .fm-op[style*="F6EBD3"] b{color:#2B2350 !important}
+body [data-vista="formMeta"] .fm-portada-sub{color:rgba(255,255,255,.95) !important}
+/* Preguntas con dos partes (días y tiempo): más aire entre ellas, textos en blanco y desplegables grandes */
+body [data-vista="formMeta"] .fm-tiempo{margin:0 0 clamp(26px,6vh,52px) !important;text-align:center}
+body [data-vista="formMeta"] .fm-tiempo span{color:#FFFFFF;font:800 19px Nunito,sans-serif;margin:0 0 12px}
+body [data-vista="formMeta"] .fm-tiempo select{min-height:58px;border:0 !important;border-radius:18px;font:700 18px Karla,sans-serif;text-align:center;text-align-last:center;box-shadow:0 4px 14px rgba(0,0,0,.12)}
+body [data-vista="formMeta"] .fm-tiempo select.elegido{background:#FFD400 !important;color:#2B2350}
 .fm-opcional{font:600 15px Karla,sans-serif;color:#6B6380;white-space:nowrap}
 .fm-admin{position:fixed;top:calc(10px + env(safe-area-inset-top));right:10px;z-index:61;display:flex;flex-direction:column;align-items:center;gap:3px}.fm-admin > div{display:flex;gap:6px}.fm-admin small{font:700 10.5px Karla,sans-serif;color:#5B3FA8;background:rgba(255,255,255,.85);border-radius:8px;padding:1px 6px}.fm-admin button{width:38px;height:38px;border:0;border-radius:50%;background:#FFD400;color:#3B2A86;font:800 15px Karla,sans-serif;box-shadow:0 2px 8px rgba(0,0,0,.15);cursor:pointer}
 [data-vista="formMeta"]:has(.fm-admin) .fm-prog{right:106px}
@@ -2525,7 +2545,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V14.17';
+  const APP_VERSION = 'V14.19';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -5491,6 +5511,10 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
+    { v: 'V14.19', f: '26 de octubre de 2026', n: [
+      'En «¿Cuánto tiempo puedes dedicar…?», las dos preguntas con más aire entre ellas y los desplegables más grandes.' ] },
+    { v: 'V14.18', f: '26 de octubre de 2026', n: [
+      'Formulario más equilibrado: la pregunta va arriba, sin recuadro, directamente sobre el color, y solo las respuestas tienen caja, más anchas y más grandes.' ] },
     { v: 'V14.17', f: '26 de octubre de 2026', n: [
       'En Utilidades y Grupo de apoyo, la ⓘ va en el mismo renglón que el título.' ] },
     { v: 'V14.16', f: '26 de octubre de 2026', n: [
@@ -12775,4 +12799,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Skills" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V14.17 · App Amable Skills · 2026-10-26 16:36==== -->
+<!-- ==== Fin del index V14.19 · App Amable Skills · 2026-10-26 16:40==== -->
