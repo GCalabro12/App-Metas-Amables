@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V14.02 · App Amable Skills · 2026-10-26 14:25==== -->
+<!-- ==== index V14.03 · App Amable Skills · 2026-10-26 14:27==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1384,6 +1384,9 @@ textarea.ms-nombre-in:focus{outline:none;border-color:#C9942D;box-shadow:0 0 0 3
 .letra-paso i{font:900 18px/1 Nunito,sans-serif;font-style:normal;color:#fff;text-transform:lowercase;-webkit-text-stroke:0}
 .ciclo-btn.tit-arriba{grid-template-columns:1fr auto}.tit-arriba .ciclo-tit{grid-column:1}.tit-arriba .opcion-tx{grid-column:1}.tit-arriba .opcion-flecha{grid-column:2}
 .guia-sub{justify-content:flex-end}
+[data-vista="panel"][data-sub=""] .opcion-inicio .opcion-flecha{display:none}
+[data-vista="panel"][data-sub=""] .planta-inicio .planta-tit{text-transform:uppercase;letter-spacing:.02em}
+.ciclo-btn.tit-arriba{grid-template-columns:1fr}
 /* Todos los títulos de Inicio iguales: también Utilidades (26-10-2026) */
 [data-vista="panel"][data-sub=""] .ciclo-formacion .opcion-tx > b{font:800 clamp(15px,4.6vw,18px)/1.25 Nunito,sans-serif;text-transform:uppercase;letter-spacing:.02em}
 .panel-badge > span:last-child{text-transform:uppercase;letter-spacing:.04em;font-weight:800}
@@ -2459,7 +2462,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V14.02';
+  const APP_VERSION = 'V14.03';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -5422,6 +5425,9 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
+    { v: 'V14.03', f: '26 de octubre de 2026', n: [
+      'En Inicio, «Tu facilitador» va al final, debajo del juego y de «Mostrar». Las tarjetas ya no llevan la flechita a la derecha: se tocan enteras.',
+      '«Ver cómo crece tu meta» tiene el mismo tamaño y estilo que los demás títulos.' ] },
     { v: 'V14.02', f: '26 de octubre de 2026', n: [
       '<b>Registro y compromiso</b> y <b>Grupo de apoyo</b> también tienen su ⓘ. La tarjeta de Registro queda más limpia.',
       'En Metas pone ahora <b>«Rellenada»</b>, y las etiquetas verdes van a la derecha.' ] },
@@ -8206,14 +8212,14 @@ lo que haces cada día es lo que vas a ser.`;
         <p style="font-size:13px;color:var(--ink-soft);margin:0 0 10px"><b style="font-size:15px;color:var(--ink)">${facNombre}</b><br>Te acompaña en tu práctica y te responde las dudas. ¿Algo que preguntar o que quieras contarle?</p>
         <a class="panel-link-btn" href="https://wa.me/${facTel}?text=${encodeURIComponent('Escribo de la App Amable Skills. Tengo esta duda o sugerencia:')}" target="_blank" style="background:#8A8A82">Envíale un WhatsApp →</a>
       `;
-      app.appendChild(help);
       const inst = tarjetaInstalar();
       if(inst) app.appendChild(inst);
       // Juego extra, al final de la pantalla de inicio
       const juego = el('<button type="button" class="juego-btn" style="margin-top:18px"><span class="juego-btn-ico">🎮</span><span><b>Salta la valla con Prácti</b><small>Un minuto de juego: cada valla es un obstáculo que superas</small></span></button>').firstElementChild;   // el() da un fragmento: se coge el botón
       juego.onclick = abrirJuegoVallas;
       if(!oculto('juego')) app.appendChild(juego);
-      app.appendChild(cajaMostrar('inicio'));   // «Mostrar», al final de Inicio
+      app.appendChild(cajaMostrar('inicio'));   // «Mostrar», casi al final de Inicio
+      app.appendChild(help);                    // y «Tu facilitador», lo último de todo
       return;
     }
 
@@ -12654,4 +12660,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Skills" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V14.02 · App Amable Skills · 2026-10-26 14:25==== -->
+<!-- ==== Fin del index V14.03 · App Amable Skills · 2026-10-26 14:27==== -->
