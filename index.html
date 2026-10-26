@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V14.09 · App Amable Skills · 2026-10-26 16:15==== -->
+<!-- ==== index V14.10 · App Amable Skills · 2026-10-26 16:21==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1383,9 +1383,9 @@ textarea.ms-nombre-in:focus{outline:none;border-color:#C9942D;box-shadow:0 0 0 3
 .ciclo-meta .planta-meta{display:block;font:italic 600 16px/1.35 Nunito,sans-serif;color:#4A3A12}
 .planta-ver-montana{display:table;margin:12px auto 0;padding:8px 16px;border:0;border-radius:999px;background:rgba(255,255,255,.9);color:#2F5A23;font:800 15px Nunito,sans-serif;cursor:pointer}
 .planta-ico-abajo{display:block;width:44px;height:44px;margin:0 0 8px}.planta-ico-abajo svg{width:100%;height:100%}
-.letra-paso{display:inline-flex;align-items:baseline;flex:none;margin-right:8px;-webkit-text-stroke:0}
-.letra-paso i{font:900 22px/1 Nunito,sans-serif;font-style:normal;color:currentColor;text-transform:uppercase;-webkit-text-stroke:.35px currentColor}
-.letra-paso::after{content:'.';font:900 22px/1 Nunito,sans-serif;color:currentColor}
+.letra-paso{display:inline;flex:none;margin-right:.3em}
+.letra-paso i{font:inherit;font-style:normal;color:currentColor;text-transform:uppercase}
+.letra-paso::after{content:'.'}
 .ciclo-btn.tit-arriba{grid-template-columns:1fr auto}.tit-arriba .ciclo-tit{grid-column:1}.tit-arriba .opcion-tx{grid-column:1}.tit-arriba .opcion-flecha{grid-column:2}
 .guia-sub{justify-content:flex-end}
 [data-vista="panel"][data-sub=""] .opcion-inicio .opcion-flecha{display:none}
@@ -1410,7 +1410,17 @@ textarea.ms-nombre-in:focus{outline:none;border-color:#C9942D;box-shadow:0 0 0 3
 body [data-vista="formMeta"] #fmSig,body [data-vista="formMeta"] #fmSig:hover,body [data-vista="formMeta"] #fmSig:active,body [data-vista="formMeta"] .btn.btn-yes:hover,body [data-vista="formMeta"] .btn.btn-yes:active,body [data-vista="formMeta"] .btn.btn-yes:focus{background:linear-gradient(135deg,#7B5FB8,#C04A8E) !important;border:0 !important;color:#fff !important}
 body:has([data-vista="formMeta"]) .musica-barra{border:0;box-shadow:0 6px 20px rgba(91,63,168,.18)}
 [data-vista="formMeta"] .fm-salir + .card,[data-vista="formMeta"] .fm-salir + h2{margin-top:54px !important}
-.fm-puntos{display:flex;justify-content:center;gap:8px;margin:0 0 16px}.fm-puntos i{width:10px;height:10px;border-radius:50%;background:#E3DAF5}.fm-puntos i.on{background:#7B5FB8}.fm-puntos i.ahora{transform:scale(1.35);background:#C04A8E}
+.fm-prog{position:fixed;top:calc(24px + env(safe-area-inset-top));left:62px;right:20px;z-index:60;display:flex;justify-content:space-between;align-items:center;height:12px}
+.fm-prog::before{content:'';position:absolute;left:0;right:0;top:50%;height:4px;margin-top:-2px;border-radius:4px;background:#E3DAF5}
+.fm-prog-relleno{position:absolute;left:0;top:50%;height:4px;margin-top:-2px;border-radius:4px;background:linear-gradient(90deg,#7B5FB8,#C04A8E);transition:width .4s}
+.fm-prog i{position:relative;width:10px;height:10px;border-radius:50%;background:#E3DAF5;box-shadow:0 0 0 2px #FBF7FE}
+.fm-prog i.on{background:#7B5FB8}.fm-prog i.ahora{background:#C04A8E;transform:scale(1.35)}
+[data-vista="formMeta"] .card{background:transparent !important;box-shadow:none !important;border:0 !important;padding-left:4px;padding-right:4px}
+[data-vista="formMeta"]{padding-bottom:170px}
+[data-vista="formMeta"] .fm-salir + .fm-prog + .card{margin-top:54px !important}
+[data-vista="formMeta"] #fmSig,[data-vista="formMeta"] #fmEnviar{position:fixed;left:16px;right:16px;width:auto;bottom:calc(78px + env(safe-area-inset-bottom));margin:0 !important;z-index:55}
+[data-vista="formMeta"]:has(#fmAtras) #fmSig,[data-vista="formMeta"]:has(#fmAtras) #fmEnviar{left:118px}
+[data-vista="formMeta"] #fmAtras{position:fixed;left:16px;width:92px;bottom:calc(78px + env(safe-area-inset-bottom));margin:0 !important;z-index:55;height:48px;border-radius:14px;background:#F3EEFC;color:#5B3FA8;font:800 15px Karla,sans-serif;text-decoration:none;display:flex !important;align-items:center;justify-content:center}
 /* Todos los títulos de Inicio iguales: también Utilidades (26-10-2026) */
 [data-vista="panel"][data-sub=""] .ciclo-formacion .opcion-tx > b{font:800 clamp(15px,4.6vw,18px)/1.25 Nunito,sans-serif;text-transform:uppercase;letter-spacing:.02em}
 .panel-badge > span:last-child{text-transform:uppercase;letter-spacing:.04em;font-weight:800}
@@ -2486,7 +2496,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V14.09';
+  const APP_VERSION = 'V14.10';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -5452,6 +5462,9 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
+    { v: 'V14.10', f: '26 de octubre de 2026', n: [
+      'En Inicio, la letra de cada paso va del mismo tamaño que el título y seguida: «A. Metas».',
+      'Formulario de tu meta: el avance es una línea arriba que se va rellenando, y «Siguiente» y «Atrás» están siempre abajo, en el mismo sitio.' ] },
     { v: 'V14.09', f: '26 de octubre de 2026', n: [
       'En el formulario de tu meta, la música se controla solo con el reproductor de abajo: ▶ y ⏸, y el reproductor no desaparece.',
       'El formulario de tu meta, más limpio: sin cabecera ni marcos y con colores suaves. Para salir, la ✕ de arriba. El avance se ve con puntitos, uno por pregunta.' ] },
@@ -12318,7 +12331,7 @@ lo que haces cada día es lo que vas a ser.`;
     const fm = state.fm;
     if(!fm){ abrirFormularioMeta(); return; }
     // El título, solo en la primera pantalla (26-10-2026, Gustavo)
-    if(fm.paso === 0) app.appendChild(el('<h2 style="text-align:center;margin:4px 0 12px;font-size:clamp(18px,5.5vw,24px);white-space:nowrap">🎯 Tu meta del trimestre</h2>'));
+    if(fm.paso <= 1) app.appendChild(el('<h2 style="text-align:center;margin:4px 0 12px;font-size:clamp(18px,5.5vw,24px);white-space:nowrap">🎯 Tu meta del trimestre</h2>'));
     const preguntas = fmVisibles();
     const total = preguntas.length + 1;   // +1: el correo, al principio
 
@@ -12339,8 +12352,10 @@ lo que haces cada día es lo que vas a ser.`;
     }
 
     const hechos = Math.min(fm.paso, preguntas.length);
-    const barra = '<div class="fm-puntos" aria-label="Pregunta ' + Math.max(1, hechos) + ' de ' + preguntas.length + '">'
-      + preguntas.map((x, k) => '<i class="' + (k < hechos ? 'on' : '') + (k === hechos - 1 ? ' ahora' : '') + '"></i>').join('') + '</div>';
+    const pct = preguntas.length > 1 ? Math.round(100 * Math.max(0, hechos - 1) / (preguntas.length - 1)) : (hechos ? 100 : 0);
+    app.appendChild(el('<div class="fm-prog" aria-label="Pregunta ' + Math.max(1, hechos) + ' de ' + preguntas.length + '"><span class="fm-prog-relleno" style="width:' + pct + '%"></span>'
+      + preguntas.map((x, k) => '<i class="' + (k < hechos ? 'on' : '') + (k === hechos - 1 ? ' ahora' : '') + '"></i>').join('') + '</div>').firstElementChild);
+    const barra = '';
     const card = document.createElement('div');
     card.className = 'card';
     app.appendChild(card);
@@ -12707,4 +12722,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Skills" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V14.09 · App Amable Skills · 2026-10-26 16:15==== -->
+<!-- ==== Fin del index V14.10 · App Amable Skills · 2026-10-26 16:21==== -->
