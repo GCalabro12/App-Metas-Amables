@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V14.26 · App Amable Skills · 2026-10-26 21:41==== -->
+<!-- ==== index V14.27 · App Amable Skills · 2026-10-26 22:35==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1489,6 +1489,9 @@ body [data-vista="formMeta"]::after{content:'';position:fixed;left:0;right:0;bot
 body [data-vista="formMeta"] .fm-escala .fm-op.dia-btn{flex:1 1 0 !important;min-width:0 !important;height:auto !important;min-height:56px;padding:0 !important;margin:0 !important;text-align:center !important;font:900 22px Nunito,sans-serif}
 body [data-vista="formMeta"] .fm-escala .fm-op.dia-btn::before{content:none}
 body [data-vista="formMeta"] .fm-escala .fm-op.dia-btn.hecho{background:#FFD400 !important;color:#2B2350 !important;box-shadow:0 0 0 3px #fff,0 6px 16px rgba(0,0,0,.18)}
+/* Crear otra meta: botón grande con un «+» redondo, que se vea a la primera (26-10-2026, aviso de Felipe) */
+.ms-btn.ms-crear{display:flex;align-items:center;justify-content:center;gap:12px;margin:14px 0 0;padding:16px;background:#FFFBF2;color:#6B4A26;border:2px dashed #C9942D;border-radius:18px;font:800 17px Nunito,sans-serif}
+.ms-mas{display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;flex:none;border-radius:50%;background:#C9942D;color:#fff;font:900 28px/1 Nunito,sans-serif}
 .fm-opcional{font:600 15px Karla,sans-serif;color:#6B6380;white-space:nowrap}
 .fm-admin{position:fixed;top:calc(10px + env(safe-area-inset-top));right:10px;z-index:61;display:flex;flex-direction:column;align-items:center;gap:3px}.fm-admin > div{display:flex;gap:6px}.fm-admin small{font:700 10.5px Karla,sans-serif;color:#5B3FA8;background:rgba(255,255,255,.85);border-radius:8px;padding:1px 6px}.fm-admin button{width:38px;height:38px;border:0;border-radius:50%;background:#FFD400;color:#3B2A86;font:800 15px Karla,sans-serif;box-shadow:0 2px 8px rgba(0,0,0,.15);cursor:pointer}
 [data-vista="formMeta"]:has(.fm-admin) .fm-prog{right:106px}
@@ -2585,7 +2588,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V14.26';
+  const APP_VERSION = 'V14.27';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -4300,7 +4303,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
           + '<button type="button" class="ms-btn ms-ver-cal">📅 Calendario</button>'
           + (oculto('recordatorio') ? '' : '<div class="ms-rec"><button type="button" class="rec-abrir">⏰ ¿Te lo recuerdo? <span>▾</span></button><div class="rec-cuerpo" hidden><div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><label style="font-size:14px">A las <input type="time" class="rec-hora" value="18:00" style="font-size:16px;padding:6px 8px;border:1px solid var(--border);border-radius:8px"></label><button type="button" class="panel-link-btn rec-btn" style="border:0;cursor:pointer;margin:0;flex:1;min-width:160px">Poner recordatorio en el calendario del móvil</button></div><p style="font-size:12px;color:var(--ink-soft);margin:6px 0 0">' + (vecesSemanaSencilla(m) ? 'Te avisa cada día' : 'Te avisa ' + (diasPlanSencilla(m).length === 7 ? 'cada día' : 'los días que elegiste (' + textoDiasSencilla(m) + ')')) + ', en el calendario de tu móvil. Lo quitas cuando quieras desde el propio calendario.</p></div></div>')
           + '</div>').join('')
-        + (activas.length < max ? '<button type="button" class="ms-btn ms-crear">' + (activas.length ? '＋ Crear otra ' : 'Crear mi ') + TXT_SENCILLA.toLowerCase() + ' →</button>' : '')
+        + (activas.length < max ? '<button type="button" class="ms-btn ms-crear"><span class="ms-mas" aria-hidden="true">+</span><span>' + (activas.length ? 'Crear otra ' : 'Crear mi ') + TXT_SENCILLA.toLowerCase() + '</span></button>' : '')
         + (max === 1 ? '<p class="ms-nota">Con el Plan Guías + Grupo puedes tener 2.</p>' : '')
         + (archivo.some(a => !a.borrada) ? '<details class="ms-historial"><summary>Historial (' + archivo.filter(a => !a.borrada).length + ')</summary>' + archivo.map((a, k) => [a, k]).filter(([a]) => !a.borrada).reverse().map(([a, k]) => '<div class="ms-hist"><p>' + escapeAttr(a.nombre)
             + '<small>' + fechaCorta(new Date(a.desde + 'T12:00:00')) + ' – ' + fechaCorta(new Date(a.hasta + 'T12:00:00')) + ' · ' + (a.n || 0) + (a.n === 1 ? ' día' : ' días') + (a.motivo === 'cambiada' ? ' · cambiada' : '') + '</small></p>'
@@ -5553,6 +5556,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
+    { v: 'V14.27', f: '26 de octubre de 2026', n: [
+      'En Metas, el botón para crear otra meta es más grande y lleva un «+», para encontrarlo a la primera.' ] },
     { v: 'V14.26', f: '26 de octubre de 2026', n: [
       'En el formulario de tu meta, la escala del 1 al 5 vuelve a caber entera en la pantalla.',
       'La música sigue sonando cuando vuelves a la app tras mirar otra cosa, y suena un poco más bajita.' ] },
@@ -12916,4 +12921,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Skills" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V14.26 · App Amable Skills · 2026-10-26 21:41==== -->
+<!-- ==== Fin del index V14.27 · App Amable Skills · 2026-10-26 22:35==== -->
