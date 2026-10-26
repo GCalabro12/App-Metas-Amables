@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V14.11 · App Amable Skills · 2026-10-26 16:22==== -->
+<!-- ==== index V14.12 · App Amable Skills · 2026-10-26 16:22==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1410,7 +1410,7 @@ textarea.ms-nombre-in:focus{outline:none;border-color:#C9942D;box-shadow:0 0 0 3
 body [data-vista="formMeta"] #fmSig,body [data-vista="formMeta"] #fmSig:hover,body [data-vista="formMeta"] #fmSig:active,body [data-vista="formMeta"] .btn.btn-yes:hover,body [data-vista="formMeta"] .btn.btn-yes:active,body [data-vista="formMeta"] .btn.btn-yes:focus{background:linear-gradient(135deg,#7B5FB8,#C04A8E) !important;border:0 !important;color:#fff !important}
 body:has([data-vista="formMeta"]) .musica-barra{border:0;box-shadow:0 6px 20px rgba(91,63,168,.18)}
 [data-vista="formMeta"] .fm-salir + .card,[data-vista="formMeta"] .fm-salir + h2{margin-top:54px !important}
-.fm-admin{position:fixed;top:calc(10px + env(safe-area-inset-top));right:10px;z-index:61;display:flex;gap:6px}.fm-admin button{width:38px;height:38px;border:0;border-radius:50%;background:#FFD400;color:#3B2A86;font:800 15px Karla,sans-serif;box-shadow:0 2px 8px rgba(0,0,0,.15);cursor:pointer}
+.fm-admin{position:fixed;top:calc(10px + env(safe-area-inset-top));right:10px;z-index:61;display:flex;flex-direction:column;align-items:center;gap:3px}.fm-admin > div{display:flex;gap:6px}.fm-admin small{font:700 10.5px Karla,sans-serif;color:#5B3FA8;background:rgba(255,255,255,.85);border-radius:8px;padding:1px 6px}.fm-admin button{width:38px;height:38px;border:0;border-radius:50%;background:#FFD400;color:#3B2A86;font:800 15px Karla,sans-serif;box-shadow:0 2px 8px rgba(0,0,0,.15);cursor:pointer}
 [data-vista="formMeta"]:has(.fm-admin) .fm-prog{right:106px}
 .fm-prog{position:fixed;top:calc(24px + env(safe-area-inset-top));left:62px;right:20px;z-index:60;display:flex;justify-content:space-between;align-items:center;height:12px}
 .fm-prog::before{content:'';position:absolute;left:0;right:0;top:50%;height:4px;margin-top:-2px;border-radius:4px;background:#E3DAF5}
@@ -2498,7 +2498,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V14.11';
+  const APP_VERSION = 'V14.12';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -5465,7 +5465,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
     { v: 'V14.11', f: '26 de octubre de 2026', n: [
-      'Para el administrador: en el formulario de la meta, ◀ ▶ arriba para pasar las páginas sin rellenarlo.' ] },
+      'Para el administrador: en el formulario de la meta, ◀ ▶ arriba para pasar las páginas sin rellenarlo, con el aviso «Solo administrador».' ] },
     { v: 'V14.10', f: '26 de octubre de 2026', n: [
       'En Inicio, la letra de cada paso va del mismo tamaño que el título y seguida: «A. Metas».',
       'Formulario de tu meta: el avance es una línea arriba que se va rellenando, y «Siguiente» y «Atrás» están siempre abajo, en el mismo sitio.' ] },
@@ -12336,7 +12336,7 @@ lo que haces cada día es lo que vas a ser.`;
     if(!fm){ abrirFormularioMeta(); return; }
     if(soyModerador()){
       const ultimo = fmVisibles().length + 1;   // la pantalla de repaso
-      const adm = el('<div class="fm-admin" aria-label="Administrador: pasar páginas"><button type="button" data-d="-1" aria-label="Página anterior">◀</button><button type="button" data-d="1" aria-label="Página siguiente">▶</button></div>').firstElementChild;
+      const adm = el('<div class="fm-admin" aria-label="Administrador: pasar páginas"><div><button type="button" data-d="-1" aria-label="Página anterior">◀</button><button type="button" data-d="1" aria-label="Página siguiente">▶</button></div><small>Solo administrador</small></div>').firstElementChild;
       adm.querySelectorAll('button').forEach(b => b.onclick = () => { fm.paso = Math.max(0, Math.min(ultimo, fm.paso + Number(b.dataset.d))); window.scrollTo(0, 0); render(); });
       app.appendChild(adm);
     }
@@ -12732,4 +12732,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Skills" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V14.11 · App Amable Skills · 2026-10-26 16:22==== -->
+<!-- ==== Fin del index V14.12 · App Amable Skills · 2026-10-26 16:22==== -->
