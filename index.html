@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V14.05 · App Amable Skills · 2026-10-26 14:33==== -->
+<!-- ==== index V14.06 · App Amable Skills · 2026-10-26 16:02==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -754,6 +754,9 @@ button, input, textarea, select{ font-family:inherit; }
     display:flex; align-items:center; justify-content:center; font-size:22px;
     cursor:pointer; animation:medalFloat 2s ease-in-out infinite;
   }
+  /* La insignia de Inicio es el mismo escudo de Progreso y ocupa todo el círculo (26-10-2026, Gustavo) */
+  .nivel-badge-mini:has(svg.escudo){ background:none; border:0; padding:0; box-shadow:0 3px 10px rgba(0,0,0,.35); }
+  .nivel-badge-mini svg.escudo{ width:100%; height:100%; display:block; }
   .menu-overlay{
     position:fixed; inset:0; background:rgba(0,0,0,.35); z-index:200;
     display:flex; justify-content:flex-end;
@@ -1385,6 +1388,8 @@ textarea.ms-nombre-in:focus{outline:none;border-color:#C9942D;box-shadow:0 0 0 3
 .ciclo-btn.tit-arriba{grid-template-columns:1fr auto}.tit-arriba .ciclo-tit{grid-column:1}.tit-arriba .opcion-tx{grid-column:1}.tit-arriba .opcion-flecha{grid-column:2}
 .guia-sub{justify-content:flex-end}
 [data-vista="panel"][data-sub=""] .opcion-inicio .opcion-flecha{display:none}
+/* Sin las flechas entre a, b, c y d: las letras ya marcan el recorrido (queda el hueco) */
+[data-vista="panel"][data-sub=""] .ciclo-flecha{visibility:hidden;height:10px;margin:0}
 .planta-card .planta-tit{gap:0}
 [data-vista="panel"][data-sub=""] .opcion-inicio.ciclo-btn{padding-left:16px;padding-right:16px}
 [data-vista="panel"][data-sub=""] .planta-inicio .planta-tit{text-transform:uppercase;letter-spacing:.02em}
@@ -2464,7 +2469,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V14.05';
+  const APP_VERSION = 'V14.06';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -5430,6 +5435,9 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
+    { v: 'V14.06', f: '26 de octubre de 2026', n: [
+      'La insignia de Inicio es ahora el mismo escudo de tu nivel, ocupando todo el círculo.',
+      'Fuera las flechas entre los pasos: las letras a, b, c y d ya marcan el recorrido.' ] },
     { v: 'V14.05', f: '26 de octubre de 2026', n: [
       'Prácti y sus bocadillos, mejor colocados: sus pies a la altura de la base del bocadillo y la punta a la altura de su boca.' ] },
     { v: 'V14.04', f: '26 de octubre de 2026', n: [
@@ -12672,4 +12680,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Skills" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V14.05 · App Amable Skills · 2026-10-26 14:33==== -->
+<!-- ==== Fin del index V14.06 · App Amable Skills · 2026-10-26 16:02==== -->
