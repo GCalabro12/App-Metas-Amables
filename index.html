@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V13.98 · App Amable Skills · 2026-10-26 14:08==== -->
+<!-- ==== index V13.99 · App Amable Skills · 2026-10-26 14:11==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1372,13 +1372,14 @@ textarea.ms-nombre-in:focus{outline:none;border-color:#C9942D;box-shadow:0 0 0 3
 .ciclo-b .ciclo-tit{color:#B0201A}.ciclo-c .ciclo-tit{color:#2E6B1F}
 .card.guia-semana .ritual-tit{padding-right:0;gap:0;color:#1F4E85}.guia-sub{display:flex;align-items:center;justify-content:space-between;margin:2px 0 6px}.guia-sub .etiqueta-recibida{position:static}
 /* 26-10-2026 (2): títulos más gruesos; la ⓘ siempre arriba a la derecha; «Hecha/Recibida» en un segundo renglón */
-[data-vista="panel"][data-sub=""] .tit-arriba .ciclo-tit,[data-vista="panel"][data-sub=""] .ciclo-formacion .opcion-tx > b,[data-vista="panel"][data-sub=""] .card.guia-semana .ritual-tit,[data-vista="panel"][data-sub=""] .planta-tit{font-weight:900 !important;-webkit-text-stroke:.35px currentColor;letter-spacing:.03em}
-[data-vista="panel"][data-sub=""] .ciclo-btn,[data-vista="panel"][data-sub=""] .card.guia-semana{position:relative}
-[data-vista="panel"][data-sub=""] .ciclo-btn .info-i,[data-vista="panel"][data-sub=""] .card.guia-semana .info-i{position:absolute;top:10px;right:12px;margin:0;z-index:2}
+[data-vista="panel"][data-sub=""] .tit-arriba .ciclo-tit,[data-vista="panel"][data-sub=""] .ciclo-formacion .opcion-tx > b,[data-vista="panel"][data-sub=""] .card.guia-semana .ritual-tit,[data-vista="panel"][data-sub=""] .planta-tit{font-weight:900 !important;-webkit-text-stroke:.35px currentColor;letter-spacing:.02em;font-size:clamp(14px,4.2vw,17px) !important}
+[data-vista="panel"][data-sub=""] .ciclo-btn,[data-vista="panel"][data-sub=""] .ciclo-formacion,[data-vista="panel"][data-sub=""] .card.guia-semana{position:relative}
+[data-vista="panel"][data-sub=""] .ciclo-btn .info-i,[data-vista="panel"][data-sub=""] .ciclo-formacion .info-i,[data-vista="panel"][data-sub=""] .card.guia-semana .info-i{position:absolute;top:10px;right:12px;margin:0;z-index:2}
 [data-vista="panel"][data-sub=""] .ciclo-btn .ciclo-tit,[data-vista="panel"][data-sub=""] .card.guia-semana .ritual-tit,[data-vista="panel"][data-sub=""] .ciclo-formacion .opcion-tx > b{padding-right:34px}
 .ciclo-meta .etiqueta-recibida{position:static;display:inline-block;margin-top:6px}
 .ciclo-meta .planta-meta{display:block;font:italic 600 16px/1.35 Nunito,sans-serif;color:#4A3A12}
 .planta-ver-montana{display:block;margin:8px auto 0;padding:8px 16px;border:0;border-radius:999px;background:rgba(255,255,255,.9);color:#2F5A23;font:800 15px Nunito,sans-serif;cursor:pointer}
+.planta-ico-abajo{display:block;width:44px;height:44px;margin:0 0 8px}.planta-ico-abajo svg{width:100%;height:100%}
 /* Todos los títulos de Inicio iguales: también Utilidades (26-10-2026) */
 [data-vista="panel"][data-sub=""] .ciclo-formacion .opcion-tx > b{font:800 clamp(15px,4.6vw,18px)/1.25 Nunito,sans-serif;text-transform:uppercase;letter-spacing:.02em}
 .panel-badge > span:last-child{text-transform:uppercase;letter-spacing:.04em;font-weight:800}
@@ -2454,7 +2455,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V13.98';
+  const APP_VERSION = 'V13.99';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -5417,6 +5418,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
+    { v: 'V13.99', f: '26 de octubre de 2026', n: [
+      'Retoques en Inicio: todos los títulos caben en una línea, la ⓘ de Utilidades también va arriba a la derecha y «Registro y compromiso» empieza a la izquierda.' ] },
     { v: 'V13.98', f: '26 de octubre de 2026', n: [
       'En Inicio, <b>Metas</b> tiene el título arriba y debajo <b>tu meta</b> (con el lápiz para cambiarla). Ya no se repite en «Registro y compromiso».',
       'Títulos más gruesos, la <b>ⓘ</b> siempre arriba a la derecha y «Hecha» o «Recibida» en un renglón aparte.',
@@ -10929,9 +10932,9 @@ lo que haces cada día es lo que vas a ser.`;
     const estadoReg = reg
       ? '<p class="planta-reg hecho" role="button" tabindex="0">✓ Hoy ya has registrado</p>'
       : '<p class="planta-reg" role="button" tabindex="0">💧 Registra hoy</p><p class="planta-reg-lista">Te falta registrar tu clima, tu entorno o tu práctica.</p>';
-    const t = el('<div class="card planta-card ciclo-b" role="button" tabindex="0"><b class="planta-tit"><span class="planta-tit-ico">' + iconoCiclo('b') + '</span>Registro y compromiso<span class="planta-ir">›</span></b>'
+    const t = el('<div class="card planta-card ciclo-b" role="button" tabindex="0"><b class="planta-tit">Registro y compromiso<span class="planta-ir">›</span></b>'
       + '<div class="planta-fila"><span class="planta-fig" title="El tutor de tu planta es tu guía semanal">' + tutor + '<img src="' + e.img + '" alt="">' + lazo + '</span>'
-      + '<div class="planta-tx">' + estadoReg + '</div></div>'
+      + '<div class="planta-tx"><span class="planta-tit-ico planta-ico-abajo">' + iconoCiclo('b') + '</span>' + estadoReg + '</div></div>'
       // Abajo, a la vista: el resto de la tarjeta (contrato, notas a tu yo, meta lograda…) se abre tocándola
       + '<p class="planta-mas">📜 Tu compromiso y más <span>›</span></p></div>').firstElementChild;
     if(alVer){ t.onclick = alVer; t.onkeydown = ev => { if(ev.key === 'Enter' || ev.key === ' '){ ev.preventDefault(); alVer(); } }; }
@@ -12644,4 +12647,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Skills" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V13.98 · App Amable Skills · 2026-10-26 14:08==== -->
+<!-- ==== Fin del index V13.99 · App Amable Skills · 2026-10-26 14:11==== -->
