@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V14.31 · App Amable Meta · 2026-10-27 09:14==== -->
+<!-- ==== index V14.32 · App Amable Meta · 2026-10-27 09:39==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1492,6 +1492,8 @@ body [data-vista="formMeta"] .fm-escala .fm-op.dia-btn.hecho{background:#FFD400 
 /* Crear otra meta: botón grande con un «+» redondo, que se vea a la primera (26-10-2026, aviso de Felipe) */
 .ms-btn.ms-crear{display:flex;align-items:center;justify-content:center;gap:12px;margin:14px 0 0;padding:16px;background:#FFFBF2;color:#6B4A26;border:2px dashed #C9942D;border-radius:18px;font:800 17px Nunito,sans-serif}
 .ms-mas{display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;flex:none;border-radius:50%;background:#C9942D;color:#fff;font:900 28px/1 Nunito,sans-serif}
+/* Los avisos que se leen una vez: el botón para cerrarlos, en verde, que se vea (27-10-2026, Gustavo) */
+#btnCerrarBienvenida{background:#4C8C4A !important;color:#fff !important;border:0 !important;box-shadow:0 3px 0 #2F6B2E !important}
 .fm-opcional{font:600 15px Karla,sans-serif;color:#6B6380;white-space:nowrap}
 .fm-admin{position:fixed;top:calc(10px + env(safe-area-inset-top));right:10px;z-index:61;display:flex;flex-direction:column;align-items:center;gap:3px}.fm-admin > div{display:flex;gap:6px}.fm-admin small{font:700 10.5px Karla,sans-serif;color:#5B3FA8;background:rgba(255,255,255,.85);border-radius:8px;padding:1px 6px}.fm-admin button{width:38px;height:38px;border:0;border-radius:50%;background:#FFD400;color:#3B2A86;font:800 15px Karla,sans-serif;box-shadow:0 2px 8px rgba(0,0,0,.15);cursor:pointer}
 [data-vista="formMeta"]:has(.fm-admin) .fm-prog{right:106px}
@@ -2588,7 +2590,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V14.31';
+  const APP_VERSION = 'V14.32';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -5556,6 +5558,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
+    { v: 'V14.32', f: '27 de octubre de 2026', n: [
+      'Inicio más corto: el aviso para instalar la app sale solo arriba, y el botón «Entendido» de la bienvenida de Prácti es verde, para verlo mejor.' ] },
     { v: 'V14.31', f: '27 de octubre de 2026', n: [
       'La historia del guerrero jardinero (Progreso, nivel rojo de la montaña) ya tiene sus cuatro escenas animadas.' ] },
     { v: 'V14.29', f: '26 de octubre de 2026', n: [
@@ -8413,11 +8417,10 @@ lo que haces cada día es lo que vas a ser.`;
           <p style="margin:0;font-size:17px"><b>💬 Tu facilitador</b></p>
           ${facFoto ? `<img src="${facFoto}" alt="${facNombre}" style="width:48px;height:48px;border-radius:50%;object-fit:cover;flex-shrink:0;border:2px solid var(--line, #e5e2da)" onerror="this.remove()">` : ''}
         </div>
-        <p style="font-size:13px;color:var(--ink-soft);margin:0 0 10px"><b style="font-size:15px;color:var(--ink)">${facNombre}</b><br>Te acompaña en tu práctica y te responde las dudas. ¿Algo que preguntar o que quieras contarle?</p>
+        <p style="font-size:13px;color:var(--ink-soft);margin:0 0 10px"><b style="font-size:15px;color:var(--ink)">${facNombre}</b><br>¿Alguna duda sobre tus metas o sobre la aplicación?</p>
         <a class="panel-link-btn" href="https://wa.me/${facTel}?text=${encodeURIComponent('Escribo de la App Amable Meta. Tengo esta duda o sugerencia:')}" target="_blank" style="background:#8A8A82">Envíale un WhatsApp →</a>
       `;
-      const inst = tarjetaInstalar();
-      if(inst) app.appendChild(inst);
+      // «Instala la app» ya sale arriba del todo: aquí abajo no se repite (27-10-2026, Gustavo)
       // Juego extra, al final de la pantalla de inicio
       const juego = el('<button type="button" class="juego-btn" style="margin-top:18px"><span class="juego-btn-ico">🎮</span><span><b>Salta la valla con Prácti</b><small>Un minuto de juego: cada valla es un obstáculo que superas</small></span></button>').firstElementChild;   // el() da un fragmento: se coge el botón
       juego.onclick = abrirJuegoVallas;
@@ -12934,4 +12937,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Meta" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V14.31 · App Amable Meta · 2026-10-27 09:14==== -->
+<!-- ==== Fin del index V14.32 · App Amable Meta · 2026-10-27 09:39==== -->
