@@ -1,8 +1,8 @@
 {
   "id": "./",
-  "name": "Amable Skills",
-  "short_name": "Amable Skills",
-  "description": "Registro semanal, panel de control y comunidad de Amable Skills",
+  "name": "Amable Meta",
+  "short_name": "Amable Meta",
+  "description": "Registro semanal, panel de control y comunidad de Amable Meta",
   "lang": "es",
   "start_url": "./",
   "scope": "./",
