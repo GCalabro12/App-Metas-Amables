@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V14.34 · App Amable Meta · 2026-10-27 09:48==== -->
+<!-- ==== index V14.35 · App Amable Meta · 2026-10-27 09:54==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1504,6 +1504,14 @@ body:has(#app[data-vista="perfil"])::before{opacity:.22}
 .mont-play{position:absolute;left:50%;top:83%;transform:translate(-50%,-50%);display:inline-flex;align-items:center;gap:8px;white-space:nowrap;padding:9px 16px;border:2px solid #fff;border-radius:999px;background:#A93226;color:#fff;font:800 14px Nunito,sans-serif;box-shadow:0 4px 14px rgba(0,0,0,.28);cursor:pointer;animation:montPlay 2.4s ease-in-out infinite}
 .mont-play span{font-size:12px}
 @keyframes montPlay{0%,100%{transform:translate(-50%,-50%) scale(1)}50%{transform:translate(-50%,-50%) scale(1.06)}}
+/* Historia: pie en una fila (← · · · · →) y el texto más abajo, para tapar menos el vídeo */
+.hn-pie{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:14px}
+.hn-pie .hn-puntos{margin:0}
+.hn-pie .hn-atras,.hn-pie .hn-sig{flex:none;width:52px;height:52px;padding:0;border-radius:50%;font:900 24px/1 Nunito,sans-serif}
+.hn-pie .hn-atras{background:rgba(255,255,255,.18);color:#fff;border:0}
+.hn-pie .hn-sig{background:#fff;color:#A93226;border:0;box-shadow:0 4px 14px rgba(0,0,0,.25)}
+.hn-con-video .hn-tx h2{margin-bottom:6px}
+.hn-con-video .hn-tx p{font-size:16.5px;line-height:1.45}
 .fm-opcional{font:600 15px Karla,sans-serif;color:#6B6380;white-space:nowrap}
 .fm-admin{position:fixed;top:calc(10px + env(safe-area-inset-top));right:10px;z-index:61;display:flex;flex-direction:column;align-items:center;gap:3px}.fm-admin > div{display:flex;gap:6px}.fm-admin small{font:700 10.5px Karla,sans-serif;color:#5B3FA8;background:rgba(255,255,255,.85);border-radius:8px;padding:1px 6px}.fm-admin button{width:38px;height:38px;border:0;border-radius:50%;background:#FFD400;color:#3B2A86;font:800 15px Karla,sans-serif;box-shadow:0 2px 8px rgba(0,0,0,.15);cursor:pointer}
 [data-vista="formMeta"]:has(.fm-admin) .fm-prog{right:106px}
@@ -2600,7 +2608,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V14.34';
+  const APP_VERSION = 'V14.35';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -5570,7 +5578,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   const NOVEDADES = [
     { v: 'V14.34', f: '27 de octubre de 2026', n: [
       'Tu Perfil, más amplio y limpio: sin recuadro, sobre fondo claro, y con la misma montaña de Progreso.',
-      'En la montaña, el botón «▶ Mira la historia de este nivel» sobre la parte roja abre la historia en vídeo.' ] },
+      'En la montaña, el botón «▶ Mira la historia de este nivel» sobre la parte roja abre la historia en vídeo.',
+      'En la historia, para pasar de escena basta con la flecha → junto a los puntitos, y el texto tapa menos el vídeo.' ] },
     { v: 'V14.32', f: '27 de octubre de 2026', n: [
       'Inicio más corto: el aviso para instalar la app sale solo arriba, el saludo es más breve y el botón «Entendido» de la bienvenida de Prácti es verde, para verlo mejor.' ] },
     { v: 'V14.31', f: '27 de octubre de 2026', n: [
@@ -11748,8 +11757,8 @@ lo que haces cada día es lo que vas a ser.`;
         tx: 'En el primer nivel de la montaña, el rojo, aprendes a cuidar tu meta con fuerza y con cariño, como quien defiende y cultiva su propio huerto.' },
       { video: 'historia-guerrero-2.mp4', img: () => '<div class="hn-practi">' + practiHTML('pizarra', '', 200) + '</div>', tit: 'Apunta bien',
         tx: 'Un buen guerrero sabe adónde va. Elige una meta clara y pequeña, y vuelve a ella cada día.' },
-      { video: 'historia-guerrero-3.mp4', img: () => '<img class="hn-img" src="' + imgRegando(3) + '" alt="">', tit: 'Ara bien tu tierra',
-        tx: 'Antes de sembrar, el jardinero prepara su terreno. Tu tierra es tu tiempo y tu energía: cuídala un poco cada día. Tu parte guerrera está al servicio de tu Rey interior, para proteger tu reino.' },
+      { video: 'historia-guerrero-3.mp4', subir: 10, img: () => '<img class="hn-img" src="' + imgRegando(3) + '" alt="">', tit: 'Ara bien tu tierra',
+        tx: 'Tu tierra es tu tiempo y tu energía: cuídala un poco cada día. Tu parte guerrera está al servicio de tu Rey interior, para proteger tu reino.' },
       { video: 'historia-guerrero-4.mp4', img: () => '<div class="hn-escudo">' + escudoInsignia(0) + '</div>', tit: 'Pon límites a tu terreno',
         tx: 'Sin exceso, para no abusar de los demás. Sin carencia, para que nadie abuse de ti. Ese es el equilibrio del guerrero jardinero.' }
     ]
@@ -11774,15 +11783,16 @@ lo que haces cada día es lo que vas a ser.`;
       const d = diapos[i], ultima = i === diapos.length - 1;
       // Con vídeo (cinemagraph de Gemini): ocupa toda la pantalla, detrás del texto
       capa.classList.toggle('hn-con-video', !!d.video);
-      capa.innerHTML = (d.video ? '<video class="hn-fondo" src="' + d.video + '" autoplay muted loop playsinline preload="auto"></video><div class="hn-velo"></div>' : '')
+      capa.innerHTML = (d.video ? '<video class="hn-fondo" src="' + d.video + '"' + (d.subir ? ' style="transform:translateY(-' + d.subir + '%)"' : '') + ' autoplay muted loop playsinline preload="auto"></video><div class="hn-velo"></div>' : '')
         + '<div class="hn-cab"><span class="hn-nivel">Nivel ' + (n + 1) + ' · ' + escapeAttr(BADGE_SCALE[n].label) + '</span><button type="button" class="hn-x" aria-label="Cerrar">✕</button></div>'
         + '<div class="hn-ilus">' + (d.video ? '' : d.img()) + '</div>'
         + '<div class="hn-tx"><h2>' + d.tit + '</h2><p>' + d.tx + '</p></div>'
-        + '<div class="hn-pie"><div class="hn-puntos">' + diapos.map((x, k) => '<i class="' + (k === i ? 'on' : '') + '"></i>').join('') + '</div>'
-        + '<div class="hn-bts">' + (i ? '<button type="button" class="hn-atras">←</button>' : '') + '<button type="button" class="hn-sig">' + (ultima ? '¡Vamos!' : 'Siguiente →') + '</button></div></div>';
+        + '<div class="hn-pie"><button type="button" class="hn-atras" aria-label="Anterior"' + (i ? '' : ' style="visibility:hidden"') + '>←</button>'
+        + '<div class="hn-puntos">' + diapos.map((x, k) => '<i class="' + (k === i ? 'on' : '') + '"></i>').join('') + '</div>'
+        + '<button type="button" class="hn-sig" aria-label="' + (ultima ? 'Terminar' : 'Siguiente') + '">' + (ultima ? '✓' : '→') + '</button></div>';
       capa.querySelector('.hn-x').onclick = () => capa.remove();
       capa.querySelector('.hn-sig').onclick = () => { if(ultima) capa.remove(); else { i++; pintar(); } };
-      const at = capa.querySelector('.hn-atras'); if(at) at.onclick = () => { i--; pintar(); };
+      const at = capa.querySelector('.hn-atras'); if(at && i) at.onclick = () => { i--; pintar(); };
       try { activarPracti(capa); } catch(e){}
     };
     // Deslizar a la izquierda o a la derecha también pasa las diapositivas
@@ -12961,4 +12971,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Meta" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V14.34 · App Amable Meta · 2026-10-27 09:48==== -->
+<!-- ==== Fin del index V14.35 · App Amable Meta · 2026-10-27 09:54==== -->
