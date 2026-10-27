@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V14.32 · App Amable Meta · 2026-10-27 09:39==== -->
+<!-- ==== index V14.33 · App Amable Meta · 2026-10-27 09:42==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2590,7 +2590,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V14.32';
+  const APP_VERSION = 'V14.33';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -5559,7 +5559,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   // ===== Novedades de la app (Utilidades → al final). Añadir arriba cada versión con cambios importantes =====
   const NOVEDADES = [
     { v: 'V14.32', f: '27 de octubre de 2026', n: [
-      'Inicio más corto: el aviso para instalar la app sale solo arriba, y el botón «Entendido» de la bienvenida de Prácti es verde, para verlo mejor.' ] },
+      'Inicio más corto: el aviso para instalar la app sale solo arriba, el saludo es más breve y el botón «Entendido» de la bienvenida de Prácti es verde, para verlo mejor.' ] },
     { v: 'V14.31', f: '27 de octubre de 2026', n: [
       'La historia del guerrero jardinero (Progreso, nivel rojo de la montaña) ya tiene sus cuatro escenas animadas.' ] },
     { v: 'V14.29', f: '26 de octubre de 2026', n: [
@@ -8056,7 +8056,7 @@ lo que haces cada día es lo que vas a ser.`;
                 : state.panelSub === 's4'
                   ? '<span class="practi-tocable" data-reaccion="practi-pizarra-empujon.json" title="Tócame">' + practiHTML('pizarra', '', 190) + '</span>'   // al tocarlo, empujón en la pizarra
                   : practiHTML(figuraSub[0], '', figuraSub[1], figuraSub[2] ? 'una-vez' : '')}</div>`)
-        : el(`<div class="saludo-inicio" style="position:relative;text-align:center;margin-bottom:14px"><div style="font-family:'Nunito',serif;font-size:24px;font-weight:600;color:var(--ink)">Hola, ${escapeAttr(state.me)}${avatarDe(state.me) ? ' ' + avatarDe(state.me) : ''}</div><div style="font-family:'Karla',sans-serif;font-size:15px;font-weight:700;color:var(--ink);margin-top:2px">${bienvenidaTexto(state.me)} a tu ciclo de aprendizaje</div><div class="fecha-hoy" id="fechaHoy" style="margin-bottom:10px">${textoFechaHoy()}</div><div class="hueco-panel-fac"></div><div class="practi-inicio" style="margin-bottom:10px">${practiReaccionHTML('saludo', 'empujonSaludo', 104, 'practi-saludo')}${bocadilloPracti(fraseInicio(), 'tono-calma')}</div></div>`);
+        : el(`<div class="saludo-inicio" style="position:relative;text-align:center;margin-bottom:14px"><div style="font-family:'Nunito',serif;font-size:24px;font-weight:600;color:var(--ink)">Hola, ${escapeAttr(state.me)}${avatarDe(state.me) ? ' ' + avatarDe(state.me) : ''}</div><div class="fecha-hoy" id="fechaHoy" style="margin-bottom:10px">${textoFechaHoy()}</div><div class="hueco-panel-fac"></div><div class="practi-inicio" style="margin-bottom:10px">${practiReaccionHTML('saludo', 'empujonSaludo', 104, 'practi-saludo')}${bocadilloPracti(fraseInicio(), 'tono-calma')}</div></div>`);
       // (el() devuelve un fragmento: hay que buscar dentro antes de añadirlo a la página)
       greetPanel.querySelectorAll('.practi-tocable').forEach(c => { c.onclick = () => reaccionExterna(c, c.dataset.reaccion); });
       // «Panel de control admin Metas A.» (solo moderadores): justo debajo de la fecha, antes de Prácti saludando
@@ -12937,4 +12937,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Meta" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V14.32 · App Amable Meta · 2026-10-27 09:39==== -->
+<!-- ==== Fin del index V14.33 · App Amable Meta · 2026-10-27 09:42==== -->
