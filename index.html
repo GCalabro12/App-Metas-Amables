@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V14.35 · App Amable Meta · 2026-10-27 09:54==== -->
+<!-- ==== index V14.36 · App Amable Meta · 2026-10-27 09:55==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1512,6 +1512,10 @@ body:has(#app[data-vista="perfil"])::before{opacity:.22}
 .hn-pie .hn-sig{background:#fff;color:#A93226;border:0;box-shadow:0 4px 14px rgba(0,0,0,.25)}
 .hn-con-video .hn-tx h2{margin-bottom:6px}
 .hn-con-video .hn-tx p{font-size:16.5px;line-height:1.45}
+#app[data-vista="perfil"] .titulo-pantalla{font-size:clamp(34px,10vw,44px) !important;font-weight:900;margin:6px 0 16px !important}
+.mont-play{left:auto !important;right:10px;top:83%;transform:translateY(-50%) !important;font-size:12.5px !important;padding:5px 11px !important;gap:5px !important;border-width:1.5px !important;animation:montPlayD 2.4s ease-in-out infinite !important}
+.mont-play span{font-size:9px !important}
+@keyframes montPlayD{0%,100%{transform:translateY(-50%) scale(1)}50%{transform:translateY(-50%) scale(1.07)}}
 .fm-opcional{font:600 15px Karla,sans-serif;color:#6B6380;white-space:nowrap}
 .fm-admin{position:fixed;top:calc(10px + env(safe-area-inset-top));right:10px;z-index:61;display:flex;flex-direction:column;align-items:center;gap:3px}.fm-admin > div{display:flex;gap:6px}.fm-admin small{font:700 10.5px Karla,sans-serif;color:#5B3FA8;background:rgba(255,255,255,.85);border-radius:8px;padding:1px 6px}.fm-admin button{width:38px;height:38px;border:0;border-radius:50%;background:#FFD400;color:#3B2A86;font:800 15px Karla,sans-serif;box-shadow:0 2px 8px rgba(0,0,0,.15);cursor:pointer}
 [data-vista="formMeta"]:has(.fm-admin) .fm-prog{right:106px}
@@ -2608,7 +2612,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V14.35';
+  const APP_VERSION = 'V14.36';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -5578,7 +5582,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   const NOVEDADES = [
     { v: 'V14.34', f: '27 de octubre de 2026', n: [
       'Tu Perfil, más amplio y limpio: sin recuadro, sobre fondo claro, y con la misma montaña de Progreso.',
-      'En la montaña, el botón «▶ Mira la historia de este nivel» sobre la parte roja abre la historia en vídeo.',
+      'En la montaña, el botón «▶ Guerrero» sobre la parte roja abre la historia en vídeo.',
       'En la historia, para pasar de escena basta con la flecha → junto a los puntitos, y el texto tapa menos el vídeo.' ] },
     { v: 'V14.32', f: '27 de octubre de 2026', n: [
       'Inicio más corto: el aviso para instalar la app sale solo arriba, el saludo es más breve y el botón «Entendido» de la bienvenida de Prácti es verde, para verlo mejor.' ] },
@@ -11765,7 +11769,7 @@ lo que haces cada día es lo que vas a ser.`;
   };
   // La montaña con un botón encima del nivel rojo: ahí está la historia en vídeo (27-10-2026, Gustavo)
   function montanaConHistoria(d){
-    return '<div class="mont-caja">' + montanaSVG(d) + '<button type="button" class="mont-play"><span aria-hidden="true">▶</span> Mira la historia de este nivel</button></div>';
+    return '<div class="mont-caja">' + montanaSVG(d) + '<button type="button" class="mont-play" aria-label="Ver la historia del nivel Guerrero"><span aria-hidden="true">▶</span> Guerrero</button></div>';
   }
   document.addEventListener('click', e => {
     const b = e.target.closest && e.target.closest('.mont-play');
@@ -12971,4 +12975,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Meta" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V14.35 · App Amable Meta · 2026-10-27 09:54==== -->
+<!-- ==== Fin del index V14.36 · App Amable Meta · 2026-10-27 09:55==== -->
