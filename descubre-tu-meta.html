@@ -1,0 +1,284 @@
+<!doctype html>
+<html lang="es">
+<head>
+<!-- ==== Descubre tu meta principal · Amable Meta · 2026-11-03 ==== -->
+<!-- Lead magnet público (sin cuenta): 12 preguntas, frase de propósito y resultado. Los datos solo se envían al pulsar
+     «Enviarme mi resultado»: van al Worker metas-amables-api (ruta /test-meta), que los guarda en D1 (tabla leads,
+     id «test:<email>») y envía el resultado por correo con Make. Si el Worker no responde, se prueba la reserva de Deno. -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Descubre tu meta principal · Amable Meta</title>
+<meta name="description" content="12 preguntas y 3 minutos para descubrir qué parte de tu vida pide atención, para qué, y una práctica de 10 minutos para empezar hoy. Gratis, de Práctica Integral.">
+<meta property="og:title" content="Descubre tu meta principal">
+<meta property="og:description" content="12 preguntas, 3 minutos. Tu meta principal, tu propósito y una primera práctica de 10 minutos.">
+<meta property="og:image" content="https://app.practicaintegral.club/icon-512.png">
+<meta name="theme-color" content="#FBF6EE">
+<link rel="icon" href="icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Domine:wght@400;700&family=Nunito+Sans:wght@400;600;700&display=swap">
+<style>
+:root{--bg:#FBF6EE;--card:#FFFDF9;--fg:#26343B;--soft:#55636A;--line:#E8DCCB;--accent:#C8642F;--accent2:#3F6F66;--chip:#F3E6D6;--on-accent:#FFFDF9;
+--display:'Domine',Georgia,serif;--body:'Nunito Sans',Arial,sans-serif;color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1C2529;--card:#243036;--fg:#F2EBE0;--soft:#B9C3C6;--line:#36454C;--accent:#E9915F;--accent2:#7FB8AC;--chip:#2E3B41;--on-accent:#1C2529;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#1C2529;--card:#243036;--fg:#F2EBE0;--soft:#B9C3C6;--line:#36454C;--accent:#E9915F;--accent2:#7FB8AC;--chip:#2E3B41;--on-accent:#1C2529;color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--body);font-size:17px;line-height:1.5;
+ padding:28px max(16px,env(safe-area-inset-right)) 40px max(16px,env(safe-area-inset-left))}
+.wrap{max-width:640px;margin:0 auto;display:flex;flex-direction:column;gap:18px}
+.eyebrow{font-weight:700;color:var(--accent);letter-spacing:.12em;text-transform:uppercase;font-size:13px;margin:0}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.2}
+h1{font-size:clamp(28px,6.5vw,40px)}h2{font-size:clamp(22px,5vw,28px)}
+h2:focus{outline:none}
+p{margin:0}.soft{color:var(--soft)}.small{font-size:14px}
+.lema{font-style:italic;color:var(--soft);font-size:14px;margin-top:4px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:24px;display:flex;flex-direction:column;gap:16px}
+.bar{height:6px;background:var(--chip);border-radius:9px;overflow:hidden}.bar i{display:block;height:100%;background:var(--accent);transition:width .3s}
+.nav{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.btn{font:inherit;font-weight:700;background:var(--accent);color:var(--on-accent);border:1.5px solid var(--accent);border-radius:999px;padding:13px 24px;cursor:pointer;text-decoration:none;display:inline-block}
+.btn.ghost{background:transparent;color:var(--accent)}
+.btn:disabled{opacity:.55;cursor:default}
+.btn:focus-visible,.chip:focus-visible,.opt:focus-visible,input:focus-visible,.link:focus-visible{outline:3px solid var(--accent2);outline-offset:2px}
+.link{font:inherit;font-size:14px;background:none;border:0;color:var(--soft);text-decoration:underline;cursor:pointer;padding:0;align-self:flex-start}
+.opts{display:flex;flex-direction:column;gap:10px}
+.opt{font:inherit;text-align:left;background:var(--bg);color:var(--fg);border:1.5px solid var(--line);border-radius:12px;padding:14px 16px;cursor:pointer}
+.opt:hover{border-color:var(--accent)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{font:inherit;font-size:15px;background:var(--bg);color:var(--fg);border:1.5px solid var(--line);border-radius:999px;padding:7px 14px;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.campo{display:flex;flex-direction:column;gap:6px;font-weight:600}
+.campo span.soft{font-weight:400;font-size:14px}
+input[type=text],input[type=email],input[type=tel]{font:inherit;font-weight:400;background:var(--bg);color:var(--fg);border:1.5px solid var(--line);border-radius:10px;padding:12px 14px;width:100%}
+.frase{font-family:var(--display);font-size:19px;line-height:1.6}
+.frase input{font-family:var(--display);font-size:17px}
+.box{background:var(--chip);border-radius:12px;padding:14px 16px;display:flex;flex-direction:column;gap:6px}
+.box h3{font-family:var(--body);font-size:13px;color:var(--accent2);text-transform:uppercase;letter-spacing:.08em}
+.dims{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.dim{background:var(--chip);border-radius:10px;padding:10px;text-align:center;font-size:14px}.dim b{display:block;font-size:20px;font-variant-numeric:tabular-nums}
+.dim.top{background:var(--accent);color:var(--on-accent)}
+.check{display:flex;gap:10px;align-items:flex-start;font-size:14px;color:var(--soft);font-weight:400}
+.check input{margin-top:4px;accent-color:var(--accent);width:18px;height:18px;flex:none}
+.check a{color:inherit}
+.estado{border-radius:12px;padding:12px 14px;font-weight:600}
+.estado.ok{background:color-mix(in srgb,var(--accent2) 18%,transparent)}
+.estado.mal{background:color-mix(in srgb,var(--accent) 18%,transparent)}
+.trampa{position:absolute;left:-5000px;width:1px;height:1px;overflow:hidden}
+.pie{font-size:13px;color:var(--soft);text-align:center}.pie a{color:inherit}
+@media (max-width:480px){.dims{grid-template-columns:repeat(2,1fr)}.card{padding:20px 16px}}
+@media (prefers-reduced-motion:reduce){.bar i{transition:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <p class="eyebrow">Amable Meta · Práctica Integral</p>
+    <h1>Descubre tu meta principal</h1>
+    <p class="lema">Sin distracciones. Solo tu meta.</p>
+  </header>
+
+  <section class="card" id="p0">
+    <h2 tabindex="-1">¿Qué parte de tu vida te está pidiendo atención?</h2>
+    <p>12 preguntas, unos 3 minutos. Responde lo primero que sientas. Al final verás tu meta principal, para qué la quieres y una primera práctica de 10 minutos para empezar hoy.</p>
+    <div class="nav"><button class="btn" id="empezar">Empezar</button></div>
+  </section>
+
+  <section class="card" id="p1" hidden>
+    <div class="bar"><i id="prog" style="width:0"></i></div>
+    <p class="soft small" id="cuenta"></p>
+    <h2 id="pregunta" tabindex="-1"></h2>
+    <div class="opts" id="opciones"></div>
+    <button class="link" id="atrasQ">Volver a la pregunta anterior</button>
+  </section>
+
+  <section class="card" id="p2" hidden>
+    <p class="eyebrow" id="r-eyebrow">Tus respuestas apuntan a</p>
+    <h2 tabindex="-1" id="r-titulo"></h2>
+    <p id="r-por"></p>
+    <div class="box">
+      <h3>Tu frase de propósito</h3>
+      <p class="soft small">Te proponemos una. Cámbiala hasta que suene a ti.</p>
+      <div class="frase">
+        <label class="campo">Mi propósito este año es…<input type="text" id="que" maxlength="120"></label>
+        <label class="campo" style="margin-top:8px">para…<input type="text" id="paraque" maxlength="160"></label>
+      </div>
+    </div>
+    <label class="campo">Tu meta para los próximos 90 días <span class="soft">Elige una idea o escribe la tuya</span>
+      <input type="text" id="meta" maxlength="300"></label>
+    <div class="chips" id="ideas"></div>
+    <div class="nav"><button class="btn" id="aDatos">Ver mi resultado</button></div>
+  </section>
+
+  <form class="card" id="p3" hidden novalidate>
+    <h2 tabindex="-1">¿Dónde te enviamos tu resultado?</h2>
+    <p class="soft">Te mandamos tu meta, tu frase de propósito y tu primera práctica, para que los tengas a mano.</p>
+    <label class="campo">Nombre<input type="text" id="f-nombre" autocomplete="given-name" maxlength="60" required></label>
+    <label class="campo">Correo electrónico<input type="email" id="f-email" autocomplete="email" maxlength="120" required placeholder="tu@correo.com"></label>
+    <label class="campo">Teléfono (WhatsApp)<input type="tel" id="f-tel" autocomplete="tel" maxlength="30" required placeholder="+34 600 000 000"></label>
+    <label class="campo">País<input type="text" id="f-pais" autocomplete="country-name" maxlength="60" required list="paises" placeholder="España"></label>
+    <datalist id="paises"><option>España</option><option>México</option><option>Colombia</option><option>Argentina</option><option>Chile</option><option>Perú</option><option>Uruguay</option><option>Venezuela</option><option>Ecuador</option><option>Estados Unidos</option></datalist>
+    <div class="trampa" aria-hidden="true"><label>Web<input type="text" id="f-web" tabindex="-1" autocomplete="off"></label></div>
+    <label class="check"><input type="checkbox" id="f-acepta"><span>Acepto que Práctica Integral guarde estos datos para enviarme mi resultado. Puedo pedir que los borren cuando quiera escribiendo a info@practicaintegral.club. <a href="privacidad.html" target="_blank" rel="noopener">Privacidad</a></span></label>
+    <label class="check"><input type="checkbox" id="f-info"><span>Quiero recibir novedades de Amable Meta y avisos de las próximas charlas.</span></label>
+    <p class="estado" id="estado" role="status" aria-live="polite" hidden></p>
+    <div class="nav"><button class="btn" type="submit" id="enviar">Enviarme mi resultado</button></div>
+    <button class="link" type="button" id="saltar">Ver el resultado sin dejar mis datos</button>
+  </form>
+
+  <section class="card" id="p4" hidden>
+    <p class="eyebrow">Tu meta principal</p>
+    <h2 tabindex="-1" id="f-titulo"></h2>
+    <p class="estado ok" id="f-estado" hidden></p>
+    <div class="box" id="f-frase"></div>
+    <div class="box" id="f-meta"></div>
+    <div class="box"><h3>Tu primera práctica de 10 minutos</h3><p id="f-prac"></p></div>
+    <div class="dims" id="f-dims"></div>
+    <div class="box">
+      <h3>¿Y ahora?</h3>
+      <p>Convierte esta meta en tu plan para 2027 en 10 minutos, o empieza a trabajarla hoy con una práctica diaria y alguien que te acompaña.</p>
+      <div class="nav"><a class="btn" href="simulador-2027.html">Hacer el Simulador 2027</a><a class="btn ghost" href="https://app.practicaintegral.club/" target="_blank" rel="noopener">Empezar en Amable Meta</a></div>
+    </div>
+    <button class="link" id="repetir">Repetir el test</button>
+  </section>
+
+  <p class="pie">Una orientación para empezar, no un diagnóstico. <a href="https://practicaintegral.club/" target="_blank" rel="noopener">practicaintegral.club</a></p>
+</div>
+
+<script>
+const APIS = ['https://metas-amables-api.proud-hill-016b.workers.dev', 'https://rigid-thrush-3387.gcalabro12.deno.net'];
+const CLAVE = 'testMetaPrincipal';
+const D = {
+  cuerpo: { n: 'Cuerpo', meta: 'Recuperar energía y cuidar tu cuerpo', por: 'El cansancio, el descanso o el movimiento te están frenando. Cuando el cuerpo está bien, todo lo demás cuesta menos.',
+    que: 'cuidar mi cuerpo', para: 'tener energía para lo que amo', ideas: ['Dormir mejor y despertar con energía', 'Moverme cada día', 'Comer con más calma'],
+    prac: 'Hoy: 10 minutos de paseo sin móvil, respirando por la nariz. Al volver, apunta del 1 al 10 cómo está tu energía.' },
+  mente: { n: 'Mente', meta: 'Encontrar calma y foco', por: 'Tu mente no para: preocupaciones, dispersión o emociones que pesan. Poner orden dentro te devuelve el timón.',
+    que: 'vivir con más calma', para: 'disfrutar de mi vida sin tanto ruido por dentro', ideas: ['Meditar 10 minutos al día', 'Dejar de postergar lo importante', 'Gestionar mejor la ansiedad'],
+    prac: 'Hoy: siéntate 10 minutos, cuenta 10 respiraciones y vuelve a empezar cada vez que te distraigas. Sin juzgarte.' },
+  relaciones: { n: 'Relaciones', meta: 'Cuidar tus vínculos', por: 'Lo que más te importa ahora son las personas: pareja, familia, amistades o la soledad. Las relaciones sostienen la felicidad que más dura.',
+    que: 'cuidar mis vínculos', para: 'compartir mi vida con quien quiero', ideas: ['Tener conversaciones de calidad', 'Poner límites con cariño', 'Cultivar nuevas amistades'],
+    prac: 'Hoy: escribe a una persona importante un mensaje de agradecimiento concreto. Solo 10 minutos, y observa cómo te sientes después.' },
+  entorno: { n: 'Entorno', meta: 'Ordenar tu tiempo, tu trabajo y tu espacio', por: 'El día a día te desborda: tiempo, dinero, trabajo o casa. Ordenar fuera libera energía dentro.',
+    que: 'poner orden en mi tiempo y mi espacio', para: 'sentir que mi vida avanza', ideas: ['Organizar mi semana', 'Tener la casa en orden', 'Poner en orden mis finanzas'],
+    prac: 'Hoy: 10 minutos para ordenar un solo cajón o tu escritorio. Y escribe las 3 cosas más importantes de mañana.' }
+};
+const DIMS = Object.keys(D);
+const Q = [
+ ['Cuando acaba el día, ¿qué es lo que más echas en falta?', ['Energía, llego agotada o agotado', 'Paz mental, no paro de darle vueltas', 'Tiempo con la gente que quiero', 'Haber hecho lo importante']],
+ ['Si tuvieras una varita mágica para los próximos 3 meses, cambiarías…', ['Mi salud, mi peso o mi forma física', 'Mi ansiedad o mis pensamientos', 'Cómo me llevo con alguien cercano', 'Mi trabajo, mi dinero o mi casa']],
+ ['¿Qué has empezado más veces sin terminar?', ['Hacer ejercicio o comer mejor', 'Meditar o un hábito de calma', 'Llamar más, quedar más, abrirme más', 'Ordenar, organizarme, ahorrar']],
+ ['¿Cómo duermes la mayoría de las noches?', ['Mal, me levanto cansada o cansado', 'Me cuesta dormir por la cabeza', 'Bien, aunque me siento sola o solo', 'Bien, pero me falta tiempo para todo']],
+ ['¿Qué te diría tu mejor amiga o amigo si fuera sincero?', ['Cuídate más el cuerpo', 'Te preocupas demasiado', 'Te veo poco, o te cuesta decir que no', 'Vas siempre corriendo']],
+ ['¿Qué emoción aparece más en tu semana?', ['Pesadez, cansancio', 'Inquietud, ansiedad', 'Tristeza, soledad o enfado con alguien', 'Agobio, prisa']],
+ ['Si pudieras regalarte 10 minutos al día, los usarías para…', ['Moverme o estirarme', 'Respirar y estar en silencio', 'Hablar con alguien que me importa', 'Planificar y ordenar']],
+ ['¿Qué te haría sentir orgullosa u orgulloso dentro de 90 días?', ['Sentirme fuerte y con energía', 'Estar en calma y centrada o centrado', 'Tener relaciones más sanas', 'Tener mi vida en orden']],
+ ['¿Qué te hace perder la noción del tiempo?', ['Moverme, el deporte o la naturaleza', 'Aprender, leer o pensar', 'Conversar o ayudar a alguien', 'Crear, construir u organizar algo']],
+ ['¿Qué te gustaría que dijeran de ti dentro de 10 años?', ['Que cuidé mi salud y mi energía', 'Que vivía en paz conmigo', 'Que estuve presente para los míos', 'Que construí algo que vale la pena']],
+ ['¿Qué palabra guía mejor tus decisiones?', ['Vitalidad', 'Serenidad', 'Amor', 'Contribución']],
+ ['Si este año solo pudieras mejorar una cosa, ¿para qué sería?', ['Para tener energía para todo lo demás', 'Para estar en calma conmigo', 'Para disfrutar de la gente que quiero', 'Para sentir que mi vida avanza']]
+];
+const $ = id => document.getElementById(id);
+const esc = t => String(t == null ? '' : t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+const nuevo = () => ({ paso: 0, resp: [], dim: '', que: '', paraque: '', meta: '', nombre: '', email: '', telefono: '', pais: '', enviado: '' });
+let S = nuevo();
+try { const g = JSON.parse(localStorage.getItem(CLAVE) || 'null'); if(g && typeof g === 'object') S = Object.assign(nuevo(), g); } catch(e){}
+const guardar = () => { try { localStorage.setItem(CLAVE, JSON.stringify(S)); } catch(e){} };
+
+// Cada respuesta suma a una dimensión (las opciones van en el orden cuerpo, mente, relaciones, entorno).
+// Si hay empate, gana la que eligió en la última pregunta, la del «para qué».
+function puntos(){ const p = { cuerpo: 0, mente: 0, relaciones: 0, entorno: 0 }; S.resp.forEach(k => p[DIMS[k]]++); return p; }
+function ganadora(){ const p = puntos(), max = Math.max(...Object.values(p)), emp = DIMS.filter(k => p[k] === max);
+  const ult = DIMS[S.resp[Q.length - 1]]; return emp.includes(ult) ? ult : emp[0]; }
+
+function mostrar(n){
+  S.paso = n; guardar();
+  for(let i = 0; i <= 4; i++) $('p' + i).hidden = i !== n;
+  ({ 1: pregunta, 2: propuesta, 3: datos, 4: resultado })[n]?.();
+  window.scrollTo(0, 0);
+  const h = $('p' + n).querySelector('h2'); if(h) h.focus({ preventScroll: true });
+}
+function pregunta(){
+  const i = S.resp.length;
+  if(i >= Q.length){ S.dim = ganadora(); mostrar(2); return; }
+  $('prog').style.width = (i / Q.length * 100) + '%';
+  $('cuenta').textContent = 'Pregunta ' + (i + 1) + ' de ' + Q.length;
+  $('pregunta').textContent = Q[i][0];
+  $('atrasQ').hidden = i === 0;
+  const c = $('opciones'); c.innerHTML = '';
+  Q[i][1].forEach((t, k) => { const b = document.createElement('button'); b.type = 'button'; b.className = 'opt'; b.textContent = t;
+    b.onclick = () => { S.resp.push(k); guardar(); pregunta(); $('pregunta').focus({ preventScroll: true }); }; c.appendChild(b); });
+}
+$('atrasQ').onclick = () => { S.resp.pop(); guardar(); pregunta(); };
+function propuesta(){
+  const d = D[S.dim];
+  $('r-titulo').textContent = d.n + ': ' + d.meta; $('r-por').textContent = d.por;
+  if(!S.que) S.que = d.que; if(!S.paraque) S.paraque = d.para;
+  [['que', 'que'], ['paraque', 'paraque'], ['meta', 'meta']].forEach(([id, k]) => { const el = $(id); el.value = S[k] || ''; el.oninput = () => { S[k] = el.value; guardar(); pintaIdeas(); }; });
+  const pintaIdeas = () => { const c = $('ideas'); c.innerHTML = ''; d.ideas.forEach(t => { const b = document.createElement('button'); b.type = 'button'; b.className = 'chip'; b.textContent = t;
+    b.setAttribute('aria-pressed', String(S.meta === t)); b.onclick = () => { S.meta = t; $('meta').value = t; guardar(); pintaIdeas(); }; c.appendChild(b); }); };
+  pintaIdeas();
+}
+$('aDatos').onclick = () => mostrar(S.enviado ? 4 : 3);
+function datos(){ ['nombre', 'email', 'telefono', 'pais'].forEach(k => { const el = $({ nombre: 'f-nombre', email: 'f-email', telefono: 'f-tel', pais: 'f-pais' }[k]); el.value = S[k] || ''; el.oninput = () => { S[k] = el.value; guardar(); }; }); }
+$('saltar').onclick = () => mostrar(4);
+function resultado(){
+  const d = D[S.dim], p = puntos();
+  $('f-titulo').textContent = d.n + ': ' + d.meta;
+  $('f-frase').innerHTML = '<h3>Tu frase de propósito</h3><p class="frase">Mi propósito este año es <b>' + esc(S.que || d.que) + '</b> para <b>' + esc(S.paraque || d.para) + '</b>.</p>';
+  $('f-meta').innerHTML = '<h3>Tu meta para los próximos 90 días</h3><p>' + esc(S.meta || d.ideas[0]) + '</p>';
+  $('f-prac').textContent = d.prac;
+  $('f-dims').innerHTML = DIMS.map(k => '<div class="dim' + (k === S.dim ? ' top' : '') + '"><b>' + p[k] + '</b>' + D[k].n + '</div>').join('');
+  $('f-estado').hidden = !S.enviado; if(S.enviado) $('f-estado').textContent = 'Te lo hemos enviado a ' + S.enviado + '. Si no lo ves en unos minutos, mira en Promociones o en Spam.';
+}
+$('repetir').onclick = () => { S = nuevo(); guardar(); mostrar(1); };
+$('empezar').onclick = () => mostrar(1);
+
+// ---------- Envío (Worker y, si no conecta, la reserva de Deno) ----------
+async function llamar(cuerpo){
+  let ultimo;
+  for(const base of APIS){
+    const ctl = new AbortController(), t = setTimeout(() => ctl.abort(), 25000);
+    try {
+      const r = await fetch(base + '/test-meta', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(cuerpo), signal: ctl.signal });
+      let j = {}; try { j = await r.json(); } catch(e){}
+      return { status: r.status, j };
+    } catch(e){ ultimo = e; if(e.name === 'AbortError') throw e; }
+    finally { clearTimeout(t); }
+  }
+  throw ultimo;
+}
+function estado(txt, ok){ const e = $('estado'); e.textContent = txt; e.className = 'estado ' + (ok ? 'ok' : 'mal'); e.hidden = false; }
+$('p3').addEventListener('submit', async ev => {
+  ev.preventDefault();
+  const nombre = $('f-nombre').value.trim(), email = $('f-email').value.trim(), telefono = $('f-tel').value.trim(), pais = $('f-pais').value.trim();
+  let m = '';
+  if(!nombre) m = 'Escribe tu nombre.';
+  else if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) m = 'Revisa el correo: parece que le falta algo.';
+  else if(telefono.replace(/\D/g, '').length < 7) m = 'Revisa el teléfono: escribe al menos 7 cifras.';
+  else if(!pais) m = 'Escribe tu país.';
+  else if(!$('f-acepta').checked) m = 'Marca la primera casilla para que podamos guardar tus datos y enviarte tu resultado.';
+  if(m){ estado(m, false); return; }
+  const btn = $('enviar'); btn.disabled = true; btn.textContent = 'Enviando…'; $('estado').hidden = true;
+  const d = D[S.dim];
+  try {
+    const { status, j } = await llamar({ nombre, email, telefono, pais, acepta: true, aceptaInfo: $('f-info').checked, web: $('f-web').value,
+      dimension: S.dim, puntos: puntos(), que: S.que || d.que, paraque: S.paraque || d.para, meta: S.meta || d.ideas[0], practica: d.prac });
+    if(status === 200 && j.ok){
+      if(j.enviado || j.motivo === 'ya-enviado'){ S.enviado = email; guardar(); mostrar(4); return; }
+      estado('Tus datos están guardados, pero el correo no ha salido. Te lo enviaremos en cuanto podamos.', false);
+      btn.textContent = 'Ver mi resultado'; btn.disabled = false; btn.type = 'button'; btn.onclick = () => mostrar(4);
+      return;
+    }
+    estado((status >= 400 && status < 500 && status !== 404 && j.error) || 'Algo ha fallado. Vuelve a intentarlo en un rato o mira tu resultado sin dejar tus datos.', false);
+  } catch(e){
+    estado('No hemos podido conectar. Vuelve a pulsar «Enviarme mi resultado» en un rato o mira tu resultado sin dejar tus datos.', false);
+  }
+  btn.disabled = false; btn.textContent = 'Enviarme mi resultado';
+});
+
+// Al volver, se retoma donde lo dejó (las preguntas, la propuesta o el resultado)
+if(S.paso > 0 && S.dim || S.resp.length) mostrar(S.paso || 1); else mostrar(0);
+</script>
+</body>
+</html>
+<!-- ==== Fin de Descubre tu meta principal · 2026-11-03 ==== -->
