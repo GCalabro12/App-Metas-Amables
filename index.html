@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V14.41 · App Amable Meta · 2026-11-03 19:36==== -->
+<!-- ==== index V14.42 · App Amable Meta · 2026-11-03 20:21==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1371,7 +1371,12 @@ textarea.ms-nombre-in:focus{outline:none;border-color:#C9942D;box-shadow:0 0 0 3
 .rp-check.on .rp-caja{background:#4F9A5A}.rp-check.on .rp-caja svg{visibility:visible}
 .riego-volver{display:block;width:100%;max-width:340px;margin:10px auto 0;padding:13px;border:0;border-radius:14px;background:#4F9A5A;color:#fff;font:800 16px Karla,sans-serif;cursor:pointer}
 .riego-cal{margin:12px 0 0;background:none;border:0;color:#2F5A23;text-decoration:underline;font:600 14.5px Karla,sans-serif;cursor:pointer}
-@media (prefers-reduced-motion: reduce){.riego-escena img,.riego-mariposa,.riego-sol{animation:none}.riego-brillo{display:none}}
+/* Tu práctica de hoy y la semana, en un solo recuadro: una flecha señala los días */
+.rp-flecha{margin:8px 0 0;font:700 15px Karla,sans-serif;color:#2F5A23}.rp-flecha span{display:block;font-size:30px;line-height:1;margin-top:2px;animation:flechaBaja 1.6s ease-in-out infinite}
+@keyframes flechaBaja{0%,100%{transform:translateY(0)}50%{transform:translateY(5px)}}
+.riego-capa .rp-seccion .rp-semana{width:100%;margin:6px 0 0;padding:0;border:0;border-radius:0;background:none;box-shadow:none;text-align:left}
+.ms-dia:disabled{opacity:.35;cursor:default}
+@media (prefers-reduced-motion: reduce){.rp-flecha span,.riego-escena img,.riego-mariposa,.riego-sol{animation:none}.riego-brillo{display:none}}
 .futuro-cab{margin:24px 4px 10px}.futuro-cab h3{margin:0 0 4px;font:700 20px Nunito,serif;color:#5B3A9E}.futuro-cab p{margin:0;font-size:14.5px;line-height:1.45;color:var(--ink-soft)}
 .ciclo-btn .opcion-tx > b{font:700 clamp(15px,4.6vw,18px)/1.25 Nunito,serif;text-transform:none;letter-spacing:0}
 /* Los pasos del ciclo de Inicio, en mayúsculas (METAS, TU GUÍA DE ESTA SEMANA, REGISTRO Y COMPROMISO, GRUPO DE APOYO) */
@@ -2633,7 +2638,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V14.41';
+  const APP_VERSION = 'V14.42';
   // Texto de los botones mientras se envía: los tres puntos se encienden uno tras otro
   const ENVIANDO_HTML = 'Enviando<span class="puntos-mov" aria-hidden="true"><i>.</i><i>.</i><i>.</i></span>';
 
@@ -4077,7 +4082,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
   // Alarma de cada meta sencilla (3-11-2026, como la de Amable Fit): hora y días, guardados en este móvil.
   // Con la app Android que tenga alarma (window.AmableMetaAndroid.guardarAlarma) suena de verdad; en la web se apunta en el calendario del móvil
-  const ALARMA_HORA = '21:00';
+  const ALARMA_HORA = '21:00', ALARMA_PRACTICA = 'practica';
   function alarmasSencillas(){ try { return JSON.parse(localStorage.getItem('ms-alarmas')) || {}; } catch(e){ return {}; } }
   function alarmaSencilla(m){
     const a = alarmasSencillas()[m.id], dias = a && Array.isArray(a.dias) ? DIAS_SEMANA.filter(L => a.dias.includes(L)) : [];
@@ -4090,9 +4095,9 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
   function abrirAlarmaSencilla(m, alGuardar){
     document.querySelectorAll('.ms-al-capa').forEach(x => x.remove());
-    const ya = alarmaSencilla(m), a = ya || { hora: ALARMA_HORA, dias: diasPlanSencilla(m) };
+    const ya = alarmaSencilla(m), a = ya || { hora: ALARMA_HORA, dias: m.diasDef || diasPlanSencilla(m) };
     const nativa = !!(window.AmableMetaAndroid && window.AmableMetaAndroid.guardarAlarma);
-    const f = el('<div class="ms-al-capa" role="dialog" aria-label="Alarma"><div class="ms-al-caja"><b class="ms-al-tit">⏰ Alarma de tu meta sencilla</b>'
+    const f = el('<div class="ms-al-capa" role="dialog" aria-label="Alarma"><div class="ms-al-caja"><b class="ms-al-tit">' + (m.cab || '⏰ Alarma de tu meta sencilla') + '</b>'
       + '<p class="ms-al-nombre">' + escapeAttr(m.nombre) + '</p>'
       + (nativa ? '' : '<p class="ms-al-aviso">Desde la web no puede sonar una alarma: se apunta un aviso en el calendario de tu móvil, a esa hora y esos días.</p>')
       + '<p class="ms-al-sub">¿Qué días?</p><div class="ms-al-dias">' + DIAS_SEMANA.map(L => '<label><input type="checkbox" value="' + L + '"' + (a.dias.includes(L) ? ' checked' : '') + '>' + L + '</label>').join('') + '</div>'
@@ -4116,9 +4121,9 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       const dias = [...f.querySelectorAll('.ms-al-dias input:checked')].map(c => c.value), hora = f.querySelector('.ms-al-hora').value;
       if(!dias.length || !hora){ avisoBreve('Elige al menos un día y la hora'); return; }
       guardar({ hora, dias }); cerrar();
-      const nombre = String(m.nombre || '').trim().replace(/[.。]+$/, ''), titulo = '✔️ ' + (nombre.length > 70 ? nombre.slice(0, 69).trim() + '…' : nombre);
+      const nombre = String(m.nombre || '').trim().replace(/[.。]+$/, ''), titulo = m.titulo || '✔️ ' + (nombre.length > 70 ? nombre.slice(0, 69).trim() + '…' : nombre);
       if(nativa){ try { window.AmableMetaAndroid.guardarAlarma(m.id, dias.join(','), hora, titulo); } catch(e){} avisoBreve('⏰ Alarma activada'); }
-      else { const [hh, mm] = hora.split(':').map(Number); ponerRecordatorioCalendario(titulo, 'Tu meta sencilla de Amable Meta. Márcala aquí: https://app.practicaintegral.club', hh, mm, dias); }
+      else { const [hh, mm] = hora.split(':').map(Number); ponerRecordatorioCalendario(titulo, m.detalle || 'Tu meta sencilla de Amable Meta. Márcala aquí: https://app.practicaintegral.club', hh, mm, dias); }
       if(alGuardar) alGuardar();
     };
   }
@@ -4169,10 +4174,10 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     await guardarSencillas(copia, archivo);
   }
   // Al tocar un día: las cuatro opciones (hecho, no hecho, no tocaba y comentario) en un bocadillo junto al día
-  function opcionesDiaSencilla(b, id, alElegir, verCalendario){
+  // Bocadillo junto a un día con sus opciones (metas sencillas y la práctica de la meta con guía)
+  function popJuntoA(b, botones){
     document.querySelectorAll('.ms-pop').forEach(x => x.remove());
-    const pop = el('<div class="ms-pop" role="menu"><button type="button" data-e="hecho" class="o-hecho" aria-label="Hecho, una vez más">+1</button><button type="button" data-e="fallo" class="o-fallo" aria-label="No lo hice">✕</button>'
-      + '<button type="button" data-e="libre" class="o-libre" aria-label="No tocaba">–</button><button type="button" data-e="mas" class="o-mas" aria-label="Comentario">•••</button></div>').firstElementChild;
+    const pop = el('<div class="ms-pop" role="menu">' + botones + '</div>').firstElementChild;
     document.body.appendChild(pop);
     const colocar = () => {
       const r = b.getBoundingClientRect(), w = pop.offsetWidth, h = pop.offsetHeight;
@@ -4185,6 +4190,11 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     const fuera = e => { if(!pop.contains(e.target)) cerrar(); };
     const cerrar = () => { pop.remove(); window.removeEventListener('scroll', cerrar, true); document.removeEventListener('pointerdown', fuera, true); };
     setTimeout(() => { window.addEventListener('scroll', cerrar, true); document.addEventListener('pointerdown', fuera, true); }, 0);
+    return { pop, colocar, cerrar };
+  }
+  function opcionesDiaSencilla(b, id, alElegir, verCalendario){
+    const { pop, colocar, cerrar } = popJuntoA(b, '<button type="button" data-e="hecho" class="o-hecho" aria-label="Hecho, una vez más">+1</button><button type="button" data-e="fallo" class="o-fallo" aria-label="No lo hice">✕</button>'
+      + '<button type="button" data-e="libre" class="o-libre" aria-label="No tocaba">–</button><button type="button" data-e="mas" class="o-mas" aria-label="Comentario">•••</button>');
     const aplicar = async e => {
       cerrar(); b.disabled = true;
       try {
@@ -9299,11 +9309,9 @@ lo que haces cada día es lo que vas a ser.`;
     if(!dias) return '';
     return dias + (dias === 1 ? ' día' : ' días') + (veces > dias ? ' · ' + veces + ' veces' : '');
   }
-  function tarjetaDias(estaSemana, extraHTML, titulo){
+  function tarjetaDias(estaSemana, extraHTML, titulo, alCambiar){
     const hoy = (ahoraRegistro().getDay() + 6) % 7;   // 0 = lunes
     let veces = leerDias(estaSemana && estaSemana.diasHechos);
-    const abonosSem = leerAbonos(estaSemana && estaSemana.abonos), entSem = leerEntornos(estaSemana && estaSemana.abonos);
-    let elegido = null;   // día abierto para elegir el número
     const card = document.createElement('div');
     card.className = 'card dias-card';
     const cont = document.createElement('div');
@@ -9312,32 +9320,32 @@ lo que haces cada día es lo que vas a ser.`;
       cont.innerHTML = `
         <p style="margin:0 0 4px;font-size:16px;display:flex;align-items:center;gap:8px"><svg class="icono-regar" viewBox="0 0 44 30" width="38" height="26" aria-hidden="true"><g stroke="#2B2B2B" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"><path d="M6 10 a5 5 0 0 1 8 0" fill="none"/><rect x="3" y="10" width="13" height="11" rx="2.5" fill="#7B3FB0"/><path d="M4 14.5 h11" stroke="#fff" stroke-width="1.8"/><path d="M16 13 L24 9" stroke="#7B3FB0" stroke-width="3.2"/><path d="M29 21 h12 l-1.8 8 h-8.4 z" fill="#C9942D"/><path d="M35 21 V13" fill="none" stroke="#3E7A2E" stroke-width="2"/><path d="M35 16 q-6 -5 -7 -1 q2 3 7 1z" fill="#6BAE4F"/><path d="M35 13.5 q6 -6 7 -1.5 q-2 3.2 -7 1.5z" fill="#6BAE4F"/></g><g fill="#4FA3E3"><circle cx="25.5" cy="12.5" r="1.3"/><circle cx="27" cy="16" r="1.3"/><circle cx="25" cy="18.5" r="1.2"/></g></svg><b>${titulo || 'Registra tu práctica'}</b></p>
         ${extraHTML || ''}
-        <p style="font-size:13px;color:var(--ink-soft);margin:0 0 10px">${registraLunes() ? 'Opcional. Toca el día y elige cuántas veces lo hiciste; el lunes tu cierre saldrá ya rellenado.' : 'Toca el día y elige cuántas veces hiciste tu práctica (del 1 al 9).'}</p>
-        <div class="dias-fila">${DIAS_SEMANA.map((d, i) => {
-          const lun = lunesDe(ahoraRegistro()), f = new Date(lun.getFullYear(), lun.getMonth(), lun.getDate() + i), hoyD = ahoraRegistro(); hoyD.setHours(0, 0, 0, 0);
-          let c = celdaDiaHTML(f, hoyD, 'button', ' type="button" data-dia="' + d + '"' + (i > hoy ? ' disabled' : '') + ' aria-pressed="' + !!veces[d] + '"', { veces: veces[d] || 0, clima: abonosSem[d] || null, ent: entSem[d] || 0 });
-          if(elegido === d) c = c.replace('class="dc', 'class="dc elegido');
-          return '<div class="dia-col"><span class="dia-letra2">' + d + '</span>' + c + '</div>';
+        <div class="ms-semana">${DIAS_SEMANA.map((d, i) => {
+          const lun = lunesDe(ahoraRegistro()), f = new Date(lun.getFullYear(), lun.getMonth(), lun.getDate() + i), v = veces[d] || 0;
+          return '<div class="ms-col"><button type="button" class="ms-dia toca' + (v ? ' hecho' : '') + '" data-dia="' + d + '"' + (i > hoy ? ' disabled' : '') + ' aria-label="' + d + ' ' + f.getDate() + (v > 1 ? ', ' + v + ' veces' : '') + '">'
+            + (v > 1 ? '<span class="ms-veces">' + v + '✓</span>' : '<span>' + d + '</span>') + '<b>' + f.getDate() + '</b></button>' + (i === hoy ? '<small>HOY</small>' : '') + '</div>';
         }).join('')}</div>
-        ${elegido ? `<div style="margin:10px 0 0;padding:10px;border-radius:12px;background:var(--honey-tint)">
-          <p style="font-size:13px;margin:0 0 8px;text-align:center"><b>¿Cuántas veces el ${['lunes','martes','miércoles','jueves','viernes','sábado','domingo'][DIAS_SEMANA.indexOf(elegido)]}?</b> (0 = no lo hice)</p>
-          <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:6px">${[1,2,3,4,5,6,7,8,9,0].map(n => `<button type="button" class="dia-num" data-n="${n}" style="padding:10px 0;border-radius:10px;font-size:17px;font-weight:700;cursor:pointer;border:2px solid ${n ? '#6B9362' : 'var(--border)'};background:${(veces[elegido] || 0) === n ? (n ? '#6B9362;color:#fff' : '#ddd') : '#fff;color:' + (n ? '#4E7446' : 'var(--ink-soft)')}">${n}</button>`).join('')}</div></div>` : ''}
         <p class="dias-msg" style="font-size:12px;color:var(--ink-soft);margin:8px 0 0">${resumenDias(veces) ? 'Esta semana: ' + resumenDias(veces) : 'Toca el día en que hiciste tu práctica.'}</p>`;
-      card.querySelectorAll('.dias-fila [data-dia]:not([disabled])').forEach(b => b.onclick = () => { elegido = elegido === b.dataset.dia ? null : b.dataset.dia; pintar(); });
-      card.querySelectorAll('.dia-num').forEach(b => b.onclick = (e) => {
-        const n = Number(b.dataset.n), d = elegido;
-        // De 0 a algo: sonidito y fuego artificial. A 0: solo se quita.
-        if(n > 0 && !veces[d]){
-          const r = b.getBoundingClientRect();
-          fuegoArtificial(e.clientX || r.left + r.width / 2, e.clientY || r.top + r.height / 2);
-          sonidoRiego();
-        }
-        elegido = null;
-        cambiar(d, n);
+      // Al tocar un día: +1 (una vez más, hasta 9) o ✕ (no lo hice), como en las metas sencillas
+      card.querySelectorAll('.ms-semana [data-dia]:not([disabled])').forEach(b => b.onclick = () => {
+        const { pop, cerrar } = popJuntoA(b, '<button type="button" data-n="1" class="o-hecho" aria-label="Hecho, una vez más">+1</button><button type="button" data-n="0" class="o-fallo" aria-label="No lo hice">✕</button>');
+        pop.querySelectorAll('button').forEach(o => o.onclick = () => {
+          cerrar();
+          const d = b.dataset.dia, antes = veces[d] || 0, n = o.dataset.n === '1' ? antes + 1 : 0;
+          if(n > 9){ avisoBreve('Ya llevas 9 este día: es el máximo.'); return; }
+          if(n === antes) return;
+          // De 0 a algo: sonidito y fuego artificial. A 0: solo se quita.
+          if(n > 0 && !antes){
+            const r = b.getBoundingClientRect();
+            fuegoArtificial(r.left + r.width / 2, r.top + r.height / 2);
+            sonidoRiego();
+          }
+          cambiar(d, n);
+        });
       });
     };
     const cambiar = async (d, n) => {
-      const antes = Object.assign({}, veces);
+      const antes = Object.assign({}, veces), antesN = veces[d] || 0;
       if(n > 0) veces[d] = n; else delete veces[d];
       pintar();
       try {
@@ -9348,6 +9356,7 @@ lo que haces cada día es lo que vas a ser.`;
         if(!fila){ fila = { id: data.id, week: currentWeekShort, label: currentWeekLabel, cumplida: false, nota: '', estadoSemana: '', compromisoVeces: null, vecesRealizadas: null }; lista.push(fila); }
         fila.diasHechos = escribirDias(veces);
         card.querySelector('.dias-msg').textContent = '✓ Guardado' + (resumenDias(veces) ? ' · esta semana: ' + resumenDias(veces) : '');
+        if(alCambiar) alCambiar(d, antesN, n);
       } catch(e){
         veces = antes; pintar();
         card.querySelector('.dias-msg').textContent = 'No se pudo guardar. Revisa tu conexión e inténtalo de nuevo.';
@@ -9522,18 +9531,10 @@ lo que haces cada día es lo que vas a ser.`;
     if(oculto('recordatorio')) return document.createDocumentFragment();   // «Mostrar» sin el recordatorio del calendario
     const caja = document.createElement('div');
     caja.style.cssText = 'border-top:1px solid var(--border);margin-top:14px;padding-top:12px';
-    caja.innerHTML = `
-      <button type="button" class="rec-abrir">⏰ ¿Te lo recuerdo cada día? <span>▾</span></button>
-      <div class="rec-cuerpo" hidden>
-      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
-        <label style="font-size:14px">A las <input type="time" class="rec-hora" value="08:00" style="font-size:16px;padding:6px 8px;border:1px solid var(--border);border-radius:8px"></label>
-        <button type="button" class="panel-link-btn rec-btn" style="border:0;cursor:pointer;margin:0;flex:1;min-width:160px">Poner recordatorio en el calendario del móvil</button>
-      </div>
-      <p style="font-size:12px;color:var(--ink-soft);margin:6px 0 0">Se crea un aviso diario en el calendario de tu móvil. Puedes quitarlo cuando quieras desde el propio calendario.</p>
-      </div>`;
-    caja.querySelector('.rec-abrir').onclick = () => { const cu = caja.querySelector('.rec-cuerpo'); cu.hidden = !cu.hidden; caja.querySelector('.rec-abrir span').textContent = cu.hidden ? '▾' : '▴'; };
-    caja.querySelector('.rec-btn').onclick = () => {
-      const [hh, mm] = (caja.querySelector('.rec-hora').value || '08:00').split(':').map(Number);
+    caja.innerHTML = '<button type="button" class="ms-alarma">' + textoAlarmaSencilla({ id: ALARMA_PRACTICA }) + '</button>';
+    // La misma alarma que en las metas sencillas (hora y días), para la práctica de tu meta
+    const bt = caja.querySelector('.ms-alarma');
+    bt.onclick = () => {
       const lista = state.checkins[state.me] || [];
       const ultima = lista.slice().reverse().find(c => c.metaSem && c.metaSem.trim());
       // El título empieza por tu práctica (o tu meta), con el brote 🌱 de Amable Meta
@@ -9541,7 +9542,7 @@ lo que haces cada día es lo que vas a ser.`;
       const textoRec = (meta || (ultima ? ultima.metaSem : '') || 'Mi práctica de Amable Meta').trim().replace(/[.。]+$/, '');
       const titulo = '🌱 ' + (textoRec.length > 70 ? textoRec.slice(0, 69).trim() + '…' : textoRec);
       const detalle = (ultima ? 'Tu práctica: ' + ultima.metaSem + '\n\n' : '') + 'Amable Meta · primero mira cómo está tu clima y después registra si hiciste tu práctica: https://app.practicaintegral.club';
-      ponerRecordatorioCalendario(titulo, detalle, hh, mm, null);
+      abrirAlarmaSencilla({ id: ALARMA_PRACTICA, nombre: textoRec, diasDef: DIAS_SEMANA.slice(), cab: '⏰ Alarma de tu práctica', titulo, detalle }, () => { bt.innerHTML = textoAlarmaSencilla({ id: ALARMA_PRACTICA }); });
     };
     return caja;
   }
@@ -10877,7 +10878,7 @@ lo que haces cada día es lo que vas a ser.`;
     document.querySelectorAll('.riego-capa').forEach(c => c.remove());
     const practica = String(textosCiclo().practica || '').trim();
     let meta = ''; try { meta = metaFinalViaje().texto; } catch(err){}
-    if(meta.length > 80) meta = meta.slice(0, 79) + '…';
+    if(meta.length > 110) meta = meta.slice(0, 109) + '…';   // hasta 4 renglones
     let receta = ''; try { receta = recetaTexto(historiaGuardada('brecha')); } catch(err){}
     let cuando = ''; try { cuando = localStorage.getItem(claveRitual()) || ''; } catch(err){}
     const consejo = cuando ? 'Esta mañana decidiste hacerla ' + cuando + '. ¡Es el momento! 🌱' : receta ? 'Tu receta: «' + receta + '»' : CONSEJOS_RIEGO[new Date().getDate() % CONSEJOS_RIEGO.length];
@@ -10891,8 +10892,7 @@ lo que haces cada día es lo que vas a ser.`;
       + '<p class="riego-consejo">' + escapeAttr(consejo) + '</p>'
       + '<div class="riego-escena"><span class="riego-sol"></span><span class="riego-mariposa">🦋</span><span class="riego-brillo b1"></span><span class="riego-brillo b2"></span><span class="riego-brillo b3"></span>'
       + '<img class="riego-img" src="' + (hecho ? imgRegando(3) : e.img) + '" alt=""></div>'
-      + '<button type="button" class="riego-ok rp-check' + (hecho ? ' on' : '') + '"><span class="rp-caja">' + TIC_CASILLA + '</span><span class="rp-txt">' + (hecho ? 'Hoy ya hice mi práctica' : 'Hoy hice mi práctica') + '</span></button>'
-      + '<button type="button" class="riego-cal">Marcar otro día de esta semana</button></div></div>').firstElementChild;
+      + '<p class="rp-flecha">' + (hecho ? 'Hoy ya regaste tu meta 🌱' : 'Toca el día y marca +1') + '<span aria-hidden="true">↓</span></p></div></div>').firstElementChild;
     document.body.appendChild(capa);
     document.body.classList.add('riego-abierto');
     // Arriba: a qué hora avisa el móvil, con «Cambiar» (o «Activar el aviso» si no lo tiene)
@@ -10904,18 +10904,28 @@ lo que haces cada día es lo que vas a ser.`;
       const ent = clima.querySelector('.entorno');
       if(ent){ ent.classList.add('rp-marco'); capa.insertBefore(ent, rp); }   // 2 · entorno, en su propio marco
     } catch(e){}
-    // 4 · Cómo vas esta semana (los días y el recordatorio diario), al final
+    // Cómo vas esta semana (los días y la alarma), en el mismo recuadro que tu práctica de hoy
+    const hoyLetra = DIAS_SEMANA[(ahoraRegistro().getDay() + 6) % 7];
+    const regado = (d, antes, n) => {
+      if(d !== hoyLetra || antes || !n) return;
+      try { launchConfetti(); } catch(err){}
+      capa.querySelector('.riego-consejo').textContent = 'Hoy has cuidado tu meta. Mañana, otro pequeño riego.';
+      capa.querySelector('.rp-flecha').firstChild.textContent = 'Hoy ya regaste tu meta 🌱';
+      // Prácti riega y la planta crece: en el mismo hueco de la animación de antes, o en lugar del dibujo
+      const img = capa.querySelector('.riego-img'), caja = capa.querySelector('.riego-escena .planta-anim');
+      try { if(caja) animarPlantaEn(caja, 'practi-crece.json', true); else if(img){ img.src = imgRegando(3); animarPlanta(img, 'practi-crece.json', true); } } catch(err){}
+    };
     const ponerSemana = () => {
       try {
         const lista = (state.checkins && state.checkins[state.me]) || [];
-        const sem = tarjetaDias(lista.find(c => c.week === currentWeekShort), '', '4 · Cómo vas esta semana');
+        const sem = tarjetaDias(lista.find(c => c.week === currentWeekShort), '', 'Cómo vas esta semana', regado);
         sem.classList.add('rp-semana');
         // «Ver calendario mensual»: cierra Registros amables y abre el calendario del mes («← Volver» regresa a donde estaba)
         const verMes = el('<button type="button" class="panel-link-btn rp-vermes" style="width:100%;border:2px solid #C0392B;background:#fff;color:#A93226;cursor:pointer;margin:12px 0 0">📅 Ver calendario mensual</button>').firstElementChild;
         verMes.onclick = () => { const desde = state.view; quitar(); state.prevView = desde; state.view = 'calendarioPracticas'; window.scrollTo(0, 0); render(); };
         sem.appendChild(verMes);
         const vieja = capa.querySelector('.rp-semana');
-        if(vieja) vieja.replaceWith(sem); else capa.appendChild(sem);
+        if(vieja) vieja.replaceWith(sem); else capa.querySelector('.rp-seccion').appendChild(sem);
       } catch(e){ console.error('Semana:', e); }
     };
     ponerSemana();
@@ -10930,29 +10940,9 @@ lo que haces cada día es lo que vas a ser.`;
     capa.querySelector('.riego-cerrar').onclick = cerrar;
     capa.querySelector('.riego-ir').onclick = cerrar;
     irAbajo.onclick = cerrar;
-    // Los otros días de la semana están abajo, en «4 · Cómo vas esta semana»
-    capa.querySelector('.riego-cal').onclick = () => { const s = capa.querySelector('.rp-semana'); if(s) s.scrollIntoView({ behavior: 'smooth', block: 'start' }); };
     const son = capa.querySelector('.riego-son');
     son.onclick = () => { if(sintoniaSonando()){ apagarSintoniaSuave(800); son.textContent = '🔈'; } else { sonarSintoniaPedida(0, 0.5); son.textContent = '🔊'; } };
-    const ok = capa.querySelector('.riego-ok');
     if(!hecho && e.anim) try { animarPlanta(capa.querySelector('.riego-img'), e.anim, true); } catch(err){}
-    if(hecho){ ok.disabled = true; return; }
-    const okTx = ok.querySelector('.rp-txt');
-    ok.onclick = async () => {
-      ok.disabled = true; okTx.textContent = 'Guardando…';
-      try { await marcarHoyHecho(); }
-      catch(err){ ok.disabled = false; okTx.textContent = 'Hoy hice mi práctica'; avisoBreve('No se pudo guardar. Revisa tu conexión e inténtalo de nuevo.'); return; }
-      try { sonidoRiego(); launchConfetti(); } catch(err){}
-      ok.classList.add('on'); okTx.textContent = 'Hoy hice mi práctica: meta regada 🌱';
-      capa.querySelector('.riego-consejo').textContent = 'Hoy has cuidado tu meta. Mañana, otro pequeño riego.';
-      capa.querySelector('.riego-cal').remove();
-      const volver = el('<button type="button" class="riego-volver">Volver a Inicio</button>').firstElementChild;
-      volver.onclick = cerrar; ok.after(volver);
-      ponerSemana();
-      // Prácti riega y la planta crece: en el mismo hueco de la animación de antes, o en lugar del dibujo
-      const img = capa.querySelector('.riego-img'), caja = capa.querySelector('.riego-escena .planta-anim');
-      try { if(caja) animarPlantaEn(caja, 'practi-crece.json', true); else if(img){ img.src = imgRegando(3); animarPlanta(img, 'practi-crece.json', true); } } catch(err){}
-    };
   }
   // ===== Abona tu meta: registrar cómo te sientes (autoconocerse). Regar = practicar; abonar = conocer lo que sientes =====
   // Cuatro cuadrantes (energía × agrado, como el Mood Meter de Yale), dos emociones en cada uno.
@@ -13063,4 +13053,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Meta" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V14.41 · App Amable Meta · 2026-11-03 19:36==== -->
+<!-- ==== Fin del index V14.42 · App Amable Meta · 2026-11-03 20:21==== -->
