@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V14.38 · App Amable Meta · 2026-11-03 17:51==== -->
+<!-- ==== index V14.39 · App Amable Meta · 2026-11-03 17:59==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -23,6 +23,11 @@
   /* Dejar el dedo apretado no selecciona nada, salvo donde se escribe */
   body{ -webkit-user-select:none; user-select:none; -webkit-touch-callout:none; }
   input, textarea, select, [contenteditable]:not([contenteditable="false"]), [contenteditable]:not([contenteditable="false"]) *{ -webkit-user-select:text; user-select:text; -webkit-touch-callout:default; }
+  /* «Enviando…» con los tres puntos encendiéndose uno tras otro */
+  .puntos-mov i{ font-style:normal; animation:puntoMov 1.2s infinite both; }
+  .puntos-mov i:nth-child(2){ animation-delay:.2s; }
+  .puntos-mov i:nth-child(3){ animation-delay:.4s; }
+  @keyframes puntoMov{ 0%, 80%, 100%{ opacity:.2; } 40%{ opacity:1; } }
   :root{
     --bg: #FFFFFF;
     --surface: #FFFFFF;
@@ -2615,7 +2620,9 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V14.38';
+  const APP_VERSION = 'V14.39';
+  // Texto de los botones mientras se envía: los tres puntos se encienden uno tras otro
+  const ENVIANDO_HTML = 'Enviando<span class="puntos-mov" aria-hidden="true"><i>.</i><i>.</i><i>.</i></span>';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -4253,6 +4260,10 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     const caja = el('<div class="card panel-section s2 ms-bloque"><h3 class="metas-sub">✔️ ' + TXT_SENCILLAS + '</h3>'
       + '<p class="ms-ayuda">Un hábito sencillo, con un calendario para marcar los días que lo haces. No cambia tu planta ni tu montaña.</p><div class="ms-lista"></div></div>').firstElementChild;
     const zona = caja.querySelector('.ms-lista');
+    // Con dos metas sencillas, la segunda va en su propio recuadro (entre los dos se ve el fondo)
+    const caja2 = el('<div class="card panel-section s2 ms-bloque" style="display:none"><h3 class="metas-sub">✔️ ' + TXT_SENCILLA + ' 2</h3><div class="ms-lista"></div></div>').firstElementChild;
+    const envoltorio = document.createElement('div');
+    envoltorio.append(caja, caja2);
     const cuenta = textoCuentaSencilla;
     const archivada = (m, motivo) => Object.assign({}, m, { desde: m.desde || hoyISO(), hasta: hoyISO(), motivo, n: (m.dias || []).length });
     let pintar = null;
@@ -4368,9 +4379,15 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       });
       const crear = zona.querySelector('.ms-crear');
       if(crear) crear.onclick = () => editor(crear, null);
+      // La segunda meta (y lo que va detrás: nota e historial) pasa al segundo recuadro
+      const segunda = zona.querySelector('.ms-tarjeta.ms-b'), zona2 = caja2.querySelector('.ms-lista');
+      caja.querySelector('.metas-sub').textContent = '✔️ ' + (segunda ? TXT_SENCILLA + ' 1' : TXT_SENCILLAS);
+      zona2.replaceChildren();
+      for(let n = segunda; n; ){ const sig = n.nextSibling; zona2.appendChild(n); n = sig; }
+      caja2.style.display = segunda ? '' : 'none';
     };
     pintar();
-    return caja;
+    return envoltorio;
   }
   // En «Registros amables», debajo de todo lo de la meta con guía: la semana de cada meta sencilla
   function registroSencillas(){
@@ -5480,7 +5497,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     ba.onclick = () => cargarPanelFac(true, true);
     const bt = app.querySelector('#pfTelegram');
     bt.onclick = async () => {
-      bt.disabled = true; bt.textContent = 'Enviando…';
+      bt.disabled = true; bt.innerHTML = ENVIANDO_HTML;
       try { await api('/panel/resumen-telegram', {}); bt.textContent = '✓ Enviado: míralo en Telegram y WhatsApp'; }
       catch(e){ bt.disabled = false; bt.textContent = '📨 Mandarme ahora el resumen a Telegram y WhatsApp'; avisoBreve(mensajeError(e, 'No se pudo enviar. Inténtalo de nuevo.')); }
     };
@@ -12482,7 +12499,7 @@ lo que haces cada día es lo que vas a ser.`;
       nota = Number(b.dataset.n); caja.querySelectorAll('.encuesta-estrellas button').forEach(x => x.classList.toggle('elegida', Number(x.dataset.n) <= nota)); });
     caja.querySelector('#encEnviar').onclick = async () => {
       if(!nota){ caja.querySelector('#encError').textContent = 'Elige un número del 1 al 5.'; return; }
-      const b = caja.querySelector('#encEnviar'); b.disabled = true; b.textContent = 'Enviando…';
+      const b = caja.querySelector('#encEnviar'); b.disabled = true; b.innerHTML = ENVIANDO_HTML;
       try {
         const r = await api('/encuesta', { valoracion: nota, gusta: caja.querySelector('#encGusta').value.trim(), mejorar: caja.querySelector('#encMejorar').value.trim() });
         if(state.gamifica && r.datosFormulario) state.gamifica.datosFormulario = r.datosFormulario;
@@ -12632,7 +12649,7 @@ lo que haces cada día es lo que vas a ser.`;
         <button type="button" class="link-quiet" id="fmAtras" style="display:block;margin:10px auto 0">← Atrás</button>`;
       card.querySelector('#fmAtras').onclick = () => { fm.paso--; fmGuardar(); render(); };
       card.querySelector('#fmEnviar').onclick = async (e) => {
-        const b = e.currentTarget; b.disabled = true; b.textContent = 'Enviando…';
+        const b = e.currentTarget; b.disabled = true; b.innerHTML = ENVIANDO_HTML;
         try {
           const respuestas = {};
           fmParaEnviar().forEach(p => { respuestas[p.id] = fm.r[p.id]; });
@@ -12978,4 +12995,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Meta" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V14.38 · App Amable Meta · 2026-11-03 17:51==== -->
+<!-- ==== Fin del index V14.39 · App Amable Meta · 2026-11-03 17:59==== -->
