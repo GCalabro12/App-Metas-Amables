@@ -85,7 +85,8 @@ summary{cursor:pointer;font-weight:700;color:var(--accent2)}
 @media (max-width:380px){.dimsel{grid-template-columns:1fr}}
 @media (prefers-reduced-motion:reduce){.bar i{transition:none}}
 @media print{
- :root{--bg:#fff;--card:#fff;--fg:#26343B;--soft:#55636A;--line:#E8DCCB;--accent:#C8642F;--accent2:#3F6F66;--chip:#F6EEE3;color-scheme:light}
+ /* El PDF siempre en claro, también con el móvil en modo oscuro */
+ :root,:root:not([data-theme="light"]),:root[data-theme="dark"]{--bg:#fff;--card:#fff;--fg:#26343B;--soft:#55636A;--line:#E8DCCB;--accent:#C8642F;--accent2:#3F6F66;--chip:#F6EEE3;color-scheme:light}
  body{padding:0;background:#fff;font-size:12.5pt}
  .noprint,#cabecera,#progreso,.pie{display:none!important}
  .wrap{max-width:none}
