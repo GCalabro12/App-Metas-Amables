@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V14.39 · App Amable Meta · 2026-11-03 17:59==== -->
+<!-- ==== index V14.40 · App Amable Meta · 2026-11-03 19:28==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1345,7 +1345,7 @@ textarea.ms-nombre-in:focus{outline:none;border-color:#C9942D;box-shadow:0 0 0 3
 .ms-pop::after{content:'';position:absolute;left:var(--flecha,50%);width:14px;height:14px;background:#fff;transform:translateX(-50%) rotate(45deg)}
 .ms-pop.arriba::after{bottom:-6px}.ms-pop.abajo::after{top:-6px}
 .ms-pop button{width:48px;height:48px;border-radius:50%;border:none;font:800 20px Karla,sans-serif;color:#fff;cursor:pointer;position:relative;z-index:1}
-.ms-pop .o-hecho{background:#4C8C4A}.ms-pop .o-fallo{background:#D9483B}.ms-pop .o-libre{background:#2B2B2B}.ms-pop .o-mas{background:#EDEBE6;color:#333;font-size:15px}
+.ms-pop .o-hecho{background:#4C8C4A}.ms-pop .o-fallo{background:#D9483B}.ms-pop .o-libre{background:#2B2B2B}.ms-pop .o-mas{background:#EDEBE6;color:#333;font-size:15px}.ms-pop .o-hecho{font-size:18px}
 .ms-pop.texto{flex-direction:column;gap:4px}.ms-pop .o-txt{width:auto;height:auto;border-radius:10px;padding:10px 14px;background:#F6F3EC;color:var(--ink);font:700 14.5px Karla,sans-serif;text-align:left}
 .ms-acciones{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:10px}
 .ms-acciones button,.ms-anadir{flex:1;min-width:110px;padding:9px 10px;border-radius:10px;border:1.5px solid #A0703C;background:#fff;color:#6B4A26;font:700 14px Karla,sans-serif;cursor:pointer}
@@ -1357,7 +1357,9 @@ textarea.ms-nombre-in:focus{outline:none;border-color:#C9942D;box-shadow:0 0 0 3
 .riego-capa .rp-sencillas{width:min(420px,100%);margin:16px auto 0;padding:16px 14px;box-sizing:border-box;border:2px solid rgba(169,50,38,.35);border-radius:20px;background:rgba(255,255,255,.92);text-align:left}
 .ms-reg{margin-top:10px}.ms-semana{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px;margin-top:8px}
 .ms-dia{width:100%;max-width:46px;aspect-ratio:1;height:auto;border:2px solid #d8d3c6;border-radius:50%;background:#FCFCF9;font-family:Karla,sans-serif;color:var(--ink);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0}
-.ms-dia span{font-size:9.5px;font-weight:800;opacity:.8;line-height:1}.ms-dia b{font-size:14px;line-height:1.1}
+.ms-dia span{font-size:9.5px;font-weight:800;opacity:.8;line-height:1}.ms-dia span.ms-veces{color:#FFE066;opacity:1;font-size:11px}
+/* Varias veces el mismo día: «2✓» pequeño en amarillo encima del número */
+.ms-dia-m[data-veces]::before{content:attr(data-veces) '✓';position:absolute;top:2px;left:0;right:0;font-size:9.5px;font-weight:800;line-height:1;text-align:center;color:#FFE066}.ms-dia b{font-size:14px;line-height:1.1}
 .riego-capa .rp-semana{width:min(420px,100%);margin:16px auto 0;box-sizing:border-box;border:2px solid rgba(169,50,38,.35);border-radius:20px;background:rgba(255,255,255,.92);text-align:left}
 .rp-seccion .riego-consejo{margin:4px auto 0;padding:0;background:none;font-size:13.5px;line-height:1.35;color:#5A5A50}
 .rp-practica{margin:2px 0 0;font:italic 700 clamp(18px,5vw,21px)/1.3 Nunito,serif;color:#4F7A43}
@@ -2620,7 +2622,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V14.39';
+  const APP_VERSION = 'V14.40';
   // Texto de los botones mientras se envía: los tres puntos se encienden uno tras otro
   const ENVIANDO_HTML = 'Enviando<span class="puntos-mov" aria-hidden="true"><i>.</i><i>.</i><i>.</i></span>';
 
@@ -4068,10 +4070,22 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
   // Estado de un día: 'hecho' (✓, verde), 'fallo' (✕, rojo: no hecho), 'libre' (–, negro: no tocaba) o '' (sin marcar).
   // Con «•••» se escribe un comentario de ese día (notas: { fecha: texto })
+  // Veces que se hizo ese día (+1 cada vez, hasta 9): 0 si no está hecho; se guardan en veces: { fecha: n } solo desde 2
+  const MAX_VECES_DIA = 9;
+  function vecesDiaSencilla(m, iso){ return (m.dias || []).includes(iso) ? Math.min(MAX_VECES_DIA, Math.max(1, Number((m.veces || {})[iso]) || 1)) : 0; }
   function estadoDiaSencilla(m, iso){ return (m.dias || []).includes(iso) ? 'hecho' : (m.fallos || []).includes(iso) ? 'fallo' : (m.libres || []).includes(iso) ? 'libre' : ''; }
   async function marcarDiaSencilla(id, iso, estado){
     const { lista, archivo } = datosSencillas(), copia = JSON.parse(JSON.stringify(lista)), m = copia.find(x => x.id === id);
     if(!m) return '';
+    // «+1» en un día ya hecho: una vez más (máximo 9)
+    const antes = vecesDiaSencilla(m, iso);
+    m.veces = Object.assign({}, m.veces || {}); delete m.veces[iso];
+    if(estado === 'hecho' && antes){
+      if(antes >= MAX_VECES_DIA){ avisoBreve('Ya llevas ' + MAX_VECES_DIA + ' este día: es el máximo.'); m.veces[iso] = antes; return 'hecho'; }
+      m.veces[iso] = antes + 1;
+      await guardarSencillas(copia, archivo);
+      return 'hecho';
+    }
     ['dias', 'fallos', 'libres'].forEach(k => { m[k] = (m[k] || []).filter(x => x !== iso); });
     const campo = { hecho: 'dias', fallo: 'fallos', libre: 'libres' }[estado];
     if(campo) m[campo] = m[campo].concat(iso).sort();
@@ -4081,10 +4095,12 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   const ICO_DIA = { hecho: '✓', fallo: '✕', libre: '–' };
   // «toca»: es uno de los días elegidos (se ve en color)
   function claseDiaSencilla(m, iso, L){ const e = estadoDiaSencilla(m, iso); return (e ? ' ' + e : '') + (diasPlanSencilla(m).includes(L) ? ' toca' : '') + ((m.notas || {})[iso] ? ' con-nota' : ''); }
-  function pintarDiaSencilla(b, est){
+  function pintarDiaSencilla(b, est, veces){
     b.classList.remove('hecho', 'fallo', 'libre'); if(est) b.classList.add(est);
-    const n = b.querySelector('b'), dia = Number(b.dataset.iso.slice(8));
+    const n = b.querySelector('b'), dia = Number(b.dataset.iso.slice(8)), L = b.querySelector('span');
     if(n) n.textContent = dia; else b.textContent = dia;
+    // Con 2 o más veces, en lugar de la letra del día: «2✓» en amarillo
+    if(L){ L.textContent = veces > 1 ? veces + '✓' : b.dataset.l || L.textContent; L.classList.toggle('ms-veces', veces > 1); }
   }
   async function comentarDiaSencilla(id, iso, texto){
     const { lista, archivo } = datosSencillas(), copia = JSON.parse(JSON.stringify(lista)), m = copia.find(x => x.id === id);
@@ -4097,7 +4113,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   // Al tocar un día: las cuatro opciones (hecho, no hecho, no tocaba y comentario) en un bocadillo junto al día
   function opcionesDiaSencilla(b, id, alElegir, verCalendario){
     document.querySelectorAll('.ms-pop').forEach(x => x.remove());
-    const pop = el('<div class="ms-pop" role="menu"><button type="button" data-e="hecho" class="o-hecho" aria-label="Hecho">✓</button><button type="button" data-e="fallo" class="o-fallo" aria-label="No lo hice">✕</button>'
+    const pop = el('<div class="ms-pop" role="menu"><button type="button" data-e="hecho" class="o-hecho" aria-label="Hecho, una vez más">+1</button><button type="button" data-e="fallo" class="o-fallo" aria-label="No lo hice">✕</button>'
       + '<button type="button" data-e="libre" class="o-libre" aria-label="No tocaba">–</button><button type="button" data-e="mas" class="o-mas" aria-label="Comentario">•••</button></div>').firstElementChild;
     document.body.appendChild(pop);
     const colocar = () => {
@@ -4151,8 +4167,9 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     const hoy = ahoraRegistro(), hoyIso = hoyISO();
     let s = '<div class="ms-semana">';
     for(let k = 6; k >= 0; k--){
-      const d = new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate() - k), iso = isoLocal(d), L = DIAS_SEMANA[(d.getDay() + 6) % 7], e = estadoDiaSencilla(m, iso);
-      s += '<div class="ms-col"><button type="button" class="ms-dia' + claseDiaSencilla(m, iso, L) + '" data-iso="' + iso + '" aria-label="' + L + ' ' + d.getDate() + '"><span>' + L + '</span><b>' + d.getDate() + '</b></button>'
+      const d = new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate() - k), iso = isoLocal(d), L = DIAS_SEMANA[(d.getDay() + 6) % 7], v = vecesDiaSencilla(m, iso);
+      s += '<div class="ms-col"><button type="button" class="ms-dia' + claseDiaSencilla(m, iso, L) + '" data-iso="' + iso + '" data-l="' + L + '" aria-label="' + L + ' ' + d.getDate() + (v > 1 ? ', ' + v + ' veces' : '') + '">'
+        + (v > 1 ? '<span class="ms-veces">' + v + '✓</span>' : '<span>' + L + '</span>') + '<b>' + d.getDate() + '</b></button>'
         + (iso === hoyIso ? '<small>HOY</small>' : '') + '</div>';
     }
     return s + '</div>';
@@ -4247,7 +4264,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       + DIAS_SEMANA.map(L => '<span class="ms-mes-l">' + L + '</span>').join('') + '<span></span>'.repeat(hueco);
     for(let d = 1; d <= n; d++){
       const f = new Date(y, mes, d), iso = isoLocal(f), L = DIAS_SEMANA[(f.getDay() + 6) % 7];
-      s += '<button type="button" class="ms-dia-m' + claseDiaSencilla(m, iso, L) + (iso === hoy ? ' hoy' : '') + '" data-iso="' + iso + '"' + (iso > hoy ? ' disabled' : '') + '>' + d + '</button>';
+      s += '<button type="button" class="ms-dia-m' + claseDiaSencilla(m, iso, L) + (iso === hoy ? ' hoy' : '') + '" data-iso="' + iso + '"' + (vecesDiaSencilla(m, iso) > 1 ? ' data-veces="' + vecesDiaSencilla(m, iso) + '"' : '') + (iso > hoy ? ' disabled' : '') + '>' + d + '</button>';
     }
     const pre = y + '-' + String(mes + 1).padStart(2, '0') + '-', notas = Object.entries(m.notas || {}).filter(([k]) => k.startsWith(pre)).sort(([a], [b]) => a.localeCompare(b));
     return s + '</div><div class="ms-notas">' + (notas.length
@@ -4397,7 +4414,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     activas.forEach((m, i) => {
       const f = el('<div class="ms-reg' + (i ? ' ms-b' : '') + '"><p class="ms-nombre">' + escapeAttr(m.nombre) + (vecesSemanaSencilla(m) ? ' <small>· ' + textoDiasSencilla(m) + '</small>' : '') + '</p>' + sieteDiasSencillaHTML(m) + '</div>').firstElementChild;
       caja.appendChild(f);
-      enlazarDiasSencilla(f, m.id, (est, b) => pintarDiaSencilla(b, est));
+      enlazarDiasSencilla(f, m.id, (est, b) => pintarDiaSencilla(b, est, vecesDiaSencilla(datosSencillas().lista.find(x => x.id === m.id) || {}, b.dataset.iso)));
     });
     return caja;
   }
@@ -12995,4 +13012,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Meta" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V14.39 · App Amable Meta · 2026-11-03 17:59==== -->
+<!-- ==== Fin del index V14.40 · App Amable Meta · 2026-11-03 19:28==== -->
