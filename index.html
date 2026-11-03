@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V14.43 · App Amable Meta · 2026-11-03 20:22==== -->
+<!-- ==== index V14.44 · App Amable Meta · 2026-11-03 20:25==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1357,7 +1357,7 @@ textarea.ms-nombre-in:focus{outline:none;border-color:#C9942D;box-shadow:0 0 0 3
 .riego-capa .rp-sencillas{width:min(420px,100%);margin:16px auto 0;padding:16px 14px;box-sizing:border-box;border:2px solid rgba(169,50,38,.35);border-radius:20px;background:rgba(255,255,255,.92);text-align:left}
 .ms-reg{margin-top:10px}.ms-reg-tit{margin:18px 0 6px;padding-top:14px;border-top:1px solid rgba(0,0,0,.08)}.ms-semana{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px;margin-top:8px}
 .ms-dia{width:100%;max-width:46px;aspect-ratio:1;height:auto;border:2px solid #d8d3c6;border-radius:50%;background:#FCFCF9;font-family:Karla,sans-serif;color:var(--ink);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0}
-.ms-dia span{font-size:9.5px;font-weight:800;opacity:.8;line-height:1}.ms-dia span.ms-veces{color:#FFE066;opacity:1;font-size:11px}
+.ms-dia span{font-size:9.5px;font-weight:800;opacity:.8;line-height:1}.ms-dia span.ms-nveces{color:#FFE066;opacity:1;font-size:11px}
 /* Varias veces el mismo día: «2✓» pequeño en amarillo encima del número */
 .ms-dia-m[data-veces]::before{content:attr(data-veces) '✓';position:absolute;top:2px;left:0;right:0;font-size:9.5px;font-weight:800;line-height:1;text-align:center;color:#FFE066}.ms-dia b{font-size:14px;line-height:1.1}
 .riego-capa .rp-semana{width:min(420px,100%);margin:16px auto 0;box-sizing:border-box;border:2px solid rgba(169,50,38,.35);border-radius:20px;background:rgba(255,255,255,.92);text-align:left}
@@ -2638,7 +2638,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V14.43';
+  const APP_VERSION = 'V14.44';
   // Texto de los botones mientras se envía: los tres puntos se encienden uno tras otro
   const ENVIANDO_HTML = 'Enviando<span class="puntos-mov" aria-hidden="true"><i>.</i><i>.</i><i>.</i></span>';
 
@@ -4163,7 +4163,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     const n = b.querySelector('b'), dia = Number(b.dataset.iso.slice(8)), L = b.querySelector('span');
     if(n) n.textContent = dia; else b.textContent = dia;
     // Con 2 o más veces, en lugar de la letra del día: «2✓» en amarillo
-    if(L){ L.textContent = veces > 1 ? veces + '✓' : b.dataset.l || L.textContent; L.classList.toggle('ms-veces', veces > 1); }
+    if(L){ L.textContent = veces > 1 ? veces + '✓' : b.dataset.l || L.textContent; L.classList.toggle('ms-nveces', veces > 1); }
   }
   async function comentarDiaSencilla(id, iso, texto){
     const { lista, archivo } = datosSencillas(), copia = JSON.parse(JSON.stringify(lista)), m = copia.find(x => x.id === id);
@@ -4237,7 +4237,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     for(let k = 6; k >= 0; k--){
       const d = new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate() - k), iso = isoLocal(d), L = DIAS_SEMANA[(d.getDay() + 6) % 7], v = vecesDiaSencilla(m, iso);
       s += '<div class="ms-col"><button type="button" class="ms-dia' + claseDiaSencilla(m, iso, L) + '" data-iso="' + iso + '" data-l="' + L + '" aria-label="' + L + ' ' + d.getDate() + (v > 1 ? ', ' + v + ' veces' : '') + '">'
-        + (v > 1 ? '<span class="ms-veces">' + v + '✓</span>' : '<span>' + L + '</span>') + '<b>' + d.getDate() + '</b></button>'
+        + (v > 1 ? '<span class="ms-nveces">' + v + '✓</span>' : '<span>' + L + '</span>') + '<b>' + d.getDate() + '</b></button>'
         + (iso === hoyIso ? '<small>HOY</small>' : '') + '</div>';
     }
     return s + '</div>';
@@ -9324,7 +9324,7 @@ lo que haces cada día es lo que vas a ser.`;
         <div class="ms-semana">${DIAS_SEMANA.map((d, i) => {
           const lun = lunesDe(ahoraRegistro()), f = new Date(lun.getFullYear(), lun.getMonth(), lun.getDate() + i), v = veces[d] || 0;
           return '<div class="ms-col"><button type="button" class="ms-dia toca' + (v ? ' hecho' : '') + '" data-dia="' + d + '"' + (i > hoy ? ' disabled' : '') + ' aria-label="' + d + ' ' + f.getDate() + (v > 1 ? ', ' + v + ' veces' : '') + '">'
-            + (v > 1 ? '<span class="ms-veces">' + v + '✓</span>' : '<span>' + d + '</span>') + '<b>' + f.getDate() + '</b></button>' + (i === hoy ? '<small>HOY</small>' : '') + '</div>';
+            + (v > 1 ? '<span class="ms-nveces">' + v + '✓</span>' : '<span>' + d + '</span>') + '<b>' + f.getDate() + '</b></button>' + (i === hoy ? '<small>HOY</small>' : '') + '</div>';
         }).join('')}</div>
         <p class="dias-msg" style="font-size:12px;color:var(--ink-soft);margin:8px 0 0">${resumenDias(veces) ? 'Esta semana: ' + resumenDias(veces) : 'Toca el día en que hiciste tu práctica.'}</p>`;
       // Al tocar un día: +1 (una vez más, hasta 9) o ✕ (no lo hice), como en las metas sencillas
@@ -13054,4 +13054,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Meta" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V14.43 · App Amable Meta · 2026-11-03 20:22==== -->
+<!-- ==== Fin del index V14.44 · App Amable Meta · 2026-11-03 20:25==== -->
