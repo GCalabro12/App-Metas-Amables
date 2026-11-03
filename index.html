@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V14.42 · App Amable Meta · 2026-11-03 20:21==== -->
+<!-- ==== index V14.43 · App Amable Meta · 2026-11-03 20:22==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1355,7 +1355,7 @@ textarea.ms-nombre-in:focus{outline:none;border-color:#C9942D;box-shadow:0 0 0 3
 .ms-historial{margin-top:12px;font-size:14px}.ms-historial summary{cursor:pointer;font-weight:700;color:var(--ink-soft)}.ms-historial p{margin:6px 0}.ms-historial small{display:block;color:var(--ink-soft)}
 .ms-corona{width:100%;padding:12px;border-radius:12px;border:1.5px dashed #C9A227;background:#FFFBEF;color:#8A6A10;font:700 15px Karla,sans-serif;cursor:pointer}
 .riego-capa .rp-sencillas{width:min(420px,100%);margin:16px auto 0;padding:16px 14px;box-sizing:border-box;border:2px solid rgba(169,50,38,.35);border-radius:20px;background:rgba(255,255,255,.92);text-align:left}
-.ms-reg{margin-top:10px}.ms-semana{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px;margin-top:8px}
+.ms-reg{margin-top:10px}.ms-reg-tit{margin:18px 0 6px;padding-top:14px;border-top:1px solid rgba(0,0,0,.08)}.ms-semana{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px;margin-top:8px}
 .ms-dia{width:100%;max-width:46px;aspect-ratio:1;height:auto;border:2px solid #d8d3c6;border-radius:50%;background:#FCFCF9;font-family:Karla,sans-serif;color:var(--ink);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0}
 .ms-dia span{font-size:9.5px;font-weight:800;opacity:.8;line-height:1}.ms-dia span.ms-veces{color:#FFE066;opacity:1;font-size:11px}
 /* Varias veces el mismo día: «2✓» pequeño en amarillo encima del número */
@@ -2638,7 +2638,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V14.42';
+  const APP_VERSION = 'V14.43';
   // Texto de los botones mientras se envía: los tres puntos se encienden uno tras otro
   const ENVIANDO_HTML = 'Enviando<span class="puntos-mov" aria-hidden="true"><i>.</i><i>.</i><i>.</i></span>';
 
@@ -4471,9 +4471,10 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   function registroSencillas(){
     const activas = sencillasActivas();
     if(!activas.length) return null;
-    const caja = el('<div class="rp-sencillas"><p class="abonar-tit">5 · ✔️ Tus ' + TXT_SENCILLAS.toLowerCase() + '</p>' + LEYENDA_SENCILLA + '</div>').firstElementChild;
+    const caja = el('<div class="rp-sencillas"><p class="abonar-tit">5 · ✔️ Tu ' + TXT_SENCILLA.toLowerCase() + (activas.length > 1 ? ' 1' : '') + '</p>' + LEYENDA_SENCILLA + '</div>').firstElementChild;
     activas.forEach((m, i) => {
-      const f = el('<div class="ms-reg' + (i ? ' ms-b' : '') + '"><p class="ms-nombre">' + escapeAttr(m.nombre) + (vecesSemanaSencilla(m) ? ' <small>· ' + textoDiasSencilla(m) + '</small>' : '') + '</p>' + sieteDiasSencillaHTML(m) + '</div>').firstElementChild;
+      // La segunda, con su propio título: «Tu meta sencilla 2»
+      const f = el('<div class="ms-reg' + (i ? ' ms-b' : '') + '">' + (i ? '<p class="abonar-tit ms-reg-tit">✔️ Tu ' + TXT_SENCILLA.toLowerCase() + ' ' + (i + 1) + '</p>' : '') + '<p class="ms-nombre">' + escapeAttr(m.nombre) + (vecesSemanaSencilla(m) ? ' <small>· ' + textoDiasSencilla(m) + '</small>' : '') + '</p>' + sieteDiasSencillaHTML(m) + '</div>').firstElementChild;
       caja.appendChild(f);
       enlazarDiasSencilla(f, m.id, (est, b) => pintarDiaSencilla(b, est, vecesDiaSencilla(datosSencillas().lista.find(x => x.id === m.id) || {}, b.dataset.iso)));
     });
@@ -10887,7 +10888,7 @@ lo que haces cada día es lo que vas a ser.`;
       + '<button type="button" class="riego-cerrar" aria-label="Cerrar">✕</button><button type="button" class="riego-ir">Ir a Amable Meta</button><button type="button" class="riego-son" aria-label="Música">🔈</button>'
       + '<h2 class="riego-tit">Registra cada día</h2><p class="rp-intro">Al menos tus sentimientos y tu entorno.</p>'
       + '<p class="rp-hora-tip">Mejor siempre a la misma hora.</p><p class="rp-hora"></p>'
-      + '<div class="rp-seccion"><p class="abonar-tit">3 · 💧 Tu práctica de hoy</p>'
+      + '<div class="rp-seccion"><p class="abonar-tit">3 · Tu meta con guía</p>'
       + ((practica || meta) ? '<p class="rp-practica">«' + escapeAttr(practica || meta) + '»</p>' : '')
       + '<p class="riego-consejo">' + escapeAttr(consejo) + '</p>'
       + '<div class="riego-escena"><span class="riego-sol"></span><span class="riego-mariposa">🦋</span><span class="riego-brillo b1"></span><span class="riego-brillo b2"></span><span class="riego-brillo b3"></span>'
@@ -13053,4 +13054,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Meta" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V14.42 · App Amable Meta · 2026-11-03 20:21==== -->
+<!-- ==== Fin del index V14.43 · App Amable Meta · 2026-11-03 20:22==== -->
