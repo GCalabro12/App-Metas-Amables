@@ -1,0 +1,466 @@
+<!doctype html>
+<html lang="es">
+<head>
+<!-- ==== Simulador 2027 · Amable Meta · 2026-11-03 ==== -->
+<!-- Lead magnet público (sin cuenta): 6 pasos y unos 10 minutos. Solo se guarda algo al pulsar «Enviarme mi panel»,
+     y va al Worker metas-amables-api (ruta /simulador), que lo guarda en D1 y envía el panel por correo con Make.
+     Si el Worker no responde (bloqueos de LaLiga a Cloudflare), se prueba el camino de reserva de Deno.
+     Mientras tanto, el progreso queda en este navegador (localStorage) para no perderlo al recargar. -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Simulador 2027 · Amable Meta</title>
+<meta name="description" content="En 6 pasos y unos 10 minutos: tu punto de partida, una carta desde el 31-12-2027, una sola meta y tus primeros 90 días. Gratis, de Práctica Integral.">
+<meta property="og:title" content="Simulador 2027 · Tu año empieza por una meta">
+<meta property="og:description" content="6 pasos, unos 10 minutos. Termina con tu panel 2027 listo para imprimir.">
+<meta property="og:image" content="https://app.practicaintegral.club/icon-512.png">
+<meta name="theme-color" content="#FBF6EE">
+<link rel="icon" href="icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Domine:wght@400;700&family=Nunito+Sans:wght@400;600;700&display=swap">
+<style>
+:root{--bg:#FBF6EE;--card:#FFFDF9;--fg:#26343B;--soft:#55636A;--line:#E8DCCB;--accent:#C8642F;--accent2:#3F6F66;--chip:#F3E6D6;--on-accent:#FFFDF9;
+--display:'Domine',Georgia,serif;--body:'Nunito Sans',Arial,sans-serif;color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1C2529;--card:#243036;--fg:#F2EBE0;--soft:#B9C3C6;--line:#36454C;--accent:#E9915F;--accent2:#7FB8AC;--chip:#2E3B41;--on-accent:#1C2529;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#1C2529;--card:#243036;--fg:#F2EBE0;--soft:#B9C3C6;--line:#36454C;--accent:#E9915F;--accent2:#7FB8AC;--chip:#2E3B41;--on-accent:#1C2529;color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--body);font-size:17px;line-height:1.5;
+ padding:28px max(16px,env(safe-area-inset-right)) 40px max(16px,env(safe-area-inset-left))}
+.wrap{max-width:660px;margin:0 auto;display:flex;flex-direction:column;gap:18px}
+.eyebrow{font-weight:700;color:var(--accent);letter-spacing:.12em;text-transform:uppercase;font-size:13px;margin:0}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.2}
+h1{font-size:clamp(30px,7vw,42px)}h2{font-size:clamp(22px,5vw,28px)}h3{font-size:19px}
+h2:focus{outline:none}
+p{margin:0}.soft{color:var(--soft)}.small{font-size:14px}
+.lema{font-style:italic;color:var(--soft);font-size:14px;margin-top:4px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:24px;display:flex;flex-direction:column;gap:16px}
+.bar{height:6px;background:var(--chip);border-radius:9px;overflow:hidden}.bar i{display:block;height:100%;background:var(--accent);transition:width .3s}
+.nav{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.btn{font:inherit;font-weight:700;background:var(--accent);color:var(--on-accent);border:1.5px solid var(--accent);border-radius:999px;padding:13px 24px;cursor:pointer;text-decoration:none;display:inline-block}
+.btn.ghost{background:transparent;color:var(--accent)}
+.btn:disabled{opacity:.55;cursor:default}
+.btn:focus-visible,.chip:focus-visible,.opt:focus-visible,input:focus-visible,textarea:focus-visible,summary:focus-visible{outline:3px solid var(--accent2);outline-offset:2px}
+.link{font:inherit;font-size:14px;background:none;border:0;color:var(--soft);text-decoration:underline;cursor:pointer;padding:0}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{font:inherit;font-size:15px;background:var(--bg);color:var(--fg);border:1.5px solid var(--line);border-radius:999px;padding:7px 14px;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.dimsel{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.dimsel .chip{border-radius:12px;padding:10px 12px;text-align:left}
+.dimsel .chip small{display:block;opacity:.8;font-size:13px}
+.campo{display:flex;flex-direction:column;gap:6px;font-weight:600}
+.campo span.soft{font-weight:400;font-size:14px}
+input[type=text],input[type=email],input[type=tel],textarea{font:inherit;font-weight:400;background:var(--bg);color:var(--fg);border:1.5px solid var(--line);border-radius:10px;padding:12px 14px;width:100%}
+textarea{resize:vertical;min-height:96px}
+.carta{min-height:220px;font-family:var(--display);font-size:16px;line-height:1.6}
+.rango{display:grid;grid-template-columns:1fr auto;gap:2px 12px;align-items:center}
+.rango b{font-size:22px;font-variant-numeric:tabular-nums;min-width:2ch;text-align:right;color:var(--accent)}
+.rango .soft{grid-column:1/-1;font-size:14px;margin-top:-2px}
+.rango input{grid-column:1/-1;width:100%;accent-color:var(--accent);height:28px}
+.dos{display:grid;grid-template-columns:1fr 240px;gap:20px;align-items:center}
+.rueda{width:100%;max-width:260px;margin:0 auto;display:block}
+.rueda text{font-family:var(--body);font-size:13px;fill:var(--fg);font-weight:600}
+.box{background:var(--chip);border-radius:12px;padding:14px 16px;display:flex;flex-direction:column;gap:6px}
+.box h3{font-family:var(--body);font-size:13px;color:var(--accent2);text-transform:uppercase;letter-spacing:.08em}
+.meses{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.meses div{background:var(--chip);border-radius:10px;padding:10px;font-size:14px}.meses b{display:block;font-size:15px}
+details{border:1.5px dashed var(--line);border-radius:12px;padding:12px 14px}
+summary{cursor:pointer;font-weight:700;color:var(--accent2)}
+.opts{display:flex;flex-direction:column;gap:8px;margin-top:10px}
+.opt{font:inherit;text-align:left;background:var(--bg);color:var(--fg);border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;cursor:pointer}
+.opt:hover{border-color:var(--accent)}
+.check{display:flex;gap:10px;align-items:flex-start;font-size:14px;color:var(--soft);font-weight:400}
+.check input{margin-top:4px;accent-color:var(--accent);width:18px;height:18px;flex:none}
+.check a{color:inherit}
+.estado{border-radius:12px;padding:12px 14px;font-weight:600}
+.estado.ok{background:color-mix(in srgb,var(--accent2) 18%,transparent);color:var(--fg)}
+.estado.mal{background:color-mix(in srgb,var(--accent) 18%,transparent);color:var(--fg)}
+.trampa{position:absolute;left:-5000px;width:1px;height:1px;overflow:hidden}
+#panel .linea{display:flex;flex-direction:column;gap:2px}
+#panel .cartaTxt{font-family:var(--display);font-style:italic;white-space:pre-wrap}
+.pie{font-size:13px;color:var(--soft);text-align:center}
+.pie a{color:inherit}
+@media (max-width:560px){.dos{grid-template-columns:1fr}.card{padding:20px 16px}.meses{grid-template-columns:1fr}}
+@media (max-width:380px){.dimsel{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){.bar i{transition:none}}
+@media print{
+ :root{--bg:#fff;--card:#fff;--fg:#26343B;--soft:#55636A;--line:#E8DCCB;--accent:#C8642F;--accent2:#3F6F66;--chip:#F6EEE3;color-scheme:light}
+ body{padding:0;background:#fff;font-size:12.5pt}
+ .noprint,#cabecera,#progreso,.pie{display:none!important}
+ .wrap{max-width:none}
+ #p6{border:0;padding:0}
+ #panel{border:1px solid #E8DCCB}
+ .box{break-inside:avoid}
+ *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header id="cabecera">
+    <p class="eyebrow">Amable Meta · Práctica Integral</p>
+    <h1>Simulador 2027</h1>
+    <p class="lema">Sin distracciones. Solo tu meta.</p>
+  </header>
+
+  <div id="progreso" hidden>
+    <p class="soft small" id="pasoTxt"></p>
+    <div class="bar"><i id="pasoBar" style="width:0"></i></div>
+  </div>
+
+  <!-- 0 · Entrada -->
+  <section class="card" id="p0">
+    <h2 tabindex="-1">Tu año empieza por una meta</h2>
+    <p>Hay quien planifica el año entero con diez propósitos a la vez y en febrero ya no queda ninguno. Aquí vamos a hacer lo contrario: mirar dónde estás, elegir <b>una sola meta</b> y empezar con 10 minutos al día.</p>
+    <div class="box">
+      <h3>6 pasos · unos 10 minutos</h3>
+      <p>1. Tu punto de partida · 2. El precio de no cambiar · 3. Una carta desde el 31-12-2027 · 4. Una sola meta · 5. Tus primeros 90 días · 6. Tu panel 2027</p>
+    </div>
+    <p class="soft small">Al final tendrás tu panel para imprimir o guardar en PDF y, si quieres, te lo enviamos por correo. Hasta entonces, lo que escribas se queda solo en tu dispositivo.</p>
+    <div class="nav"><button class="btn" id="empezar">Empezar</button><button class="link" id="reiniciar0" hidden>Empezar de cero</button></div>
+  </section>
+
+  <!-- 1 · Punto de partida -->
+  <section class="card" id="p1" hidden>
+    <h2 tabindex="-1">1 · Tu punto de partida</h2>
+    <p>Puntúa del 0 al 10 cómo estás hoy en cada parte de tu vida. Sin pensarlo mucho: la primera cifra que te venga es la buena.</p>
+    <div class="dos">
+      <div id="rangos" style="display:flex;flex-direction:column;gap:14px"></div>
+      <svg class="rueda" id="rueda1" viewBox="0 0 260 260" role="img" aria-label="Tu rueda de vida"></svg>
+    </div>
+    <p id="ruedaTxt" class="soft"></p>
+    <div class="nav"><button class="btn" data-sig>Siguiente</button><button class="btn ghost" data-atras>Atrás</button></div>
+  </section>
+
+  <!-- 2 · Precio de no cambiar -->
+  <section class="card" id="p2" hidden>
+    <h2 tabindex="-1">2 · El precio de no cambiar</h2>
+    <p>Elige la parte de tu vida que más te pesa dejar como está. Te proponemos la que puntuaste más baja, pero decides tú.</p>
+    <div class="dimsel" id="dim2" role="group" aria-label="Parte de tu vida"></div>
+    <p id="precioPregunta"><b></b></p>
+    <div class="chips" id="costes" role="group" aria-label="Lo que te costaría"></div>
+    <label class="campo">Escríbelo con tus palabras <span class="soft">Opcional</span>
+      <textarea id="precio" maxlength="1500" placeholder="Si nada cambia, dentro de un año…"></textarea></label>
+    <p class="soft small">No es para asustarte. Es para que veas con claridad lo que está en juego.</p>
+    <div class="nav"><button class="btn" data-sig>Siguiente</button><button class="btn ghost" data-atras>Atrás</button></div>
+  </section>
+
+  <!-- 3 · Carta y palabra del año -->
+  <section class="card" id="p3" hidden>
+    <h2 tabindex="-1">3 · Una carta desde el 31-12-2027</h2>
+    <p>Imagina que es 31 de diciembre de 2027 y ha sido un buen año. Escríbete desde ese día, en pasado, como si ya hubiera ocurrido. Con unas líneas basta.</p>
+    <div class="box"><h3>Por si te ayuda</h3><p id="cartaPistas"></p></div>
+    <label class="campo">Tu carta
+      <textarea id="carta" class="carta" maxlength="6000" placeholder="Hoy es 31 de diciembre de 2027 y quiero contarte…"></textarea></label>
+    <p class="soft small">Tu carta no se guarda en ninguna base de datos: solo sale en tu panel y, si lo pides, en tu correo.</p>
+    <label class="campo">Tu palabra del año <span class="soft">Una palabra que resuma cómo quieres vivir 2027</span>
+      <input type="text" id="palabra" maxlength="40" placeholder="Por ejemplo: Calma"></label>
+    <div class="chips" id="palabras"></div>
+    <div class="nav"><button class="btn" data-sig>Siguiente</button><button class="btn ghost" data-atras>Atrás</button></div>
+  </section>
+
+  <!-- 4 · Una sola meta -->
+  <section class="card" id="p4" hidden>
+    <h2 tabindex="-1">4 · Una sola meta</h2>
+    <p>Muchas metas a la vez se quedan en nada. Una meta bien elegida tira de todo lo demás. ¿En qué parte de tu vida está la tuya?</p>
+    <div class="dimsel" id="dim4" role="group" aria-label="Parte de tu vida de tu meta"></div>
+    <details id="test">
+      <summary>¿Dudas? Responde 8 preguntas rápidas</summary>
+      <div id="testCaja"></div>
+    </details>
+    <div class="box"><h3>Ideas para empezar</h3><div class="chips" id="ideas"></div></div>
+    <label class="campo">Mi meta para 2027 <span class="soft">En una frase, en positivo y que dependa de ti</span>
+      <input type="text" id="meta" maxlength="300" placeholder="Por ejemplo: Dormir mejor y tener energía por las tardes"></label>
+    <p class="estado mal" id="metaErr" hidden>Escribe tu meta en una frase para seguir.</p>
+    <div class="nav"><button class="btn" data-sig>Siguiente</button><button class="btn ghost" data-atras>Atrás</button></div>
+  </section>
+
+  <!-- 5 · Primeros 90 días -->
+  <section class="card" id="p5" hidden>
+    <h2 tabindex="-1">5 · Tus primeros 90 días</h2>
+    <p>Las metas grandes se cumplen con prácticas pequeñas. Elige una práctica de <b>10 minutos al día</b> para enero, febrero y marzo.</p>
+    <div class="meses">
+      <div><b>Enero</b>Crear el hábito, aunque sea imperfecto.</div>
+      <div><b>Febrero</b>Sostenerlo los días que cueste.</div>
+      <div><b>Marzo</b>Notar los cambios y ajustar.</div>
+    </div>
+    <label class="campo">Mi práctica de 10 minutos
+      <input type="text" id="practica" maxlength="300" placeholder="Por ejemplo: Caminar 10 minutos sin móvil"></label>
+    <div class="chips" id="practicas"></div>
+    <label class="campo">¿Cuándo la harás? <span class="soft">Engánchala a algo que ya haces cada día</span>
+      <input type="text" id="momento" maxlength="120" placeholder="Por ejemplo: Justo después del desayuno"></label>
+    <div class="chips" id="momentos"></div>
+    <label class="campo">El 31 de marzo sabré que avanzo porque…
+      <input type="text" id="senal" maxlength="300" placeholder="Por ejemplo: Me levantaré con más ganas"></label>
+    <div class="nav"><button class="btn" data-sig>Ver mi panel</button><button class="btn ghost" data-atras>Atrás</button></div>
+  </section>
+
+  <!-- 6 · Panel -->
+  <section class="card" id="p6" hidden>
+    <h2 tabindex="-1" class="noprint">6 · Tu panel 2027</h2>
+    <div class="card" id="panel"></div>
+    <div class="nav noprint"><button class="btn ghost" id="imprimir">Guardar en PDF o imprimir</button></div>
+
+    <form class="card noprint" id="form" novalidate>
+      <h3>Recíbelo en tu correo</h3>
+      <p class="soft small">Te enviamos tu panel con tu carta para que lo tengas a mano.</p>
+      <label class="campo">Nombre<input type="text" id="f-nombre" autocomplete="given-name" maxlength="60" required></label>
+      <label class="campo">Correo electrónico<input type="email" id="f-email" autocomplete="email" maxlength="120" required placeholder="tu@correo.com"></label>
+      <label class="campo">Teléfono (WhatsApp)<input type="tel" id="f-tel" autocomplete="tel" maxlength="30" required placeholder="+34 600 000 000"></label>
+      <label class="campo">País<input type="text" id="f-pais" autocomplete="country-name" maxlength="60" required list="paises" placeholder="España"></label>
+      <datalist id="paises"><option>España</option><option>México</option><option>Colombia</option><option>Argentina</option><option>Chile</option><option>Perú</option><option>Uruguay</option><option>Venezuela</option><option>Ecuador</option><option>Estados Unidos</option></datalist>
+      <div class="trampa" aria-hidden="true"><label>Web<input type="text" id="f-web" tabindex="-1" autocomplete="off"></label></div>
+      <label class="check"><input type="checkbox" id="f-acepta"><span>Acepto que Práctica Integral guarde estos datos para enviarme mi panel. Puedo pedir que los borren cuando quiera escribiendo a info@practicaintegral.club. <a href="privacidad.html" target="_blank" rel="noopener">Privacidad</a></span></label>
+      <label class="check"><input type="checkbox" id="f-info"><span>Quiero recibir novedades de Amable Meta y avisos de las próximas charlas.</span></label>
+      <p class="estado" id="estado" role="status" aria-live="polite" hidden></p>
+      <div class="nav"><button class="btn" type="submit" id="enviar">Enviarme mi panel</button></div>
+    </form>
+
+    <div class="box noprint">
+      <h3>Lleva tu meta a Amable Meta</h3>
+      <p>Una meta por trimestre, una práctica de 10 minutos al día y un acompañamiento amable para no soltarla en febrero.</p>
+      <div class="nav"><a class="btn" href="https://app.practicaintegral.club/" target="_blank" rel="noopener">Empezar en Amable Meta</a></div>
+    </div>
+    <div class="nav noprint"><button class="btn ghost" data-atras>Atrás</button><button class="link" id="reiniciar">Empezar de cero</button></div>
+  </section>
+
+  <p class="pie">Una orientación para empezar, no un diagnóstico. <a href="https://practicaintegral.club/" target="_blank" rel="noopener">practicaintegral.club</a></p>
+</div>
+
+<script>
+const APIS = ['https://metas-amables-api.proud-hill-016b.workers.dev', 'https://rigid-thrush-3387.gcalabro12.deno.net'];
+const CLAVE = 'simulador2027';
+const PASOS = ['', 'Tu punto de partida', 'El precio de no cambiar', 'Una carta desde el 31-12-2027', 'Una sola meta', 'Tus primeros 90 días', 'Tu panel 2027'];
+const D = {
+  cuerpo: { n: 'Cuerpo', hint: 'Energía, descanso, movimiento, alimentación',
+    ideas: ['Dormir mejor y despertar con energía', 'Moverme cada día', 'Comer con más calma'],
+    prac: ['Caminar 10 minutos sin móvil', 'Estirar 10 minutos al levantarme', 'Acostarme 10 minutos antes'],
+    pistas: '¿Cómo te sientes en tu cuerpo al despertar? ¿Qué hiciste casi cada día? ¿Qué puedes hacer ahora que antes te costaba?' },
+  mente: { n: 'Mente', hint: 'Calma, foco, emociones, pensamientos',
+    ideas: ['Vivir con más calma', 'Dejar de postergar lo importante', 'Gestionar mejor la ansiedad'],
+    prac: ['Sentarme 10 minutos a respirar', 'Escribir 10 minutos lo que me ronda', 'Leer 10 minutos sin pantallas'],
+    pistas: '¿Cómo está tu cabeza al final del día? ¿Qué dejaste de darle vueltas? ¿Qué práctica te sostuvo cuando costó?' },
+  relaciones: { n: 'Relaciones', hint: 'Pareja, familia, amistades, sentirte en compañía',
+    ideas: ['Tener conversaciones de calidad', 'Poner límites con cariño', 'Cultivar nuevas amistades'],
+    prac: ['Escribir o llamar 10 minutos a alguien importante', '10 minutos de conversación sin móvil', 'Escribir un agradecimiento concreto'],
+    pistas: '¿Con quién te sientes más cerca? ¿Qué conversación pendiente tuviste por fin? ¿Cómo cuidaste tus vínculos cada semana?' },
+  entorno: { n: 'Entorno', hint: 'Trabajo, dinero, tiempo, casa',
+    ideas: ['Organizar mi semana', 'Tener la casa en orden', 'Poner en orden mis finanzas'],
+    prac: ['Ordenar un solo rincón 10 minutos', 'Planificar el día siguiente en 10 minutos', 'Revisar mis gastos 10 minutos'],
+    pistas: '¿Cómo es tu semana ahora? ¿Qué ordenaste por fin? ¿Qué espacio o tiempo has recuperado para ti?' }
+};
+const DIMS = Object.keys(D);
+const COSTES = ['Energía', 'Salud', 'Tiempo', 'Dinero', 'Ilusión', 'Relaciones', 'Paz', 'Confianza en mí'];
+const PALABRAS = ['Calma', 'Energía', 'Raíces', 'Orden', 'Presencia', 'Valentía', 'Ligereza', 'Constancia', 'Cuidado', 'Foco'];
+const MOMENTOS = ['Al despertar', 'Después del desayuno', 'Al volver a casa', 'Antes de dormir'];
+// Las 8 preguntas del test «Descubre tu meta principal»
+const Q = [
+ ['Cuando acaba el día, ¿qué es lo que más echas en falta?', [['Energía, llego agotada o agotado', 'cuerpo'], ['Paz mental, no paro de darle vueltas', 'mente'], ['Tiempo con la gente que quiero', 'relaciones'], ['Haber hecho lo importante', 'entorno']]],
+ ['Si tuvieras una varita mágica para los próximos 3 meses, cambiarías…', [['Mi salud, mi peso o mi forma física', 'cuerpo'], ['Mi ansiedad o mis pensamientos', 'mente'], ['Cómo me llevo con alguien cercano', 'relaciones'], ['Mi trabajo, mi dinero o mi casa', 'entorno']]],
+ ['¿Qué has empezado más veces sin terminar?', [['Hacer ejercicio o comer mejor', 'cuerpo'], ['Meditar o un hábito de calma', 'mente'], ['Llamar más, quedar más, abrirme más', 'relaciones'], ['Ordenar, organizarme, ahorrar', 'entorno']]],
+ ['¿Cómo duermes la mayoría de las noches?', [['Mal, me levanto cansada o cansado', 'cuerpo'], ['Me cuesta dormir por la cabeza', 'mente'], ['Bien, aunque me siento sola o solo', 'relaciones'], ['Bien, pero me falta tiempo para todo', 'entorno']]],
+ ['¿Qué te diría tu mejor amiga o amigo si fuera sincero?', [['Cuídate más el cuerpo', 'cuerpo'], ['Te preocupas demasiado', 'mente'], ['Te veo poco, o te cuesta decir que no', 'relaciones'], ['Vas siempre corriendo', 'entorno']]],
+ ['¿Qué emoción aparece más en tu semana?', [['Pesadez, cansancio', 'cuerpo'], ['Inquietud, ansiedad', 'mente'], ['Tristeza, soledad o enfado con alguien', 'relaciones'], ['Agobio, prisa', 'entorno']]],
+ ['Si pudieras regalarte 10 minutos al día, los usarías para…', [['Moverme o estirarme', 'cuerpo'], ['Respirar y estar en silencio', 'mente'], ['Hablar con alguien que me importa', 'relaciones'], ['Planificar y ordenar', 'entorno']]],
+ ['¿Qué te haría sentir orgullosa u orgulloso dentro de 90 días?', [['Sentirme fuerte y con energía', 'cuerpo'], ['Estar en calma y centrada o centrado', 'mente'], ['Tener relaciones más sanas', 'relaciones'], ['Tener mi vida en orden', 'entorno']]]
+];
+
+const $ = id => document.getElementById(id);
+const esc = t => String(t == null ? '' : t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+const nuevo = () => ({ paso: 0, rueda: { cuerpo: 5, mente: 5, relaciones: 5, entorno: 5 }, dim2: '', costes: [], precio: '', carta: '', palabra: '',
+  dimension: '', test: '', meta: '', practica: '', momento: '', senal: '', nombre: '', email: '', telefono: '', pais: '' });
+let S = nuevo();
+try { const g = JSON.parse(localStorage.getItem(CLAVE) || 'null'); if(g && typeof g === 'object') S = Object.assign(nuevo(), g); } catch(e){}
+const guardar = () => { try { localStorage.setItem(CLAVE, JSON.stringify(S)); } catch(e){} };
+const masBaja = () => DIMS.slice().sort((a, b) => S.rueda[a] - S.rueda[b])[0];
+
+// ---------- Rueda (4 cuartos; el radio crece con la puntuación) ----------
+function rueda(svg, marcada){
+  const c = 130, R = 92, base = 10;
+  const pts = (r, a) => [c + r * Math.cos(a), c + r * Math.sin(a)];
+  const angs = { cuerpo: -Math.PI / 2, entorno: 0, relaciones: Math.PI / 2, mente: Math.PI };   // inicio de cada cuarto
+  let h = '';
+  [0.5, 1].forEach(f => { h += '<circle cx="' + c + '" cy="' + c + '" r="' + (base + (R - base) * f) + '" fill="none" stroke="var(--line)" stroke-width="1.2"/>'; });
+  DIMS.forEach(k => {
+    const a0 = angs[k], a1 = a0 + Math.PI / 2, r = base + (R - base) * S.rueda[k] / 10;
+    const [x0, y0] = pts(r, a0), [x1, y1] = pts(r, a1);
+    const fill = k === marcada ? 'var(--accent)' : 'var(--accent2)';
+    h += '<path d="M' + c + ' ' + c + ' L' + x0.toFixed(1) + ' ' + y0.toFixed(1) + ' A' + r.toFixed(1) + ' ' + r.toFixed(1) + ' 0 0 1 ' + x1.toFixed(1) + ' ' + y1.toFixed(1) + ' Z" fill="' + fill + '" fill-opacity="' + (k === marcada ? .9 : .55) + '" stroke="var(--card)" stroke-width="2"/>';
+  });
+  h += '<line x1="' + (c - R) + '" y1="' + c + '" x2="' + (c + R) + '" y2="' + c + '" stroke="var(--line)"/><line x1="' + c + '" y1="' + (c - R) + '" x2="' + c + '" y2="' + (c + R) + '" stroke="var(--line)"/>';
+  // Etiquetas en las esquinas de cada cuarto
+  const esquina = { cuerpo: [c + 64, 24], entorno: [c + 64, 250], relaciones: [c - 64, 250], mente: [c - 64, 24] };
+  DIMS.forEach(k => { const [x, y] = esquina[k]; h += '<text x="' + x + '" y="' + y + '" text-anchor="middle">' + D[k].n + ' ' + S.rueda[k] + '</text>'; });
+  svg.innerHTML = h;
+}
+
+// ---------- Pasos ----------
+// «actual» es el paso en pantalla; S.paso, el último paso al que llegó (para «Seguir donde lo dejé»)
+let actual = 0;
+function mostrar(n){
+  actual = n; if(n){ S.paso = n; guardar(); }
+  for(let i = 0; i <= 6; i++) $('p' + i).hidden = i !== n;
+  $('progreso').hidden = n === 0;
+  if(n){ $('pasoTxt').textContent = 'Paso ' + n + ' de 6 · ' + PASOS[n]; $('pasoBar').style.width = (n / 6 * 100) + '%'; }
+  ({ 1: paso1, 2: paso2, 3: paso3, 4: paso4, 5: paso5, 6: paso6 })[n]?.();
+  window.scrollTo(0, 0);
+  const h = $('p' + n).querySelector('h2'); if(h) h.focus({ preventScroll: true });
+}
+document.querySelectorAll('[data-sig]').forEach(b => b.onclick = () => {
+  if(actual === 4){ S.meta = $('meta').value.trim(); if(!S.meta){ $('metaErr').hidden = false; $('meta').focus(); return; } }
+  mostrar(actual + 1);
+});
+document.querySelectorAll('[data-atras]').forEach(b => b.onclick = () => mostrar(actual - 1));
+$('empezar').onclick = () => mostrar(S.paso > 0 ? S.paso : 1);
+if(S.paso > 0){ $('empezar').textContent = 'Seguir donde lo dejé'; $('reiniciar0').hidden = false; }
+const reiniciar = () => { if(!confirm('¿Borrar lo que has escrito y empezar de cero?')) return; S = nuevo(); guardar(); location.reload(); };
+$('reiniciar0').onclick = reiniciar; $('reiniciar').onclick = reiniciar;
+
+// Chips: una sola opción (sel) o varias (multi)
+function chips(cont, lista, activo, alPulsar){
+  cont.innerHTML = '';
+  lista.forEach(([valor, html]) => {
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'chip'; b.innerHTML = html;
+    b.setAttribute('aria-pressed', String(activo(valor)));
+    b.onclick = () => { alPulsar(valor); [...cont.children].forEach((x, i) => x.setAttribute('aria-pressed', String(activo(lista[i][0])))); };
+    cont.appendChild(b);
+  });
+}
+const dimChips = (cont, campo, despues) => chips(cont, DIMS.map(k => [k, esc(D[k].n) + ' <small>' + S.rueda[k] + '/10 · ' + esc(D[k].hint) + '</small>']),
+  k => S[campo] === k, k => { S[campo] = k; guardar(); despues && despues(); });
+const enlazar = (id, campo) => { const el = $(id); el.value = S[campo] || ''; el.oninput = () => { S[campo] = el.value; guardar(); }; };
+const rellenar = (cont, lista, id, campo) => chips(cont, lista.map(t => [t, esc(t)]), t => S[campo] === t, t => { S[campo] = t; $(id).value = t; guardar(); });
+
+function paso1(){
+  const cont = $('rangos'); cont.innerHTML = '';
+  DIMS.forEach(k => {
+    const l = document.createElement('label'); l.className = 'rango';
+    l.innerHTML = '<span><b style="all:unset;font-weight:700">' + D[k].n + '</b></span><b id="v-' + k + '">' + S.rueda[k] + '</b><span class="soft">' + D[k].hint + '</span><input type="range" min="0" max="10" step="1" value="' + S.rueda[k] + '" aria-label="' + D[k].n + '">';
+    const r = l.querySelector('input');
+    r.oninput = () => { S.rueda[k] = +r.value; $('v-' + k).textContent = r.value; guardar(); pinta1(); };
+    cont.appendChild(l);
+  });
+  pinta1();
+}
+function pinta1(){
+  const b = masBaja(); rueda($('rueda1'), b);
+  const media = DIMS.reduce((s, k) => s + S.rueda[k], 0) / 4;
+  $('ruedaTxt').textContent = 'Tu parte más baja hoy: ' + D[b].n + ' (' + S.rueda[b] + '). Media: ' + media.toFixed(1).replace('.', ',') + ' de 10.';
+}
+function paso2(){
+  if(!S.dim2) S.dim2 = masBaja();
+  const pinta = () => { $('precioPregunta').firstChild.textContent = 'Si el 31 de diciembre de 2027 todo sigue igual en ' + D[S.dim2].n.toLowerCase() + ', ¿qué te habrá costado?'; };
+  dimChips($('dim2'), 'dim2', pinta); pinta();
+  chips($('costes'), COSTES.map(t => [t, esc(t)]), t => S.costes.includes(t), t => { S.costes = S.costes.includes(t) ? S.costes.filter(x => x !== t) : S.costes.concat(t); guardar(); });
+  enlazar('precio', 'precio');
+}
+function paso3(){
+  $('cartaPistas').textContent = D[S.dim2 || masBaja()].pistas + ' ¿Qué le dirías a quien eres hoy?';
+  enlazar('carta', 'carta'); enlazar('palabra', 'palabra');
+  rellenar($('palabras'), PALABRAS, 'palabra', 'palabra');
+}
+function paso4(){
+  if(!S.dimension) S.dimension = S.dim2 || masBaja();
+  const pintaIdeas = () => rellenar($('ideas'), D[S.dimension].ideas, 'meta', 'meta');
+  dimChips($('dim4'), 'dimension', pintaIdeas); pintaIdeas();
+  enlazar('meta', 'meta'); $('meta').addEventListener('input', () => { $('metaErr').hidden = true; });
+  testInicio();
+}
+// Mini test dentro del paso 4
+let ti = 0, tp = {};
+function testInicio(){
+  ti = 0; tp = { cuerpo: 0, mente: 0, relaciones: 0, entorno: 0 };
+  const caja = $('testCaja');
+  if(S.test){ caja.innerHTML = '<p style="margin-top:10px">Tus respuestas apuntaban a <b>' + D[S.test].n + '</b>. <button type="button" class="link" id="testOtra">Repetir el test</button></p>'; $('testOtra').onclick = () => { S.test = ''; guardar(); testPregunta(); }; return; }
+  testPregunta();
+}
+function testPregunta(){
+  const caja = $('testCaja');
+  if(ti >= Q.length){
+    const top = DIMS.slice().sort((a, b) => tp[b] - tp[a])[0]; S.test = top; guardar();
+    caja.innerHTML = '<p style="margin-top:10px">Tus respuestas apuntan a <b>' + D[top].n + '</b> (' + DIMS.map(k => D[k].n + ' ' + tp[k]).join(' · ') + ').</p><div class="nav" style="margin-top:10px"><button type="button" class="btn ghost" id="testUsar">Elegir ' + D[top].n + '</button></div>';
+    $('testUsar').onclick = () => { S.dimension = top; guardar(); paso4(); $('test').open = false; $('meta').focus(); };
+    return;
+  }
+  const [q, o] = Q[ti];
+  caja.innerHTML = '<p class="soft small" style="margin-top:10px">Pregunta ' + (ti + 1) + ' de ' + Q.length + '</p><p><b>' + esc(q) + '</b></p><div class="opts"></div>';
+  o.forEach(([t, d]) => { const b = document.createElement('button'); b.type = 'button'; b.className = 'opt'; b.textContent = t; b.onclick = () => { tp[d]++; ti++; testPregunta(); caja.querySelector('button')?.focus(); }; caja.querySelector('.opts').appendChild(b); });
+}
+function paso5(){
+  const dim = S.dimension || masBaja();
+  enlazar('practica', 'practica'); enlazar('momento', 'momento'); enlazar('senal', 'senal');
+  rellenar($('practicas'), D[dim].prac, 'practica', 'practica');
+  rellenar($('momentos'), MOMENTOS, 'momento', 'momento');
+}
+
+// ---------- Panel ----------
+function paso6(){
+  const dim = S.dimension || masBaja();
+  const fila = (t, v) => v ? '<div class="box"><h3>' + t + '</h3><p>' + v + '</p></div>' : '';
+  const br = t => esc(t).replace(/\n/g, '<br>');
+  $('panel').innerHTML = '<div><p class="eyebrow">Mi panel 2027</p><h2 style="margin-top:6px">' + (S.palabra ? 'Palabra del año: ' + esc(S.palabra) : 'Mi año empieza por una meta') + '</h2></div>'
+    + '<svg class="rueda" id="rueda6" viewBox="0 0 260 260" role="img" aria-label="Mi punto de partida"></svg>'
+    + fila('Mi meta para 2027 · ' + D[dim].n, S.meta ? '<span style="font-family:var(--display);font-size:19px">' + br(S.meta) + '</span>' : '')
+    + fila('Mi práctica de 10 minutos al día', [S.practica && br(S.practica), S.momento && '<i>Cuándo:</i> ' + br(S.momento)].filter(Boolean).join('<br>'))
+    + fila('A los 90 días sabré que avanzo porque…', br(S.senal))
+    + fila('El precio de no cambiar' + (S.dim2 ? ' · ' + D[S.dim2].n : ''), [S.costes.length && esc(S.costes.join(' · ')), S.precio && br(S.precio)].filter(Boolean).join('<br>'))
+    + (S.carta ? '<div class="box"><h3>Mi carta desde el 31-12-2027</h3><p class="cartaTxt">' + esc(S.carta) + '</p></div>' : '')
+    + '<p class="soft small">Simulador 2027 · Amable Meta · Sin distracciones. Solo tu meta.</p>';
+  rueda($('rueda6'), dim);
+  ['nombre', 'email', 'telefono', 'pais'].forEach(k => { const el = $({ nombre: 'f-nombre', email: 'f-email', telefono: 'f-tel', pais: 'f-pais' }[k]); el.value = S[k] || ''; el.oninput = () => { S[k] = el.value; guardar(); }; });
+}
+$('imprimir').onclick = () => window.print();
+
+// ---------- Envío (Worker y, si no conecta, la reserva de Deno) ----------
+async function llamar(cuerpo){
+  let ultimo;
+  for(const base of APIS){
+    const ctl = new AbortController(), t = setTimeout(() => ctl.abort(), 25000);
+    try {
+      const r = await fetch(base + '/simulador', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(cuerpo), signal: ctl.signal });
+      let j = {}; try { j = await r.json(); } catch(e){}
+      return { status: r.status, j };
+    } catch(e){
+      ultimo = e;
+      if(e.name === 'AbortError') throw e;   // solo tardó: no se repite, para no enviarlo dos veces
+    } finally { clearTimeout(t); }
+  }
+  throw ultimo;
+}
+function estado(txt, ok){ const e = $('estado'); e.textContent = txt; e.className = 'estado ' + (ok ? 'ok' : 'mal'); e.hidden = false; }
+$('form').addEventListener('submit', async ev => {
+  ev.preventDefault();
+  const nombre = $('f-nombre').value.trim(), email = $('f-email').value.trim(), telefono = $('f-tel').value.trim(), pais = $('f-pais').value.trim();
+  let m = '';
+  if(!nombre) m = 'Escribe tu nombre.';
+  else if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) m = 'Revisa el correo: parece que le falta algo.';
+  else if(telefono.replace(/\D/g, '').length < 7) m = 'Revisa el teléfono: escribe al menos 7 cifras.';
+  else if(!pais) m = 'Escribe tu país.';
+  else if(!$('f-acepta').checked) m = 'Marca la primera casilla para que podamos guardar tus datos y enviarte el panel.';
+  if(m){ estado(m, false); return; }
+  const btn = $('enviar'); btn.disabled = true; btn.textContent = 'Enviando…'; $('estado').hidden = true;
+  const dim = S.dimension || masBaja();
+  try {
+    const { status, j } = await llamar({ nombre, email, telefono, pais, acepta: true, aceptaInfo: $('f-info').checked, web: $('f-web').value,
+      rueda: S.rueda, dimension: dim, test: S.test, costes: S.costes, precio: S.precio, carta: S.carta, palabra: S.palabra,
+      meta: S.meta, practica: S.practica, momento: S.momento, senal: S.senal });
+    if(status === 200 && j.ok){
+      if(j.enviado) estado('Listo. Te lo hemos enviado a ' + email + '. Si no lo ves en unos minutos, mira en Promociones o en Spam.', true);
+      else if(j.motivo === 'ya-enviado') estado('Tus datos están al día. Hoy ya te enviamos el panel a ' + email + ': si no lo encuentras, mira en Promociones o en Spam, o guárdalo en PDF.', true);
+      else estado('Tus datos están guardados, pero el correo no ha salido. Guarda tu panel en PDF; te lo enviaremos en cuanto podamos.', false);
+      btn.textContent = 'Enviado';
+      return;
+    }
+    estado((status >= 400 && status < 500 && status !== 404 && j.error) || 'Algo ha fallado. Tu panel sigue aquí: guárdalo en PDF y vuelve a intentarlo en un rato.', false);
+  } catch(e){
+    estado('No hemos podido conectar. Tu panel sigue aquí: guárdalo en PDF y vuelve a pulsar «Enviarme mi panel» en un rato.', false);
+  }
+  btn.disabled = false; btn.textContent = 'Enviarme mi panel';
+});
+
+mostrar(S.paso === 6 ? 6 : 0);
+</script>
+</body>
+</html>
+<!-- ==== Fin del Simulador 2027 · 2026-11-03 ==== -->
