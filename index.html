@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V14.37 · App Amable Meta · 2026-11-02 16:32==== -->
+<!-- ==== index V14.38 · App Amable Meta · 2026-11-03 17:51==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -20,6 +20,9 @@
   /* Sin el recuadro azul que Android pinta al tocar */
   *{ -webkit-tap-highlight-color: transparent; }
   button, a, .lacre-btn{ -webkit-touch-callout:none; }
+  /* Dejar el dedo apretado no selecciona nada, salvo donde se escribe */
+  body{ -webkit-user-select:none; user-select:none; -webkit-touch-callout:none; }
+  input, textarea, select, [contenteditable]:not([contenteditable="false"]), [contenteditable]:not([contenteditable="false"]) *{ -webkit-user-select:text; user-select:text; -webkit-touch-callout:default; }
   :root{
     --bg: #FFFFFF;
     --surface: #FFFFFF;
@@ -2612,7 +2615,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V14.37';
+  const APP_VERSION = 'V14.38';
 
   // Modo Play: la app de Google Play abre la web con ?origen=play (se recuerda en el
   // dispositivo). Ahí no se muestran precios ni botones de pago, por las normas de
@@ -12975,4 +12978,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Meta" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V14.37 · App Amable Meta · 2026-11-02 16:32==== -->
+<!-- ==== Fin del index V14.38 · App Amable Meta · 2026-11-03 17:51==== -->
