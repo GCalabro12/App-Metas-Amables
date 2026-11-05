@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V14.53 · App Amable Meta · 2026-11-05 14:29==== -->
+<!-- ==== index V14.54 · App Amable Meta · 2026-11-05 17:30==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -732,14 +732,14 @@ button, input, textarea, select{ font-family:inherit; }
     background:var(--surface); display:flex; align-items:center; justify-content:center;
     cursor:pointer; font-size:18px; color:var(--ink); flex-shrink:0;
   }
-  /* Botón «← Volver»: igual en todas las pantallas, rojo y grande; siempre lleva al panel */
+  /* Botón «← Volver»: morado (el color que más se ve en Inicio) y grande; en cada zona, su color */
   .back-btn{
     padding:10px 18px; border-radius:10px; border:none;
-    background:var(--moss); color:#fff; cursor:pointer;
+    background:#7B5FB8; color:#fff; cursor:pointer;
     font-family:'Karla',sans-serif; font-size:16px; font-weight:700; flex-shrink:0;
     transition:all 0.2s ease;
   }
-  .back-btn:hover{ background:var(--moss-deep); transform:scale(1.03); }
+  .back-btn:hover{ background:#5E4596; transform:scale(1.03); }
   .back-btn.suelto{ display:block; margin:14px 0 10px; }
   /* Etiqueta roja «Recibida» arriba a la derecha del botón de la guía */
   .ciclo-btn{ position:relative; }
@@ -1047,6 +1047,13 @@ svg.mi-ico.mi-tx{color:inherit}
 .ps-recuadro p svg.mi-tx,.ps-recuadro li svg.mi-tx,.ps-recuadro .av-tit svg.mi-tx{color:#9E2A1F;opacity:1}
 .ps-recuadro .nota-tit svg.mi-tx,.futuro-cab svg.mi-tx{color:#6B4FA8;opacity:1}
 .ps-reg-icos svg.mi-tx{color:#fff}
+/* Iconos con el color de la zona en la que estás (dentro de los botones, el del texto del botón) */
+[data-vista="formMeta"] svg.mi-tx,[data-sub="s4"] svg.mi-tx,[data-vista="posit"] svg.mi-tx{color:#AE7E22;opacity:1}
+[data-vista="practicas"] svg.mi-tx,[data-sub="s3"] svg.mi-tx{color:#3F6EA3;opacity:1}
+[data-vista="practicaSemanal"] svg.mi-tx,[data-vista="carta"] svg.mi-tx,[data-vista="historial"] svg.mi-tx,[data-vista="calendarioPracticas"] svg.mi-tx{color:#9E2A1F;opacity:1}
+[data-vista="checkin"] svg.mi-tx,[data-vista="calendar"] svg.mi-tx,[data-vista="sesionesCal"] svg.mi-tx,[data-vista="situacion"] svg.mi-tx,[data-vista="group"] svg.mi-tx,[data-sub="s1"] svg.mi-tx,[data-sub="s2"] svg.mi-tx{color:#557A4D;opacity:1}
+[data-vista="utilidades"] svg.mi-tx,[data-vista="frases"] svg.mi-tx,[data-vista="habla"] svg.mi-tx,[data-vista="musica"] svg.mi-tx,[data-sub="s5"] svg.mi-tx{color:#6B4FA8;opacity:1}
+[data-vista="formMeta"] button svg.mi-tx,[data-vista="formMeta"] a svg.mi-tx,[data-sub="s4"] button svg.mi-tx,[data-sub="s4"] a svg.mi-tx,[data-vista="posit"] button svg.mi-tx,[data-vista="posit"] a svg.mi-tx,[data-vista="practicas"] button svg.mi-tx,[data-vista="practicas"] a svg.mi-tx,[data-sub="s3"] button svg.mi-tx,[data-sub="s3"] a svg.mi-tx,[data-vista="practicaSemanal"] button svg.mi-tx,[data-vista="practicaSemanal"] a svg.mi-tx,[data-vista="carta"] button svg.mi-tx,[data-vista="carta"] a svg.mi-tx,[data-vista="historial"] button svg.mi-tx,[data-vista="historial"] a svg.mi-tx,[data-vista="calendarioPracticas"] button svg.mi-tx,[data-vista="calendarioPracticas"] a svg.mi-tx,[data-vista="checkin"] button svg.mi-tx,[data-vista="checkin"] a svg.mi-tx,[data-vista="calendar"] button svg.mi-tx,[data-vista="calendar"] a svg.mi-tx,[data-vista="sesionesCal"] button svg.mi-tx,[data-vista="sesionesCal"] a svg.mi-tx,[data-vista="situacion"] button svg.mi-tx,[data-vista="situacion"] a svg.mi-tx,[data-vista="group"] button svg.mi-tx,[data-vista="group"] a svg.mi-tx,[data-sub="s1"] button svg.mi-tx,[data-sub="s1"] a svg.mi-tx,[data-sub="s2"] button svg.mi-tx,[data-sub="s2"] a svg.mi-tx,[data-vista="utilidades"] button svg.mi-tx,[data-vista="utilidades"] a svg.mi-tx,[data-vista="frases"] button svg.mi-tx,[data-vista="frases"] a svg.mi-tx,[data-vista="habla"] button svg.mi-tx,[data-vista="habla"] a svg.mi-tx,[data-vista="musica"] button svg.mi-tx,[data-vista="musica"] a svg.mi-tx,[data-sub="s5"] button svg.mi-tx,[data-sub="s5"] a svg.mi-tx{color:inherit}
 .ayuda-ico .mi-tx{width:15px;height:15px;margin:0;opacity:1;color:#fff}
 .util-ico .mi-tx{width:26px;height:26px;margin:0 4px 0 0;opacity:1}
 .ajuste-acc>summary>span{display:inline-flex;align-items:center}
@@ -2014,6 +2021,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   [data-vista="formMeta"] .back-btn, [data-sub="s4"] .back-btn{ background:#C9942D !important; border-color:#C9942D !important; color:#fff !important; }
   [data-vista="practicas"] .back-btn, [data-sub="s3"] .back-btn{ background:#4F7FB5 !important; border-color:#4F7FB5 !important; color:#fff !important; }
   [data-vista="checkin"] .back-btn, [data-vista="calendar"] .back-btn, [data-vista="sesionesCal"] .back-btn, [data-vista="situacion"] .back-btn, [data-vista="group"] .back-btn, [data-sub="s1"] .back-btn, [data-sub="s2"] .back-btn{ background:#6B9362 !important; border-color:#6B9362 !important; color:#fff !important; }
+  [data-vista="practicaSemanal"] .back-btn,[data-vista="carta"] .back-btn,[data-vista="historial"] .back-btn,[data-vista="calendarioPracticas"] .back-btn{ background:#B3261E !important; border-color:#B3261E !important; color:#fff !important; }
   [data-vista="utilidades"] .back-btn,[data-vista="frases"] .back-btn,[data-vista="habla"] .back-btn,[data-vista="musica"] .back-btn,[data-sub="s5"] .back-btn{ background:#7B5FB8 !important; border-color:#7B5FB8 !important; color:#fff !important; }
   [data-vista="formMeta"] .btn-dictar{ border-color:#C9942D !important; color:#7A5410 !important; }
   .fm-tiempo{ display:block; margin:0 0 14px; }
@@ -2715,7 +2723,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V14.53';
+  const APP_VERSION = 'V14.54';
   // ===== Pantalla de inicio: versión, sonido corto y salida (5-11-2026) =====
   (function(){
     const sp = document.getElementById('inicioSplash'); if(!sp) return;
@@ -13327,4 +13335,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Meta" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V14.53 · App Amable Meta · 2026-11-05 14:29==== -->
+<!-- ==== Fin del index V14.54 · App Amable Meta · 2026-11-05 17:30==== -->
