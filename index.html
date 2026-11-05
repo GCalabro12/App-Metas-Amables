@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V14.44 · App Amable Meta · 2026-11-03 20:25==== -->
+<!-- ==== index V14.45 · App Amable Meta · 2026-11-05 13:48==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2638,7 +2638,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V14.44';
+  const APP_VERSION = 'V14.45';
   // Texto de los botones mientras se envía: los tres puntos se encienden uno tras otro
   const ENVIANDO_HTML = 'Enviando<span class="puntos-mov" aria-hidden="true"><i>.</i><i>.</i><i>.</i></span>';
 
@@ -5065,6 +5065,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       ${MODO_PLAY ? '' : '<button class="menu-item" id="facturacionBtn">💳 Facturación</button>'}
       <button class="menu-item" id="ajustesBtn">⚙️ Ajustes</button>
       <button class="menu-item" id="mpAyuda">❓ Centro de ayuda</button>
+      <button class="menu-item" id="mpOpinion">💬 Comentarios y mejoras para la app</button>
       ${soyModerador() ? '<button class="menu-item" id="miPanelFacBtn">🛠️ Panel de control admin Metas A.</button><button class="menu-item" id="miSituacionBtn">👥 Situación de tu grupo</button>' : ''}
       ${esCuentaPruebas() && !soyModerador() ? `<div class="menu-divider"></div>
       <p style="font-size:13px;font-weight:700;margin:6px 14px 4px">🛠️ Moderador · entrar como:</p>
@@ -5093,6 +5094,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     panel.querySelector('#cerrarSesionBtn').onclick = () => { state.menuOpen = false; switchUser(); };
     panel.querySelector('#mpViaje').onclick = () => { state.menuOpen = false; state.view = 'viaje'; state.panelSub = null; window.scrollTo(0,0); render(); };
     panel.querySelector('#mpAyuda').onclick = () => { state.menuOpen = false; state.prevView = state.view; state.view = 'ayuda'; window.scrollTo(0,0); render(); };
+    panel.querySelector('#mpOpinion').onclick = () => { state.menuOpen = false; state.prevView = 'panel'; state.view = 'opinion'; window.scrollTo(0,0); render(); };
     panel.querySelector('#mpInvitar').onclick = async () => {
       const texto = 'Te recomiendo Amable Meta: una app para crear hábitos con amabilidad, paso a paso, con guías personalizadas y la compañía de Prácti. 🌱';
       const url = 'https://play.google.com/store/apps/details?id=club.practicaintegral.metasamables';
@@ -7789,6 +7791,7 @@ lo que haces cada día es lo que vas a ser.`;
     if(state.view === 'contrato'){ renderContrato(); if(state.menuOpen) renderMenuOverlay(); return; }
     if(state.view === 'carta'){ renderCarta(); if(state.menuOpen) renderMenuOverlay(); return; }
     if(state.view === 'encuesta'){ renderEncuesta(); if(state.menuOpen) renderMenuOverlay(); return; }
+    if(state.view === 'opinion'){ renderOpinion(); if(state.menuOpen) renderMenuOverlay(); return; }
 
     if(state.menuOpen){
       renderMenuOverlay();
@@ -12573,6 +12576,32 @@ lo que haces cada día es lo que vas a ser.`;
     };
   }
 
+  // ===== Comentarios y mejoras para la app (5-11-2026): desde el menú, en cualquier momento =====
+  // Se guarda en Airtable › Opiniones (Origen «Menú») y llega a Gustavo en el resumen.
+  function renderOpinion(){
+    renderBackTopbar('💬 Comentarios y mejoras');
+    const caja = el(`<div class="card encuesta-caja">
+        <p style="margin:0 0 12px">¿Qué mejorarías, qué echas de menos o qué te gusta? Lo leemos todo.</p>
+        <textarea id="opTexto" rows="6" maxlength="2000" placeholder="Escribe aquí tu comentario"></textarea>
+        <button type="button" class="btn btn-yes" id="opEnviar" style="text-align:center">Enviar</button>
+        <p id="opError" style="color:#B94A3A;font-size:14px;margin:8px 0 0"></p>
+      </div>`).firstElementChild;
+    app.appendChild(caja);
+    caja.querySelector('#opEnviar').onclick = async () => {
+      const texto = caja.querySelector('#opTexto').value.trim();
+      if(texto.length < 3){ caja.querySelector('#opError').textContent = 'Escribe tu comentario antes de enviarlo.'; return; }
+      const b = caja.querySelector('#opEnviar'); b.disabled = true; b.innerHTML = ENVIANDO_HTML;
+      try {
+        await api('/opinion', { texto });
+        caja.innerHTML = practiHTML('celebracion', '💚', 120) + '<h2 style="text-align:center;margin:10px 0 6px">¡Gracias! 💚</h2>'
+          + '<p style="text-align:center;margin:0 0 14px">Hemos recibido tu comentario. Nos ayuda a mejorar la app.</p>'
+          + '<button type="button" class="link-quiet" id="opFin" style="display:block;margin:14px auto 0">Volver a la app</button>';
+        try { activarPracti(caja); } catch(e){}
+        caja.querySelector('#opFin').onclick = () => irAlPanel();
+      } catch(e){ caja.querySelector('#opError').textContent = e.message || 'No se pudo enviar.'; b.disabled = false; b.textContent = 'Enviar'; }
+    };
+  }
+
   // seguir: trimestre nuevo con la misma meta · cambiar: cambio de meta dentro del trimestre (las dos, con las respuestas de antes)
   function abrirFormularioMeta(seguir, cambiar){
     let previo = null;
@@ -13054,4 +13083,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Meta" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V14.44 · App Amable Meta · 2026-11-03 20:25==== -->
+<!-- ==== Fin del index V14.45 · App Amable Meta · 2026-11-05 13:48==== -->
