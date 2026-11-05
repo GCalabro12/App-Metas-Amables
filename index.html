@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V14.50 · App Amable Meta · 2026-11-05 14:19==== -->
+<!-- ==== index V14.51 · App Amable Meta · 2026-11-05 14:24==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2710,7 +2710,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V14.50';
+  const APP_VERSION = 'V14.51';
   // ===== Pantalla de inicio: versión, sonido corto y salida (5-11-2026) =====
   (function(){
     const sp = document.getElementById('inicioSplash'); if(!sp) return;
@@ -2720,22 +2720,19 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       if(fuera) return; fuera = true;
       sp.classList.add('fuera'); setTimeout(() => sp.remove(), 700);
     };
+    // Sonido de 3,5 s (trozo de la música oficial, ya con entrada y salida suaves; archivo pequeño para que empiece enseguida).
+    // Android y Chrome no dejan sonar nada hasta que se toca la pantalla: si lo bloquean, suena al tocar esta pantalla.
+    let sonando = false;
+    const sonar = () => {
+      try {
+        if(sonando || localStorage.getItem('practi_musica') === '0') return;
+        if(!audio){ audio = new Audio('sonido-inicio.mp3'); audio.volume = 0.7; audio.preload = 'auto'; }
+        audio.play().then(() => { sonando = true; }).catch(() => {});
+      } catch(e){}
+    };
+    sonar();
+    sp.addEventListener('pointerdown', sonar, { once: true });
     sp.addEventListener('click', quitar);
-    // 3,5 s de la música oficial (del segundo 8), con entrada y salida suaves; si el móvil no deja sonar sin tocar, no suena
-    try {
-      if(localStorage.getItem('practi_musica') !== '0'){
-        audio = new Audio('musica-oficial-metas-amables.mp3'); audio.volume = 0;
-        audio.addEventListener('loadedmetadata', () => { try { audio.currentTime = 8; } catch(e){} }, { once: true });
-        audio.play().then(() => {
-          const ini = Date.now();
-          const r = setInterval(() => {
-            const t = Date.now() - ini;
-            if(t >= 3500){ clearInterval(r); audio.pause(); return; }
-            audio.volume = 0.6 * Math.min(1, t / 250, (3500 - t) / 1100);
-          }, 50);
-        }).catch(() => {});
-      }
-    } catch(e){}
     // Se va cuando la app ya ha cargado (mínimo 2,6 s y máximo 7 s)
     const mirar = setInterval(() => {
       const t = Date.now() - t0;
@@ -13313,4 +13310,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Meta" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V14.50 · App Amable Meta · 2026-11-05 14:19==== -->
+<!-- ==== Fin del index V14.51 · App Amable Meta · 2026-11-05 14:24==== -->
