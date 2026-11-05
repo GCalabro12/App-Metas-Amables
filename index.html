@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V14.51 · App Amable Meta · 2026-11-05 14:24==== -->
+<!-- ==== index V14.52 · App Amable Meta · 2026-11-05 14:27==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1042,6 +1042,7 @@ body.con-tabbar:has(.musica-barra) #app{padding-bottom:170px}
 .coronas{display:inline-flex;gap:1px;vertical-align:-2px}.corona-svg{width:1.15em;height:1em;flex-shrink:0}
 .ico-grande .mi-tx{width:44px;height:44px;margin:0;opacity:1}
 .ps-reg-icos .mi-tx{width:16px;height:16px;margin:0 2px;opacity:1}
+.pf-mini .mi-tx{width:20px;height:20px;margin:0;opacity:1}
 .ayuda-ico .mi-tx{width:15px;height:15px;margin:0;opacity:1;color:#fff}
 .util-ico .mi-tx{width:26px;height:26px;margin:0 4px 0 0;opacity:1}
 .ajuste-acc>summary>span{display:inline-flex;align-items:center}
@@ -2710,7 +2711,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V14.51';
+  const APP_VERSION = 'V14.52';
   // ===== Pantalla de inicio: versión, sonido corto y salida (5-11-2026) =====
   (function(){
     const sp = document.getElementById('inicioSplash'); if(!sp) return;
@@ -3047,10 +3048,10 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   function itemsPreparar(){
     const g = state.gamifica || {};
     const it = [];
-    if(pushPosible()) it.push({ k: 'push', t: '🔔 Aviso diario en el móvil', d: 'A las ' + horaAviso() + ':00, solo si ese día aún no has registrado.', ok: pushActivo() });
-    if(g.tieneTelefono) it.push({ k: 'wa', t: '💬 Mensajes de ánimo por WhatsApp', d: 'De vez en cuando, para no abandonar tu meta.', ok: !!g.aceptaWhatsApp });
-    if(g.tieneEmail) it.push({ k: 'em', t: '📧 Emails que te acompañan', d: 'Pocos, y te puedes dar de baja cuando quieras.', ok: !!g.aceptaEmails });
-    if(!MODO_PLAY && !appInstalada()) it.push({ k: 'inst', t: '📲 La app en tu pantalla de inicio', d: 'Para abrirla con un toque, como cualquier app.', ok: false });
+    if(pushPosible()) it.push({ k: 'push', t: '<i data-ico=campana></i>Aviso diario en el móvil', d: 'A las ' + horaAviso() + ':00, solo si ese día aún no has registrado.', ok: pushActivo() });
+    if(g.tieneTelefono) it.push({ k: 'wa', t: '<i data-ico=comentario></i>Mensajes de ánimo por WhatsApp', d: 'De vez en cuando, para no abandonar tu meta.', ok: !!g.aceptaWhatsApp });
+    if(g.tieneEmail) it.push({ k: 'em', t: '<i data-ico=correo></i>Emails que te acompañan', d: 'Pocos, y te puedes dar de baja cuando quieras.', ok: !!g.aceptaEmails });
+    if(!MODO_PLAY && !appInstalada()) it.push({ k: 'inst', t: '<i data-ico=movil></i>La app en tu pantalla de inicio', d: 'Para abrirla con un toque, como cualquier app.', ok: false });
     return it;
   }
   function faltaPreparar(){ return itemsPreparar().filter(x => !x.ok); }
@@ -5184,6 +5185,18 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     persona: '<path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>',
     gota: '<path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"/>',
     menu: '<line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/>',
+    campana: '<path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>',
+    megafono: '<path d="m3 11 18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/>',
+    copiar: '<rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>',
+    correr: '<circle cx="13" cy="4" r="2"/><path d="m6 21 3-6 3 2v5"/><path d="m9 15-1-4 5-3 3 3 3 1"/><path d="M8 11 5 13"/>',
+    carpeta: '<path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/>',
+    guardar: '<path d="M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><path d="M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7"/><path d="M7 3v4a1 1 0 0 0 1 1h7"/>',
+    cruz: '<circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/>',
+    grafico: '<path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/>',
+    enviar: '<path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/>',
+    mapa: '<path d="M14.1 6.3 9.9 4.2a2 2 0 0 0-1.8 0L3.6 6.5A1 1 0 0 0 3 7.4v12a1 1 0 0 0 1.4.9l3.7-1.9a2 2 0 0 1 1.8 0l4.2 2.1a2 2 0 0 0 1.8 0l4.5-2.3a1 1 0 0 0 .6-.9v-12a1 1 0 0 0-1.4-.9l-3.7 1.9a2 2 0 0 1-1.8 0z"/><path d="M15 6.8v15"/><path d="M9 3.2v15"/>',
+    ojo: '<path d="M2.06 12.35a1 1 0 0 1 0-.7 10.75 10.75 0 0 1 19.88 0 1 1 0 0 1 0 .7 10.75 10.75 0 0 1-19.88 0"/><circle cx="12" cy="12" r="3"/>',
+    espera: '<path d="M5 22h14"/><path d="M5 2h14"/><path d="M17 22v-4.17a2 2 0 0 0-.59-1.41L12 12l-4.41 4.42A2 2 0 0 0 7 17.83V22"/><path d="M7 2v4.17a2 2 0 0 0 .59 1.41L12 12l4.41-4.42A2 2 0 0 0 17 6.17V2"/>',
     salir: '<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/>'
   };
   function icoMenu(n){ return '<svg class="mi-ico" viewBox="0 0 24 24" aria-hidden="true">' + (ICONOS_MENU[n] || '') + '</svg>'; }
@@ -5310,7 +5323,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
   function renderSituacionGrupo(){
     renderBackTopbar('');
-    app.appendChild(el('<h2 style="text-align:center;margin:4px 0 4px">👥 Situación de los practicantes</h2><p style="text-align:center;font-size:13px;color:var(--ink-soft);margin:0 0 12px">Para preparar la sesión. Solo lo ves tú, como moderador.</p>'));
+    app.appendChild(el('<h2 style="text-align:center;margin:4px 0 4px"><i data-ico=grupo></i>Situación de los practicantes</h2><p style="text-align:center;font-size:13px;color:var(--ink-soft);margin:0 0 12px">Para preparar la sesión. Solo lo ves tú, como moderador.</p>'));
     // Sin las cuentas de prueba ni la del revisor de Google
     const nombres = Object.keys(state.situacion || {}).filter(n => !/\(moderador\)\s*$/i.test(n) && n !== 'Revisor Google' && !/^Prueba /i.test(n) && n !== state.me).sort((a, b) => a.localeCompare(b, 'es'));
     // Los datos son los de la última carga (el Worker los guarda hasta 10 minutos): se pueden volver a pedir
@@ -5337,10 +5350,10 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       const ultima = [...s.semanas].reverse().find(x => x.estado || x.comp);
       return `<div class="card" style="margin-bottom:10px">
         <p style="font-weight:700;font-size:16px;margin:0 0 6px">${escapeAttr(conAvatar(n))}${s.yo ? ' <span style="font-size:12px;font-weight:700;color:#5B3FA8;background:#EFE9FB;border-radius:999px;padding:2px 8px;margin-left:4px">Tú · moderador</span>' : ''}</p>
-        <p style="margin:0 0 4px;font-size:14px">🎯 <b>Meta:</b> ${s.meta ? escapeAttr(s.meta) : '<span style="color:var(--ink-soft)">sin meta escrita</span>'}</p>
-        ${s.practica ? `<p style="margin:0 0 6px;font-size:14px">🏃 <b>Práctica:</b> ${escapeAttr(s.practica)}</p>` : ''}
-        <p style="margin:0 0 2px;font-size:13px">📅 <b>Este trimestre</b> (${act.nombre}): ${fila(act)}</p>
-        <p style="margin:0 0 2px;font-size:13px">🗂️ <b>Trimestre anterior</b> (${ant.nombre}): ${fila(ant)}</p>
+        <p style="margin:0 0 4px;font-size:14px"><i data-ico=diana></i><b>Meta:</b> ${s.meta ? escapeAttr(s.meta) : '<span style="color:var(--ink-soft)">sin meta escrita</span>'}</p>
+        ${s.practica ? `<p style="margin:0 0 6px;font-size:14px"><i data-ico=correr></i><b>Práctica:</b> ${escapeAttr(s.practica)}</p>` : ''}
+        <p style="margin:0 0 2px;font-size:13px"><i data-ico=calendario></i><b>Este trimestre</b> (${act.nombre}): ${fila(act)}</p>
+        <p style="margin:0 0 2px;font-size:13px"><i data-ico=carpeta></i><b>Trimestre anterior</b> (${ant.nombre}): ${fila(ant)}</p>
         <p style="margin:4px 0 0;font-size:12px;color:var(--ink-soft)">Último registro: ${ultima ? escapeAttr(ultima.semana) + (ultima.estado ? ' · ' + escapeAttr(ultima.estado) : '') : '—'}</p>
       </div>`;
     }).join('')));
@@ -5424,7 +5437,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     cargarPanelFac(false);
     const d = state.panelFac && state.panelFac.datos;
     const n = d ? (d.animos || []).length + personasAEscribir(d).length + (d.comunicados || []).length + pausasARecordar(d).length : null;
-    const c = el(`<button type="button" class="card pf-tarjeta"><span class="pf-tarjeta-tx"><b>🛠️ Panel de control admin Metas A.</b><small>${n === null ? 'Toca para ver tus tareas y el resumen' : (n ? (n === 1 ? 'Tienes 1 tarea para hoy' : 'Tienes ' + n + ' tareas para hoy') : 'Todo al día ✓')}</small></span><span class="pf-num${n ? '' : ' cero'}">${n === null ? '›' : (n || '✓')}</span></button>`).firstElementChild;
+    const c = el(`<button type="button" class="card pf-tarjeta"><span class="pf-tarjeta-tx"><b><i data-ico=llave></i>Panel de control admin Metas A.</b><small>${n === null ? 'Toca para ver tus tareas y el resumen' : (n ? (n === 1 ? 'Tienes 1 tarea para hoy' : 'Tienes ' + n + ' tareas para hoy') : 'Todo al día ✓')}</small></span><span class="pf-num${n ? '' : ' cero'}">${n === null ? '›' : (n || '✓')}</span></button>`).firstElementChild;
     c.onclick = abrirPanelFacilitador;
     return c;
   }
@@ -5442,45 +5455,45 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     const fila = s => {
       const dias = leerDias(s.dias), nd = Object.keys(dias).length;
       return `<div class="pf-sem"><b>${escapeAttr(s.semana || '')}</b>
-        <span>${nd ? '💧 ' + DIAS_SEMANA.filter(k => dias[k]).join(' ') : '<span class="pf-gris">sin riegos</span>'}${s.comp ? ' · ' + (s.hechas || 0) + ' de ' + s.comp + ' veces' : ''}${s.estado ? ' · ' + escapeAttr(s.estado) : ''}</span>
-        ${s.notas ? '<small>📝 ' + escapeAttr(s.notas) + '</small>' : ''}</div>`;
+        <span>${nd ? '<i data-ico=gota></i>' + DIAS_SEMANA.filter(k => dias[k]).join(' ') : '<span class="pf-gris">sin riegos</span>'}${s.comp ? ' · ' + (s.hechas || 0) + ' de ' + s.comp + ' veces' : ''}${s.estado ? ' · ' + escapeAttr(s.estado) : ''}</span>
+        ${s.notas ? '<small><i data-ico=nota></i>' + escapeAttr(s.notas) + '</small>' : ''}</div>`;
     };
     app.appendChild(el(`<button type="button" class="pf-btn" id="pfVolverLista" style="margin:0 0 10px">← Volver</button>
       <div class="card pf-ficha">
         <p class="pf-ficha-nombre">${escapeAttr(conAvatar(x.nombre))}</p>
-        <p class="pf-gris" style="margin:0 0 8px;font-size:13.5px">${escapeAttr(planEtiqueta(x))}${x.alta ? ' · alta el ' + escapeAttr(x.alta.slice(8, 10) + '/' + x.alta.slice(5, 7)) : ''}${x.usaPlay ? ' · 📱 usa la app de Play' : ''}</p>
-        ${telValido(x.tel) ? `<a class="pf-btn wa" href="https://wa.me/${x.tel}" target="_blank" rel="noopener">📲 Abrir su WhatsApp</a>` : '<p class="pf-aviso">' + (x.tel ? 'Su teléfono parece inventado (' + escapeAttr(x.tel) + ')' : 'Sin teléfono') + '</p>'}
-        ${x.aceptaWhatsApp ? '<p class="pf-ok-wa">✅ Ha activado los mensajes por WhatsApp</p>' : '<p class="pf-aviso">⚠️ No ha activado los mensajes por WhatsApp en la app</p>'}
-        <p style="margin:12px 0 4px;font-size:14px">🎯 <b>Meta:</b> ${x.meta ? escapeAttr(x.meta) : '<span class="pf-gris">sin meta escrita</span>'}</p>
-        ${x.practica ? `<p style="margin:0 0 4px;font-size:14px">🏃 <b>Práctica:</b> ${escapeAttr(x.practica)}</p>` : ''}
-        <p style="margin:0;font-size:14px">💧 ${escapeAttr(textoRiego(x))}${x.contactado ? ' · le escribiste el ' + escapeAttr(fechaEnvio(x.contactado)) : ''}</p>
+        <p class="pf-gris" style="margin:0 0 8px;font-size:13.5px">${escapeAttr(planEtiqueta(x))}${x.alta ? ' · alta el ' + escapeAttr(x.alta.slice(8, 10) + '/' + x.alta.slice(5, 7)) : ''}${x.usaPlay ? ' · <i data-ico=movil></i>usa la app de Play' : ''}</p>
+        ${telValido(x.tel) ? `<a class="pf-btn wa" href="https://wa.me/${x.tel}" target="_blank" rel="noopener"><i data-ico=movil></i>Abrir su WhatsApp</a>` : '<p class="pf-aviso">' + (x.tel ? 'Su teléfono parece inventado (' + escapeAttr(x.tel) + ')' : 'Sin teléfono') + '</p>'}
+        ${x.aceptaWhatsApp ? '<p class="pf-ok-wa"><i data-ico=hecho></i>Ha activado los mensajes por WhatsApp</p>' : '<p class="pf-aviso"><i data-ico=alerta></i>No ha activado los mensajes por WhatsApp en la app</p>'}
+        <p style="margin:12px 0 4px;font-size:14px"><i data-ico=diana></i><b>Meta:</b> ${x.meta ? escapeAttr(x.meta) : '<span class="pf-gris">sin meta escrita</span>'}</p>
+        ${x.practica ? `<p style="margin:0 0 4px;font-size:14px"><i data-ico=correr></i><b>Práctica:</b> ${escapeAttr(x.practica)}</p>` : ''}
+        <p style="margin:0;font-size:14px"><i data-ico=gota></i>${escapeAttr(textoRiego(x))}${x.contactado ? ' · le escribiste el ' + escapeAttr(fechaEnvio(x.contactado)) : ''}</p>
       </div>
-      <div class="card"><p class="pf-sub" style="margin-top:0">🗓️ Sus últimas semanas</p>${sem.length ? sem.map(fila).join('') : '<p class="pf-gris" style="margin:0">Todavía no tiene semanas registradas.</p>'}</div>
-      <div class="card"><p class="pf-sub" style="margin-top:0">🔒 Tu nota privada <span class="pf-gris" style="font-weight:400">(solo la ves tú)</span></p>
+      <div class="card"><p class="pf-sub" style="margin-top:0"><i data-ico=calendario></i>Sus últimas semanas</p>${sem.length ? sem.map(fila).join('') : '<p class="pf-gris" style="margin:0">Todavía no tiene semanas registradas.</p>'}</div>
+      <div class="card"><p class="pf-sub" style="margin-top:0"><i data-ico=candado></i>Tu nota privada <span class="pf-gris" style="font-weight:400">(solo la ves tú)</span></p>
         <textarea id="pfNota" rows="4" class="pf-nota-tx" placeholder="Lo que quieras recordar de esta persona: cómo está, de qué hablasteis…">${escapeAttr(x.notaFac || '')}</textarea>
-        <div class="pf-acciones" style="margin-top:8px"><button type="button" class="pf-btn" id="pfGuardarNota">💾 Guardar nota</button>${x.notaFecha ? '<span class="pf-gris" style="font-size:12.5px">Guardada el ' + escapeAttr(x.notaFecha.slice(8, 10) + '/' + x.notaFecha.slice(5, 7)) + '</span>' : ''}</div></div>`));
+        <div class="pf-acciones" style="margin-top:8px"><button type="button" class="pf-btn" id="pfGuardarNota"><i data-ico=guardar></i>Guardar nota</button>${x.notaFecha ? '<span class="pf-gris" style="font-size:12.5px">Guardada el ' + escapeAttr(x.notaFecha.slice(8, 10) + '/' + x.notaFecha.slice(5, 7)) + '</span>' : ''}</div></div>`));
     app.querySelector('#pfVolverLista').onclick = () => { state.pfPersona = null; window.scrollTo(0, 0); render(); };
     // ❌ No incluir en tareas (p. ej. familia): sigue en el resumen y en las listas
-    app.appendChild(el(`<div class="card"><p class="pf-sub" style="margin-top:0">${x.silenciado ? '❌ No sale en tus tareas' : '✅ Sale en tus tareas'}</p>
+    app.appendChild(el(`<div class="card"><p class="pf-sub" style="margin-top:0">${x.silenciado ? '<i data-ico=cruz></i>No sale en tus tareas' : '<i data-ico=hecho></i>Sale en tus tareas'}</p>
       <p class="pf-gris" style="margin:0 0 10px;font-size:13.5px">${x.silenciado ? 'No te avisaré para escribirle aunque deje de regar. Sigue contando en el resumen y en las listas.' : 'Si deja de regar, te avisaré para escribirle.'}</p>
-      <button type="button" class="pf-btn" id="pfSilenciar">${x.silenciado ? '✅ Volver a incluir en tareas' : '❌ No incluir en tareas'}</button></div>`));
+      <button type="button" class="pf-btn" id="pfSilenciar">${x.silenciado ? '<i data-ico=hecho></i>Volver a incluir en tareas' : '<i data-ico=cruz></i>No incluir en tareas'}</button></div>`));
     const bs = app.querySelector('#pfSilenciar');
     bs.onclick = async () => {
       bs.disabled = true; bs.textContent = 'Guardando…';
-      try { await api('/panel/hecho', { tipo: 'silenciar', persona: x.nombre, texto: x.silenciado ? 'no' : 'si' }); x.silenciado = !x.silenciado; avisoBreve(x.silenciado ? 'No saldrá en tus tareas ❌' : 'Vuelve a salir en tus tareas ✅'); render(); }
-      catch(e){ bs.disabled = false; bs.textContent = x.silenciado ? '✅ Volver a incluir en tareas' : '❌ No incluir en tareas'; avisoBreve(mensajeError(e, 'No se pudo guardar.')); }
+      try { await api('/panel/hecho', { tipo: 'silenciar', persona: x.nombre, texto: x.silenciado ? 'no' : 'si' }); x.silenciado = !x.silenciado; avisoBreve(x.silenciado ? 'No saldrá en tus tareas ' : 'Vuelve a salir en tus tareas '); render(); }
+      catch(e){ bs.disabled = false; bs.textContent = x.silenciado ? 'Volver a incluir en tareas' : 'No incluir en tareas'; avisoBreve(mensajeError(e, 'No se pudo guardar.')); }
     };
     const bn = app.querySelector('#pfGuardarNota');
     bn.onclick = async () => {
       const texto = app.querySelector('#pfNota').value;
       bn.disabled = true; bn.textContent = 'Guardando…';
       try { const r = await api('/panel/hecho', { tipo: 'nota', persona: x.nombre, texto }); x.notaFac = texto.trim(); x.notaFecha = r.fecha || isoLocal(new Date()); avisoBreve('Nota guardada ✓'); render(); }
-      catch(e){ bn.disabled = false; bn.textContent = '💾 Guardar nota'; avisoBreve(mensajeError(e, 'No se pudo guardar la nota.')); }
+      catch(e){ bn.disabled = false; bn.textContent = 'Guardar nota'; avisoBreve(mensajeError(e, 'No se pudo guardar la nota.')); }
     };
   }
   // Filas de personas (se tocan para abrir su ficha)
   function filasPersonasHTML(lista){
-    return lista.map(x => `<div class="pf-fila" data-nombre="${escapeAttr(x.nombre)}" role="button" tabindex="0"><span class="pf-fn"><b>${escapeAttr(x.nombre)}</b><small>${escapeAttr(planEtiqueta(x))}${x.usaPlay ? ' · 📱 Play' : ''}${x.contactado ? ' · ✉️ ' + escapeAttr(fechaEnvio(x.contactado)) : ''}${x.silenciado ? ' · ❌' : ''}</small></span>
+    return lista.map(x => `<div class="pf-fila" data-nombre="${escapeAttr(x.nombre)}" role="button" tabindex="0"><span class="pf-fn"><b>${escapeAttr(x.nombre)}</b><small>${escapeAttr(planEtiqueta(x))}${x.usaPlay ? ' · <i data-ico=movil></i>Play' : ''}${x.contactado ? ' · <i data-ico=correo></i>' + escapeAttr(fechaEnvio(x.contactado)) : ''}${x.silenciado ? ' · <i data-ico=cruz></i>' : ''}</small></span>
         <span class="pf-fr${x.diasSinRegar === null || x.diasSinRegar >= 3 ? ' alerta' : ''}">${x.diasSinRegar === null ? 'nunca' : (x.diasSinRegar === 0 ? 'hoy' : (x.diasSinRegar === 1 ? 'ayer' : 'hace ' + x.diasSinRegar + ' d'))}<small>${x.diasEstaSemana} ${x.diasEstaSemana === 1 ? 'día' : 'días'} esta sem.</small></span>
         <span class="pf-fl" title="Registro del lunes">${x.lunesHecho ? '✓' : '—'}</span><span class="pf-ir">›</span></div>`).join('');
   }
@@ -5620,13 +5633,13 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
   function renderPanelFacilitador(){
-    renderBackTopbar('🛠️ PANEL DE CONTROL ADMIN METAS A.');
+    renderBackTopbar('<i data-ico=llave></i>PANEL DE CONTROL ADMIN METAS A.');
     const p = state.panelFac || {}, d = p.datos;
     const fichaDe = d && state.pfPersona ? (d.personas || []).find(x => x.nombre === state.pfPersona) : null;
     if(fichaDe){ renderFichaPersona(d, fichaDe); return; }
     if(d && state.pfDetalle){ renderDetallePanel(d); return; }
     if(!d){
-      app.appendChild(el(p.error ? `<div class="card"><p style="margin:0 0 10px">${escapeAttr(p.error)}</p><button type="button" class="pf-btn" id="pfReintentar">🔄 Reintentar</button></div>` : '<div class="card"><p style="margin:0;text-align:center">Cargando tus tareas…</p></div>'));
+      app.appendChild(el(p.error ? `<div class="card"><p style="margin:0 0 10px">${escapeAttr(p.error)}</p><button type="button" class="pf-btn" id="pfReintentar"><i data-ico=ciclo></i>Reintentar</button></div>` : '<div class="card"><p style="margin:0;text-align:center">Cargando tus tareas…</p></div>'));
       const r = app.querySelector('#pfReintentar'); if(r) r.onclick = () => cargarPanelFac(true);
       return;
     }
@@ -5636,33 +5649,33 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     let h = '';
     if(!d.tareasActivas) h += '<div class="card pf-nota">Los mensajes de ánimo aún no se guardan como tareas (falta activar el almacén del Worker). Mientras tanto siguen llegando por Telegram.</div>';
     const comunicados = d.comunicados || [];
-    if(!animos.length && !escribir.length && !comunicados.length && !pausas.length) h += '<div class="card pf-vacio">¡Todo al día! 🎉 No tienes mensajes pendientes.</div>';
+    if(!animos.length && !escribir.length && !comunicados.length && !pausas.length) h += '<div class="card pf-vacio">¡Todo al día! No tienes mensajes pendientes.</div>';
     if(comunicados.length){
-      h += `<p class="pf-sub">📣 Mensajes para el grupo de testers (${comunicados.length})</p>`;
+      h += `<p class="pf-sub"><i data-ico=megafono></i>Mensajes para el grupo de testers (${comunicados.length})</p>`;
       h += comunicados.map((c, i) => `<div class="card pf-tarea pf-comunicado">
         <p class="pf-quien"><b>${escapeAttr(c.titulo)}</b></p>
         <details><summary>Ver el texto</summary><p class="pf-texto" style="margin-top:8px">${escapeAttr(c.texto)}</p></details>
-        <div class="pf-acciones" style="margin-top:10px"><button type="button" class="pf-btn wa" data-copiar="${i}">📋 Copiar el texto</button>
+        <div class="pf-acciones" style="margin-top:10px"><button type="button" class="pf-btn wa" data-copiar="${i}"><i data-ico=copiar></i>Copiar el texto</button>
         <button type="button" class="pf-btn" data-comunicado="${i}">✓ Enviado</button></div></div>`).join('');
     }
     if(animos.length){
-      h += `<p class="pf-sub">💬 Mensajes de ánimo para enviar (${animos.length})</p>`;
+      h += `<p class="pf-sub"><i data-ico=comentario></i>Mensajes de ánimo para enviar (${animos.length})</p>`;
       h += animos.map((a, i) => `<div class="card pf-tarea">
         <p class="pf-quien"><b>${escapeAttr(a.nombre)}</b> · ${escapeAttr(PLAN_CORTO[a.plan] || '')} · semana ${escapeAttr(a.semana || '')}</p>
         <p class="pf-texto">${escapeAttr(a.texto)}</p>
-        <div class="pf-acciones">${a.tel ? `<a class="pf-btn wa" href="${wa(a.tel, a.texto + '\n\n👉 Abre tu app: ' + ENLACE_APP)}" target="_blank" rel="noopener">📲 Enviar por WhatsApp</a>` : '<span class="pf-aviso">Sin teléfono válido</span>'}
+        <div class="pf-acciones">${a.tel ? `<a class="pf-btn wa" href="${wa(a.tel, a.texto + '\n\n👉 Abre tu app: ' + ENLACE_APP)}" target="_blank" rel="noopener"><i data-ico=movil></i>Enviar por WhatsApp</a>` : '<span class="pf-aviso">Sin teléfono válido</span>'}
         <button type="button" class="pf-btn" data-animo="${i}">✓ Hecho</button></div></div>`).join('');
     }
     if(escribir.length){
-      h += `<p class="pf-sub">🌱 Personas a las que conviene escribir (${escribir.length})</p>`;
+      h += `<p class="pf-sub"><i data-ico=brote></i>Personas a las que conviene escribir (${escribir.length})</p>`;
       h += escribir.map((x, i) => {
         const pila = x.nombre.split(' ')[0];
         const texto = 'Hola ' + pila + ', soy ' + firma + ', tu facilitador en Amable Meta 🌱 Hace unos días que no riegas tu meta en la app y quería saber qué tal vas. Si te ha surgido algo, cuéntame y lo ajustamos para que te resulte más fácil.\n\n👉 Riega tu meta aquí: ' + ENLACE_REGAR + '\n\nSi prefieres que no te escriba por aquí, dímelo sin problema.\nUn abrazo, ' + firma;
         return `<div class="card pf-tarea">
           <p class="pf-quien"><b>${escapeAttr(x.nombre)}</b> · ${escapeAttr(planEtiqueta(x))}</p>
           <p class="pf-dato">${escapeAttr(textoRiego(x))}${x.contactado ? ' · le escribiste el ' + escapeAttr(fechaEnvio(x.contactado)) : ''}</p>
-          ${x.aceptaWhatsApp ? '' : '<p class="pf-aviso" style="margin:-4px 0 8px">⚠️ No ha activado los mensajes por WhatsApp en la app: mejor un mensaje breve y amable, o espera a la sesión.</p>'}
-          <div class="pf-acciones">${telValido(x.tel) ? `<a class="pf-btn wa" href="${wa(x.tel, texto)}" target="_blank" rel="noopener">📲 Escribir por WhatsApp</a>` : '<span class="pf-aviso">Su teléfono parece inventado (' + escapeAttr(x.tel) + '): no se le puede escribir por WhatsApp</span>'}
+          ${x.aceptaWhatsApp ? '' : '<p class="pf-aviso" style="margin:-4px 0 8px"><i data-ico=alerta></i>No ha activado los mensajes por WhatsApp en la app: mejor un mensaje breve y amable, o espera a la sesión.</p>'}
+          <div class="pf-acciones">${telValido(x.tel) ? `<a class="pf-btn wa" href="${wa(x.tel, texto)}" target="_blank" rel="noopener"><i data-ico=movil></i>Escribir por WhatsApp</a>` : '<span class="pf-aviso">Su teléfono parece inventado (' + escapeAttr(x.tel) + '): no se le puede escribir por WhatsApp</span>'}
           <button type="button" class="pf-btn" data-contacto="${i}">✓ Hecho</button></div></div>`;
       }).join('');
     }
@@ -5674,44 +5687,44 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
         return `<div class="card pf-tarea">
           <p class="pf-quien"><b>${escapeAttr(x.nombre)}</b> · ${escapeAttr(planEtiqueta(x))}</p>
           <p class="pf-dato">En pausa hasta el ${escapeAttr(fechaBonita(x.pausaHasta))}${x.pausaMotivo ? ' (' + escapeAttr(x.pausaMotivo) + ')' : ''}${x.pausaRecordada ? ' · se lo recordaste el ' + escapeAttr(fechaEnvio(x.pausaRecordada)) : ''}</p>
-          <div class="pf-acciones"><a class="pf-btn wa" href="${wa(x.tel, texto)}" target="_blank" rel="noopener">📲 Enviar por WhatsApp</a>
+          <div class="pf-acciones"><a class="pf-btn wa" href="${wa(x.tel, texto)}" target="_blank" rel="noopener"><i data-ico=movil></i>Enviar por WhatsApp</a>
           <button type="button" class="pf-btn" data-pausa="${i}">✓ Hecho</button></div></div>`;
       }).join('');
     }
-    h = plegable('tareas', '✅ Tareas de hoy', h, true);
+    h = plegable('tareas', '<i data-ico=hecho></i>Tareas de hoy', h, true);
     // Emails enviados en los últimos 14 días (al principio, para ver qué recibe cada persona)
     const NOMBRES_EMAIL = { invitacion: 'Invitación a confirmar el email', bienvenida: 'Bienvenida', formulario1: 'Formulario sin rellenar (día 1)', formulario3: 'Formulario sin rellenar (día 3)',
       guia: 'Ya tienes tu guía', vuelta: 'Vuelta tras unos días', finprueba: 'Fin del plan', plazo: 'Final del plazo de la meta', trimestre: 'Trimestre nuevo', finpausa: 'Fin de la pausa' };
     const enviadosEm = d.emailsEnviados || [];
-    h += plegable('emails', '📧 Emails enviados (' + enviadosEm.length + ')', enviadosEm.length
+    h += plegable('emails', '<i data-ico=correo></i>Emails enviados (' + enviadosEm.length + ')', enviadosEm.length
       ? '<div class="card pf-lista"><p class="pf-gris" style="margin:0 0 8px;font-size:13px">Últimos 14 días. Los textos están en «Revisar emails».</p>' + enviadosEm.map(x => '<p class="pf-dato" style="margin:0 0 6px"><b>' + escapeAttr(fechaEnvio(x.fecha)) + '</b> · ' + escapeAttr(x.nombre) + ' · ' + escapeAttr(NOMBRES_EMAIL[x.tipo] || x.tipo) + '</p>').join('') + '</div>'
       : '<div class="card pf-vacio">En los últimos 14 días no se ha enviado ningún email.</div>', false);
-    if(esCuentaPruebas()) h += plegable('moderador', '🛠️ Moderador · entrar como', '<p class="pf-gris" style="margin:0 0 8px;font-size:13.5px">Entra con otra cuenta de prueba para ver la app con ese plan.</p><div class="pf-mod-cuentas">'
+    if(esCuentaPruebas()) h += plegable('moderador', '<i data-ico=llave></i>Moderador · entrar como', '<p class="pf-gris" style="margin:0 0 8px;font-size:13.5px">Entra con otra cuenta de prueba para ver la app con ese plan.</p><div class="pf-mod-cuentas">'
       + CUENTAS_PRUEBA.map(([cuenta, t]) => '<button type="button" class="mod-cuenta' + (state.me === cuenta ? ' on' : '') + '" data-cuenta="' + escapeAttr(cuenta) + '">' + t + '</button>').join('') + '</div>', false);
     // Mapa de la app (flujo de usuario): página privada de Gustavo en claude.ai; copia en «Documentos y sesiones/Mapa de Amable Vision.html»
-    h += '<a class="card pf-pantalla" href="' + MAPA_APP_URL + '" target="_blank" rel="noopener" style="text-decoration:none;align-items:center;margin-top:14px">' + mini('#F6F8F3', '#4E7F2A', '🗺️')
+    h += '<a class="card pf-pantalla" href="' + MAPA_APP_URL + '" target="_blank" rel="noopener" style="text-decoration:none;align-items:center;margin-top:14px">' + mini('#F6F8F3', '#4E7F2A', '<i data-ico=mapa></i>')
       + '<span class="pf-pantalla-tx"><b>Mapa de la app (flujo de usuario)</b><small>Todos los recorridos de la persona, pantalla a pantalla, en un esquema.</small><em>Abrir el mapa ↗</em></span></a>';
-    h += plegable('esporadicas', '👁️ Pantallas de acceso esporádico', '<p class="pf-gris" style="margin:0 0 10px;font-size:13.5px">Salen solo en momentos concretos. Toca una para verla tal como la ve la persona (sin guardar nada).</p>'
+    h += plegable('esporadicas', '<i data-ico=ojo></i>Pantallas de acceso esporádico', '<p class="pf-gris" style="margin:0 0 10px;font-size:13.5px">Salen solo en momentos concretos. Toca una para verla tal como la ve la persona (sin guardar nada).</p>'
       + GRUPOS_ESPORADICAS.map(([g, titulo]) => '<p class="pf-sub" style="margin:14px 0 8px">' + titulo + '</p>' + pantallasEsporadicas().map((x, i) => x.grupo !== g ? '' : '<button type="button" class="card pf-pantalla" data-esporadica="' + i + '">' + x.img + '<span class="pf-pantalla-tx"><b>' + x.tit + '</b><small>' + x.cuando + '</small><em>Ver la pantalla ›</em></span></button>').join('')).join(''), false);
     // Resumen: cada cifra se toca para ver quiénes son
     const gente = d.personas || [], lunes = isoLocal(lunesHoy);
     const nuevas = gente.filter(x => x.alta && x.alta >= lunes);
     const riegan = gente.filter(x => x.riegaHoy).length, lunesHechos = gente.filter(x => x.lunesHecho).length;
     const perdiendo = perdiendoInteres(gente);
-    h += '<h3 class="pf-seccion">📊 Resumen</h3>';
+    h += '<h3 class="pf-seccion"><i data-ico=grafico></i>Resumen</h3>';
     h += `<div class="pf-cifras">
       <button type="button" class="pf-cifra" data-detalle="inscritas"><b>${gente.length}</b><span>personas inscritas ›</span></button>
       <button type="button" class="pf-cifra" data-detalle="nuevas"><b>${nuevas.length}</b><span>${nuevas.length === 1 ? 'nueva' : 'nuevas'} esta semana ›</span></button>
       <button type="button" class="pf-cifra" data-detalle="riegan"><b>${riegan}<small>/${gente.length}</small></b><span>han regado hoy ›</span></button>
       <button type="button" class="pf-cifra" data-detalle="lunes"><b>${lunesHechos}<small>/${gente.length}</small></b><span>registro del lunes ›</span></button>
-      <button type="button" class="pf-cifra" data-detalle="whatsapp"><b>${gente.filter(x => x.aceptaWhatsApp).length}<small>/${gente.length}</small></b><span>💬 aceptan WhatsApp ›</span></button>
-      <button type="button" class="pf-cifra" data-detalle="emails"><b>${gente.filter(x => x.aceptaEmails).length}<small>/${gente.length}</small></b><span>📧 aceptan emails ›</span><small class="pf-plan-det">${gente.filter(x => x.emailOk).length} con el email confirmado</small></button>
-      <button type="button" class="pf-cifra pf-cifra-ancha${perdiendo.length ? ' alerta' : ''}" data-detalle="perdiendo"><b>${perdiendo.length}</b><span>🍂 sin regar desde hace 5 días o más (se están desenganchando) ›</span></button></div>`;
+      <button type="button" class="pf-cifra" data-detalle="whatsapp"><b>${gente.filter(x => x.aceptaWhatsApp).length}<small>/${gente.length}</small></b><span><i data-ico=comentario></i>aceptan WhatsApp ›</span></button>
+      <button type="button" class="pf-cifra" data-detalle="emails"><b>${gente.filter(x => x.aceptaEmails).length}<small>/${gente.length}</small></b><span><i data-ico=correo></i>aceptan emails ›</span><small class="pf-plan-det">${gente.filter(x => x.emailOk).length} con el email confirmado</small></button>
+      <button type="button" class="pf-cifra pf-cifra-ancha${perdiendo.length ? ' alerta' : ''}" data-detalle="perdiendo"><b>${perdiendo.length}</b><span><i data-ico=hoja></i>sin regar desde hace 5 días o más (se están desenganchando) ›</span></button></div>`;
     const listaAbierta = !!state.pfListaAbierta;
-    h += `<div class="card pf-lista"><button type="button" class="pf-desplegar" id="pfDesplegar" aria-expanded="${listaAbierta}"><span>👥 Todas las personas (${gente.length})<small>Semana del ${escapeAttr(d.semana || '')}</small></span><b>${listaAbierta ? '▲' : '▼'}</b></button>
+    h += `<div class="card pf-lista"><button type="button" class="pf-desplegar" id="pfDesplegar" aria-expanded="${listaAbierta}"><span><i data-ico=grupo></i>Todas las personas (${gente.length})<small>Semana del ${escapeAttr(d.semana || '')}</small></span><b>${listaAbierta ? '▲' : '▼'}</b></button>
       ${listaAbierta ? filasPersonasHTML(gente) + '<p class="pf-gris" style="margin:8px 0 0;font-size:12px">Último riego · días regados esta semana · ✓ = registro del lunes hecho. Toca a una persona para ver su ficha.</p>' : ''}</div>`;
-    h += `<button type="button" class="pf-btn pf-actualizar" id="pfActualizar">${p.cargando ? '⏳ Actualizando…' : '🔄 Actualizar'}</button>`;
-    h += `<button type="button" class="link-quiet" id="pfTelegram" style="display:block;margin:-12px auto 20px;font-size:13.5px">📨 Mandarme ahora el resumen a Telegram y WhatsApp</button>`;
+    h += `<button type="button" class="pf-btn pf-actualizar" id="pfActualizar">${p.cargando ? '<i data-ico=espera></i>Actualizando…' : '<i data-ico=ciclo></i>Actualizar'}</button>`;
+    h += `<button type="button" class="link-quiet" id="pfTelegram" style="display:block;margin:-12px auto 20px;font-size:13.5px"><i data-ico=enviar></i>Mandarme ahora el resumen a Telegram y WhatsApp</button>`;
     app.appendChild(el(h));
     const hecho = async (b, cuerpo, quitar) => {
       b.disabled = true; b.textContent = '…';
@@ -5752,7 +5765,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     bt.onclick = async () => {
       bt.disabled = true; bt.innerHTML = ENVIANDO_HTML;
       try { await api('/panel/resumen-telegram', {}); bt.textContent = '✓ Enviado: míralo en Telegram y WhatsApp'; }
-      catch(e){ bt.disabled = false; bt.textContent = '📨 Mandarme ahora el resumen a Telegram y WhatsApp'; avisoBreve(mensajeError(e, 'No se pudo enviar. Inténtalo de nuevo.')); }
+      catch(e){ bt.disabled = false; bt.textContent = 'Mandarme ahora el resumen a Telegram y WhatsApp'; avisoBreve(mensajeError(e, 'No se pudo enviar. Inténtalo de nuevo.')); }
     };
   }
 
@@ -6960,7 +6973,7 @@ lo que haces cada día es lo que vas a ser.`;
   function renderBackTopbar(title){
     app.querySelectorAll('.volver-arriba').forEach(b => b.remove());   // esta barra ya trae su «← Volver»
     // El título va en su propio renglón, debajo de «Volver» y «Menú» (nunca entre los dos botones)
-    const bar = el(`<div class="topbar"><button class="back-btn" id="btnVolver" aria-label="Volver">← Volver</button><span></span><button class="hamburger-btn-text" id="btnMenuOpen2" aria-label="Menú">☰ Menú</button></div>`).firstElementChild;
+    const bar = el(`<div class="topbar"><button class="back-btn" id="btnVolver" aria-label="Volver">← Volver</button><span></span><button class="hamburger-btn-text" id="btnMenuOpen2" aria-label="Menú"><i data-ico=menu></i>Menú</button></div>`).firstElementChild;
     const btnVolver = bar.querySelector('#btnVolver');
     const btnMenu = bar.querySelector('#btnMenuOpen2');
     app.appendChild(bar);
@@ -13310,4 +13323,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Meta" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V14.51 · App Amable Meta · 2026-11-05 14:24==== -->
+<!-- ==== Fin del index V14.52 · App Amable Meta · 2026-11-05 14:27==== -->
