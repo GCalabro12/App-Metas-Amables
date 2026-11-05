@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V14.48 · App Amable Meta · 2026-11-05 14:04==== -->
+<!-- ==== index V14.49 · App Amable Meta · 2026-11-05 14:10==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1038,7 +1038,19 @@ body.con-tabbar:has(.musica-barra) #app{padding-bottom:170px}
 .mp-barra{height:6px;border-radius:99px;background:rgba(255,255,255,.4);overflow:hidden}
 .mp-barra i{display:block;height:100%;background:#fff;border-radius:99px}
 .mp-persona{gap:14px}
+.mi-tx{width:19px;height:19px;vertical-align:-4px;margin-right:8px;color:inherit;opacity:.85}
+.coronas{display:inline-flex;gap:1px;vertical-align:-2px}.corona-svg{width:1.15em;height:1em;flex-shrink:0}
+.ayuda-ico .mi-tx{width:15px;height:15px;margin:0;opacity:1;color:#fff}
+.util-ico .mi-tx{width:26px;height:26px;margin:0 4px 0 0;opacity:1}
+.ajuste-acc>summary>span{display:inline-flex;align-items:center}
 .posit-reac{display:flex;gap:8px;margin:4px 0 10px}.posit-reac button{flex:1;padding:11px 6px;border-radius:12px;border:1.5px solid #C9942D;background:#fff;color:#6b4e12;font:600 14px Karla,sans-serif;cursor:pointer;line-height:1.2}.posit-reac button.elegida{background:#C9942D;color:#fff}
+.carta-reac{margin-top:6px}.reac-otras{display:block;margin:12px auto 0;text-decoration:underline}
+.reac-capa{position:fixed;inset:0;z-index:9000;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;padding:16px}
+.reac-caja{position:relative;background:var(--surface,#fff);color:var(--ink);border-radius:16px;max-width:420px;width:100%;max-height:80vh;overflow:auto;padding:22px 18px 14px;box-shadow:0 12px 30px rgba(0,0,0,.25)}
+.reac-cerrar{position:absolute;top:6px;right:8px;border:0;background:none;font-size:22px;line-height:1;cursor:pointer;color:var(--ink-soft);padding:8px}
+.reac-tit{font-weight:800;font-size:17px;margin:0 34px 10px 0}
+.reac-item{border-top:1px solid var(--border);padding:11px 0}.reac-fila{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:15px}.reac-der{display:flex;align-items:center;gap:10px}.reac-ver{border:1.5px solid #C9942D;background:#fff;color:#6b4e12;border-radius:10px;padding:5px 12px;font:700 13px Karla,sans-serif;cursor:pointer}.reac-texto{margin:10px 0 2px;padding:14px 14px 12px;background:linear-gradient(170deg,#FFF59D 0%,#FFEE70 70%,#F9E15A 100%);color:#2a2200;border-radius:2px 2px 12px 2px;font-size:15px;line-height:1.45}.reac-fila small{color:var(--ink-soft)}.reac-fila b{color:#8a6420;white-space:nowrap}
+.btn-nota{display:block;width:100%;margin-top:16px;padding:16px 14px;border:0;border-radius:2px 2px 14px 2px;background:linear-gradient(170deg,#FFF59D 0%,#FFEE70 70%,#F9E15A 100%);color:#111;font:700 16px Karla,sans-serif;box-shadow:0 8px 14px rgba(80,60,0,.2);transform:rotate(-1deg);cursor:pointer}
 .posit-compartir{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:12px;border-radius:12px;border:1.5px solid #C9942D;background:#fff;color:#6b4e12;font:700 15px Karla,sans-serif;cursor:pointer}.posit-compartir .mi-ico{color:#6b4e12;width:20px;height:20px}
 .menu-perfil .menu-item{gap:16px;font-weight:600}
 .mi-ico{width:22px;height:22px;flex-shrink:0;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;color:var(--ink-soft)}
@@ -2696,7 +2708,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V14.48';
+  const APP_VERSION = 'V14.49';
   // ===== Pantalla de inicio: versión, sonido corto y salida (5-11-2026) =====
   (function(){
     const sp = document.getElementById('inicioSplash'); if(!sp) return;
@@ -5134,9 +5146,46 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     panel: '<rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/>',
     grupo: '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>',
     compartir: '<circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" x2="15.42" y1="13.51" y2="17.49"/><line x1="15.41" x2="8.59" y1="6.51" y2="10.49"/>',
+    camara: '<path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/>',
+    paleta: '<circle cx="13.5" cy="6.5" r="1"/><circle cx="17.5" cy="10.5" r="1"/><circle cx="8.5" cy="7.5" r="1"/><circle cx="6.5" cy="12.5" r="1"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.93 0 1.65-.75 1.65-1.69 0-.44-.18-.84-.44-1.13-.29-.29-.44-.65-.44-1.13a1.64 1.64 0 0 1 1.67-1.67h2c3.05 0 5.55-2.5 5.55-5.55C21.97 6.01 17.46 2 12 2z"/>',
+    candado: '<rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>',
+    papelera: '<path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/>',
+    imagen: '<rect width="18" height="18" x="3" y="3" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.09-3.09a2 2 0 0 0-2.82 0L6 21"/>',
+    movil: '<rect width="14" height="20" x="5" y="2" rx="2"/><path d="M12 18h.01"/>',
+    correo: '<rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>',
+    sol: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/>',
+    luna: '<path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>',
+    instalar: '<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/>',
+    voz: '<path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" x2="12" y1="19" y2="22"/>',
+    altavoz: '<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>',
+    repetir: '<path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/>',
+    llave: '<path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>',
+    hoja: '<path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/>',
+    destellos: '<path d="M9.94 15.5A2 2 0 0 0 8.5 14.06l-6.14-1.58a.5.5 0 0 1 0-.96L8.5 9.94A2 2 0 0 0 9.94 8.5l1.58-6.14a.5.5 0 0 1 .96 0l1.58 6.14A2 2 0 0 0 15.5 9.94l6.14 1.58a.5.5 0 0 1 0 .96L15.5 14.06a2 2 0 0 0-1.44 1.44l-1.58 6.14a.5.5 0 0 1-.96 0z"/>',
+    documento: '<path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M16 13H8"/><path d="M16 17H8"/><path d="M10 9H8"/>',
+    galleta: '<path d="M12 2a10 10 0 1 0 10 10 4 4 0 0 1-5-5 4 4 0 0 1-5-5"/><path d="M8.5 8.5v.01"/><path d="M16 15.5v.01"/><path d="M12 12v.01"/><path d="M11 17v.01"/><path d="M7 14v.01"/>',
+    engranaje: '<path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/>',
     salir: '<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/>'
   };
   function icoMenu(n){ return '<svg class="mi-ico" viewBox="0 0 24 24" aria-hidden="true">' + (ICONOS_MENU[n] || '') + '</svg>'; }
+  // Corona propia de los planes (5-11-2026): sustituye al emoji 👑 en toda la app
+  const CORONA_SVG = '<svg class="corona-svg" viewBox="0 0 24 21" aria-hidden="true"><path d="M3 7.6 7.6 12 12 4.4 16.4 12 21 7.6 19.2 16.4H4.8Z" fill="#EDBB2B" stroke="#A06D08" stroke-width="1.2" stroke-linejoin="round"/><path d="M12 4.4 16.4 12 21 7.6 19.2 16.4H12Z" fill="#D9A21A"/><rect x="4.4" y="16.6" width="15.2" height="3" rx="1.2" fill="#C58C10" stroke="#A06D08" stroke-width="1"/><circle cx="3" cy="6.6" r="1.7" fill="#FFF3C9" stroke="#A06D08" stroke-width="1"/><circle cx="12" cy="3.1" r="1.8" fill="#FFF3C9" stroke="#A06D08" stroke-width="1"/><circle cx="21" cy="6.6" r="1.7" fill="#FFF3C9" stroke="#A06D08" stroke-width="1"/><circle cx="12" cy="18.1" r="0.95" fill="#B5307A"/></svg>';
+  // Cambia en la pantalla las marcas <i data-ico=nombre></i> por su icono de línea, y cada 👑 por la corona
+  function adornarIconos(raiz){
+    if(!raiz || raiz.nodeType !== 1) return;
+    raiz.querySelectorAll('i[data-ico]').forEach(i => { i.outerHTML = '<svg class="mi-ico mi-tx" viewBox="0 0 24 24" aria-hidden="true">' + (ICONOS_MENU[i.dataset.ico] || '') + '</svg>'; });
+    if(!(raiz.textContent || '').includes('\u{1F451}')) return;
+    const w = document.createTreeWalker(raiz, NodeFilter.SHOW_TEXT, { acceptNode: n => n.nodeValue.includes('\u{1F451}') && !(n.parentNode && /^(SCRIPT|STYLE|TEXTAREA|OPTION|SELECT|TITLE)$/.test(n.parentNode.nodeName)) ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT });
+    const nodos = []; while(w.nextNode()) nodos.push(w.currentNode);
+    nodos.forEach(n => {
+      const span = document.createElement('span');
+      span.innerHTML = n.nodeValue.replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c])).replace(/(\u{1F451}\uFE0F?)+/gu, m => '<span class="coronas">' + CORONA_SVG.repeat([...m.replace(/\uFE0F/g, '')].length) + '</span>');
+      n.replaceWith(...span.childNodes);
+    });
+  }
+  try {
+    new MutationObserver(ms => ms.forEach(m => m.addedNodes.forEach(n => { if(n.nodeType === 1) adornarIconos(n); else if(n.nodeType === 3 && n.parentNode && n.nodeValue.includes('\u{1F451}')) adornarIconos(n.parentNode); }))).observe(document.documentElement, { childList: true, subtree: true });
+  } catch(e){}
   function renderMenuOverlay(){
     const overlay = document.createElement('div');
     overlay.className = 'menu-overlay';
@@ -5747,11 +5796,11 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       + '</g></svg>';
   }
   function avisoCorona(texto){
-    if(confirm('👑 ' + texto + '.\n\n¿Quieres ver los planes?')){ state.prevView = state.view; state.view = 'planes'; window.scrollTo(0,0); render(); }
+    if(confirm(texto + '.\n\n¿Quieres ver los planes?')){ state.prevView = state.view; state.view = 'planes'; window.scrollTo(0,0); render(); }
   }
 
   function renderUtilidades(){
-    renderBackTopbar('🔧 Utilidades');
+    renderBackTopbar('Utilidades');
     const caja = document.createElement('div');
     caja.className = 'util-grid';
     const tarjeta = (id, titulo, sub, dibujo) => '<button type="button" class="util-card" data-util="' + id + '"><span class="util-dibujo">' + dibujo + '</span><span class="util-tx"><b>' + titulo + '</b><small>' + sub + '</small></span></button>';
@@ -5762,14 +5811,14 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       + tarjeta('musica', 'Música motivacional', 'Música para acompañarte mientras usas la app', practiHTML('guitarra', '🎸', 120));
     app.appendChild(caja);
     // Al final de todo, más pequeños: la simplicidad voluntaria, el recorrido guiado y las novedades de cada versión
-    const simp = el('<button type="button" class="util-nov" style="background:#EEF5E6"><span style="font-size:26px">🍃</span><span><b>Amable Meta: la simplicidad voluntaria</b><small>'
+    const simp = el('<button type="button" class="util-nov" style="background:#EEF5E6"><span class="util-ico"><i data-ico=hoja></i></span><span><b>Amable Meta: la simplicidad voluntaria</b><small>'
       + 'Por qué la app es sencilla, y cómo elegir qué ver' + '</small></span><span class="opcion-flecha">›</span></button>').firstElementChild;
     simp.onclick = () => { state.simpPag = 0; state.view = 'simplicidad'; window.scrollTo(0,0); render(); };
     app.appendChild(simp);
-    const guia = el('<button type="button" class="util-nov" style="background:#E9F4E4"><span style="font-size:26px">🧭</span><span><b>¿Cómo se usa la app?</b><small>Un recorrido rápido por Inicio, paso a paso</small></span><span class="opcion-flecha">›</span></button>').firstElementChild;
+    const guia = el('<button type="button" class="util-nov" style="background:#E9F4E4"><span class="util-ico"><i data-ico=brujula></i></span><span><b>¿Cómo se usa la app?</b><small>Un recorrido rápido por Inicio, paso a paso</small></span><span class="opcion-flecha">›</span></button>').firstElementChild;
     guia.onclick = () => { state.view = 'panel'; state.panelSub = null; window.scrollTo(0,0); render(); setTimeout(iniciarTour, 700); };
     app.appendChild(guia);
-    const nov = el('<button type="button" class="util-nov"><span style="font-size:26px">✨</span><span><b>Novedades de la app</b><small>Lo nuevo de cada versión · ahora ' + APP_VERSION + '</small></span><span class="opcion-flecha">›</span></button>').firstElementChild;
+    const nov = el('<button type="button" class="util-nov"><span class="util-ico"><i data-ico=destellos></i></span><span><b>Novedades de la app</b><small>Lo nuevo de cada versión · ahora ' + APP_VERSION + '</small></span><span class="opcion-flecha">›</span></button>').firstElementChild;
     nov.onclick = () => { state.view = 'novedades'; window.scrollTo(0,0); render(); };
     app.appendChild(nov);
     try { activarPracti(caja); } catch(e){}
@@ -5779,7 +5828,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       if(u === 'frases'){ state.view = 'frases'; window.scrollTo(0,0); render(); return; }
       if(u === 'habla'){ state.hablaDesdeInicio = false; state.view = 'habla'; window.scrollTo(0,0); render(); return; }
       if(u === 'musica'){ state.view = 'musica'; window.scrollTo(0,0); render(); return; }
-      alert(u === 'habla' ? 'Muy pronto podrás hablar con Prácti aquí. 🦉' : 'Muy pronto tendrás aquí música para motivarte. 🎵');
+      alert(u === 'habla' ? 'Muy pronto podrás hablar con Prácti aquí. ' : 'Muy pronto tendrás aquí música para motivarte. ');
     });
   }
 
@@ -5915,11 +5964,11 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     { v: 'V13.73', f: '16 de octubre de 2026', n: [
       'Si un día la app no consigue cargar tus datos (mala conexión), te enseña los de la última vez en lugar de una app vacía con «Plan Libre» y el formulario por rellenar.' ] },
     { v: 'V13.72', f: '15 de octubre de 2026', n: [
-      'En <b>Grupo de apoyo</b> hay un acceso directo: «🤝 Ver mi grupo y sus plantas».' ] },
+      'En <b>Grupo de apoyo</b> hay un acceso directo: «Ver mi grupo y sus plantas».' ] },
     { v: 'V13.70', f: '15 de octubre de 2026', n: [
       'Terminada la prueba de Google Play, quien la probaba en Android ya puede volver a entrar también desde el navegador.' ] },
     { v: 'V13.69', f: '15 de octubre de 2026', n: [
-      'En <b>Mi grupo</b>: puedes dejar que tus compañeros vean tu planta del trimestre (viene apagado; lo decides tú). Si un compañero lo ha activado, con «🌿 Ver su planta» la ves, cada una por separado.' ] },
+      'En <b>Mi grupo</b>: puedes dejar que tus compañeros vean tu planta del trimestre (viene apagado; lo decides tú). Si un compañero lo ha activado, con «Ver su planta» la ves, cada una por separado.' ] },
     { v: 'V13.67', f: '15 de octubre de 2026', n: [
       'En <b>Habla con Prácti</b>: el botón «Privacidad», a la izquierda de Prácti, explica que lo que escribes es privado y no se guarda; «Conversación de hoy» pasa a la derecha y el cuadro para escribir queda justo debajo. Mientras Prácti habla, la música baja para que se le oiga bien.',
       'Moderadores: en «Situación de los practicantes» sales tú arriba con tus datos, ya no salen las cuentas de prueba, y hay un botón para actualizar los datos.' ] },
@@ -5934,7 +5983,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     { v: 'V13.62', f: '15 de octubre de 2026', n: [
       'Si la app no consigue cargar tus datos (por la conexión), ya no te pide rellenar otra vez el formulario de tu meta: te avisa de que revises la conexión.' ] },
     { v: 'V13.61', f: '14 de octubre de 2026', n: [
-      'Para <b>cambiar tu meta con guía</b> hay dos botones: «✏️ Modificar algo», que abre el formulario con tus respuestas (por ejemplo, para cambiar solo el tiempo), y «🌱 Empezar una meta nueva», que lo abre vacío.' ] },
+      'Para <b>cambiar tu meta con guía</b> hay dos botones: «Modificar algo», que abre el formulario con tus respuestas (por ejemplo, para cambiar solo el tiempo), y «Empezar una meta nueva», que lo abre vacío.' ] },
     { v: 'V13.60', f: '14 de octubre de 2026', n: [
       'En cada <b>meta sencilla</b>: «⏰ ¿Te lo recuerdo?» pone un aviso en el calendario de tu móvil, a la hora que elijas y solo los días de esa meta. Es opcional.' ] },
     { v: 'V13.59', f: '14 de octubre de 2026', n: [
@@ -5952,7 +6001,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       'Moderadores: en «Tus primeros 15 registros» (Registro y compromiso) también salen las flechas para pasar los días.' ] },
     { v: 'V13.52', f: '13 de octubre de 2026', n: [
       'El paso c de Inicio se llama ahora <b>Registro y compromiso</b>: en la app registras; la práctica la haces fuera.',
-      'En su recuadro hay dos accesos: «💧 Registra hoy» (tu clima, tu entorno y tu práctica) y, abajo, «📜 Tu compromiso y más».' ] },
+      'En su recuadro hay dos accesos: «Registra hoy» (tu clima, tu entorno y tu práctica) y, abajo, «Tu compromiso y más».' ] },
     { v: 'V13.51', f: '13 de octubre de 2026', n: [
       'Los avisos del registro semanal ahora se llaman igual en toda la app: <b>compromiso del lunes</b> (cuántas veces practicarás esta semana), para no confundirlo con los registros de cada día.' ] },
     { v: 'V13.50', f: '13 de octubre de 2026', n: [
@@ -5964,7 +6013,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     { v: 'V13.47', f: '13 de octubre de 2026', n: [
       'En Inicio, <b>Grupo de apoyo</b> dice «Compromiso pendiente» cuando aún no has dicho cuántas veces practicarás esta semana. Al tocarlo, vas directo a hacerlo.' ] },
     { v: 'V13.46', f: '13 de octubre de 2026', n: [
-      'En <b>Tu planta</b>, si empiezas una meta nueva, el tallo lleva la marca «🌱 meta nueva» en la semana en que empezaste. Las hojas de antes se quedan.',
+      'En <b>Tu planta</b>, si empiezas una meta nueva, el tallo lleva la marca «meta nueva» en la semana en que empezaste. Las hojas de antes se quedan.',
       'En <b>Registros amables</b> ya se pueden marcar los días de tus <b>metas sencillas</b> (el bocadillo salía por detrás).',
       'Al desbloquear un regalo de tus primeros 15 registros, el regalo sale en un recuadro morado y su botón también es morado. Prácti sujeta el cartel con los brazos por detrás del cuerpo.' ] },
     { v: 'V13.45', f: '13 de octubre de 2026', n: [
@@ -6001,7 +6050,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     { v: 'V13.20', f: '12 de octubre de 2026', n: [
       'En el formulario de tu meta, el tiempo para tus prácticas se elige con dos cuadros: <b>cuántos días a la semana</b> y <b>cuánto tiempo cada día</b>.' ] },
     { v: 'V13.19', f: '12 de octubre de 2026', n: [
-      'En la tarjeta de <b>Compromiso y práctica</b>, el lapicito ✏️ junto a tu meta te deja cambiar el resumen con tus propias palabras.' ] },
+      'En la tarjeta de <b>Compromiso y práctica</b>, el lapicito junto a tu meta te deja cambiar el resumen con tus propias palabras.' ] },
     { v: 'V13.17', f: '12 de octubre de 2026', n: [
       'En tu <b>guía semanal</b>, cuando empiezas una meta nueva, un rectángulo marca «A partir de aquí, tu meta nueva», para distinguirla de las guías de la meta anterior.' ] },
     { v: 'V13.14', f: '12 de octubre de 2026', n: [
@@ -6035,7 +6084,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     { v: 'V12.80', f: '12 de octubre de 2026', n: [
       '<b>Mi montaña</b> es ahora la gran montaña de los cinco niveles: tus bancales están sobre sus caminos y un brillo te marca «Estás aquí». La planta del trimestre crece sobre las colinas doradas.' ] },
     { v: 'V12.79', f: '12 de octubre de 2026', n: [
-      'Al abrir <b>Mi montaña</b> suena de fondo una versión tranquila de la música de Metas Amables. Con el botón 🎵 la quitas cuando quieras.' ] },
+      'Al abrir <b>Mi montaña</b> suena de fondo una versión tranquila de la música de Metas Amables. Con el botón la quitas cuando quieras.' ] },
     { v: 'V12.78', f: '12 de octubre de 2026', n: [
       '<b>Mi montaña</b>, más bonita: cielo de amanecer, sol con destellos, haces de luz, nubes que pasan, un pájaro y nieve en la cima.' ] },
     { v: 'V12.76', f: '12 de octubre de 2026', n: [
@@ -6044,9 +6093,9 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     { v: 'V12.75', f: '12 de octubre de 2026', n: [
       'Cuando se cumple el plazo de tu meta, la tarjeta de Inicio se llama ahora <b>«Final del plazo de tu meta»</b>.' ] },
     { v: 'V12.72', f: '12 de octubre de 2026', n: [
-      'En «🔔 Avisos en el móvil», mientras están apagados, una frase corta te recuerda que te ayudan a no abandonar tu meta.' ] },
+      'En «Avisos en el móvil», mientras están apagados, una frase corta te recuerda que te ayudan a no abandonar tu meta.' ] },
     { v: 'V12.71', f: '12 de octubre de 2026', n: [
-      'En Compromiso y práctica, «🔔 Avisos en el móvil» activa también los <b>emails que te acompañan</b> con tu meta, junto al aviso de las 8 de la tarde y los mensajes de WhatsApp.' ] },
+      'En Compromiso y práctica, «Avisos en el móvil» activa también los <b>emails que te acompañan</b> con tu meta, junto al aviso de las 8 de la tarde y los mensajes de WhatsApp.' ] },
     { v: 'V12.70', f: '12 de octubre de 2026', n: [
       'Las contraseñas nuevas deben tener al menos <b>6 caracteres</b> (la tuya, si es más corta, sigue valiendo para entrar).' ] },
     { v: 'V12.69', f: '12 de octubre de 2026', n: [
@@ -6122,13 +6171,13 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     { v: 'V12.22', f: '11 de octubre de 2026', n: [
       'Lo primero es saber <b>cómo está tu clima</b>: en «Compromiso y práctica» y en la pantalla de regar, el clima va antes que la práctica. El botón ahora dice <b>«Registrar si hiciste tu práctica»</b>.' ] },
     { v: 'V12.14', f: '11 de octubre de 2026', n: [
-      '<b>☀️ Tu clima de hoy</b> (antes «Abona tu meta»): tus emociones son el clima de tu meta. Elige cómo te sientes en un <b>sol partido en cuatro quesitos</b>: arriba más energía, abajo menos; a la izquierda lo desagradable y a la derecha lo agradable.',
+      '<b>Tu clima de hoy</b> (antes «Abona tu meta»): tus emociones son el clima de tu meta. Elige cómo te sientes en un <b>sol partido en cuatro quesitos</b>: arriba más energía, abajo menos; a la izquierda lo desagradable y a la derecha lo agradable.',
       'En los calendarios, cada día es ahora un <b>redondel</b> del color de tu clima.',
       'En <b>Música</b>, el recuadro de la música oficial tiene dos botones de play: <b>Sin letra</b> y <b>Con letra</b>.' ] },
     { v: 'V12.12', f: '11 de octubre de 2026', n: [
       'En <b>Utilidades → Música</b>, la música oficial de Metas Amables se puede escuchar <b>sin letra</b> o <b>con letra</b>: «Riega tu meta», la canción de la app, con la misma melodía. Toca «Ver la letra» para cantarla.' ] },
     { v: 'V12.07', f: '11 de octubre de 2026', n: [
-      'Deja el dedo pulsado sobre el icono de la app y tendrás accesos directos: <b>💧 Regar hoy</b>, <b>🌿 Abonar</b> y <b>📖 Mi guía</b>.',
+      'Deja el dedo pulsado sobre el icono de la app y tendrás accesos directos: <b>Regar hoy</b>, <b>Abonar</b> y <b>Mi guía</b>.',
       'El botón <b>Abona tu meta</b> tiene ahora forma de maceta marrón; cuando abonas, toma el color de tu emoción.' ] },
     { v: 'V12.03', f: '11 de octubre de 2026', n: [
       'Tu planta de Inicio tiene ahora un <b>tutor</b>: el palo que la sostiene es tu guía semanal, para que crezca recta y no se tuerza.',
@@ -6137,10 +6186,10 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       'En Inicio, el paso <b>a</b> es ahora la tarjeta azul <b>Tu guía de esta semana</b>: el ejercicio que te propone tu guía y su objetivo, tu disparador («Cuando…, haré…») y el botón <b>Ir a tu guía semanal</b>, que abre la guía en «Tu práctica de la semana». Ya no se pregunta a qué hora la harás: un hábito se hace siempre en el mismo momento, justo después de algo que ya haces.',
       'En <b>Mi calendario de prácticas</b>, cada día hecho es una <b>maceta</b> (del color de tu emoción si ese día abonaste), sin la marca ✓.' ] },
     { v: 'V11.99', f: '11 de octubre de 2026', n: [
-      '<b>🌿 Abona tu meta</b>: regar es practicar; abonar es conocer cómo te sientes. Elige una o dos emociones en la maceta (energía alta o baja, agradable o desagradable) y su intensidad. Puedes abonar aunque hoy no hayas regado.',
+      '<b>Abona tu meta</b>: regar es practicar; abonar es conocer cómo te sientes. Elige una o dos emociones en la maceta (energía alta o baja, agradable o desagradable) y su intensidad. Puedes abonar aunque hoy no hayas regado.',
       'En «¿Qué días la hiciste?», cada día es una <b>maceta pequeña</b> del color de tu emoción, con las veces que hiciste la práctica dentro.' ] },
     { v: 'V11.92', f: '10 de octubre de 2026', n: [
-      'En tu Perfil, <b>Cambiar foto</b> abre una ventana con tu foto en grande: escoge una de tu álbum, <b>🤳 hazte una foto ahora</b> con la cámara o quítala.',
+      'En tu Perfil, <b>Cambiar foto</b> abre una ventana con tu foto en grande: escoge una de tu álbum, <b>hazte una foto ahora</b> con la cámara o quítala.',
       'En la pantalla de regar, arriba: <b>Ir a Metas Amables</b>, para volver a Inicio.' ] },
     { v: 'V11.82', f: '10 de octubre de 2026', n: [
       '<b>Tu minuto de la mañana</b>: hasta las 12, en Inicio decides cuándo harás hoy tu práctica (al levantarte, después de comer, por la tarde u otro momento). Cuando llega la hora, ya está decidido.' ] },
@@ -6148,14 +6197,14 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       'Las notas a tu yo, una vez guardadas, quedan cerradas hasta su día: <b>la sorpresa</b> es leerlas cuando llegue.',
       'Los pasos del Viaje también van en MAYÚSCULAS.' ] },
     { v: 'V11.75', f: '8 de octubre de 2026', n: [
-      'Las notas a tu yo se distinguen en violeta: 🔮 «Nota a tu yo: próximo lunes», «próximo mes» y «final de trimestre».',
+      'Las notas a tu yo se distinguen en violeta: «Nota a tu yo: próximo lunes», «próximo mes» y «final de trimestre».',
       'Los títulos de los pasos de Inicio van en MAYÚSCULAS.' ] },
     { v: 'V11.73', f: '8 de octubre de 2026', n: [
       'Nuevo apartado <b>Habla con tu yo del futuro</b>, con tus tres notas: a tu yo del próximo lunes, del próximo mes y de final de trimestre.' ] },
     { v: 'V11.72', f: '8 de octubre de 2026', n: [
       '<b>Tu meta se mueve</b>: Prácti siembra la semilla, te espera con la regadera y, si no la riegas, ves cómo la planta se va doblando.' ] },
     { v: 'V11.71', f: '8 de octubre de 2026', n: [
-      '<b>Momento de regar</b>: al pulsar «💧 Regar» en tu meta (o al tocar el aviso de las 20:00) se abre una pantalla con tu práctica, un consejo y un solo botón para marcarla.',
+      '<b>Momento de regar</b>: al pulsar «Regar» en tu meta (o al tocar el aviso de las 20:00) se abre una pantalla con tu práctica, un consejo y un solo botón para marcarla.',
       'Las tres notas a tu yo (de voz, del mes y del trimestre) van seguidas y funcionan igual: «Ver mi nota».',
       'El apartado a se llama ahora <b>Guía semanal</b>.' ] },
     { v: 'V11.70', f: '8 de octubre de 2026', n: [
@@ -6174,16 +6223,16 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       '<b>La planta es tu meta</b>: la siembras al sellar tu compromiso, la riegas con tu práctica y la cosechas al final.',
       'El jardinero cuida <b>tres huertos</b>: el del aprendizaje, el de la sanación y el de la atención plena.' ] },
     { v: 'V11.62', f: '7 de octubre de 2026', n: [
-      '<b>Avisos en el móvil</b>: si a las 8 de la tarde aún no has marcado tu práctica, te llega «🥀 Tu meta tiene sed». Con una guía paso a paso para activarlos.',
+      '<b>Avisos en el móvil</b>: si a las 8 de la tarde aún no has marcado tu práctica, te llega «Tu meta tiene sed». Con una guía paso a paso para activarlos.',
       '<b>Nota de voz semanal</b> 👑👑: grábate una nota de voz y se abre el lunes siguiente.',
       'Ajustes ordenados en secciones que se abren y se cierran.',
       'La música oficial se controla desde la barra de abajo.',
-      'El recordatorio del calendario lleva 🌱 y el texto de tu meta.' ] },
+      'El recordatorio del calendario lleva y el texto de tu meta.' ] },
     { v: 'V11.56', f: '6 de octubre de 2026', n: [
       '<b>Tu planta en Inicio</b>: se riega cada día que marcas tu práctica y se va marchitando si no.',
       'Nueva <b>bienvenida</b> en cuatro pantallas.',
       '<b>Mi calendario</b> y <b>Mi historial</b> de prácticas.',
-      'Un ojo 👁 para ver la contraseña mientras la escribes.' ] },
+      'Un ojo para ver la contraseña mientras la escribes.' ] },
     { v: 'V11.49', f: '6 de octubre de 2026', n: [
       'Historia de ciencia 2: <b>El alpinista jardinero</b>, con la montaña de los cinco niveles.',
       '<b>Icono nuevo</b>: Prácti regando su planta.',
@@ -6193,7 +6242,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       'Enlace para volver a ver la app en español si el traductor la cambia.' ] },
     { v: 'V11.38', f: '5 de octubre de 2026', n: [
       '<b>Guía semanal por capítulos</b>, con una línea de progreso.',
-      'Botón <b>🔊 Oír</b> para escuchar la guía.',
+      'Botón <b>Oír</b> para escuchar la guía.',
       'La valoración de la guía, solo al final.' ] }
   ];
   // ===== Amable Meta: la simplicidad voluntaria (idea de Gustavo, 11-10-2026). Páginas con «Siguiente» y, al final, el modo minimalista =====
@@ -6907,16 +6956,16 @@ lo que haces cada día es lo que vas a ser.`;
     card.className = 'card perfil-card';
     card.innerHTML = `
       <div class="perfil-cabecera">
-        <span class="avatar-grande" id="fotoPerfilBtn" role="button" tabindex="0" aria-label="Cambiar foto">${fotoDePerfil() ? '<img class="foto-perfil" src="' + escapeAttr(fotoDePerfil()) + '" alt="Tu foto" referrerpolicy="no-referrer">' : (avatarDe(state.me) || '🙂')}</span>
+        <span class="avatar-grande" id="fotoPerfilBtn" role="button" tabindex="0" aria-label="Cambiar foto">${fotoDePerfil() ? '<img class="foto-perfil" src="' + escapeAttr(fotoDePerfil()) + '" alt="Tu foto" referrerpolicy="no-referrer">' : (avatarDe(state.me) || escapeAttr(inicialesDe(state.me)))}</span>
         <p style="margin:0;font-size:20px;font-family:'Nunito',serif;font-weight:600">${escapeAttr(state.me)}</p>
       </div>
       <div style="display:flex;gap:16px;flex-wrap:wrap;margin:0 0 10px">
-        <button class="link-quiet" id="btnSubirFoto" style="padding:0">📷 ${fotoDePerfil() ? 'Cambiar foto' : 'Poner mi foto'}</button>
+        <button class="link-quiet" id="btnSubirFoto" style="padding:0"><i data-ico=camara></i>${fotoDePerfil() ? 'Cambiar foto' : 'Poner mi foto'}</button>
         <input type="file" id="inputFoto" accept="image/*" style="display:none">
         <input type="file" id="inputFotoCamara" accept="image/*" capture="user" style="display:none">
       </div>
       <div id="fotoMsg" style="font-size:13px;margin:-4px 0 8px"></div>
-      <button class="link-quiet" id="btnElegirAvatar" style="padding:0;margin:0 0 10px">🎨 ${avatarDe(state.me) ? 'Cambiar mi avatar' : 'Elegir mi avatar'}</button>
+      <button class="link-quiet" id="btnElegirAvatar" style="padding:0;margin:0 0 10px"><i data-ico=paleta></i>${avatarDe(state.me) ? 'Cambiar mi avatar' : 'Elegir mi avatar'}</button>
       <div id="avatarBox" style="display:none;margin-bottom:12px">
         <div class="avatar-grid">${AVATARES.map(a => `<button type="button" class="avatar-opcion${a === avatarDe(state.me) ? ' elegido' : ''}" data-avatar="${a}">${a}</button>`).join('')}</div>
         ${avatarDe(state.me) ? '<button type="button" class="link-quiet" data-avatar="" style="padding:0">Quitar avatar</button>' : ''}
@@ -6931,11 +6980,11 @@ lo que haces cada día es lo que vas a ser.`;
       </p>
       ${BADGE_SCALE.map(b => `<div class="badge-scale-row" data-min="${b.min}"><span${b.label!=='Guerrero' ? ' class="nivel-nombre-destacado"' : ''}>${b.icon} ${b.label}</span><span style="color:var(--ink-soft)">año ${BADGE_SCALE.indexOf(b) + 1}</span></div>`).join('')}
       <div style="margin-top:18px;border-top:1px solid var(--border);padding-top:14px">
-        <button class="link-quiet" id="togglePassChange" style="padding:0">🔒 Cambiar contraseña</button>
+        <button class="link-quiet" id="togglePassChange" style="padding:0"><i data-ico=candado></i>Cambiar contraseña</button>
         <div id="passChangeBox" style="display:none;margin-top:12px"></div>
       </div>
       <div style="margin-top:14px;border-top:1px solid var(--border);padding-top:14px">
-        <button class="link-quiet" id="toggleEliminar" style="padding:0;color:#B94A3A">🗑️ Eliminar mi cuenta</button>
+        <button class="link-quiet" id="toggleEliminar" style="padding:0;color:#B94A3A"><i data-ico=papelera></i>Eliminar mi cuenta</button>
         <div id="eliminarBox" style="display:none;margin-top:12px">
           <p style="font-size:13px;color:var(--ink-soft);margin:0 0 10px">Se borrarán tus registros, tus puntos y tus datos de contacto. No se puede deshacer. Los datos de pagos se conservan el tiempo que exige la ley.</p>
           <input type="password" id="eliminarPass" placeholder="Escribe tu contraseña para confirmar" style="width:100%;border:1px solid var(--border);border-radius:10px;padding:12px;font-family:'Karla';font-size:15px;margin-bottom:10px;background:#FCFCF9;box-sizing:border-box">
@@ -6967,10 +7016,10 @@ lo que haces cada día es lo que vas a ser.`;
     card.querySelector('#btnSubirFoto').onclick = () => {
       const foto = fotoDePerfil();
       const capa = el(`<div class="foto-capa" role="dialog" aria-label="Cambiar foto"><div class="foto-hoja">
-        <div class="foto-grande">${foto ? '<img src="' + escapeAttr(foto) + '" alt="Tu foto" referrerpolicy="no-referrer">' : '<span>' + (avatarDe(state.me) || '🙂') + '</span>'}</div>
-        <button type="button" class="foto-op" data-op="album">🖼️ Escoger de mi álbum</button>
-        <button type="button" class="foto-op" data-op="camara">🤳 Hacerme una foto ahora</button>
-        ${foto ? '<button type="button" class="foto-op quitar" data-op="quitar">🗑️ Quitar foto</button>' : ''}
+        <div class="foto-grande">${foto ? '<img src="' + escapeAttr(foto) + '" alt="Tu foto" referrerpolicy="no-referrer">' : '<span>' + (avatarDe(state.me) || escapeAttr(inicialesDe(state.me))) + '</span>'}</div>
+        <button type="button" class="foto-op" data-op="album"><i data-ico=imagen></i>Escoger de mi álbum</button>
+        <button type="button" class="foto-op" data-op="camara"><i data-ico=camara></i>Hacerme una foto ahora</button>
+        ${foto ? '<button type="button" class="foto-op quitar" data-op="quitar"><i data-ico=papelera></i>Quitar foto</button>' : ''}
         <button type="button" class="foto-op cancelar" data-op="cancelar">Cancelar</button></div></div>`).firstElementChild;
       document.body.appendChild(capa);
       const cerrar = () => capa.remove();
@@ -7197,7 +7246,7 @@ lo que haces cada día es lo que vas a ser.`;
 
   // Pantalla de ayuda: cómo cambiar la voz del móvil (Android), con los pasos tal como salen en el teléfono
   function renderAyudaVoz(){
-    renderBackTopbar('📱 Cómo mejorar la voz');
+    renderBackTopbar('Cómo mejorar la voz');
     app.querySelector('#btnVolver').onclick = () => { state.view = 'ajustes'; window.scrollTo(0,0); render(); };
     const android = /android/i.test(navigator.userAgent);
     app.appendChild(el(`<div class="card ayuda-voz">
@@ -7205,13 +7254,13 @@ lo que haces cada día es lo que vas a ser.`;
       <ol>
         <li>Abre los <b>Ajustes</b> del móvil y busca <b>«Texto a voz»</b>.</li>
         <li>En <b>Motor preferido</b>, marca <b>«Reconocimiento y síntesis de voz de Google»</b>.</li>
-        <li>Toca la <b>ⓘ</b> (o la rueda ⚙️) que está a su derecha.</li>
+        <li>Toca la <b>ⓘ</b> (o la rueda de ajustes) que está a su derecha.</li>
         <li>Entra en <b>«Instalar archivos de voz»</b> y elige <b>Español (España)</b>.</li>
         <li>Verás <b>Voz I, II, III, IV y V</b>. Tócalas para oírlas y deja marcada la que más te guste.</li>
         <li>Vuelve atrás y pulsa <b>«Escuchar una muestra»</b> para comprobarla. Puedes subir un poco el <b>Tono</b> si quieres una voz más alegre.</li>
         <li>Vuelve a la app: Prácti leerá tus guías con esa voz.</li>
       </ol>
-      ${android ? '<a class="btn btn-yes" style="display:block;text-align:center;text-decoration:none;margin-top:14px" href="intent:#Intent;action=com.android.settings.TTS_SETTINGS;end">⚙️ Abrir «Texto a voz» del móvil</a><p style="font-size:12px;color:var(--ink-soft);margin:6px 0 0">Si el botón no abre nada, sigue los pasos a mano: algunos móviles no lo permiten.</p>' : '<p style="font-size:13px;color:var(--ink-soft)">En iPhone puedes elegir la voz directamente en la app (Menú → Ajustes → Voz de Prácti).</p>'}
+      ${android ? '<a class="btn btn-yes" style="display:block;text-align:center;text-decoration:none;margin-top:14px" href="intent:#Intent;action=com.android.settings.TTS_SETTINGS;end"><i data-ico=engranaje></i>Abrir «Texto a voz» del móvil</a><p style="font-size:12px;color:var(--ink-soft);margin:6px 0 0">Si el botón no abre nada, sigue los pasos a mano: algunos móviles no lo permiten.</p>' : '<p style="font-size:13px;color:var(--ink-soft)">En iPhone puedes elegir la voz directamente en la app (Menú → Ajustes → Voz de Prácti).</p>'}
     </div>`));
   }
 
@@ -7237,16 +7286,16 @@ lo que haces cada día es lo que vas a ser.`;
     const caja = el('<div class="ayuda"><h1 class="viaje-titulo" style="text-align:center">Centro de ayuda</h1>'
       + '<details class="ayuda-fila"><summary><span class="ayuda-ico">?</span>Preguntas frecuentes</summary><div class="ayuda-faq">'
       + preguntas.map(p => '<details class="ayuda-preg"><summary>' + p[0] + '</summary><p>' + p[1] + '</p></details>').join('') + '</div></details>'
-      + '<a class="ayuda-fila ayuda-enlace" href="terminos.html" target="_blank" rel="noopener"><span class="ayuda-ico">✓</span>Términos de uso</a>'
-      + '<a class="ayuda-fila ayuda-enlace" href="privacidad.html" target="_blank" rel="noopener"><span class="ayuda-ico">🔒</span>Declaración de privacidad</a>'
-      + '<details class="ayuda-fila"><summary><span class="ayuda-ico">🍪</span>Cookies y datos en tu móvil</summary><p class="ayuda-tx">Amable Meta no usa cookies de publicidad. Guarda en tu móvil algunas preferencias (tema, volumen, avisos que ya has visto) para que la app se acuerde de ti. Los vídeos de música de YouTube, los pagos con Stripe y el inicio de sesión con Google pueden usar sus propias cookies.</p></details>'
-      + '<details class="ayuda-fila"><summary><span class="ayuda-ico">🔊</span>Ayuda con la voz de Prácti</summary><p class="ayuda-tx">Si Prácti suena raro o no habla, mira <a href="#" data-ir="ayudaVoz">cómo cambiar la voz del móvil</a>.</p></details>'
+      + '<a class="ayuda-fila ayuda-enlace" href="terminos.html" target="_blank" rel="noopener"><span class="ayuda-ico"><i data-ico=documento></i></span>Términos de uso</a>'
+      + '<a class="ayuda-fila ayuda-enlace" href="privacidad.html" target="_blank" rel="noopener"><span class="ayuda-ico"><i data-ico=candado></i></span>Declaración de privacidad</a>'
+      + '<details class="ayuda-fila"><summary><span class="ayuda-ico"><i data-ico=galleta></i></span>Cookies y datos en tu móvil</summary><p class="ayuda-tx">Amable Meta no usa cookies de publicidad. Guarda en tu móvil algunas preferencias (tema, volumen, avisos que ya has visto) para que la app se acuerde de ti. Los vídeos de música de YouTube, los pagos con Stripe y el inicio de sesión con Google pueden usar sus propias cookies.</p></details>'
+      + '<details class="ayuda-fila"><summary><span class="ayuda-ico"><i data-ico=altavoz></i></span>Ayuda con la voz de Prácti</summary><p class="ayuda-tx">Si Prácti suena raro o no habla, mira <a href="#" data-ir="ayudaVoz">cómo cambiar la voz del móvil</a>.</p></details>'
       + '<h2 class="ayuda-h2">Estamos aquí para ayudarte.</h2>'
       + '<p class="ayuda-suave">Si necesitas ayuda con tu cuenta, tu plan o la app, aquí tienes las respuestas más rápidas. Y si no, te atendemos personalmente.</p>'
       + '<p class="ayuda-tx"><b>¿Ya tienes una cuenta?</b><br>Cambia tu contraseña en unos pasos.</p>'
-      + '<button type="button" class="ayuda-boton" id="ayudaPass">🔒 Cambiar mi contraseña</button>'
+      + '<button type="button" class="ayuda-boton" id="ayudaPass"><i data-ico=candado></i>Cambiar mi contraseña</button>'
       + '<hr class="ayuda-hr"><p class="ayuda-tx"><b>¿Necesitas más ayuda?</b></p><p class="ayuda-suave">Nuestro equipo está disponible y listo para ayudarte.</p>'
-      + '<button type="button" class="ayuda-boton" id="ayudaSoporte">💬 Contactar con soporte</button></div>').firstElementChild;
+      + '<button type="button" class="ayuda-boton" id="ayudaSoporte"><i data-ico=comentario></i>Contactar con soporte</button></div>').firstElementChild;
     caja.querySelectorAll('[data-ir="ayudaVoz"]').forEach(a => a.onclick = e => { e.preventDefault(); state.prevView = 'ayuda'; state.view = 'ayudaVoz'; window.scrollTo(0,0); render(); });
     caja.querySelector('#ayudaPass').onclick = () => { state.prevView = 'ayuda'; state.view = 'perfil'; window.scrollTo(0,0); render(); };
     caja.querySelector('#ayudaSoporte').onclick = () => { window.open('https://wa.me/34658825799?text=' + encodeURIComponent('Hola, soy ' + (state.me || '') + ' y necesito ayuda con la app Amable Meta'), '_blank'); };
@@ -7254,14 +7303,14 @@ lo que haces cada día es lo que vas a ser.`;
   }
   function renderAjustesView(){
     renderBackTopbar('Ajustes');
-    const accAyuda = el('<button type="button" class="card ayuda-acceso"><span>❓ <b>Centro de ayuda</b><small>Preguntas frecuentes, privacidad y soporte</small></span><span>›</span></button>').firstElementChild;
+    const accAyuda = el('<button type="button" class="card ayuda-acceso"><span><i data-ico=ayuda></i><b>Centro de ayuda</b><small>Preguntas frecuentes, privacidad y soporte</small></span><span>›</span></button>').firstElementChild;
     accAyuda.onclick = () => { state.prevView = 'ajustes'; state.view = 'ayuda'; window.scrollTo(0,0); render(); };
     app.appendChild(accAyuda);
     // 🆘 Ayuda y soporte: email y WhatsApp con la app y la versión ya escritas (26-10-2026, igual en todas las apps)
     const cuerpoSoporte = 'Hola, os escribo por Amable Meta (' + APP_VERSION + '). Me pasa esto: ';
     const soporte = el('<div class="card soporte-card"><p class="soporte-tit">🆘 Ayuda y soporte</p><p class="soporte-tx">¿Algo no funciona o tienes una duda? Escríbenos y te ayudamos.</p>'
-      + '<a class="panel-link-btn" style="width:100%;text-align:center;margin:0 0 8px" href="mailto:info@practicaintegral.club?subject=' + encodeURIComponent('Amable Meta · Ayuda') + '&body=' + encodeURIComponent(cuerpoSoporte) + '">✉️ Escribir a soporte</a>'
-      + '<a class="panel-link-btn" style="width:100%;text-align:center;margin:0;background:#25A366" target="_blank" rel="noopener" href="https://wa.me/34658825799?text=' + encodeURIComponent(cuerpoSoporte) + '">💬 Escribir por WhatsApp</a>'
+      + '<a class="panel-link-btn" style="width:100%;text-align:center;margin:0 0 8px" href="mailto:info@practicaintegral.club?subject=' + encodeURIComponent('Amable Meta · Ayuda') + '&body=' + encodeURIComponent(cuerpoSoporte) + '"><i data-ico=correo></i>Escribir a soporte</a>'
+      + '<a class="panel-link-btn" style="width:100%;text-align:center;margin:0;background:#25A366" target="_blank" rel="noopener" href="https://wa.me/34658825799?text=' + encodeURIComponent(cuerpoSoporte) + '"><i data-ico=comentario></i>Escribir por WhatsApp</a>'
       + '<p class="soporte-pie">Email: info@practicaintegral.club · WhatsApp: +34 658 82 57 99</p></div>').firstElementChild;
     app.appendChild(soporte);
     const card = document.createElement('div');
@@ -7269,8 +7318,8 @@ lo que haces cada día es lo que vas a ser.`;
     card.innerHTML = `
       <p style="font-weight:700;margin:0 0 8px">Tema</p>
       <div class="theme-toggle-row">
-        <button class="theme-toggle-btn ${state.theme==='light'?'active':''}" id="themeLight">☀️ Claro</button>
-        <button class="theme-toggle-btn ${state.theme==='dark'?'active':''}" id="themeDark">🌙 Oscuro</button>
+        <button class="theme-toggle-btn ${state.theme==='light'?'active':''}" id="themeLight"><i data-ico=sol></i>Claro</button>
+        <button class="theme-toggle-btn ${state.theme==='dark'?'active':''}" id="themeDark"><i data-ico=luna></i>Oscuro</button>
       </div>
       <p style="font-weight:700;margin:18px 0 4px">Idioma</p>
       <select class="lang-select" id="langSelect">
@@ -7293,7 +7342,7 @@ lo que haces cada día es lo que vas a ser.`;
       const instCard = document.createElement('div');
       instCard.className = 'card';
       instCard.innerHTML = `
-        <p style="font-weight:700;margin:0 0 4px">📲 Instalar la app en el móvil</p>
+        <p style="font-weight:700;margin:0 0 4px">Instalar la app en el móvil</p>
         <p style="font-size:13px;color:var(--ink-soft);margin:0 0 10px">${appInstalada() ? 'Ya la tienes instalada. Si el icono ha desaparecido o no funciona bien, puedes volver a instalarla.' : 'Ponla en la pantalla de inicio de tu móvil, como cualquier otra app.'}</p>
         <button type="button" class="btn btn-yes" id="btnInstalarAjustes" style="text-align:center">${appInstalada() ? 'Volver a instalar' : 'Instalar la app'}</button>`;
       app.appendChild(instCard);
@@ -7305,12 +7354,12 @@ lo que haces cada día es lo que vas a ser.`;
     const vozCard = document.createElement('div');
     vozCard.className = 'card';
     if(!('speechSynthesis' in window)){
-      vozCard.innerHTML = `<p style="font-weight:700;margin:0 0 6px">🗣️ Voz de Prácti</p><p style="font-size:13px;color:var(--ink-soft);margin:0">Este navegador no permite leer en voz alta.</p>`;
+      vozCard.innerHTML = `<p style="font-weight:700;margin:0 0 6px">Voz de Prácti</p><p style="font-size:13px;color:var(--ink-soft);margin:0">Este navegador no permite leer en voz alta.</p>`;
       app.appendChild(vozCard);
     } else {
       const tono = tonoLector(), vel = velocidadLector();
       vozCard.innerHTML = `
-        <p style="font-weight:700;margin:0 0 4px">🗣️ Voz de Prácti</p>
+        <p style="font-weight:700;margin:0 0 4px">Voz de Prácti</p>
         <p style="font-size:13px;color:var(--ink-soft);margin:0 0 10px">Elige la voz que te lee las guías y los mensajes. Las voces dependen de tu móvil.</p>
         <select class="voz-select" id="vozSelect"></select>
         <p style="font-weight:700;margin:14px 0 6px;font-size:14px">Tono</p>
@@ -7319,7 +7368,7 @@ lo que haces cada día es lo que vas a ser.`;
         <div class="theme-toggle-row">${VELOCIDADES.map(v => `<button class="theme-toggle-btn ${v === vel ? 'active' : ''}" data-vel="${v}">${String(v).replace('.', ',')}x</button>`).join('')}</div>
         <button class="btn btn-yes" id="btnProbarVoz" style="text-align:center;margin-top:14px">${ICO.play} Probar voz</button>
         <div class="voz-ayuda">
-          <button type="button" class="btn btn-no" id="btnAyudaVoz" style="text-align:center;margin-top:14px">📱 ¿Tu voz suena igual? Cómo mejorarla</button>
+          <button type="button" class="btn btn-no" id="btnAyudaVoz" style="text-align:center;margin-top:14px">¿Tu voz suena igual? Cómo mejorarla</button>
         </div>
       `;
       app.appendChild(vozCard);
@@ -7363,10 +7412,10 @@ lo que haces cada día es lo que vas a ser.`;
       const t = cuerpo.querySelector('p'); if(t && /font-weight:700/.test(t.getAttribute('style') || '') && t === cuerpo.firstElementChild) t.remove();
       d.appendChild(cuerpo); cardP.appendChild(d); cardP.classList.add('card-plegable');
     };
-    plegar(card, '🎨 Tema e idioma');
-    plegar(app.querySelector('#btnInstalarAjustes') && app.querySelector('#btnInstalarAjustes').closest('.card'), '📲 Instalar la app en el móvil');
-    plegar(vozCard, '🗣️ Voz de Prácti');
-    plegar(app.querySelector('#btnReponerIntros') && app.querySelector('#btnReponerIntros').closest('.card'), '🔁 Pantallas de explicación');
+    plegar(card, '<span><i data-ico=paleta></i>Tema e idioma</span>');
+    plegar(app.querySelector('#btnInstalarAjustes') && app.querySelector('#btnInstalarAjustes').closest('.card'), '<span><i data-ico=instalar></i>Instalar la app en el móvil</span>');
+    plegar(vozCard, '<span><i data-ico=voz></i>Voz de Prácti</span>');
+    plegar(app.querySelector('#btnReponerIntros') && app.querySelector('#btnReponerIntros').closest('.card'), '<span><i data-ico=repetir></i>Pantallas de explicación</span>');
 
     // Banco de pruebas, solo para quien tenga "Moderador" en su grupo.
     // Enseña cada pantalla de resultado sin guardar nada en Airtable.
@@ -7377,11 +7426,11 @@ lo que haces cada día es lo que vas a ser.`;
     const pruebas = document.createElement('div');
     pruebas.className = 'card';
     pruebas.innerHTML = `
-      <p style="font-weight:700;margin:0 0 4px">🔧 Pruebas (solo moderador)</p>
+      <p style="font-weight:700;margin:0 0 4px">Pruebas (solo moderador)</p>
       <p style="font-size:13px;color:var(--ink-soft);margin:0 0 12px">Mira cada pantalla de resultado con su animación y su voz. <b>No guarda nada</b> ni toca tus registros.</p>
-      <button class="btn btn-yes" id="pruebaCumplido" style="text-align:center">🎉 Semana cumplida (confeti)</button>
-      <button class="btn btn-no" id="pruebaParcial" style="text-align:center">🌥️ Semana a medias (nubes)</button>
-      <button class="btn btn-no" id="pruebaSinOp" style="text-align:center">🐦 Sin oportunidades (pájaros)</button>
+      <button class="btn btn-yes" id="pruebaCumplido" style="text-align:center">Semana cumplida (confeti)</button>
+      <button class="btn btn-no" id="pruebaParcial" style="text-align:center">Semana a medias (nubes)</button>
+      <button class="btn btn-no" id="pruebaSinOp" style="text-align:center">Sin oportunidades (pájaros)</button>
     `;
     app.appendChild(pruebas);
     const verPrueba = (vista, frase, anim) => {
@@ -10148,6 +10197,57 @@ lo que haces cada día es lo que vas a ser.`;
     if(deMetaAnterior(p)) return { estado: 'escribir' };   // aún cerrada, pero de la meta anterior: se escribe otra
     return { estado: 'guardado', p, abre };   // aún no toca abrirla (aunque sea del mes pasado)
   }
+  // ===== ¿Qué te ha parecido esta carta? (5-11-2026): nota mensual, carta trimestral y nota de voz semanal =====
+  // Se guarda en este móvil: [{ id, tipo, fecha, r, t }]. En «otras cartas», la valoración más nueva arriba.
+  const REAC_CARTA = [['neutro', 'Neutro'], ['alegrado', 'Me ha alegrado'], ['emocionado', 'Me ha emocionado']];
+  function reaccionesCartas(){ try { return JSON.parse(localStorage.getItem('cartas_reac_' + state.me) || '[]'); } catch(e){ return []; } }
+  function bloqueReaccionHTML(conCompartir){
+    return '<div class="carta-reac"><p class="posit-intro">¿Qué te ha parecido esta carta?</p>'
+      + '<div class="posit-reac">' + REAC_CARTA.map(([k, t]) => '<button type="button" data-r="' + k + '">' + t + '</button>').join('') + '</div>'
+      + (conCompartir ? '<button type="button" class="posit-compartir">' + icoMenu('compartir') + 'Compartir</button>' : '')
+      + '<button type="button" class="link-quiet reac-otras">Ver qué te han parecido las otras cartas</button></div>';
+  }
+  function activarReaccion(raiz, tipo, id, fechaISO, textoCompartir){
+    const zona = raiz && raiz.querySelector('.carta-reac'); if(!zona) return;
+    const marcar = r => zona.querySelectorAll('.posit-reac button').forEach(b => b.classList.toggle('elegida', b.dataset.r === r));
+    const ya = reaccionesCartas().find(x => x.id === id); if(ya) marcar(ya.r);
+    zona.querySelectorAll('.posit-reac button').forEach(b => b.onclick = () => {
+      marcar(b.dataset.r);
+      const l = reaccionesCartas().filter(x => x.id !== id);
+      l.push({ id, tipo, fecha: fechaISO, r: b.dataset.r, t: Date.now(), texto: String(textoCompartir || '').slice(0, 4000) });
+      try { localStorage.setItem('cartas_reac_' + state.me, JSON.stringify(l)); } catch(e){}
+    });
+    zona.querySelector('.reac-otras').onclick = abrirOtrasCartas;
+    const comp = zona.querySelector('.posit-compartir');
+    if(comp) comp.onclick = async () => {
+      try { if(navigator.share){ await navigator.share({ title: 'Nota a mi yo del futuro', text: textoCompartir }); return; } } catch(er){ if(er && er.name === 'AbortError') return; }
+      try { await navigator.clipboard.writeText(textoCompartir); avisoBreve('Nota copiada: pégala donde quieras'); } catch(er){}
+    };
+  }
+  function abrirOtrasCartas(){
+    const l = reaccionesCartas().sort((a, b) => b.t - a.t), nombres = Object.fromEntries(REAC_CARTA);
+    const capa = el('<div class="reac-capa"><div class="reac-caja" role="dialog" aria-label="Lo que te han parecido tus cartas"><button type="button" class="reac-cerrar" aria-label="Cerrar">✕</button><p class="reac-tit">Lo que te han parecido tus cartas</p>'
+      + (l.length ? l.map((x, i) => '<div class="reac-item"><div class="reac-fila"><span>Mi carta del ' + new Date(x.fecha + 'T00:00:00').toLocaleDateString('es-ES', { day: 'numeric', month: 'long' }) + ' <small>(' + x.tipo + ')</small></span><span class="reac-der"><b>' + (nombres[x.r] || '') + '</b><button type="button" class="reac-ver" data-i="' + i + '">Carta</button></span></div></div>').join('')
+        : '<p style="margin:0 0 8px">Aún no has valorado ninguna carta.</p>')
+      + '</div></div>').firstElementChild;
+    // «Carta»: despliega la carta de esa fecha (la nota de voz se escucha)
+    capa.querySelectorAll('.reac-ver').forEach(b => b.onclick = async () => {
+      const item = b.closest('.reac-item'), abierta = item.querySelector('.reac-texto');
+      if(abierta){ abierta.remove(); return; }
+      const x = l[Number(b.dataset.i)], d = document.createElement('div'); d.className = 'reac-texto';
+      if(x.tipo === 'semanal'){
+        d.textContent = 'Cargando tu nota de voz…'; item.appendChild(d);
+        try { const url = await vozDescargar(x.fecha); d.innerHTML = url ? '<audio controls src="' + url + '" style="width:100%"></audio>' : 'Esta nota de voz ya no está guardada.'; } catch(e){ d.textContent = 'No se pudo cargar la nota de voz.'; }
+        return;
+      }
+      d.innerHTML = x.texto ? escapeAttr(x.texto).replace(/\n/g, '<br>') : 'El texto de esta carta no está guardado en este móvil.';
+      item.appendChild(d);
+    });
+    const cerrar = () => capa.remove();
+    capa.querySelector('.reac-cerrar').onclick = cerrar;
+    capa.onclick = ev => { if(ev.target === capa) cerrar(); };
+    document.body.appendChild(capa);
+  }
   function fechaLarga(d){ return d.toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' }); }
   function renderPosit(){
     const e = estadoPosit(), abreTitulo = (e.estado === 'escribir' || state.positNueva) ? ultimoLunes(mesClave()) : e.abre;
@@ -10162,21 +10262,10 @@ lo que haces cada día es lo que vas a ser.`;
       return;
     }
     if(e.estado === 'abrir' && !state.positNueva){
-      caja.innerHTML = '<p class="posit-intro">Tu yo de principio del mes pasado te dejó esta nota:</p><div class="posit posit-abierto"><p class="posit-fecha">Escrita el ' + new Date(e.p.fecha + 'T00:00:00').toLocaleDateString('es-ES', { day: 'numeric', month: 'long' }) + '</p>' + escapeAttr(e.p.texto).replace(/\n/g, '<br>') + '</div><p class="posit-intro">¿Qué te ha parecido esta carta?</p>'
-        + '<div class="posit-reac">' + [['neutro', 'Neutro'], ['alegrado', 'Me ha alegrado'], ['emocionado', 'Me ha emocionado']].map(([k, t]) => '<button type="button" data-r="' + k + '">' + t + '</button>').join('') + '</div>'
-        + '<button type="button" class="posit-compartir" id="positCompartir">' + icoMenu('compartir') + 'Compartir</button>'
-        + '<button type="button" class="panel-link-btn" id="positOtra" style="background:#C9942D;border:none;width:100%;cursor:pointer;margin-top:10px">Escribir la nota para el lunes ' + diaUnoTexto(ultimoLunes(mesClave())) + '</button>';
+      caja.innerHTML = '<p class="posit-intro">Tu yo de principio del mes pasado te dejó esta nota:</p><div class="posit posit-abierto"><p class="posit-fecha">Escrita el ' + new Date(e.p.fecha + 'T00:00:00').toLocaleDateString('es-ES', { day: 'numeric', month: 'long' }) + '</p>' + escapeAttr(e.p.texto).replace(/\n/g, '<br>') + '</div>' + bloqueReaccionHTML(true)
+        + '<button type="button" class="btn-nota" id="positOtra">Escribir la nota para el lunes ' + diaUnoTexto(ultimoLunes(mesClave())) + '</button>';
       caja.querySelector('#positOtra').onclick = () => { state.positNueva = true; renderVista(); };
-      // ¿Qué te ha parecido esta carta? (5-11-2026): se recuerda en este móvil
-      const claveReac = 'posit_reaccion_' + e.p.fecha;
-      const marcar = r => caja.querySelectorAll('.posit-reac button').forEach(b => b.classList.toggle('elegida', b.dataset.r === r));
-      try { marcar(localStorage.getItem(claveReac)); } catch(er){}
-      caja.querySelectorAll('.posit-reac button').forEach(b => b.onclick = () => { marcar(b.dataset.r); try { localStorage.setItem(claveReac, b.dataset.r); } catch(er){} });
-      caja.querySelector('#positCompartir').onclick = async () => {
-        const texto = e.p.texto;
-        try { if(navigator.share){ await navigator.share({ title: 'Nota a mi yo del futuro', text: texto }); return; } } catch(er){ if(er && er.name === 'AbortError') return; }
-        try { await navigator.clipboard.writeText(texto); avisoBreve('Nota copiada: pégala donde quieras'); } catch(er){}
-      };
+      activarReaccion(caja, 'mensual', 'mensual_' + e.p.fecha, e.p.fecha, e.p.texto);
       if(typeof sonarSintonia === 'function') sonarSintonia(12, 0.5);
       return;
     }
@@ -10847,7 +10936,8 @@ lo que haces cada día es lo que vas a ser.`;
     vozDescargar(isoLocal(pasado)).then(url => {
       if(!url) return;
       const z = card.querySelector('.voz-escuchar');
-      z.innerHTML = '<div class="voz-abierto"><p style="margin:0 0 6px;font-size:15px"><b>🎧 ¡Ya puedes escuchar la nota que te dejaste el lunes ' + pasado.getDate() + '!</b></p><audio controls src="' + url + '" style="width:100%"></audio></div>';
+      z.innerHTML = '<div class="voz-abierto"><p style="margin:0 0 6px;font-size:15px"><b>🎧 ¡Ya puedes escuchar la nota que te dejaste el lunes ' + pasado.getDate() + '!</b></p><audio controls src="' + url + '" style="width:100%"></audio>' + bloqueReaccionHTML(false) + '</div>';
+      activarReaccion(z, 'semanal', 'semanal_' + isoLocal(pasado), isoLocal(pasado), '');
       z.querySelector('audio').addEventListener('play', () => { try { localStorage.setItem('voz_oida_' + state.me + '_' + isoLocal(pasado), '1'); } catch(e){} });
       if(state.irVoz){ state.irVoz = false; setTimeout(() => card.scrollIntoView({ behavior: 'smooth', block: 'center' }), 80); }
     }).catch(() => {});
@@ -12159,10 +12249,11 @@ lo que haces cada día es lo que vas a ser.`;
             + '<div class="matasellos"><span>' + escapeAttr(fechaConAnio(new Date(c.fecha + 'T00:00:00'))) + '</span></div>'
             + '<p class="sobre-para">Para ' + escapeAttr(String(state.me || '').trim().split(' ')[0]) + '<br>del ' + diaUnoTexto(abre) + '</p></div>'
             + '<p class="sobre-texto"><b>Carta cerrada</b><br>Se abrirá el lunes ' + diaUnoTexto(abre) + '<br><small>Faltan ' + Math.ceil((abre - hoy) / 86400000) + ' días</small></p></div>'
-          : cartaLeidaHTML(c))
+          : cartaLeidaHTML(c) + bloqueReaccionHTML(true))
         // Cerrada: no se puede reescribir. Ya abierta (trimestre nuevo): se puede escribir la del siguiente
         + (cerrada ? '' : '<button type="button" class="carta-btn-sec" id="cartaEditar">Escribir mi nota para el próximo trimestre</button>');
       const ed = caja.querySelector('#cartaEditar'); if(ed) ed.onclick = () => { caja.dataset.editando = '1'; pintarCartaFuturo(caja); };
+      if(!cerrada) activarReaccion(caja, 'trimestral', 'trimestral_' + c.fecha, c.fecha, String(c.texto || ''));
       return;
     }
     const abre = lunesProximoTrimestre(), hoyTxt = fechaConAnio(new Date());
@@ -12655,7 +12746,7 @@ lo que haces cada día es lo que vas a ser.`;
       const r = await api('/prueba-guias', {});
       if(state.gamifica && r.datosFormulario) state.gamifica.datosFormulario = r.datosFormulario;
       await refreshAll();
-      alert('🎉 ¡Listo! Tienes el Plan Guías 👑 gratis hasta el ' + (r.vence || '').split('-').reverse().join('/') + '. Disfrútalo.');
+      alert('¡Listo! Tienes el Plan Guías gratis hasta el ' + (r.vence || '').split('-').reverse().join('/') + '. Disfrútalo.');
       irAlPanel();
     } catch(e){ alert(e.message || 'No se pudo activar. Prueba otra vez.'); boton.disabled = false; boton.textContent = '🎁 Prueba el Plan Guías 1 mes gratis'; }
   }
@@ -12696,7 +12787,7 @@ lo que haces cada día es lo que vas a ser.`;
   // ===== Comentarios y mejoras para la app (5-11-2026): desde el menú, en cualquier momento =====
   // Se guarda en Airtable › Opiniones (Origen «Menú») y llega a Gustavo en el resumen.
   function renderOpinion(){
-    renderBackTopbar('💬 Comentarios y mejoras');
+    renderBackTopbar('Comentarios y mejoras');
     const caja = el(`<div class="card encuesta-caja">
         <p style="margin:0 0 12px">¿Qué mejorarías, qué echas de menos o qué te gusta? Lo leemos todo.</p>
         <textarea id="opTexto" rows="6" maxlength="2000" placeholder="Escribe aquí tu comentario"></textarea>
@@ -13200,4 +13291,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Meta" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V14.48 · App Amable Meta · 2026-11-05 14:04==== -->
+<!-- ==== Fin del index V14.49 · App Amable Meta · 2026-11-05 14:10==== -->
