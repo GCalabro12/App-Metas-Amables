@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V14.45 · App Amable Meta · 2026-11-05 13:48==== -->
+<!-- ==== index V14.46 · App Amable Meta · 2026-11-05 13:56==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1038,6 +1038,9 @@ body.con-tabbar:has(.musica-barra) #app{padding-bottom:170px}
 .mp-barra{height:6px;border-radius:99px;background:rgba(255,255,255,.4);overflow:hidden}
 .mp-barra i{display:block;height:100%;background:#fff;border-radius:99px}
 .mp-persona{gap:14px}
+.menu-perfil .menu-item{gap:16px;font-weight:600}
+.mi-ico{width:22px;height:22px;flex-shrink:0;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;color:var(--ink-soft)}
+.mp-viaje-tx .mi-ico{color:#fff;width:20px;height:20px;vertical-align:-4px;margin-right:6px}
 .mp-avatar{flex:0 0 48px;width:48px;height:48px;border-radius:50%;background:#4B3BC9;color:#fff;display:flex;align-items:center;justify-content:center;font:800 18px Karla,sans-serif;overflow:hidden}
 .mp-avatar img{width:100%;height:100%;object-fit:cover}
 .mp-persona-tx{display:flex;flex-direction:column}
@@ -2638,7 +2641,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V14.45';
+  const APP_VERSION = 'V14.46';
   // Texto de los botones mientras se envía: los tres puntos se encienden uno tras otro
   const ENVIANDO_HTML = 'Enviando<span class="puntos-mov" aria-hidden="true"><i>.</i><i>.</i><i>.</i></span>';
 
@@ -5033,6 +5036,20 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     if(!esCuentaPruebas()) return null;
     try { return localStorage.getItem(clavePlanForzado()); } catch(e){ return null; }
   }
+  // Iconos de línea del menú «Perfil y Ajustes» (5-11-2026: sin emojis, estilo sobrio)
+  const ICONOS_MENU = {
+    brujula: '<circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/>',
+    invitar: '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" x2="19" y1="8" y2="14"/><line x1="22" x2="16" y1="11" y2="11"/>',
+    plan: '<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>',
+    tarjeta: '<rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/>',
+    ajustes: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/>',
+    ayuda: '<circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/>',
+    comentario: '<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>',
+    panel: '<rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/>',
+    grupo: '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>',
+    salir: '<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/>'
+  };
+  function icoMenu(n){ return '<svg class="mi-ico" viewBox="0 0 24 24" aria-hidden="true">' + (ICONOS_MENU[n] || '') + '</svg>'; }
   function renderMenuOverlay(){
     const overlay = document.createElement('div');
     overlay.className = 'menu-overlay';
@@ -5047,7 +5064,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     const pend = Math.max(0, (rv.total || 0) - (rv.hechos || 0));
     const fotoMenu = fotoDePerfil();
     const avMenu = fotoMenu ? '<img src="' + escapeAttr(fotoMenu) + '" alt="" referrerpolicy="no-referrer">' : (avatarDe(state.me) || escapeAttr(inicialesDe(state.me)));
-    const planMenu = state.plan === 'sesiones' ? 'Plan Guías + Grupo 👑👑' : (state.plan === 'guias' ? 'Plan Guías 👑' : 'Plan Libre');
+    const planMenu = state.plan === 'sesiones' ? 'Plan Guías + Grupo' : (state.plan === 'guias' ? 'Plan Guías' : 'Plan Libre');
     panel.innerHTML = `
       <div class="mp-cabecera" style="background-image:url(${fondoMenu})">
         <button class="mp-cerrar" id="btnMenuClose" aria-label="Cerrar">✕</button>
@@ -5055,24 +5072,24 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       </div>
       <div class="mp-cuerpo">
       <button type="button" class="mp-viaje" id="mpViaje" style="background-image:url(${typeof VIAJE_BANNER === 'string' ? VIAJE_BANNER : ''})">
-        <span class="mp-viaje-tx">🧭 Pendientes de tu viaje<small>${pend ? (pend === 1 ? 'Te queda 1 paso por hacer' : 'Te quedan ' + pend + ' pasos por hacer') : '¡Lo tienes todo al día!'}</small></span><b class="mp-pend${pend ? '' : ' cero'}">${pend ? pend : '✓'}</b>
+        <span class="mp-viaje-tx">${icoMenu('brujula')}Pendientes de tu viaje<small>${pend ? (pend === 1 ? 'Te queda 1 paso por hacer' : 'Te quedan ' + pend + ' pasos por hacer') : '¡Lo tienes todo al día!'}</small></span><b class="mp-pend${pend ? '' : ' cero'}">${pend ? pend : '✓'}</b>
       </button>
-      <button class="menu-item" id="mpInvitar">💌 Invita a tus amigos</button>
+      <button class="menu-item" id="mpInvitar">${icoMenu('invitar')}Invita a tus amigos</button>
       <div class="menu-divider"></div>
       <button class="menu-item mp-persona" id="miPerfilBtn"><span class="mp-avatar">${avMenu}</span><span class="mp-persona-tx"><b>${escapeAttr(state.me || '')}</b><small>${planMenu}</small></span></button>
       <div class="menu-divider"></div>
-      <button class="menu-item" id="miPlanBtn">⭐ Tu plan: ${state.plan === 'sesiones' ? 'Guías + Grupo' : (state.plan === 'guias' ? 'Guías' : 'Libre')}</button>
-      ${MODO_PLAY ? '' : '<button class="menu-item" id="facturacionBtn">💳 Facturación</button>'}
-      <button class="menu-item" id="ajustesBtn">⚙️ Ajustes</button>
-      <button class="menu-item" id="mpAyuda">❓ Centro de ayuda</button>
-      <button class="menu-item" id="mpOpinion">💬 Comentarios y mejoras para la app</button>
-      ${soyModerador() ? '<button class="menu-item" id="miPanelFacBtn">🛠️ Panel de control admin Metas A.</button><button class="menu-item" id="miSituacionBtn">👥 Situación de tu grupo</button>' : ''}
+      <button class="menu-item" id="miPlanBtn">${icoMenu('plan')}Tu plan: ${state.plan === 'sesiones' ? 'Guías + Grupo' : (state.plan === 'guias' ? 'Guías' : 'Libre')}</button>
+      ${MODO_PLAY ? '' : '<button class="menu-item" id="facturacionBtn">' + icoMenu('tarjeta') + 'Facturación</button>'}
+      <button class="menu-item" id="ajustesBtn">${icoMenu('ajustes')}Ajustes</button>
+      <button class="menu-item" id="mpAyuda">${icoMenu('ayuda')}Centro de ayuda</button>
+      <button class="menu-item" id="mpOpinion">${icoMenu('comentario')}Comentarios y mejoras para la app</button>
+      ${soyModerador() ? '<button class="menu-item" id="miPanelFacBtn">' + icoMenu('panel') + 'Panel de control admin Metas A.</button><button class="menu-item" id="miSituacionBtn">' + icoMenu('grupo') + 'Situación de tu grupo</button>' : ''}
       ${esCuentaPruebas() && !soyModerador() ? `<div class="menu-divider"></div>
-      <p style="font-size:13px;font-weight:700;margin:6px 14px 4px">🛠️ Moderador · entrar como:</p>
+      <p style="font-size:13px;font-weight:700;margin:6px 14px 4px">Moderador · entrar como:</p>
       <div style="display:flex;gap:6px;flex-wrap:wrap;margin:0 14px 8px">${[['Libre (moderador)','Libre'],['Guías (moderador)','Guías'],['Gustavo','Guías + Grupo']].map(([cuenta, t]) =>
         `<button type="button" class="mod-cuenta" data-cuenta="${cuenta}" style="flex:1;min-width:90px;padding:8px 6px;border-radius:10px;border:2px solid #6B9362;font-weight:700;font-size:13px;cursor:pointer;background:${state.me === cuenta ? '#6B9362;color:#fff' : '#fff;color:#4E7446'}">${t}</button>`).join('')}</div>` : ''}
       <div class="menu-divider"></div>
-      <button class="menu-item" id="cerrarSesionBtn">🚪 Cerrar sesión</button>
+      <button class="menu-item" id="cerrarSesionBtn">${icoMenu('salir')}Cerrar sesión</button>
       </div>
     `;
     
@@ -13083,4 +13100,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Meta" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V14.45 · App Amable Meta · 2026-11-05 13:48==== -->
+<!-- ==== Fin del index V14.46 · App Amable Meta · 2026-11-05 13:56==== -->
