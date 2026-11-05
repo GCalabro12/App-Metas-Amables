@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V14.47 · App Amable Meta · 2026-11-05 14:01==== -->
+<!-- ==== index V14.48 · App Amable Meta · 2026-11-05 14:04==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1038,6 +1038,8 @@ body.con-tabbar:has(.musica-barra) #app{padding-bottom:170px}
 .mp-barra{height:6px;border-radius:99px;background:rgba(255,255,255,.4);overflow:hidden}
 .mp-barra i{display:block;height:100%;background:#fff;border-radius:99px}
 .mp-persona{gap:14px}
+.posit-reac{display:flex;gap:8px;margin:4px 0 10px}.posit-reac button{flex:1;padding:11px 6px;border-radius:12px;border:1.5px solid #C9942D;background:#fff;color:#6b4e12;font:600 14px Karla,sans-serif;cursor:pointer;line-height:1.2}.posit-reac button.elegida{background:#C9942D;color:#fff}
+.posit-compartir{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:12px;border-radius:12px;border:1.5px solid #C9942D;background:#fff;color:#6b4e12;font:700 15px Karla,sans-serif;cursor:pointer}.posit-compartir .mi-ico{color:#6b4e12;width:20px;height:20px}
 .menu-perfil .menu-item{gap:16px;font-weight:600}
 .mi-ico{width:22px;height:22px;flex-shrink:0;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;color:var(--ink-soft)}
 .mp-viaje-tx .mi-ico{color:#fff;width:20px;height:20px;vertical-align:-4px;margin-right:6px}
@@ -2694,7 +2696,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V14.47';
+  const APP_VERSION = 'V14.48';
   // ===== Pantalla de inicio: versión, sonido corto y salida (5-11-2026) =====
   (function(){
     const sp = document.getElementById('inicioSplash'); if(!sp) return;
@@ -5131,6 +5133,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     comentario: '<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>',
     panel: '<rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/>',
     grupo: '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>',
+    compartir: '<circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" x2="15.42" y1="13.51" y2="17.49"/><line x1="15.41" x2="8.59" y1="6.51" y2="10.49"/>',
     salir: '<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/>'
   };
   function icoMenu(n){ return '<svg class="mi-ico" viewBox="0 0 24 24" aria-hidden="true">' + (ICONOS_MENU[n] || '') + '</svg>'; }
@@ -10159,8 +10162,21 @@ lo que haces cada día es lo que vas a ser.`;
       return;
     }
     if(e.estado === 'abrir' && !state.positNueva){
-      caja.innerHTML = '<p class="posit-intro">Tu yo de principio del mes pasado te dejó esta nota:</p><div class="posit posit-abierto"><p class="posit-fecha">Escrita el ' + new Date(e.p.fecha + 'T00:00:00').toLocaleDateString('es-ES', { day: 'numeric', month: 'long' }) + '</p>' + escapeAttr(e.p.texto).replace(/\n/g, '<br>') + '</div><p class="posit-intro">Llévalo a tu lunes de compromiso de hoy. 💛</p><button type="button" class="panel-link-btn" id="positOtra" style="background:#C9942D;border:none;width:100%;cursor:pointer;margin-top:10px">Escribir la nota para el lunes ' + diaUnoTexto(ultimoLunes(mesClave())) + '</button>';
+      caja.innerHTML = '<p class="posit-intro">Tu yo de principio del mes pasado te dejó esta nota:</p><div class="posit posit-abierto"><p class="posit-fecha">Escrita el ' + new Date(e.p.fecha + 'T00:00:00').toLocaleDateString('es-ES', { day: 'numeric', month: 'long' }) + '</p>' + escapeAttr(e.p.texto).replace(/\n/g, '<br>') + '</div><p class="posit-intro">¿Qué te ha parecido esta carta?</p>'
+        + '<div class="posit-reac">' + [['neutro', 'Neutro'], ['alegrado', 'Me ha alegrado'], ['emocionado', 'Me ha emocionado']].map(([k, t]) => '<button type="button" data-r="' + k + '">' + t + '</button>').join('') + '</div>'
+        + '<button type="button" class="posit-compartir" id="positCompartir">' + icoMenu('compartir') + 'Compartir</button>'
+        + '<button type="button" class="panel-link-btn" id="positOtra" style="background:#C9942D;border:none;width:100%;cursor:pointer;margin-top:10px">Escribir la nota para el lunes ' + diaUnoTexto(ultimoLunes(mesClave())) + '</button>';
       caja.querySelector('#positOtra').onclick = () => { state.positNueva = true; renderVista(); };
+      // ¿Qué te ha parecido esta carta? (5-11-2026): se recuerda en este móvil
+      const claveReac = 'posit_reaccion_' + e.p.fecha;
+      const marcar = r => caja.querySelectorAll('.posit-reac button').forEach(b => b.classList.toggle('elegida', b.dataset.r === r));
+      try { marcar(localStorage.getItem(claveReac)); } catch(er){}
+      caja.querySelectorAll('.posit-reac button').forEach(b => b.onclick = () => { marcar(b.dataset.r); try { localStorage.setItem(claveReac, b.dataset.r); } catch(er){} });
+      caja.querySelector('#positCompartir').onclick = async () => {
+        const texto = e.p.texto;
+        try { if(navigator.share){ await navigator.share({ title: 'Nota a mi yo del futuro', text: texto }); return; } } catch(er){ if(er && er.name === 'AbortError') return; }
+        try { await navigator.clipboard.writeText(texto); avisoBreve('Nota copiada: pégala donde quieras'); } catch(er){}
+      };
       if(typeof sonarSintonia === 'function') sonarSintonia(12, 0.5);
       return;
     }
@@ -13184,4 +13200,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Meta" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V14.47 · App Amable Meta · 2026-11-05 14:01==== -->
+<!-- ==== Fin del index V14.48 · App Amable Meta · 2026-11-05 14:04==== -->
