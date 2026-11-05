@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V14.55 · App Amable Meta · 2026-11-05 23:38==== -->
+<!-- ==== index V14.56 · App Amable Meta · 2026-11-05 23:53==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -732,7 +732,9 @@ button, input, textarea, select{ font-family:inherit; }
     background:var(--surface); display:flex; align-items:center; justify-content:center;
     cursor:pointer; font-size:18px; color:var(--ink); flex-shrink:0;
   }
-  /* Botón «← Volver»: morado (el color que más se ve en Inicio) y grande; en cada zona, su color */
+  /* Botón «← Volver»: siempre morado (el color que más se ve en Inicio) y grande */
+  #pfVolverLista,#pfVolverDet,.riego-ir-abajo{background:#7B5FB8 !important;border-color:#7B5FB8 !important;color:#fff !important}
+  .visor-cerrar{background:#7B5FB8 !important;color:#fff !important}
   .back-btn{
     padding:10px 18px; border-radius:10px; border:none;
     background:#7B5FB8; color:#fff; cursor:pointer;
@@ -1045,7 +1047,8 @@ body.con-tabbar:has(.musica-barra) #app{padding-bottom:170px}
 .pf-mini .mi-tx{width:20px;height:20px;margin:0;opacity:1}
 svg.mi-ico.mi-tx{color:inherit}
 .ps-recuadro p svg.mi-tx,.ps-recuadro li svg.mi-tx,.ps-recuadro .av-tit svg.mi-tx{color:#9E2A1F;opacity:1}
-.ps-recuadro .nota-tit svg.mi-tx,.futuro-cab svg.mi-tx{color:#6B4FA8;opacity:1}
+[data-vista] .ps-recuadro .nota-tit svg.mi-tx,[data-vista] .futuro-cab svg.mi-tx{color:#6B4FA8;opacity:1}
+.ps-recuadro:has(.nota-tit){border-color:#B9A6DE}
 .ps-reg-icos svg.mi-tx{color:#fff}
 /* Iconos con el color de la zona en la que estás (dentro de los botones, el del texto del botón) */
 [data-vista="formMeta"] svg.mi-tx,[data-sub="s4"] svg.mi-tx,[data-vista="posit"] svg.mi-tx{color:#AE7E22;opacity:1}
@@ -2018,12 +2021,6 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   [data-vista="checkin"] .card{ border:2px solid #93BF80; }
   [data-vista="checkin"] .btn-yes{ border-color:#6B9362 !important; }
   [data-vista="checkin"] .btn-yes:hover{ background:#6B9362 !important; color:#fff !important; }
-  /* «← Volver» con el color de la parte en la que estás (el rojo queda para b y para la marca) */
-  [data-vista="formMeta"] .back-btn, [data-sub="s4"] .back-btn{ background:#C9942D !important; border-color:#C9942D !important; color:#fff !important; }
-  [data-vista="practicas"] .back-btn, [data-sub="s3"] .back-btn{ background:#4F7FB5 !important; border-color:#4F7FB5 !important; color:#fff !important; }
-  [data-vista="checkin"] .back-btn, [data-vista="calendar"] .back-btn, [data-vista="sesionesCal"] .back-btn, [data-vista="situacion"] .back-btn, [data-vista="group"] .back-btn, [data-sub="s1"] .back-btn, [data-sub="s2"] .back-btn{ background:#6B9362 !important; border-color:#6B9362 !important; color:#fff !important; }
-  [data-vista="practicaSemanal"] .back-btn,[data-vista="carta"] .back-btn,[data-vista="historial"] .back-btn,[data-vista="calendarioPracticas"] .back-btn{ background:#B3261E !important; border-color:#B3261E !important; color:#fff !important; }
-  [data-vista="utilidades"] .back-btn,[data-vista="frases"] .back-btn,[data-vista="habla"] .back-btn,[data-vista="musica"] .back-btn,[data-sub="s5"] .back-btn{ background:#7B5FB8 !important; border-color:#7B5FB8 !important; color:#fff !important; }
   [data-vista="formMeta"] .btn-dictar{ border-color:#C9942D !important; color:#7A5410 !important; }
   .fm-tiempo{ display:block; margin:0 0 14px; }
   .fm-tiempo span{ display:block; margin:0 0 6px; font-weight:700; font-size:15px; }
@@ -2724,7 +2721,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V14.55';
+  const APP_VERSION = 'V14.56';
   // ===== Pantalla de inicio: versión, sonido corto y salida (5-11-2026) =====
   (function(){
     const sp = document.getElementById('inicioSplash'); if(!sp) return;
@@ -5193,7 +5190,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     nota: '<path d="M15.5 3H5a2 2 0 0 0-2 2v14c0 1.1.9 2 2 2h14a2 2 0 0 0 2-2V8.5L15.5 3Z"/><path d="M15 3v6h6"/>',
     juego: '<line x1="6" x2="10" y1="11" y2="11"/><line x1="8" x2="8" y1="9" y2="13"/><line x1="15" x2="15.01" y1="12" y2="12"/><line x1="18" x2="18.01" y1="10" y2="10"/><path d="M17.32 5H6.68a4 4 0 0 0-3.98 3.59C2.6 9.42 2 14.46 2 16a3 3 0 0 0 3 3c1 0 1.5-.5 2-1l1.41-1.41A2 2 0 0 1 9.83 16h4.34a2 2 0 0 1 1.41.59L17 18c.5.5 1 1 2 1a3 3 0 0 0 3-3c0-1.55-.6-6.58-.69-7.26A4 4 0 0 0 17.32 5z"/>',
     bandera: '<path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" x2="4" y1="22" y2="15"/>',
-    reloj: '<path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/>',
+    reloj: '<path d="M21 12a9 9 0 1 1-9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M12 7v5l-4 2"/>',
     check: '<path d="M20 6 9 17l-5-5"/>',
     persona: '<path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>',
     gota: '<path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"/>',
@@ -5622,7 +5619,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       { grupo: 'futuro', tit: 'Nota de tu yo de hace un mes', img: mini('#FFF8DC', '#8A6A1E', '<i data-ico=nota></i>'),
         cuando: 'En Inicio, el día que se puede abrir la nota que la persona se escribió el mes pasado (Plan Guías o regalo del día 10 del reto).',
         abrir: () => {
-          const t = el('<div class="card carta-aviso" style="border-color:#E2C79A;background:#FFF8DC"><p style="font-weight:800;margin:0 0 6px"><i data-ico=nota></i>Tienes una nota de tu yo de hace un mes</p>'
+          const t = el('<div class="card carta-aviso" style="border-color:#E2C79A;background:#FFF8DC"><p style="font-weight:800;margin:0 0 6px"><i data-ico=reloj></i>Tienes una nota de tu yo de hace un mes</p>'
             + '<button type="button" class="panel-link-btn" style="width:100%">Abrir mi nota</button></div>').firstElementChild;
           t.querySelector('button').onclick = () => irDesdeVistaPrevia(() => { state.prevView = 'panelFac'; state.view = 'posit'; window.scrollTo(0, 0); render(); }, 'Vista previa: la pantalla de la nota');
           vistaPreviaTarjeta('Nota de tu yo de hace un mes', t);
@@ -8050,7 +8047,7 @@ lo que haces cada día es lo que vas a ser.`;
       const ep = estadoPosit(), clave = 'posit_visto_' + state.me + '_' + (ep.p ? (ep.p.mes || ep.p.trimestre) : '');
       let visto = false; try { visto = !!localStorage.getItem(clave); } catch(e){}
       if(ep.estado === 'abrir' && !visto){
-        const t = el('<div class="card carta-aviso" style="border-color:#E2C79A;background:#FFF8DC"><p style="font-weight:800;margin:0 0 6px"><i data-ico=nota></i>Tienes una nota de tu yo de hace un mes</p><button type="button" class="panel-link-btn" style="width:100%;border:none;cursor:pointer;background:#C9942D">Abrirlo →</button></div>');
+        const t = el('<div class="card carta-aviso" style="border-color:#E2C79A;background:#FFF8DC"><p style="font-weight:800;margin:0 0 6px"><i data-ico=reloj></i>Tienes una nota de tu yo de hace un mes</p><button type="button" class="panel-link-btn" style="width:100%;border:none;cursor:pointer;background:#C9942D">Abrirlo →</button></div>');
         t.querySelector('button').onclick = () => { try { localStorage.setItem(clave, '1'); } catch(e){} state.view = 'posit'; window.scrollTo(0,0); render(); };
         app.appendChild(t);
       }
@@ -9234,14 +9231,14 @@ lo que haces cada día es lo que vas a ser.`;
       try { app.appendChild(tarjetaVozSemanal()); } catch(e){ console.error('Voz semanal:', e); }
       // Pósit para fin de mes (Plan Guías)
       const ep = estadoPosit();
-      const posit = el('<div class="card ps-recuadro"><p class="nota-tit" style="font-weight:700;margin:0 0 4px;color:#6B4FA8"><i data-ico=nota></i>Nota a tu yo: próximo mes</p><p style="margin:0 0 8px;font-size:14px">' + (ep.estado === 'abrir' ? '¡Ya puedes abrir la nota que te dejaste para el <b>lunes ' + diaUnoTexto(ep.abre) + '</b>!' : ep.estado === 'guardado' ? 'Cuéntale cómo te sientes y qué esperas para el <b>lunes ' + diaUnoTexto(ep.abre) + '</b>.' : 'Cuéntale cómo te sientes y qué esperas para el <b>lunes ' + diaUnoTexto(ultimoLunes(mesClave())) + '</b>.') + '</p><button type="button" class="panel-link-btn" style="width:100%;border:none;cursor:pointer;background:#7B5FB8">' + (!tienePlan('guias') ? '👑 Escribir mi nota' : ep.estado === 'abrir' ? 'Abrir mi nota' : ep.estado === 'guardado' ? '✓ Nota guardada' : 'Escribir mi nota') + '</button></div>');
+      const posit = el('<div class="card ps-recuadro"><p class="nota-tit" style="font-weight:700;margin:0 0 4px;color:#6B4FA8"><i data-ico=reloj></i>Nota a tu yo: próximo mes</p><p style="margin:0 0 8px;font-size:14px">' + (ep.estado === 'abrir' ? '¡Ya puedes abrir la nota que te dejaste para el <b>lunes ' + diaUnoTexto(ep.abre) + '</b>!' : ep.estado === 'guardado' ? 'Cuéntale cómo te sientes y qué esperas para el <b>lunes ' + diaUnoTexto(ep.abre) + '</b>.' : 'Cuéntale cómo te sientes y qué esperas para el <b>lunes ' + diaUnoTexto(ultimoLunes(mesClave())) + '</b>.') + '</p><button type="button" class="panel-link-btn" style="width:100%;border:none;cursor:pointer;background:#7B5FB8">' + (!tienePlan('guias') ? '👑 Escribir mi nota' : ep.estado === 'abrir' ? 'Abrir mi nota' : ep.estado === 'guardado' ? '✓ Nota guardada' : 'Escribir mi nota') + '</button></div>');
       posit.querySelector('button').onclick = () => {
         if(!puedeNotaMes()){ avisoPremioBloqueado('nota'); return; }   // regalo del día 10 del reto (o Plan Guías)
         sonidoTing(); state.view = 'posit'; window.scrollTo(0,0); render();
       };
       app.appendChild(posit);
       // Carta a mi yo del futuro, para todos, en su recuadro
-      const carta = el('<div class="card ps-recuadro"><p class="nota-tit" style="font-weight:700;margin:0 0 4px;color:#6B4FA8"><i data-ico=correo></i>Nota a tu yo: final de trimestre</p><p style="margin:0 0 8px;font-size:14px">' + 'Cuéntale cómo te sientes y qué esperas para el <b>lunes ' + fechaConAnio(cartaVigente() ? aperturaCarta(cartaGuardada()) : lunesProximoTrimestre()) + '</b>.' + '</p><button type="button" class="panel-link-btn" style="width:100%;border:none;cursor:pointer;background:#7B5FB8">' + (!tienePlan('sesiones') ? '👑👑 Escribir mi nota' : cartaVigente() ? '✓ Nota guardada' : 'Escribir mi nota') + '</button></div>');
+      const carta = el('<div class="card ps-recuadro"><p class="nota-tit" style="font-weight:700;margin:0 0 4px;color:#6B4FA8"><i data-ico=reloj></i>Nota a tu yo: final de trimestre</p><p style="margin:0 0 8px;font-size:14px">' + 'Cuéntale cómo te sientes y qué esperas para el <b>lunes ' + fechaConAnio(cartaVigente() ? aperturaCarta(cartaGuardada()) : lunesProximoTrimestre()) + '</b>.' + '</p><button type="button" class="panel-link-btn" style="width:100%;border:none;cursor:pointer;background:#7B5FB8">' + (!tienePlan('sesiones') ? '👑👑 Escribir mi nota' : cartaVigente() ? '✓ Nota guardada' : 'Escribir mi nota') + '</button></div>');
       carta.querySelector('button').onclick = () => {
         if(!tienePlan('sesiones')){ avisoCorona('La nota a tu yo de dentro de tres meses es del Plan Guías + Grupo'); return; }
         state.prevView = 'practicaSemanal'; state.view = 'carta'; window.scrollTo(0,0); render();
@@ -10306,7 +10303,7 @@ lo que haces cada día es lo que vas a ser.`;
   function fechaLarga(d){ return d.toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' }); }
   function renderPosit(){
     const e = estadoPosit(), abreTitulo = (e.estado === 'escribir' || state.positNueva) ? ultimoLunes(mesClave()) : e.abre;
-    renderBackTopbar('<i data-ico=nota></i>Nota a tu yo del ' + fechaCorta(abreTitulo));
+    renderBackTopbar('<i data-ico=reloj></i>Nota a tu yo del ' + fechaCorta(abreTitulo));
     app.querySelector('#btnVolver').onclick = () => { state.view = 'practicaSemanal'; window.scrollTo(0,0); render(); };
     const caja = el('<div class="posit-escena"></div>').firstElementChild;
     app.appendChild(caja);
@@ -10968,7 +10965,7 @@ lo que haces cada día es lo que vas a ser.`;
     const clave = state.me + '_' + isoLocal(pasado);
     try { if(localStorage.getItem('voz_oida_' + clave)) return; } catch(e){}
     const pintar = () => {
-      const c = el('<div class="card voz-aviso"><span class="voz-aviso-ico"><i data-ico=auriculares></i></span><div><b>Tienes una nota de voz de tu yo del ' + fechaCorta(pasado) + '</b><button type="button" class="panel-link-btn">Escucharlo →</button></div></div>').firstElementChild;
+      const c = el('<div class="card voz-aviso"><span class="voz-aviso-ico"><i data-ico=reloj></i></span><div><b>Tienes una nota de voz de tu yo del ' + fechaCorta(pasado) + '</b><button type="button" class="panel-link-btn">Escucharlo →</button></div></div>').firstElementChild;
       c.querySelector('button').onclick = () => { state.irVoz = true; state.view = 'practicaSemanal'; window.scrollTo(0,0); render(); };
       destino.appendChild(c);
     };
@@ -10978,7 +10975,7 @@ lo que haces cada día es lo que vas a ser.`;
   function tarjetaVozSemanal(){
     const lunes = lunesDe(new Date()), pasado = new Date(lunes), proximo = new Date(lunes);
     pasado.setDate(lunes.getDate() - 7); proximo.setDate(lunes.getDate() + 7);
-    const card = el('<div class="card ps-recuadro voz-card"><p class="nota-tit" style="font-weight:700;margin:0 0 4px;color:#6B4FA8"><i data-ico=voz></i>Nota a tu yo: próximo lunes</p>'
+    const card = el('<div class="card ps-recuadro voz-card"><p class="nota-tit" style="font-weight:700;margin:0 0 4px;color:#6B4FA8"><i data-ico=reloj></i>Nota a tu yo: próximo lunes</p>'
       + '<p style="margin:0 0 10px;font-size:14px">Cuéntale cómo te sientes y qué esperas para el <b>lunes ' + diaUnoTexto(proximo) + '</b>.</p>'
       + '<div class="voz-escuchar"></div><div class="voz-grabar"></div></div>').firstElementChild;
     const zona = card.querySelector('.voz-grabar');
@@ -10991,7 +10988,7 @@ lo que haces cada día es lo que vas a ser.`;
     vozDescargar(isoLocal(pasado)).then(url => {
       if(!url) return;
       const z = card.querySelector('.voz-escuchar');
-      z.innerHTML = '<div class="voz-abierto"><p style="margin:0 0 6px;font-size:15px"><b><i data-ico=auriculares></i>¡Ya puedes escuchar la nota que te dejaste el lunes ' + pasado.getDate() + '!</b></p><audio controls src="' + url + '" style="width:100%"></audio>' + bloqueReaccionHTML(false) + '</div>';
+      z.innerHTML = '<div class="voz-abierto"><p style="margin:0 0 6px;font-size:15px"><b><i data-ico=reloj></i>¡Ya puedes escuchar la nota que te dejaste el lunes ' + pasado.getDate() + '!</b></p><audio controls src="' + url + '" style="width:100%"></audio>' + bloqueReaccionHTML(false) + '</div>';
       activarReaccion(z, 'semanal', 'semanal_' + isoLocal(pasado), isoLocal(pasado), '');
       z.querySelector('audio').addEventListener('play', () => { try { localStorage.setItem('voz_oida_' + state.me + '_' + isoLocal(pasado), '1'); } catch(e){} });
       if(state.irVoz){ state.irVoz = false; setTimeout(() => card.scrollIntoView({ behavior: 'smooth', block: 'center' }), 80); }
@@ -12346,7 +12343,7 @@ lo que haces cada día es lo que vas a ser.`;
   }
   function renderCarta(){
     const c = cartaGuardada(), abre = aperturaCarta(c) || lunesProximoTrimestre();
-    renderBackTopbar('<i data-ico=correo></i>Nota a tu yo del ' + fechaCorta(abre));
+    renderBackTopbar('<i data-ico=reloj></i>Nota a tu yo del ' + fechaCorta(abre));
     app.querySelector('#btnVolver').onclick = () => { state.view = 'practicaSemanal'; window.scrollTo(0,0); render(); };
     const caja = el('<div class="carta-pantalla"><div id="cartaFuturo"></div></div>').firstElementChild;
     app.appendChild(caja);
@@ -12358,7 +12355,7 @@ lo que haces cada día es lo que vas a ser.`;
     if(!tienePlan('sesiones') || !c || !abre || hoy < abre || hoy - abre > 21 * 86400000) return null;
     const clave = 'carta_vista_' + state.me + '_' + c.trimestre;
     try { if(localStorage.getItem(clave)) return null; } catch(e){}
-    const t = el('<div class="card carta-aviso"><p style="font-weight:800;margin:0 0 6px"><i data-ico=correo></i>Tu yo del pasado te dejó una nota</p><p style="margin:0 0 8px">Empieza un trimestre nuevo: es tiempo de cosechar lo que sembraste y de volver a sembrar. Léela: es de ti, para ti.</p><details><summary>Abrir la nota</summary>' + cartaLeidaHTML(c) + '</details><button type="button" class="carta-btn-sec">Ya la he leído</button></div>').firstElementChild;
+    const t = el('<div class="card carta-aviso"><p style="font-weight:800;margin:0 0 6px"><i data-ico=reloj></i>Tu yo del pasado te dejó una nota</p><p style="margin:0 0 8px">Empieza un trimestre nuevo: es tiempo de cosechar lo que sembraste y de volver a sembrar. Léela: es de ti, para ti.</p><details><summary>Abrir la nota</summary>' + cartaLeidaHTML(c) + '</details><button type="button" class="carta-btn-sec">Ya la he leído</button></div>').firstElementChild;
     t.querySelector('details').addEventListener('toggle', ev => { if(ev.target.open && typeof sonarSintonia === 'function') sonarSintonia(15, 0.5); });
     t.querySelector('button').onclick = () => { try { localStorage.setItem(clave, '1'); } catch(e){} t.remove(); };
     return t;
@@ -13346,4 +13343,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Meta" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V14.55 · App Amable Meta · 2026-11-05 23:38==== -->
+<!-- ==== Fin del index V14.56 · App Amable Meta · 2026-11-05 23:53==== -->
