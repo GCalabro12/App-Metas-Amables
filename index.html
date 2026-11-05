@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V14.52 · App Amable Meta · 2026-11-05 14:27==== -->
+<!-- ==== index V14.53 · App Amable Meta · 2026-11-05 14:29==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1043,6 +1043,10 @@ body.con-tabbar:has(.musica-barra) #app{padding-bottom:170px}
 .ico-grande .mi-tx{width:44px;height:44px;margin:0;opacity:1}
 .ps-reg-icos .mi-tx{width:16px;height:16px;margin:0 2px;opacity:1}
 .pf-mini .mi-tx{width:20px;height:20px;margin:0;opacity:1}
+svg.mi-ico.mi-tx{color:inherit}
+.ps-recuadro p svg.mi-tx,.ps-recuadro li svg.mi-tx,.ps-recuadro .av-tit svg.mi-tx{color:#9E2A1F;opacity:1}
+.ps-recuadro .nota-tit svg.mi-tx,.futuro-cab svg.mi-tx{color:#6B4FA8;opacity:1}
+.ps-reg-icos svg.mi-tx{color:#fff}
 .ayuda-ico .mi-tx{width:15px;height:15px;margin:0;opacity:1;color:#fff}
 .util-ico .mi-tx{width:26px;height:26px;margin:0 4px 0 0;opacity:1}
 .ajuste-acc>summary>span{display:inline-flex;align-items:center}
@@ -2711,7 +2715,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V14.52';
+  const APP_VERSION = 'V14.53';
   // ===== Pantalla de inicio: versión, sonido corto y salida (5-11-2026) =====
   (function(){
     const sp = document.getElementById('inicioSplash'); if(!sp) return;
@@ -9211,7 +9215,7 @@ lo que haces cada día es lo que vas a ser.`;
       try { app.appendChild(tarjetaVozSemanal()); } catch(e){ console.error('Voz semanal:', e); }
       // Pósit para fin de mes (Plan Guías)
       const ep = estadoPosit();
-      const posit = el('<div class="card ps-recuadro"><p class="nota-tit" style="font-weight:700;margin:0 0 4px;color:#6B4FA8"><i data-ico=nota></i>Nota a tu yo: próximo mes</p><p style="margin:0 0 8px;font-size:14px">' + (ep.estado === 'abrir' ? '¡Ya puedes abrir la nota que te dejaste! ' : ep.estado === 'guardado' ? 'Cuéntale cómo te sientes y qué esperas para el <b>lunes ' + diaUnoTexto(ep.abre) + '</b>.' : 'Cuéntale cómo te sientes y qué esperas para el <b>lunes ' + diaUnoTexto(ultimoLunes(mesClave())) + '</b>.') + '</p><button type="button" class="panel-link-btn" style="width:100%;border:none;cursor:pointer;background:#7B5FB8">' + (!tienePlan('guias') ? '👑 Escribir mi nota' : ep.estado === 'abrir' ? 'Abrir mi nota' : ep.estado === 'guardado' ? '✓ Nota guardada' : 'Escribir mi nota') + '</button></div>');
+      const posit = el('<div class="card ps-recuadro"><p class="nota-tit" style="font-weight:700;margin:0 0 4px;color:#6B4FA8"><i data-ico=nota></i>Nota a tu yo: próximo mes</p><p style="margin:0 0 8px;font-size:14px">' + (ep.estado === 'abrir' ? '¡Ya puedes abrir la nota que te dejaste para el <b>lunes ' + diaUnoTexto(ep.abre) + '</b>!' : ep.estado === 'guardado' ? 'Cuéntale cómo te sientes y qué esperas para el <b>lunes ' + diaUnoTexto(ep.abre) + '</b>.' : 'Cuéntale cómo te sientes y qué esperas para el <b>lunes ' + diaUnoTexto(ultimoLunes(mesClave())) + '</b>.') + '</p><button type="button" class="panel-link-btn" style="width:100%;border:none;cursor:pointer;background:#7B5FB8">' + (!tienePlan('guias') ? '👑 Escribir mi nota' : ep.estado === 'abrir' ? 'Abrir mi nota' : ep.estado === 'guardado' ? '✓ Nota guardada' : 'Escribir mi nota') + '</button></div>');
       posit.querySelector('button').onclick = () => {
         if(!puedeNotaMes()){ avisoPremioBloqueado('nota'); return; }   // regalo del día 10 del reto (o Plan Guías)
         sonidoTing(); state.view = 'posit'; window.scrollTo(0,0); render();
@@ -10807,11 +10811,11 @@ lo que haces cada día es lo que vas a ser.`;
   function tarjetaAvisosMovil(){
     // Un interruptor que activa dos cosas: el aviso de las 8 de la tarde (en el móvil) y los mensajes de ánimo por WhatsApp
     const g = state.gamifica || (state.gamifica = {});
-    const c = el('<div class="card ps-recuadro av-card"><div class="av-fila"><div class="av-cab"><span class="av-tit">🔔 Avisos en el móvil <span class="av-flecha">▾</span></span><span class="av-estado"></span></div><button type="button" class="av-switch" role="switch" aria-label="Avisos en el móvil"><span></span></button></div>'
+    const c = el('<div class="card ps-recuadro av-card"><div class="av-fila"><div class="av-cab"><span class="av-tit"><i data-ico=campana></i>Avisos en el móvil <span class="av-flecha">▾</span></span><span class="av-estado"></span></div><button type="button" class="av-switch" role="switch" aria-label="Avisos en el móvil"><span></span></button></div>'
       + '<div class="av-detalle" hidden><p>Al activarlos recibirás:</p><ol class="av-lista">'
-      + '<li><span class="av-ok av-ok-push"></span>🔔 Una <b>notificación a las ' + horaAviso() + ':00</b> para recordarte registrar, solo si aún no lo has hecho. Llega aunque la app esté cerrada. La hora se cambia al registrar.</li>'
-      + '<li><span class="av-ok av-ok-wa"></span>💬 <b>Mensajes de ánimo por WhatsApp</b> cada 4 días.</li>'
-      + '<li><span class="av-ok av-ok-em"></span>📧 <b>Emails que te acompañen</b> con tu meta (pocos, y te puedes dar de baja cuando quieras).</li></ol>'
+      + '<li><span class="av-ok av-ok-push"></span><i data-ico=campana></i>Una <b>notificación a las ' + horaAviso() + ':00</b> para recordarte registrar, solo si aún no lo has hecho. Llega aunque la app esté cerrada. La hora se cambia al registrar.</li>'
+      + '<li><span class="av-ok av-ok-wa"></span><i data-ico=comentario></i><b>Mensajes de ánimo por WhatsApp</b> cada 4 días.</li>'
+      + '<li><span class="av-ok av-ok-em"></span><i data-ico=correo></i><b>Emails que te acompañen</b> con tu meta (pocos, y te puedes dar de baja cuando quieras).</li></ol>'
       + '<button type="button" class="av-prueba">Enviarme un aviso de prueba</button><div class="saved-msg av-msg"></div></div></div>').firstElementChild;
     c.querySelector('.av-cab').insertAdjacentHTML('beforeend', '<p class="av-anima" hidden>Te ayudan a no abandonar tu meta. Puedes quitarlos cuando quieras.</p>');
     const sw = c.querySelector('.av-switch'), est = c.querySelector('.av-estado'), bPr = c.querySelector('.av-prueba'), msg = c.querySelector('.av-msg');
@@ -10877,20 +10881,20 @@ lo que haces cada día es lo que vas a ser.`;
       1: () => '<h2>Dale permiso a la app</h2><p>Al pulsar el botón, tu móvil te preguntará si dejas que Amable Meta te envíe notificaciones. Pulsa <b>«Permitir»</b>:</p>'
         + '<div class="av-dialogo"><p>¿Permitir que <b>Amable Meta</b> te envíe notificaciones?</p><div><span>No permitir</span><span class="si">Permitir</span></div></div>'
         + (ios && !appInstalada() ? '<p class="av-nota">En iPhone, primero añade la app a la pantalla de inicio (Compartir → «Añadir a pantalla de inicio») y ábrela desde ahí.</p>' : '')
-        + '<button type="button" class="av-btn av-activar">🔔 Activar avisos</button><p class="av-msg"></p>',
+        + '<button type="button" class="av-btn av-activar"><i data-ico=campana></i>Activar avisos</button><p class="av-msg"></p>',
       2: () => '<h2>El permiso está bloqueado</h2><p>Parece que el móvil no deja a la app enviar avisos. Se arregla en un momento:</p>'
         + (MODO_PLAY || android
           ? '<ol class="av-pasos"><li>Abre los <b>Ajustes</b> del móvil → <b>Aplicaciones</b> → <b>' + (MODO_PLAY ? 'Metas Amables' : 'Chrome') + '</b> → <b>Notificaciones</b>.</li><li>Activa <b>«Permitir notificaciones»</b>.</li>'
-            + (MODO_PLAY ? '' : '<li>En Chrome: toca el candado 🔒 junto a la dirección → <b>Permisos → Notificaciones → Permitir</b>.</li>') + '<li>Vuelve aquí: lo compruebo yo solo.</li></ol>'
-            + (MODO_PLAY ? '<a class="av-btn" href="intent:#Intent;action=android.settings.APP_NOTIFICATION_SETTINGS;S.android.provider.extra.APP_PACKAGE=club.practicaintegral.metasamables;end">⚙️ Ir a los avisos de la app</a><p class="av-desliza">Se abre la pantalla de avisos de la app: solo tienes que activar el interruptor «Permitir notificaciones» y volver.</p>' : '')
+            + (MODO_PLAY ? '' : '<li>En Chrome: toca el candado <i data-ico=candado></i>junto a la dirección → <b>Permisos → Notificaciones → Permitir</b>.</li>') + '<li>Vuelve aquí: lo compruebo yo solo.</li></ol>'
+            + (MODO_PLAY ? '<a class="av-btn" href="intent:#Intent;action=android.settings.APP_NOTIFICATION_SETTINGS;S.android.provider.extra.APP_PACKAGE=club.practicaintegral.metasamables;end"><i data-ico=engranaje></i>Ir a los avisos de la app</a><p class="av-desliza">Se abre la pantalla de avisos de la app: solo tienes que activar el interruptor «Permitir notificaciones» y volver.</p>' : '')
           : '<ol class="av-pasos"><li>Abre los <b>Ajustes</b> del móvil → <b>Notificaciones</b> → <b>Amable Meta</b>.</li><li>Activa <b>«Permitir notificaciones»</b>.</li><li>Vuelve aquí.</li></ol>')
         + '<button type="button" class="av-btn av-otra av-comprobar">Ya lo he hecho: comprobar</button><p class="av-msg"></p>',
-      3: () => '<img class="av-img" src="' + imgRegando(3) + '" alt=""><h2>¡Avisos activados! 🎉</h2><p>Vamos a probarlo: te mando un aviso ahora mismo.</p>'
+      3: () => '<img class="av-img" src="' + imgRegando(3) + '" alt=""><h2>¡Avisos activados! </h2><p>Vamos a probarlo: te mando un aviso ahora mismo.</p>'
         + '<button type="button" class="av-btn av-prueba">Enviarme un aviso de prueba</button><div class="av-llego" hidden><p><b>¿Te ha llegado?</b></p><button type="button" class="av-btn av-si">Sí, ¡perfecto!</button><button type="button" class="av-btn av-otra av-no">No me ha llegado</button></div><p class="av-msg"></p>',
       4: () => '<h2>Si no te llega</h2><p>Algunos móviles cortan los avisos para ahorrar batería. Revisa esto:</p>'
         + '<ol class="av-pasos"><li><b>Batería:</b> Ajustes → Batería → <b>Inicio de aplicaciones</b> → ' + (MODO_PLAY ? 'Metas Amables' : 'Chrome') + ' → <b>gestión manual</b> y activa las tres opciones (en HONOR, Huawei y Xiaomi es lo más habitual).</li>'
         + '<li><b>No molestar:</b> que no esté activado.</li><li><b>Notificaciones</b> de ' + (MODO_PLAY ? 'Metas Amables' : 'Chrome') + ' activadas en los ajustes del móvil.</li></ol>'
-        + (MODO_PLAY ? '<a class="av-btn av-otra" href="intent:#Intent;action=android.settings.APP_NOTIFICATION_SETTINGS;S.android.provider.extra.APP_PACKAGE=club.practicaintegral.metasamables;end">⚙️ Ir a los avisos de la app</a>' : '')
+        + (MODO_PLAY ? '<a class="av-btn av-otra" href="intent:#Intent;action=android.settings.APP_NOTIFICATION_SETTINGS;S.android.provider.extra.APP_PACKAGE=club.practicaintegral.metasamables;end"><i data-ico=engranaje></i>Ir a los avisos de la app</a>' : '')
         + '<button type="button" class="av-btn av-reprobar">Probar otra vez</button><button type="button" class="av-btn av-otra av-cerrar2">Cerrar</button>'
     };
     const ir = n => { paso = n; pintar(); };
@@ -10955,7 +10959,7 @@ lo que haces cada día es lo que vas a ser.`;
   function tarjetaVozSemanal(){
     const lunes = lunesDe(new Date()), pasado = new Date(lunes), proximo = new Date(lunes);
     pasado.setDate(lunes.getDate() - 7); proximo.setDate(lunes.getDate() + 7);
-    const card = el('<div class="card ps-recuadro voz-card"><p class="nota-tit" style="font-weight:700;margin:0 0 4px;color:#6B4FA8">🔮🎙 Nota a tu yo: próximo lunes</p>'
+    const card = el('<div class="card ps-recuadro voz-card"><p class="nota-tit" style="font-weight:700;margin:0 0 4px;color:#6B4FA8"><i data-ico=voz></i>Nota a tu yo: próximo lunes</p>'
       + '<p style="margin:0 0 10px;font-size:14px">Cuéntale cómo te sientes y qué esperas para el <b>lunes ' + diaUnoTexto(proximo) + '</b>.</p>'
       + '<div class="voz-escuchar"></div><div class="voz-grabar"></div></div>').firstElementChild;
     const zona = card.querySelector('.voz-grabar');
@@ -13166,9 +13170,9 @@ lo que haces cada día es lo que vas a ser.`;
         <span class="interruptor"><input type="checkbox" data-aviso="${clave}" ${activo ? 'checked' : ''}><span></span></span>
       </label>`;
     card.innerHTML = `
-      <p style="margin:0 0 4px;font-size:17px"><b>🔔 ¿Quieres que te acompañemos?</b></p>
-      ${fila('whatsapp', g.aceptaWhatsApp, '💬 Mensajes de ánimo por WhatsApp')}
-      ${fila('emails', g.aceptaEmails, '📧 Emails que me acompañen con mi meta')}
+      <p style="margin:0 0 4px;font-size:17px"><b><i data-ico=campana></i>¿Quieres que te acompañemos?</b></p>
+      ${fila('whatsapp', g.aceptaWhatsApp, '<i data-ico=comentario></i>Mensajes de ánimo por WhatsApp')}
+      ${fila('emails', g.aceptaEmails, '<i data-ico=correo></i>Emails que me acompañen con mi meta')}
       <p class="avisos-msg" style="font-size:12px;color:var(--ink-soft);margin:4px 0 0">Puedes activarlo o desactivarlo cuando quieras.</p>`;
     const msg = card.querySelector('.avisos-msg');
     card.querySelectorAll('input[data-aviso]').forEach(inp => {
@@ -13323,4 +13327,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Meta" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V14.52 · App Amable Meta · 2026-11-05 14:27==== -->
+<!-- ==== Fin del index V14.53 · App Amable Meta · 2026-11-05 14:29==== -->
