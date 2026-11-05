@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V14.49 · App Amable Meta · 2026-11-05 14:10==== -->
+<!-- ==== index V14.50 · App Amable Meta · 2026-11-05 14:19==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1040,6 +1040,8 @@ body.con-tabbar:has(.musica-barra) #app{padding-bottom:170px}
 .mp-persona{gap:14px}
 .mi-tx{width:19px;height:19px;vertical-align:-4px;margin-right:8px;color:inherit;opacity:.85}
 .coronas{display:inline-flex;gap:1px;vertical-align:-2px}.corona-svg{width:1.15em;height:1em;flex-shrink:0}
+.ico-grande .mi-tx{width:44px;height:44px;margin:0;opacity:1}
+.ps-reg-icos .mi-tx{width:16px;height:16px;margin:0 2px;opacity:1}
 .ayuda-ico .mi-tx{width:15px;height:15px;margin:0;opacity:1;color:#fff}
 .util-ico .mi-tx{width:26px;height:26px;margin:0 4px 0 0;opacity:1}
 .ajuste-acc>summary>span{display:inline-flex;align-items:center}
@@ -2708,7 +2710,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V14.49';
+  const APP_VERSION = 'V14.50';
   // ===== Pantalla de inicio: versión, sonido corto y salida (5-11-2026) =====
   (function(){
     const sp = document.getElementById('inicioSplash'); if(!sp) return;
@@ -5165,6 +5167,26 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     documento: '<path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M16 13H8"/><path d="M16 17H8"/><path d="M10 9H8"/>',
     galleta: '<path d="M12 2a10 10 0 1 0 10 10 4 4 0 0 1-5-5 4 4 0 0 1-5-5"/><path d="M8.5 8.5v.01"/><path d="M16 15.5v.01"/><path d="M12 12v.01"/><path d="M11 17v.01"/><path d="M7 14v.01"/>',
     engranaje: '<path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/>',
+    calendario: '<rect width="18" height="18" x="3" y="4" rx="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/>',
+    ciclo: '<path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/>',
+    libro: '<path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>',
+    alerta: '<path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/>',
+    montana: '<path d="m8 3 4 8 5-5 5 15H2L8 3z"/>',
+    brote: '<path d="M7 20h10"/><path d="M10 20c5.5-2.5.8-6.4 3-10"/><path d="M9.5 9.4c1.1.8 1.8 2.2 2.3 3.7-2 .4-3.5.4-4.8-.3-1.2-.6-2.3-1.9-3-4.2 2.8-.5 4.4 0 5.5.8z"/><path d="M14.1 6a7 7 0 0 0-1.1 4c1.9-.1 3.3-.6 4.3-1.4 1-1 1.6-2.3 1.7-4.6-2.7.1-4 1-4.9 2z"/>',
+    corazon: '<path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>',
+    amanecer: '<path d="M12 2v8"/><path d="m4.93 10.93 1.41 1.41"/><path d="M2 18h2"/><path d="M20 18h2"/><path d="m19.07 10.93-1.41 1.41"/><path d="M22 22H2"/><path d="m8 6 4-4 4 4"/><path d="M16 18a4 4 0 0 0-8 0"/>',
+    chincheta: '<line x1="12" x2="12" y1="17" y2="22"/><path d="M5 17h14v-1.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V6h1a2 2 0 0 0 0-4H8a2 2 0 0 0 0 4h1v4.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24Z"/>',
+    diana: '<circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>',
+    hecho: '<circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/>',
+    lapiz: '<path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/>',
+    nota: '<path d="M15.5 3H5a2 2 0 0 0-2 2v14c0 1.1.9 2 2 2h14a2 2 0 0 0 2-2V8.5L15.5 3Z"/><path d="M15 3v6h6"/>',
+    juego: '<line x1="6" x2="10" y1="11" y2="11"/><line x1="8" x2="8" y1="9" y2="13"/><line x1="15" x2="15.01" y1="12" y2="12"/><line x1="18" x2="18.01" y1="10" y2="10"/><path d="M17.32 5H6.68a4 4 0 0 0-3.98 3.59C2.6 9.42 2 14.46 2 16a3 3 0 0 0 3 3c1 0 1.5-.5 2-1l1.41-1.41A2 2 0 0 1 9.83 16h4.34a2 2 0 0 1 1.41.59L17 18c.5.5 1 1 2 1a3 3 0 0 0 3-3c0-1.55-.6-6.58-.69-7.26A4 4 0 0 0 17.32 5z"/>',
+    bandera: '<path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" x2="4" y1="22" y2="15"/>',
+    reloj: '<path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/>',
+    check: '<path d="M20 6 9 17l-5-5"/>',
+    persona: '<path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>',
+    gota: '<path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"/>',
+    menu: '<line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/>',
     salir: '<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/>'
   };
   function icoMenu(n){ return '<svg class="mi-ico" viewBox="0 0 24 24" aria-hidden="true">' + (ICONOS_MENU[n] || '') + '</svg>'; }
@@ -7909,7 +7931,7 @@ lo que haces cada día es lo que vas a ser.`;
     const SOLO_PLAY = TESTERS_PLAY;
     if(state.me && SOLO_PLAY.includes(state.me) && !MODO_PLAY && /android/i.test(navigator.userAgent)){
       app.appendChild(el(`<div class="card" style="text-align:center;margin-top:20px">
-        <p style="font-size:40px;margin:0">📲</p>
+        <p class="ico-grande" style="margin:0"><i data-ico=movil></i></p>
         <h2 style="margin:6px 0 10px">Entra desde la app de Google Play</h2>
         <p style="margin:0 0 14px">Hola, ${escapeAttr(nombreTester())}. Para ayudarnos con la prueba de Google, a partir de ahora usa la app de <b>Google Play</b>. Es la misma app y entras con tu nombre y contraseña de siempre: no pierdes nada.</p>
         <ol style="text-align:left;margin:0 0 16px;padding-left:22px;line-height:1.5">
@@ -7919,7 +7941,7 @@ lo que haces cada día es lo que vas a ser.`;
           <li>Ábrela y entra con tu cuenta de siempre. Después borra este icono para no confundirte.</li>
         </ol>
         <a class="panel-link-btn" style="background:#6B9362" href="https://play.google.com/apps/testing/club.practicaintegral.metasamables" target="_blank" rel="noopener">Ir a Google Play →</a>
-        <p style="font-size:13px;color:var(--ink-soft);margin:14px 0 0">¿Te sale «App not available»? Escríbele a Gustavo por WhatsApp y dile qué correo tienes en la Play Store: <a style="color:var(--moss-deep);font-weight:700" href="https://wa.me/34658825799" target="_blank" rel="noopener">💬 WhatsApp</a></p>
+        <p style="font-size:13px;color:var(--ink-soft);margin:14px 0 0">¿Te sale «App not available»? Escríbele a Gustavo por WhatsApp y dile qué correo tienes en la Play Store: <a style="color:var(--moss-deep);font-weight:700" href="https://wa.me/34658825799" target="_blank" rel="noopener"><i data-ico=comentario></i>WhatsApp</a></p>
       </div>`));
       return;
     }
@@ -7972,7 +7994,7 @@ lo que haces cada día es lo que vas a ser.`;
     // Mientras no esté instalada: botón «Instalar la app» arriba en todas las pantallas
     if(state.me && !MODO_PLAY && !appInstalada() && !['pick', 'bienvenidaAlta'].includes(state.view)){
       const b = document.createElement('button');
-      b.type = 'button'; b.className = 'boton-instalar-arriba'; b.textContent = '📲 Instalar la app';
+      b.type = 'button'; b.className = 'boton-instalar-arriba'; b.textContent = 'Instalar la app';
       b.onclick = abrirInstalar;
       app.appendChild(b);
     }
@@ -7995,7 +8017,7 @@ lo que haces cada día es lo que vas a ser.`;
       const ep = estadoPosit(), clave = 'posit_visto_' + state.me + '_' + (ep.p ? (ep.p.mes || ep.p.trimestre) : '');
       let visto = false; try { visto = !!localStorage.getItem(clave); } catch(e){}
       if(ep.estado === 'abrir' && !visto){
-        const t = el('<div class="card carta-aviso" style="border-color:#E2C79A;background:#FFF8DC"><p style="font-weight:800;margin:0 0 6px">📝 Tienes una nota de tu yo de hace un mes</p><button type="button" class="panel-link-btn" style="width:100%;border:none;cursor:pointer;background:#C9942D">Abrirlo →</button></div>');
+        const t = el('<div class="card carta-aviso" style="border-color:#E2C79A;background:#FFF8DC"><p style="font-weight:800;margin:0 0 6px"><i data-ico=nota></i>Tienes una nota de tu yo de hace un mes</p><button type="button" class="panel-link-btn" style="width:100%;border:none;cursor:pointer;background:#C9942D">Abrirlo →</button></div>');
         t.querySelector('button').onclick = () => { try { localStorage.setItem(clave, '1'); } catch(e){} state.view = 'posit'; window.scrollTo(0,0); render(); };
         app.appendChild(t);
       }
@@ -8028,7 +8050,7 @@ lo que haces cada día es lo que vas a ser.`;
       const btnSeguir = document.createElement('button');
       btnSeguir.className = 'btn btn-yes';
       btnSeguir.style.textAlign = 'center';
-      btnSeguir.textContent = state.modoPrueba ? '← Volver a Ajustes' : '✍️ Ahora, tu compromiso de esta semana →';
+      btnSeguir.textContent = state.modoPrueba ? '← Volver a Ajustes' : 'Ahora, tu compromiso de esta semana →';
       btnSeguir.onclick = () => {
         if(state.modoPrueba){ state.modoPrueba = false; state.view = 'ajustes'; }
         else { state.view = 'checkin'; state.regPaso = 2; }
@@ -8060,7 +8082,7 @@ lo que haces cada día es lo que vas a ser.`;
       const btnPaso2 = document.createElement('button');
       btnPaso2.className = 'btn btn-yes';
       btnPaso2.style.textAlign = 'center';
-      btnPaso2.textContent = state.modoPrueba ? '← Volver a Ajustes' : '✍️ Ahora, tu compromiso de esta semana →';
+      btnPaso2.textContent = state.modoPrueba ? '← Volver a Ajustes' : 'Ahora, tu compromiso de esta semana →';
       btnPaso2.onclick = () => {
         if(state.modoPrueba){ state.modoPrueba = false; state.view = 'ajustes'; }
         else { state.view = 'checkin'; state.regPaso = 2; }
@@ -8081,13 +8103,13 @@ lo que haces cada día es lo que vas a ser.`;
     if(state.view === 'sesionesCal'){
       const nav = document.createElement('nav');
       nav.className = 'tabs';
-      nav.innerHTML = `<button id="toPanel">🔄 Ciclo</button><button id="toCheckin">Registro</button>${tienePlan('sesiones') ? '<button id=\'toGroup2\'>Mi grupo</button>' : ''}`;
+      nav.innerHTML = `<button id="toPanel"><i data-ico=ciclo></i>Ciclo</button><button id="toCheckin">Registro</button>${tienePlan('sesiones') ? '<button id=\'toGroup2\'>Mi grupo</button>' : ''}`;
       app.appendChild(nav);
       nav.querySelector('#toPanel').onclick = () => { state.view='panel'; window.scrollTo(0,0); render(); };
       nav.querySelector('#toCheckin').onclick = () => { state.view='checkin'; state.regPaso = null; window.scrollTo(0,0); render(); };
       if(nav.querySelector('#toGroup2')) nav.querySelector('#toGroup2').onclick = openGroupPanel;
 
-      app.appendChild(el(`<h1>📅 Calendario sesiones</h1><p class="lead">Sesiones quincenales — mes anterior, actual y los 3 siguientes</p>`));
+      app.appendChild(el(`<h1><i data-ico=calendario></i>Calendario sesiones</h1><p class="lead">Sesiones quincenales — mes anterior, actual y los 3 siguientes</p>`));
 
       const calCard = document.createElement('div');
       calCard.className = 'card';
@@ -8106,7 +8128,7 @@ lo que haces cada día es lo que vas a ser.`;
     if(state.view === 'calendar'){
       const nav = document.createElement('nav');
       nav.className = 'tabs';
-      nav.innerHTML = `<button id="toPanel">🔄 Ciclo</button><button id="toCheckin">Registro</button>${tienePlan('sesiones') ? '<button id=\'toGroup2\'>Mi grupo</button>' : ''}`;
+      nav.innerHTML = `<button id="toPanel"><i data-ico=ciclo></i>Ciclo</button><button id="toCheckin">Registro</button>${tienePlan('sesiones') ? '<button id=\'toGroup2\'>Mi grupo</button>' : ''}`;
       app.appendChild(nav);
       nav.querySelector('#toPanel').onclick = () => { state.view='panel'; window.scrollTo(0,0); render(); };
       nav.querySelector('#toCheckin').onclick = () => { state.view='checkin'; state.regPaso = null; window.scrollTo(0,0); render(); };
@@ -8118,11 +8140,11 @@ lo que haces cada día es lo que vas a ser.`;
         const fila = document.createElement('div');
         fila.style.cssText = 'display:flex;justify-content:space-between;align-items:center;gap:10px';
         volverCal.replaceWith(fila); fila.appendChild(volverCal);
-        const aDiario = el('<button type="button" style="padding:10px 14px;border-radius:10px;background:#fff;border:2px solid #6B9362;color:#4E7446;font-weight:700;font-size:14px;cursor:pointer">📅 Calendario diario</button>').firstElementChild;
+        const aDiario = el('<button type="button" style="padding:10px 14px;border-radius:10px;background:#fff;border:2px solid #6B9362;color:#4E7446;font-weight:700;font-size:14px;cursor:pointer"><i data-ico=calendario></i>Calendario diario</button>').firstElementChild;
         aDiario.onclick = () => { state.prevView = 'calendar'; state.view = 'calendarioPracticas'; window.scrollTo(0,0); render(); };
         fila.appendChild(aDiario);
       }
-      app.appendChild(el(`<h1>📅 Mi calendario de semanas</h1><p class="lead">Cada casilla es una semana y muestra <b>las veces que lo hiciste</b> sobre las que te comprometiste.</p>
+      app.appendChild(el(`<h1><i data-ico=calendario></i>Mi calendario de semanas</h1><p class="lead">Cada casilla es una semana y muestra <b>las veces que lo hiciste</b> sobre las que te comprometiste.</p>
         <div class="cal-leyenda">
           <span><i class="cal-muestra yes">5/5</i> Cumpliste todas las veces</span>
           <span><i class="cal-muestra partial">3/5</i> Lo hiciste en parte</span>
@@ -8311,7 +8333,7 @@ lo que haces cada día es lo que vas a ser.`;
     if(state.view === 'panel'){
 
       const nombrePlan = state.plan === 'sesiones' ? 'Plan Guías + Grupo' : (state.plan === 'guias' ? 'Plan Guías' : (state.plan ? 'Plan Libre' : ''));
-      const topbarPanel = el(`<div class="topbar">${nombrePlan ? `<button type="button" class="etiqueta-plan-cab" id="btnPlanCab">⭐ ${nombrePlan} ›</button>` : '<span></span>'}<div class="topbar-der"><span id="grow-panel-boton"></span><a class="cab-insta" href="https://www.instagram.com/practicaintegral.club/" target="_blank" rel="noopener" aria-label="Instagram de Práctica Integral Club"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.4" cy="6.6" r="1.1" fill="currentColor" stroke="none"/></svg></a>${nivelBadgeHTML()}<button class="hamburger-btn-text" id="btnMenuOpen" aria-label="Menú">☰ Menú</button></div></div>`);
+      const topbarPanel = el(`<div class="topbar">${nombrePlan ? `<button type="button" class="etiqueta-plan-cab" id="btnPlanCab"><i data-ico=plan></i>${nombrePlan} ›</button>` : '<span></span>'}<div class="topbar-der"><span id="grow-panel-boton"></span><a class="cab-insta" href="https://www.instagram.com/practicaintegral.club/" target="_blank" rel="noopener" aria-label="Instagram de Práctica Integral Club"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.4" cy="6.6" r="1.1" fill="currentColor" stroke="none"/></svg></a>${nivelBadgeHTML()}<button class="hamburger-btn-text" id="btnMenuOpen" aria-label="Menú"><i data-ico=menu></i>Menú</button></div></div>`);
       const nivelBtnPanel = topbarPanel.querySelector('#nivelBadgeBtn');
       const btnMenuOpenPanel = topbarPanel.querySelector('#btnMenuOpen');
       // Buscar el botón ANTES de insertarlo: el() devuelve un fragmento que se
@@ -8349,7 +8371,7 @@ lo que haces cada día es lo que vas a ser.`;
 
       const nav = document.createElement('nav');
       nav.className = 'tabs';
-      nav.innerHTML = `<button class="active">🔄 Ciclo</button><button id="toCheckin">Registro</button>${tienePlan('sesiones') ? '<button id="toGroup">Mi grupo</button>' : ''}<button id="toCal">${calBloqueado() ? '👑👑' : '📅'} <span class="tab-full">Calendario de semanas</span><span class="tab-abbr">Cal. sem.</span></button>`;
+      nav.innerHTML = `<button class="active"><i data-ico=ciclo></i>Ciclo</button><button id="toCheckin">Registro</button>${tienePlan('sesiones') ? '<button id="toGroup">Mi grupo</button>' : ''}<button id="toCal">${calBloqueado() ? '👑👑' : '<i data-ico=calendario></i>'} <span class="tab-full">Calendario de semanas</span><span class="tab-abbr">Cal. sem.</span></button>`;
       // pestañas quitadas del Panel: las opciones ya están en la lista de abajo
       
       nav.querySelector('#toCheckin').onclick = () => { state.view='checkin'; state.regPaso = null; window.scrollTo(0,0); render(); };
@@ -8381,13 +8403,13 @@ lo que haces cada día es lo que vas a ser.`;
         const metaHecha = !!(formularioEnviado() || state.guiaTexto || tx.meta);
         const listaCiclo = (state.checkins && state.checkins[state.me]) || [];
         const conVeces = listaCiclo.find(c => c.week === currentWeekShort && c.compromisoVeces) || listaCiclo.slice().reverse().find(c => c.compromisoVeces);
-        const vecesTx = conVeces ? '🔁 ' + conVeces.compromisoVeces + (Number(conVeces.compromisoVeces) === 1 ? ' vez' : ' veces') + (conVeces.week === currentWeekShort ? ' esta semana' : ' (última semana registrada)') : '';
+        const vecesTx = conVeces ? '<i data-ico=repetir></i>' + conVeces.compromisoVeces + (Number(conVeces.compromisoVeces) === 1 ? ' vez' : ' veces') + (conVeces.week === currentWeekShort ? ' esta semana' : ' (última semana registrada)') : '';
         const proxMes = new Date(today.getFullYear(), today.getMonth() + 1, 1);
         const subGuia = !state.guiaTexto
           ? (formularioEnviado() ? '⏳ En breve tendrás tu guía' : 'Llegará cuando definas tu meta')
           : guiaPendienteDeAbrir()
-            ? '<span class="guia-nueva">✨ Ya tienes tu nueva guía de esta semana para leer</span>'
-            : '📖 Ya tienes tu guía para leer' + (sinGuias ? ' · próxima: 1 de ' + monthNamesEs[proxMes.getMonth()] : '');
+            ? '<span class="guia-nueva"><i data-ico=destellos></i>Ya tienes tu nueva guía de esta semana para leer</span>'
+            : '<i data-ico=libro></i>Ya tienes tu guía para leer' + (sinGuias ? ' · próxima: 1 de ' + monthNamesEs[proxMes.getMonth()] : '');
         const toca = tareaDelDia();
         const act = k => (k === toca ? ' actual' : '');
         // Con guía y sin candado, el paso «a» es la tarjeta azul «Tu guía de esta semana» (con su práctica)
@@ -8397,7 +8419,7 @@ lo que haces cada día es lo que vas a ser.`;
                 (tx.practica ? '<span class="ciclo-dato">' + escapeAttr(corto(tx.practica, 110)) + '</span>' : registraLunes() ? 'La defines en tu compromiso del lunes' : 'Marca cada día que la hagas')
                 + (vecesTx ? '<br><span style="font-weight:700">' + vecesTx + '</span>' : ''), '', false);
         opciones.innerHTML =
-          '<button type="button" class="hablar-practi-btn">💬 Quiero hablar con Prácti</button>'
+          '<button type="button" class="hablar-practi-btn"><i data-ico=comentario></i>Quiero hablar con Prácti</button>'
           + '<div role="button" tabindex="0" class="opcion-inicio ciclo-btn tit-arriba ciclo-meta' + (metaHecha ? ' hecha' : ' pendiente') + act('meta') + '" data-ir="s4">'
           + '<b class="ciclo-tit">' + letraPaso('a') + 'Metas' + (metaHecha ? infoBoton('Aquí se guardan tus metas: tu <b>meta con guía</b>, definida para el ' + trimestreMeta()
                 + (sencillasActivas().length ? (sencillasActivas().length === 1 ? ', y tu <b>' + TXT_SENCILLA.toLowerCase() + '</b>' : ', y tus <b>' + sencillasActivas().length + ' ' + TXT_SENCILLAS.toLowerCase() + '</b>') : '') + '.'
@@ -8405,7 +8427,7 @@ lo que haces cada día es lo que vas a ser.`;
           + '<span class="opcion-tx">'
           + (metaHecha
               ? '<span class="etiqueta-recibida">Rellenada</span><span class="meta-hueco"></span>'
-              : '<small style="color:#B94A3A;font-weight:700">⚠️ Pendiente: empieza por aquí</small>')
+              : '<small style="color:#B94A3A;font-weight:700"><i data-ico=alerta></i>Pendiente: empieza por aquí</small>')
           + '</span><span class="opcion-flecha">›</span></div>'
           + flechaAbajo
           + (guiaEnTarjeta ? '<div class="hueco-guia-semana"></div>'
@@ -8418,9 +8440,9 @@ lo que haces cada día es lo que vas a ser.`;
           + boton('s1', 'ciclo-c' + (sinSesiones ? ' bloqueada' : '') + (act('c') || act('d')), 'cpc', 'Grupo de apoyo' + infoBoton('Cada <b>lunes</b> haces tu compromiso de la semana: cuántas veces vas a practicar. Con el <b>Plan Guías + Grupo</b>, además, nos vemos en grupo cada 15 días por videollamada para ayudarnos.'),
                 sinSesiones
                   ? 'Registro de compromiso cada lunes y sesiones en grupo cada 15 días. Plan Guías + Grupo'
-                  : [registroPendienteEstaSemana() ? '✍️ <b>Compromiso pendiente:</b> aún no has dicho cuántas veces practicarás esta semana'
-                       : new Date().getDay() === 0 ? '✍️ Mañana toca tu registro de compromiso: ' + textoProximoLunes() : '',
-                     textoProximaSesion() ? '<span style="font-weight:700">📅 ' + textoProximaSesion() + '</span>' : ''].filter(Boolean).join('<br>'), '', sinSesiones && '👑👑')
+                  : [registroPendienteEstaSemana() ? '<i data-ico=lapiz></i><b>Compromiso pendiente:</b> aún no has dicho cuántas veces practicarás esta semana'
+                       : new Date().getDay() === 0 ? '<i data-ico=lapiz></i>Mañana toca tu registro de compromiso: ' + textoProximoLunes() : '',
+                     textoProximaSesion() ? '<span style="font-weight:700"><i data-ico=calendario></i>' + textoProximaSesion() + '</span>' : ''].filter(Boolean).join('<br>'), '', sinSesiones && '👑👑')
           + (oculto('util') ? '' : '<button type="button" class="opcion-inicio ciclo-formacion" data-ir="util"><span class="ciclo-icono">' + iconoLlave() + '</span><span class="opcion-tx"><b>Utilidades' + infoBoton('Aquí tienes <b>Habla con Prácti</b> para preguntarle tus dudas, <b>formación</b>, <b>frases motivadoras</b> para compartir y <b>música</b> para tu práctica.') + '</b></span><span class="opcion-flecha">›</span></button>');
         app.appendChild(opciones);
         try { const tp = tarjetaPlantaInicio(); if(tp) app.appendChild(tp); } catch(e){ console.error('Planta de Inicio:', e); }
@@ -8459,7 +8481,7 @@ lo que haces cada día es lo que vas a ser.`;
         const hueco = opciones.querySelector('.hueco-guia-semana');
         if(hueco){
           try {
-            const tg = tarjetaGuiaSemana(() => irDestino('s3'), guiaPendienteDeAbrir() ? '<p class="ritual-tx"><span class="guia-nueva">✨ Ya tienes tu nueva guía de esta semana para leer</span></p>' : '');
+            const tg = tarjetaGuiaSemana(() => irDestino('s3'), guiaPendienteDeAbrir() ? '<p class="ritual-tx"><span class="guia-nueva"><i data-ico=destellos></i>Ya tienes tu nueva guía de esta semana para leer</span></p>' : '');
             if(act('a')) tg.classList.add('actual');
             hueco.replaceWith(tg);
           } catch(e){ hueco.remove(); }
@@ -8511,11 +8533,11 @@ lo que haces cada día es lo que vas a ser.`;
           <div class="acc-body tres-areas">
             ${montanaNivelesHTML()}
             <p>Cada practicante es un <b>alpinista jardinero</b>: una sola persona con dos oficios a la vez. Sube la montaña con un equipo de amigos.</p>
-            <p><b>🧗 Como alpinista: el crecimiento vertical.</b> La montaña son los <b>niveles de conciencia</b> que vamos atravesando a lo largo de la vida: rojo, ámbar, naranja, verde y violeta. Subir es ver la vida desde más arriba, con una mirada más amplia.</p>
-            <p><b>🪴 Como jardinero: el crecimiento horizontal.</b> En cada nivel se queda un tiempo y cuida <b>tres huertos a la vez</b>, los tres caminos que describe el filósofo Ken Wilber en su Práctica Integral:</p>
-            <div class="area"><b>🌱 Huerto del aprendizaje (crecer)</b><span>Madurar y aprender habilidades: desarrollar tus inteligencias múltiples (emocional, relacional, corporal, cognitiva, ética…) para responder mejor a la vida.</span></div>
-            <div class="area"><b>💚 Huerto de la sanación (sanar)</b><span>Trabajar e integrar tu sombra y tus traumas: lo que rechazas de ti, las heridas y las emociones que evitas. Lo que no se sana, pesa en la mochila y frena la subida.</span></div>
-            <div class="area"><b>🌅 Huerto de la atención plena (despertar)</b><span>Vivir estados de mayor presencia y conciencia: estar aquí y ahora, la no dualidad, soltar el «yo» protagonista que quiere controlarlo todo. Se cultiva con meditación, atención plena y contemplación.</span></div>
+            <p><b><i data-ico=montana></i>Como alpinista: el crecimiento vertical.</b> La montaña son los <b>niveles de conciencia</b> que vamos atravesando a lo largo de la vida: rojo, ámbar, naranja, verde y violeta. Subir es ver la vida desde más arriba, con una mirada más amplia.</p>
+            <p><b><i data-ico=brote></i>Como jardinero: el crecimiento horizontal.</b> En cada nivel se queda un tiempo y cuida <b>tres huertos a la vez</b>, los tres caminos que describe el filósofo Ken Wilber en su Práctica Integral:</p>
+            <div class="area"><b><i data-ico=brote></i>Huerto del aprendizaje (crecer)</b><span>Madurar y aprender habilidades: desarrollar tus inteligencias múltiples (emocional, relacional, corporal, cognitiva, ética…) para responder mejor a la vida.</span></div>
+            <div class="area"><b><i data-ico=corazon></i>Huerto de la sanación (sanar)</b><span>Trabajar e integrar tu sombra y tus traumas: lo que rechazas de ti, las heridas y las emociones que evitas. Lo que no se sana, pesa en la mochila y frena la subida.</span></div>
+            <div class="area"><b><i data-ico=amanecer></i>Huerto de la atención plena (despertar)</b><span>Vivir estados de mayor presencia y conciencia: estar aquí y ahora, la no dualidad, soltar el «yo» protagonista que quiere controlarlo todo. Se cultiva con meditación, atención plena y contemplación.</span></div>
             <p>Cada nivel trae sus propios retos para los tres huertos. En ellos <b>siembras tus metas</b> y las riegas cada día con tus microprácticas. Cuando crecen, se convierten en <b>enredaderas por las que trepas al siguiente nivel</b>. Por eso el camino no es una escalera recta: <b>es una espiral</b>.</p>
             <p>Se puede estar muy despierto pero poco maduro, o tener muchas habilidades y heridas sin sanar. Por eso en Amable Meta tus guías cuidan los tres huertos, apoyándose en la <b>ciencia de la conducta</b>: pasos pequeños, hábitos, aceptación y el apoyo del grupo.</p>
           </div>
@@ -8539,46 +8561,46 @@ lo que haces cada día es lo que vas a ser.`;
             <details class="acc" style="background:#fff">
               <summary style="color:#7B4FA6">Módulo Espiritual — Propósito y presencia</summary>
               <div class="acc-body">
-                🔹 <b>Desarrollo del propósito:</b> reflexiona sobre lo que da significado a tu vida.<br>
-                🔹 <b>Prácticas de atención plena:</b> meditación, respiración consciente, gratitud.<br>
-                🔹 <b>Conexión trascendental:</b> naturaleza, espiritualidad, servicio a los demás.<br>
-                📌 <b>Ejercicio clave:</b> escribe tu propósito de vida en 1-2 frases y revísalo cada semana.
+                • <b>Desarrollo del propósito:</b> reflexiona sobre lo que da significado a tu vida.<br>
+                • <b>Prácticas de atención plena:</b> meditación, respiración consciente, gratitud.<br>
+                • <b>Conexión trascendental:</b> naturaleza, espiritualidad, servicio a los demás.<br>
+                <i data-ico=chincheta></i><b>Ejercicio clave:</b> escribe tu propósito de vida en 1-2 frases y revísalo cada semana.
               </div>
             </details>
             <details class="acc" style="background:#fff">
               <summary style="color:#C77B1E">Módulo Mental — Aprendizaje y mentalidad de crecimiento</summary>
               <div class="acc-body">
-                🔹 <b>Curiosidad activa:</b> cuestionar, leer, explorar cosas nuevas.<br>
-                🔹 <b>Desarrollo de habilidades:</b> elige una habilidad y avanza con disciplina.<br>
-                🔹 <b>Diversidad de pensamiento:</b> exponte a ideas y perspectivas distintas.<br>
-                📌 <b>Ejercicio clave:</b> escoge un tema nuevo cada mes y aprende sobre él.
+                • <b>Curiosidad activa:</b> cuestionar, leer, explorar cosas nuevas.<br>
+                • <b>Desarrollo de habilidades:</b> elige una habilidad y avanza con disciplina.<br>
+                • <b>Diversidad de pensamiento:</b> exponte a ideas y perspectivas distintas.<br>
+                <i data-ico=chincheta></i><b>Ejercicio clave:</b> escoge un tema nuevo cada mes y aprende sobre él.
               </div>
             </details>
             <details class="acc" style="background:#fff">
               <summary style="color:#B8960C">Módulo Emocional — Gestión emocional y aceptación</summary>
               <div class="acc-body">
-                🔹 <b>Conciencia emocional:</b> reconoce y nombra lo que sientes sin juzgarlo.<br>
-                🔹 <b>Regulación emocional:</b> estrategias saludables para el estrés o la tristeza.<br>
-                🔹 <b>Aceptar todas las emociones:</b> no suprimirlas, aprender de ellas.<br>
-                📌 <b>Ejercicio clave:</b> escribe un diario emocional 5 minutos al final del día.
+                • <b>Conciencia emocional:</b> reconoce y nombra lo que sientes sin juzgarlo.<br>
+                • <b>Regulación emocional:</b> estrategias saludables para el estrés o la tristeza.<br>
+                • <b>Aceptar todas las emociones:</b> no suprimirlas, aprender de ellas.<br>
+                <i data-ico=chincheta></i><b>Ejercicio clave:</b> escribe un diario emocional 5 minutos al final del día.
               </div>
             </details>
             <details class="acc" style="background:#fff">
               <summary style="color:#B94A3A">Módulo Cuerpo — Rutinas y equilibrio físico</summary>
               <div class="acc-body">
-                🔹 <b>Ejercicio regular:</b> una actividad física que disfrutes, con constancia.<br>
-                🔹 <b>Sueño y descanso:</b> horario regular, menos pantallas antes de dormir.<br>
-                🔹 <b>Nutrición consciente:</b> alimentos naturales, escuchar hambre y saciedad.<br>
-                📌 <b>Ejercicio clave:</b> diseña una rutina con 20 min de movimiento, 7-8h de sueño y comidas balanceadas.
+                • <b>Ejercicio regular:</b> una actividad física que disfrutes, con constancia.<br>
+                • <b>Sueño y descanso:</b> horario regular, menos pantallas antes de dormir.<br>
+                • <b>Nutrición consciente:</b> alimentos naturales, escuchar hambre y saciedad.<br>
+                <i data-ico=chincheta></i><b>Ejercicio clave:</b> diseña una rutina con 20 min de movimiento, 7-8h de sueño y comidas balanceadas.
               </div>
             </details>
             <details class="acc" style="background:#fff">
               <summary style="color:#63625A">Módulo Relacional — Autocompasión y relaciones nutritivas</summary>
               <div class="acc-body">
-                🔹 <b>Relación contigo mismo:</b> diálogo interno consciente y autocompasión.<br>
-                🔹 <b>Círculo social positivo:</b> tiempo con quien te inspira y fortalece.<br>
-                🔹 <b>Conexión genuina:</b> escucha activa, empatía, gratitud.<br>
-                📌 <b>Ejercicio clave:</b> envía un mensaje sincero de agradecimiento cada semana.
+                • <b>Relación contigo mismo:</b> diálogo interno consciente y autocompasión.<br>
+                • <b>Círculo social positivo:</b> tiempo con quien te inspira y fortalece.<br>
+                • <b>Conexión genuina:</b> escucha activa, empatía, gratitud.<br>
+                <i data-ico=chincheta></i><b>Ejercicio clave:</b> envía un mensaje sincero de agradecimiento cada semana.
               </div>
             </details>
           </div>
@@ -8598,15 +8620,15 @@ lo que haces cada día es lo que vas a ser.`;
       if(metaHechaYa()){
         // Ya está hecha: en el Plan Libre no se vuelve a abrir el formulario
         s2.innerHTML = `
-          <h3 class="metas-sub">🌱 Meta con guía</h3>
-          ${metaVisibleTexto() ? '<p class="meta-actual"><span>🎯 Tu meta</span>«' + escapeAttr(metaVisibleTexto()) + '»</p>' : ''}
+          <h3 class="metas-sub"><i data-ico=brote></i>Meta con guía</h3>
+          ${metaVisibleTexto() ? '<p class="meta-actual"><span><i data-ico=diana></i>Tu meta</span>«' + escapeAttr(metaVisibleTexto()) + '»</p>' : ''}
           <p style="font-size:15.5px"><b>Será tu meta más importante para este trimestre.</b></p>
           <p style="font-size:13px;color:var(--ink-soft)">${reglaMeta}</p>
-          <p style="background:var(--honey-tint);border-radius:10px;padding:12px 14px">✅ <b>Ya tienes el formulario rellenado</b>${enviado ? ' (' + fechaCorta(enviado) + ')' : ''}: tu meta está definida para el <b>${trimestreMeta()}</b>.<br>
+          <p style="background:var(--honey-tint);border-radius:10px;padding:12px 14px"><i data-ico=hecho></i><b>Ya tienes el formulario rellenado</b>${enviado ? ' (' + fechaCorta(enviado) + ')' : ''}: tu meta está definida para el <b>${trimestreMeta()}</b>.<br>
           ${state.guiaTexto ? 'Tu guía ya está lista en <b>«b · Guía semanal»</b>.' : 'En breve tendrás tu guía de prácticas en <b>«b · Guía semanal»</b>.'}</p>
-          ${cambios > 1 ? '<p style="font-weight:700;margin:14px 0 6px">Cambiar mi meta con guía:</p><button type="button" class="panel-link-btn honey fm-abrir" data-modo="cambiar" style="width:100%;border:none;cursor:pointer;margin:0 0 8px">✏️ Modificar algo (sale con tus respuestas) →</button><button type="button" class="panel-link-btn fm-abrir" data-modo="nueva" style="width:100%;border:2px solid #C9942D;background:#fff;color:#8A5A1E;cursor:pointer">🌱 Empezar una meta nueva (sale vacío) →</button>' : ''}`;
+          ${cambios > 1 ? '<p style="font-weight:700;margin:14px 0 6px">Cambiar mi meta con guía:</p><button type="button" class="panel-link-btn honey fm-abrir" data-modo="cambiar" style="width:100%;border:none;cursor:pointer;margin:0 0 8px"><i data-ico=lapiz></i>Modificar algo (sale con tus respuestas) →</button><button type="button" class="panel-link-btn fm-abrir" data-modo="nueva" style="width:100%;border:2px solid #C9942D;background:#fff;color:#8A5A1E;cursor:pointer"><i data-ico=brote></i>Empezar una meta nueva (sale vacío) →</button>' : ''}`;
       } else s2.innerHTML = `
-        <h3 class="metas-sub">🌱 Meta con guía</h3>
+        <h3 class="metas-sub"><i data-ico=brote></i>Meta con guía</h3>
         <p style="font-size:15.5px"><b>Será tu meta más importante para este trimestre.</b></p>
         <p>Rellena el formulario para definir tu meta trimestral más importante para ti, tus dificultades y a qué ritmo quieres ir. Te crearemos tu guía de prácticas.</p>
         <p style="background:var(--honey-tint);border-radius:10px;padding:10px 12px;font-size:14px">${reglaMeta}</p>
@@ -8621,7 +8643,7 @@ lo que haces cada día es lo que vas a ser.`;
         ${badgeSeccion('a', 'Guía semanal')}
         <p>Aquí accedes a tu guía de prácticas personalizada de este mes.</p>
         ${casillaNoMostrar('s3')}
-        <button type="button" id="btnAccesoPracticas" class="panel-link-btn" style="background:#4F7FB5;width:100%;border:none;cursor:pointer;margin-top:14px">📖 Acceso a tus prácticas →</button>
+        <button type="button" id="btnAccesoPracticas" class="panel-link-btn" style="background:#4F7FB5;width:100%;border:none;cursor:pointer;margin-top:14px"><i data-ico=libro></i>Acceso a tus prácticas →</button>
       `;
       // a = azul, como su botón en el ciclo
       s3.style.border = '2px solid #8FB3DA';
@@ -8633,7 +8655,7 @@ lo que haces cada día es lo que vas a ser.`;
       s4.innerHTML = `
         ${badgeSeccion('d', 'Sesiones online')}
         <p>Cada 15 días nos encontramos en un espacio online seguro y cálido para que nunca camines sola en este proceso. Estas reuniones de 60 minutos son el corazón de nuestra comunidad.</p>
-        <button id="btnAbrirCalSesiones" style="width:100%;text-align:center;padding:12px 16px;border-radius:10px;background:#fff;border:2px solid var(--honey);color:var(--honey);font-weight:700;font-size:14px;cursor:pointer;margin:8px 0">📅 Calendario sesiones</button>
+        <button id="btnAbrirCalSesiones" style="width:100%;text-align:center;padding:12px 16px;border-radius:10px;background:#fff;border:2px solid var(--honey);color:var(--honey);font-weight:700;font-size:14px;cursor:pointer;margin:8px 0"><i data-ico=calendario></i>Calendario sesiones</button>
         <a class="panel-link-btn honey" href="https://meet.google.com/qvf-aefv-trc" target="_blank">Enlace a la llamada →</a>
         ${casillaNoMostrar('s2')}
       `;
@@ -8648,14 +8670,14 @@ lo que haces cada día es lo que vas a ser.`;
       const proxSesion = textoProximaSesion();
       s5.innerHTML = `
         ${badgeSeccion('cpc', 'Grupo de apoyo')}
-        <div id="bloqueSesiones"><p style="font-weight:700;margin:0 0 4px">🤝 Sesiones online</p>
+        <div id="bloqueSesiones"><p style="font-weight:700;margin:0 0 4px"><i data-ico=grupo></i>Sesiones online</p>
         ${sinSesiones
           ? '<p style="font-size:14px;color:var(--ink-soft);margin:0 0 8px">Cada 15 días, en grupo reducido, para desatascar situaciones y automotivarte. Están incluidas en el Plan Guías + Grupo.</p><a class="panel-link-btn honey" id="btnVerPlanes" href="#">Ver planes →</a>'
-          : `<p style="margin:0 0 8px">${proxSesion ? '📅 ' + proxSesion : 'Cada 15 días, en grupo reducido.'}</p>
-        <button id="btnAbrirCalSesiones2" style="width:100%;text-align:center;padding:12px 16px;border-radius:10px;background:#fff;border:2px solid #6B9362;color:#4E7446;font-weight:700;font-size:14px;cursor:pointer;margin:8px 0">📅 Calendario sesiones</button>
-        <button id="btnVerMiGrupo" style="width:100%;text-align:center;padding:12px 16px;border-radius:10px;background:#fff;border:2px solid #6B9362;color:#4E7446;font-weight:700;font-size:14px;cursor:pointer;margin:0 0 8px">🤝 Ver mi grupo y sus plantas</button>
+          : `<p style="margin:0 0 8px">${proxSesion ? '<i data-ico=calendario></i>' + proxSesion : 'Cada 15 días, en grupo reducido.'}</p>
+        <button id="btnAbrirCalSesiones2" style="width:100%;text-align:center;padding:12px 16px;border-radius:10px;background:#fff;border:2px solid #6B9362;color:#4E7446;font-weight:700;font-size:14px;cursor:pointer;margin:8px 0"><i data-ico=calendario></i>Calendario sesiones</button>
+        <button id="btnVerMiGrupo" style="width:100%;text-align:center;padding:12px 16px;border-radius:10px;background:#fff;border:2px solid #6B9362;color:#4E7446;font-weight:700;font-size:14px;cursor:pointer;margin:0 0 8px"><i data-ico=grupo></i>Ver mi grupo y sus plantas</button>
         <a class="panel-link-btn" href="https://meet.google.com/qvf-aefv-trc" target="_blank" style="background:#6B9362">Enlace a la llamada →</a>
-        ${soyModerador() ? '<button type="button" id="btnSituacion" style="width:100%;text-align:center;padding:12px 16px;border-radius:10px;background:#fff;border:2px solid #6B9362;color:#4E7446;font-weight:700;font-size:14px;cursor:pointer;margin:10px 0 0">👥 Situación de los practicantes de tu grupo</button>' : ''}`}
+        ${soyModerador() ? '<button type="button" id="btnSituacion" style="width:100%;text-align:center;padding:12px 16px;border-radius:10px;background:#fff;border:2px solid #6B9362;color:#4E7446;font-weight:700;font-size:14px;cursor:pointer;margin:10px 0 0"><i data-ico=grupo></i>Situación de los practicantes de tu grupo</button>' : ''}`}
         </div>
       `;
       // c = verde, como su botón en el ciclo
@@ -8695,7 +8717,7 @@ lo que haces cada día es lo que vas a ser.`;
       const facFoto = /^https:\/\//.test(fac.foto || '') ? fac.foto.replace(/"/g, '%22') : '';
       help.innerHTML = `
         <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 8px">
-          <p style="margin:0;font-size:17px"><b>💬 Tu facilitador</b></p>
+          <p style="margin:0;font-size:17px"><b><i data-ico=comentario></i>Tu facilitador</b></p>
           ${facFoto ? `<img src="${facFoto}" alt="${facNombre}" style="width:48px;height:48px;border-radius:50%;object-fit:cover;flex-shrink:0;border:2px solid var(--line, #e5e2da)" onerror="this.remove()">` : ''}
         </div>
         <p style="font-size:13px;color:var(--ink-soft);margin:0 0 10px"><b style="font-size:15px;color:var(--ink)">${facNombre}</b><br>¿Alguna duda sobre tus metas o sobre la aplicación?</p>
@@ -8703,7 +8725,7 @@ lo que haces cada día es lo que vas a ser.`;
       `;
       // «Instala la app» ya sale arriba del todo: aquí abajo no se repite (27-10-2026, Gustavo)
       // Juego extra, al final de la pantalla de inicio
-      const juego = el('<button type="button" class="juego-btn" style="margin-top:18px"><span class="juego-btn-ico">🎮</span><span><b>Salta la valla con Prácti</b><small>Un minuto de juego: cada valla es un obstáculo que superas</small></span></button>').firstElementChild;   // el() da un fragmento: se coge el botón
+      const juego = el('<button type="button" class="juego-btn" style="margin-top:18px"><span class="juego-btn-ico"><i data-ico=juego></i></span><span><b>Salta la valla con Prácti</b><small>Un minuto de juego: cada valla es un obstáculo que superas</small></span></button>').firstElementChild;   // el() da un fragmento: se coge el botón
       juego.onclick = abrirJuegoVallas;
       if(!oculto('juego')) app.appendChild(juego);
       app.appendChild(cajaMostrar('inicio'));   // «Mostrar», casi al final de Inicio
@@ -8714,7 +8736,7 @@ lo que haces cada día es lo que vas a ser.`;
     // El registro del lunes es solo del Plan Guías + Grupo; los demás registran cada día en «Practica y registra»
     if(state.view === 'checkin' && !registraLunes()){ state.prevView = 'panel'; state.view = 'practicaSemanal'; return renderVista(); }
     if(state.view === 'checkin'){
-      const topbarCheckin = el(`<div class="topbar"><span></span><button class="hamburger-btn-text" id="btnMenuOpen" aria-label="Menú">☰ Menú</button></div>`);
+      const topbarCheckin = el(`<div class="topbar"><span></span><button class="hamburger-btn-text" id="btnMenuOpen" aria-label="Menú"><i data-ico=menu></i>Menú</button></div>`);
       const btnMenuOpenCheckin = topbarCheckin.querySelector('#btnMenuOpen');
       app.appendChild(topbarCheckin);
       btnMenuOpenCheckin.onclick = () => { state.prevView = 'checkin'; state.menuOpen = true; render(); };
@@ -8728,7 +8750,7 @@ lo que haces cada día es lo que vas a ser.`;
 
       const nav = document.createElement('nav');
       nav.className = 'tabs';
-      nav.innerHTML = `<button id="toPanel">🔄 Ciclo</button><button class="active">Registro</button>${tienePlan('sesiones') ? '<button id="toGroup">Mi grupo</button>' : ''}<button id="toCal">${calBloqueado() ? '👑👑' : '📅'} <span class="tab-full">Calendario de semanas</span><span class="tab-abbr">Cal. sem.</span></button>`;
+      nav.innerHTML = `<button id="toPanel"><i data-ico=ciclo></i>Ciclo</button><button class="active">Registro</button>${tienePlan('sesiones') ? '<button id="toGroup">Mi grupo</button>' : ''}<button id="toCal">${calBloqueado() ? '👑👑' : '<i data-ico=calendario></i>'} <span class="tab-full">Calendario de semanas</span><span class="tab-abbr">Cal. sem.</span></button>`;
       // pestañas quitadas del Registro: abajo están los enlaces a grupo y calendario
       
       nav.querySelector('#toPanel').onclick = () => { state.view='panel'; window.scrollTo(0,0); render(); };
@@ -8807,7 +8829,7 @@ lo que haces cada día es lo que vas a ser.`;
             <span>${prevWeek.estadoSemana}</span><span>${detallePrev}</span>
           </div>
           <button class="btn btn-yes" id="btnIrPaso2" style="text-align:center;margin-top:12px">Ir a tu compromiso de esta semana →</button>
-          <button class="link-quiet" id="btnEditarCierre" style="padding:0;margin-top:8px">✏️ Modificar este cierre</button>
+          <button class="link-quiet" id="btnEditarCierre" style="padding:0;margin-top:8px"><i data-ico=lapiz></i>Modificar este cierre</button>
         `;
         app.appendChild(cierreCard);
         cierreCard.querySelector('#btnIrPaso2').onclick = () => { state.editandoCierre = false; state.regPaso = 2; window.scrollTo(0,0); render(); };
@@ -8826,7 +8848,7 @@ lo que haces cada día es lo que vas a ser.`;
           <div class="question paso-titulo">Cierre de la semana pasada ${rangoSemanaTexto(lastWeekDate)}</div>
           <p style="font-size:15px;font-weight:700;margin:12px 0 2px">Te habías comprometido a hacerlo ${compromisoPrev} ${compromisoPrev === 1 ? 'vez' : 'veces'}.</p>
           <p style="font-size:15px;color:var(--ink-soft);margin:0 0 12px">¿Cómo te fue?</p>
-          ${diasPrev.length ? '<p style="font-size:14px;background:var(--honey-tint);border-radius:10px;padding:8px 12px;margin:0 0 12px">📅 Durante la semana marcaste <b>' + diasPrev.join(', ') + '</b> (' + diasPrev.length + (diasPrev.length === 1 ? ' día' : ' días') + '). Lo hemos dejado seleccionado; cámbialo si no es así.</p>' : ''}
+          ${diasPrev.length ? '<p style="font-size:14px;background:var(--honey-tint);border-radius:10px;padding:8px 12px;margin:0 0 12px"><i data-ico=calendario></i>Durante la semana marcaste <b>' + diasPrev.join(', ') + '</b> (' + diasPrev.length + (diasPrev.length === 1 ? ' día' : ' días') + '). Lo hemos dejado seleccionado; cámbialo si no es así.</p>' : ''}
 
           <button class="btn btn-yes ${est === ESTADO_CUMPLIDO ? 'selected' : ''}" id="btnCierreTotal">
             Sí, hice ${compromisoPrev === 1 ? 'la vez' : 'las ' + compromisoPrev + ' veces'}
@@ -8937,7 +8959,7 @@ lo que haces cada día es lo que vas a ser.`;
         pie.style.cssText = 'display:flex;flex-direction:column;gap:10px;margin-top:16px';
         const estiloPie = 'width:100%;text-align:center;padding:14px 16px;border-radius:12px;background:#fff;border:2px solid #6B9362;color:#4E7446;font-weight:700;font-size:16px;cursor:pointer';
         pie.innerHTML =
-          (tienePlan('sesiones') ? '<button type="button" id="pieGrupo" style="' + estiloPie + '">🤝 Ver mi grupo</button>' : '') +
+          (tienePlan('sesiones') ? '<button type="button" id="pieGrupo" style="' + estiloPie + '"><i data-ico=grupo></i>Ver mi grupo</button>' : '') +
           '<button type="button" id="pieCal" style="' + estiloPie + '">' + txtCal('Ver mi calendario') + '</button>';
         app.appendChild(pie);
         if(pie.querySelector('#pieGrupo')) pie.querySelector('#pieGrupo').onclick = openGroupPanel;
@@ -8951,10 +8973,10 @@ lo que haces cada día es lo que vas a ser.`;
       compCard.innerHTML = `
         <div class="question paso-titulo">Tu compromiso para esta semana ${rangoSemanaTexto(today)}</div>
 
-        <label class="note-label strong" for="metaTrim" style="margin-top:14px">🎯 Meta ${currentQLabel} (${currentQMonths.join(', ')})</label>
+        <label class="note-label strong" for="metaTrim" style="margin-top:14px"><i data-ico=diana></i>Meta ${currentQLabel} (${currentQMonths.join(', ')})</label>
         <textarea id="metaTrim" placeholder="¿Cuál es tu meta para este trimestre?" style="min-height:44px;margin-bottom:16px">${curMetaTrim}</textarea>
 
-        <label class="note-label strong" for="identidad">🪞 Mi identidad de meta</label>
+        <label class="note-label strong" for="identidad"><i data-ico=persona></i>Mi identidad de meta</label>
         <p class="identidad-ayuda" style="font-size:13px;color:var(--ink-soft);margin:0 0 6px">
           Escríbela de nuevo cada semana: reescribirla ayuda a interiorizarla y a reconocerte en ella.
         </p>
@@ -8972,7 +8994,7 @@ lo que haces cada día es lo que vas a ser.`;
           style="width:100%;border:1px solid var(--border);border-radius:10px;padding:12px;font-family:'Karla';font-size:16px;margin-bottom:4px;background:#FCFCF9;box-sizing:border-box">
         <p style="font-size:13px;color:var(--ink-soft);margin:0 0 14px">Mira tu semana y cuenta solo los días en que de verdad tendrás un hueco.</p>
 
-        <button class="btn btn-yes" id="btnRegistrarTodo" style="text-align:center">${!tienePlan('guias') ? '✅ Registrar mi compromiso' : (tienePlan('sesiones') ? '📲 Registrar y compartir en WhatsApp' : '📲 Registrar y compartir con tu socio de compromiso')}</button>
+        <button class="btn btn-yes" id="btnRegistrarTodo" style="text-align:center">${!tienePlan('guias') ? '<i data-ico=hecho></i>Registrar mi compromiso' : (tienePlan('sesiones') ? '<i data-ico=movil></i>Registrar y compartir en WhatsApp' : '<i data-ico=movil></i>Registrar y compartir con tu socio de compromiso')}</button>
         ${!tienePlan('guias') ? '<button type="button" class="link-quiet" id="btnCompartirBloq" style="padding:0;margin-top:8px;text-align:left">👑 Compartir tu compromiso por WhatsApp con tu socio de compromiso <small>(Plan Guías)</small></button>' : (tienePlan('sesiones') ? '' : '<p style="font-size:13px;color:var(--ink-soft);margin:6px 0 0">Tu <b>socio de compromiso</b> es alguien de confianza a quien le cuentas tu compromiso cada semana. Decirlo en voz alta hace que se cumpla mucho más.</p>')}
         <div class="saved-msg">${state.compromisoMsg || ''}</div>
         ${soyModerador() ? '<button class="link-quiet" id="btnVolverCierre" style="padding:0;margin-top:6px">← Ver el cierre de la semana pasada</button>' : ''}
@@ -9032,8 +9054,8 @@ lo que haces cada día es lo que vas a ser.`;
         if(faltan.length){
           faltan.forEach(c => c.el.classList.add('campo-falta'));
           state.compromisoMsg = (faltan.length === 1)
-            ? '⚠️ Falta ' + faltan[0].nombre
-            : '⚠️ Faltan ' + faltan.length + ' campos por rellenar';
+            ? 'Falta ' + faltan[0].nombre
+            : 'Faltan ' + faltan.length + ' campos por rellenar';
           const msgEl = compCard.querySelector('.saved-msg');
           if(msgEl){ msgEl.textContent = state.compromisoMsg; msgEl.style.color = '#B94A3A'; }
           faltan[0].el.scrollIntoView({ behavior:'smooth', block:'center' });
@@ -9116,7 +9138,7 @@ lo que haces cada día es lo que vas a ser.`;
         // Una sola línea: cuántas veces se ha comprometido esta semana
         cuerpo = '<p class="ps-label" style="margin:0 0 4px">Recuerda tu compromiso semanal</p>'
           + ((deEstaSemana && veces)
-            ? '<p class="ps-veces" style="margin:0">🎯 Esta semana lo haré <b>' + veces + (veces === 1 ? ' vez' : ' veces') + '</b>.</p>'
+            ? '<p class="ps-veces" style="margin:0"><i data-ico=diana></i>Esta semana lo haré <b>' + veces + (veces === 1 ? ' vez' : ' veces') + '</b>.</p>'
             : '<p class="ps-nota" style="margin:0">Aún no has hecho tu compromiso del lunes de esta semana.</p>');
       } else {
         cuerpo = '<p class="ps-practica" style="font-style:normal">Aún no has definido tu práctica.</p><p class="ps-nota">La defines en tu compromiso del lunes, con la frase «Cuando…, haré…».</p>';
@@ -9128,7 +9150,7 @@ lo que haces cada día es lo que vas a ser.`;
       // Se pueden marcar los días desde el primer momento, aunque aún no haya registro.
       // La meta del trimestre (y el compromiso semanal) van dentro de «Registra tu práctica»
       const tDias = el('<div class="card dias-card ps-registra"><p class="ps-reg-tit">Registra tu clima, entorno y práctica</p><div class="ps-en-dias">' + bloqueMeta + cuerpo + '</div>'
-        + '<button type="button" class="ps-reg-btn"><span>Registra</span><span class="ps-reg-icos">☀️<svg class="entorno-ico" viewBox="0 0 20 20" aria-hidden="true"><rect x="2" y="2" width="8" height="8" fill="#FFFFFF"/><rect x="10" y="2" width="8" height="8" fill="#D4D4D4"/><rect x="2" y="10" width="8" height="8" fill="#9C9C9C"/><rect x="10" y="10" width="8" height="8" fill="#565656"/><rect x="2" y="2" width="16" height="16" rx="3" fill="none" stroke="#fff" stroke-width="1.5"/></svg>💧</span></button></div>').firstElementChild;
+        + '<button type="button" class="ps-reg-btn"><span>Registra</span><span class="ps-reg-icos"><i data-ico=sol></i><svg class="entorno-ico" viewBox="0 0 20 20" aria-hidden="true"><rect x="2" y="2" width="8" height="8" fill="#FFFFFF"/><rect x="10" y="2" width="8" height="8" fill="#D4D4D4"/><rect x="2" y="10" width="8" height="8" fill="#9C9C9C"/><rect x="10" y="10" width="8" height="8" fill="#565656"/><rect x="2" y="2" width="16" height="16" rx="3" fill="none" stroke="#fff" stroke-width="1.5"/></svg><i data-ico=gota></i></span></button></div>').firstElementChild;
       tDias.querySelector('.ps-reg-btn').onclick = () => abrirMomentoRiego();   // clima, entorno, práctica y cómo vas esta semana
       app.appendChild(tDias);
       // Reto de 15 días: se puede abrir siempre para ver el camino y los regalos
@@ -9145,7 +9167,7 @@ lo que haces cada día es lo que vas a ser.`;
       } catch(e){ console.error('Reto:', e); }
       try { app.appendChild(tarjetaAvisosMovil()); } catch(e){ console.error('Avisos:', e); }
       // El calendario y el historial, en un recuadro aparte (debajo del recordatorio); cada uno abre su pantalla
-      const calHist = el('<div class="card ps-recuadro"><p style="font-weight:700;margin:0 0 8px">📅 Mi calendario y mi historial</p>'
+      const calHist = el('<div class="card ps-recuadro"><p style="font-weight:700;margin:0 0 8px"><i data-ico=calendario></i>Mi calendario y mi historial</p>'
         + '<button type="button" class="panel-link-btn ps-vercal" style="width:100%;border:2px solid #C0392B;background:#fff;color:#A93226;cursor:pointer;margin:0">Ver mi calendario</button>'
         + '<button type="button" class="panel-link-btn ps-verhist" style="width:100%;border:2px solid #C0392B;background:#fff;color:#A93226;cursor:pointer;margin:8px 0 0">Mi historial de prácticas</button></div>').firstElementChild;
       calHist.querySelector('.ps-vercal').onclick = () => { state.prevView = 'practicaSemanal'; state.view = 'calendarioPracticas'; window.scrollTo(0,0); render(); };
@@ -9154,7 +9176,7 @@ lo que haces cada día es lo que vas a ser.`;
       // Viene de «Regar» (la planta de Inicio): baja hasta donde se marca el día de hoy
       if(state.abrirCalDiario){ state.abrirCalDiario = false; setTimeout(() => { const r = tDias.getBoundingClientRect(); window.scrollTo({ top: window.scrollY + r.top - 70, behavior: 'smooth' }); }, 60); }
       // Contrato de compromiso del trimestre (Plan Guías), en su recuadro
-      const contrato = el('<div class="card ps-recuadro"><p style="font-weight:700;margin:0 0 4px">📜 Mi contrato de compromiso</p><p style="margin:0 0 8px;font-size:14px">' + (contratoGuardado() ? 'Ya sembraste tu meta de este trimestre: tu compromiso está sellado.' : 'Siembra tu meta del trimestre: comprométete contigo y séllalo con tu dedo.') + '</p><button type="button" class="panel-link-btn" style="width:100%;border:none;cursor:pointer;background:#B3261E">' + (!tienePlan('guias') ? '👑 Compromiso trimestral' : contratoGuardado() ? 'Ver mi compromiso trimestral' : 'Compromiso trimestral') + '</button></div>');
+      const contrato = el('<div class="card ps-recuadro"><p style="font-weight:700;margin:0 0 4px"><i data-ico=documento></i>Mi contrato de compromiso</p><p style="margin:0 0 8px;font-size:14px">' + (contratoGuardado() ? 'Ya sembraste tu meta de este trimestre: tu compromiso está sellado.' : 'Siembra tu meta del trimestre: comprométete contigo y séllalo con tu dedo.') + '</p><button type="button" class="panel-link-btn" style="width:100%;border:none;cursor:pointer;background:#B3261E">' + (!tienePlan('guias') ? '👑 Compromiso trimestral' : contratoGuardado() ? 'Ver mi compromiso trimestral' : 'Compromiso trimestral') + '</button></div>');
       contrato.querySelector('button').onclick = () => {
         if(!tienePlan('guias')){ avisoCorona('El contrato de compromiso es del Plan Guías'); return; }
         sonidoTing(); state.view = 'contrato'; window.scrollTo(0,0); render();
@@ -9162,31 +9184,31 @@ lo que haces cada día es lo que vas a ser.`;
       app.appendChild(contrato);
       // Meta lograda o sin interés: ventana con las dos opciones
       if(metaHechaYa()){
-        const fin = el('<button type="button" class="card ps-reto ps-fin"><span class="ps-reto-ico">🏁</span><span><b>Meta lograda, sin interés o en pausa</b><small>¿Ya lograste tu meta, has perdido el interés o necesitas una pausa?</small></span><span class="opcion-flecha">›</span></button>').firstElementChild;
+        const fin = el('<button type="button" class="card ps-reto ps-fin"><span class="ps-reto-ico"><i data-ico=bandera></i></span><span><b>Meta lograda, sin interés o en pausa</b><small>¿Ya lograste tu meta, has perdido el interés o necesitas una pausa?</small></span><span class="opcion-flecha">›</span></button>').firstElementChild;
         fin.onclick = () => abrirFinMeta('elegir');
         app.appendChild(fin);
       }
       // Lunes de compromiso con el grupo (solo Plan Guías + Grupo), en su recuadro
       if(registraLunes()){
-        const lunes = el('<div class="card ps-recuadro"><p style="font-weight:700;margin:0 0 4px">✍️ Lunes de compromiso con el grupo</p><p style="margin:0 0 8px">' + (registroPendienteEstaSemana() ? 'Aún no has hecho tu compromiso de esta semana.' : 'Próximo: ' + textoProximoLunes() + '.') + '</p><button type="button" class="panel-link-btn" style="width:100%;border:none;cursor:pointer;background:#E39A9A">Ir al lunes de compromiso</button></div>');
+        const lunes = el('<div class="card ps-recuadro"><p style="font-weight:700;margin:0 0 4px"><i data-ico=lapiz></i>Lunes de compromiso con el grupo</p><p style="margin:0 0 8px">' + (registroPendienteEstaSemana() ? 'Aún no has hecho tu compromiso de esta semana.' : 'Próximo: ' + textoProximoLunes() + '.') + '</p><button type="button" class="panel-link-btn" style="width:100%;border:none;cursor:pointer;background:#E39A9A">Ir al lunes de compromiso</button></div>');
         lunes.querySelector('button').onclick = () => { state.view = 'checkin'; state.regPaso = null; window.scrollTo(0,0); render(); };
         app.appendChild(lunes);
       }
       if(oculto('futuro')){ app.appendChild(cajaMostrar('registro')); return; }   // «Mostrar» sin las notas a tu yo del futuro
       // «Habla con tu yo del futuro»: título común para las tres notas
-      app.appendChild(el('<div class="futuro-cab"><h3>🔮 Habla con tu yo del futuro</h3><p>Cuando le hablas a tu yo de dentro de unos días o unos meses, lo sientes más cercano y cuidas mejor lo que haces hoy por él. Cuéntale cómo te sientes y qué esperas.</p></div>'));
+      app.appendChild(el('<div class="futuro-cab"><h3><i data-ico=reloj></i>Habla con tu yo del futuro</h3><p>Cuando le hablas a tu yo de dentro de unos días o unos meses, lo sientes más cercano y cuidas mejor lo que haces hoy por él. Cuéntale cómo te sientes y qué esperas.</p></div>'));
       // Las tres notas a tu yo, seguidas: la de voz (semana), la del mes y la del trimestre
       try { app.appendChild(tarjetaVozSemanal()); } catch(e){ console.error('Voz semanal:', e); }
       // Pósit para fin de mes (Plan Guías)
       const ep = estadoPosit();
-      const posit = el('<div class="card ps-recuadro"><p class="nota-tit" style="font-weight:700;margin:0 0 4px;color:#6B4FA8">🔮📝 Nota a tu yo: próximo mes</p><p style="margin:0 0 8px;font-size:14px">' + (ep.estado === 'abrir' ? '¡Ya puedes abrir la nota que te dejaste! 💛' : ep.estado === 'guardado' ? 'Cuéntale cómo te sientes y qué esperas para el <b>lunes ' + diaUnoTexto(ep.abre) + '</b>.' : 'Cuéntale cómo te sientes y qué esperas para el <b>lunes ' + diaUnoTexto(ultimoLunes(mesClave())) + '</b>.') + '</p><button type="button" class="panel-link-btn" style="width:100%;border:none;cursor:pointer;background:#7B5FB8">' + (!tienePlan('guias') ? '👑 Escribir mi nota' : ep.estado === 'abrir' ? 'Abrir mi nota' : ep.estado === 'guardado' ? '✓ Nota guardada' : 'Escribir mi nota') + '</button></div>');
+      const posit = el('<div class="card ps-recuadro"><p class="nota-tit" style="font-weight:700;margin:0 0 4px;color:#6B4FA8"><i data-ico=nota></i>Nota a tu yo: próximo mes</p><p style="margin:0 0 8px;font-size:14px">' + (ep.estado === 'abrir' ? '¡Ya puedes abrir la nota que te dejaste! ' : ep.estado === 'guardado' ? 'Cuéntale cómo te sientes y qué esperas para el <b>lunes ' + diaUnoTexto(ep.abre) + '</b>.' : 'Cuéntale cómo te sientes y qué esperas para el <b>lunes ' + diaUnoTexto(ultimoLunes(mesClave())) + '</b>.') + '</p><button type="button" class="panel-link-btn" style="width:100%;border:none;cursor:pointer;background:#7B5FB8">' + (!tienePlan('guias') ? '👑 Escribir mi nota' : ep.estado === 'abrir' ? 'Abrir mi nota' : ep.estado === 'guardado' ? '✓ Nota guardada' : 'Escribir mi nota') + '</button></div>');
       posit.querySelector('button').onclick = () => {
         if(!puedeNotaMes()){ avisoPremioBloqueado('nota'); return; }   // regalo del día 10 del reto (o Plan Guías)
         sonidoTing(); state.view = 'posit'; window.scrollTo(0,0); render();
       };
       app.appendChild(posit);
       // Carta a mi yo del futuro, para todos, en su recuadro
-      const carta = el('<div class="card ps-recuadro"><p class="nota-tit" style="font-weight:700;margin:0 0 4px;color:#6B4FA8">🔮✉️ Nota a tu yo: final de trimestre</p><p style="margin:0 0 8px;font-size:14px">' + 'Cuéntale cómo te sientes y qué esperas para el <b>lunes ' + fechaConAnio(cartaVigente() ? aperturaCarta(cartaGuardada()) : lunesProximoTrimestre()) + '</b>.' + '</p><button type="button" class="panel-link-btn" style="width:100%;border:none;cursor:pointer;background:#7B5FB8">' + (!tienePlan('sesiones') ? '👑👑 Escribir mi nota' : cartaVigente() ? '✓ Nota guardada' : 'Escribir mi nota') + '</button></div>');
+      const carta = el('<div class="card ps-recuadro"><p class="nota-tit" style="font-weight:700;margin:0 0 4px;color:#6B4FA8"><i data-ico=correo></i>Nota a tu yo: final de trimestre</p><p style="margin:0 0 8px;font-size:14px">' + 'Cuéntale cómo te sientes y qué esperas para el <b>lunes ' + fechaConAnio(cartaVigente() ? aperturaCarta(cartaGuardada()) : lunesProximoTrimestre()) + '</b>.' + '</p><button type="button" class="panel-link-btn" style="width:100%;border:none;cursor:pointer;background:#7B5FB8">' + (!tienePlan('sesiones') ? '👑👑 Escribir mi nota' : cartaVigente() ? '✓ Nota guardada' : 'Escribir mi nota') + '</button></div>');
       carta.querySelector('button').onclick = () => {
         if(!tienePlan('sesiones')){ avisoCorona('La nota a tu yo de dentro de tres meses es del Plan Guías + Grupo'); return; }
         state.prevView = 'practicaSemanal'; state.view = 'carta'; window.scrollTo(0,0); render();
@@ -9225,9 +9247,9 @@ lo que haces cada día es lo que vas a ser.`;
             (p.precio2 ? '<p class="plan-precio" style="margin-top:-4px;font-size:15px">' + p.precio2 + '</p>' : '')) +
           '<ul class="plan-lista">' + p.incluye.map(i => '<li>' + i + '</li>').join('') + '</ul>' +
           (esElSuyo
-            ? '<p class="plan-tienes">✔️ Es el que tienes ahora' + (clave === 'sesiones' ? textoPruebaGrupo() : '') + '</p>'
+            ? '<p class="plan-tienes"><i data-ico=check></i>Es el que tienes ahora' + (clave === 'sesiones' ? textoPruebaGrupo() : '') + '</p>'
             : (tienePlan(clave)
-                ? '<p class="plan-tienes">✔️ Incluido en tu plan</p>'
+                ? '<p class="plan-tienes"><i data-ico=check></i>Incluido en tu plan</p>'
                 : MODO_PLAY ? '' : ((p.pagos || []).map(pg => '<a class="panel-link-btn" style="margin-top:8px" target="_blank" rel="noopener" href="' + enlacePago(pg.url) + '">' + pg.txt + '</a>').join('') +
                    '<p style="font-size:13px;text-align:center;margin:10px 0 0"><a style="color:var(--ink-soft)" target="_blank" href="https://wa.me/34658825799?text=' + encodeURIComponent(msg) + '">¿Dudas? Escríbele a tu facilitador</a></p>'))) +
           '</div>';
@@ -9238,7 +9260,7 @@ lo que haces cada día es lo que vas a ser.`;
         const fac = state.facilitador || {};
         const facTel = String(fac.whatsapp || '34658825799').replace(/\D/g, '') || '34658825799';
         const facNom = String(fac.nombre || 'Gustavo Calabró').replace(/[<>&"]/g, '').split(' ')[0];
-        app.appendChild(el('<p style="font-size:14px;text-align:center;margin:6px 0 0">Pregunta a tu facilitador por los demás planes: <a style="color:var(--moss-deep);font-weight:700" target="_blank" rel="noopener" href="https://wa.me/' + facTel + '">💬 WhatsApp de ' + facNom + '</a></p>'));
+        app.appendChild(el('<p style="font-size:14px;text-align:center;margin:6px 0 0">Pregunta a tu facilitador por los demás planes: <a style="color:var(--moss-deep);font-weight:700" target="_blank" rel="noopener" href="https://wa.me/' + facTel + '"><i data-ico=comentario></i>WhatsApp de ' + facNom + '</a></p>'));
       }
       if(!MODO_PLAY) app.appendChild(el('<p style="font-size:13px;color:var(--ink-soft);text-align:center;margin:4px 0 0">El pago se hace de forma segura con Stripe. Si prefieres pagar por transferencia, escríbele a tu facilitador.</p>'));
       return;
@@ -9291,7 +9313,7 @@ lo que haces cada día es lo que vas a ser.`;
     if(state.view === 'group'){
       const nav = document.createElement('nav');
       nav.className = 'tabs';
-      nav.innerHTML = `<button id="toPanel">🔄 Ciclo</button><button id="toCheckin">Registro</button><button class="active">Mi grupo</button>`;
+      nav.innerHTML = `<button id="toPanel"><i data-ico=ciclo></i>Ciclo</button><button id="toCheckin">Registro</button><button class="active">Mi grupo</button>`;
       app.appendChild(nav);
       nav.querySelector('#toPanel').onclick = () => { state.view='panel'; window.scrollTo(0,0); render(); };
       nav.querySelector('#toCheckin').onclick = () => { state.view='checkin'; state.regPaso = null; window.scrollTo(0,0); render(); };
@@ -9299,11 +9321,11 @@ lo que haces cada día es lo que vas a ser.`;
       app.appendChild(el(`<h1>Registro de los compañeros</h1><p class="lead">${currentWeekLabel}</p>`));
       // «Mis compañeros pueden ver mi planta»: apagado por defecto; lo decide cada persona
       const vis = !!(state.gamifica && state.gamifica.plantaVisible);
-      const sw = el('<label class="card planta-compa-sw"><input type="checkbox" id="plantaVisible"' + (vis ? ' checked' : '') + '><span><b>🌿 Mis compañeros pueden ver mi planta</b><small>Solo tu planta del trimestre (las hojas y las flores), sin textos. Puedes cambiarlo cuando quieras.</small></span></label>').firstElementChild;
+      const sw = el('<label class="card planta-compa-sw"><input type="checkbox" id="plantaVisible"' + (vis ? ' checked' : '') + '><span><b><i data-ico=hoja></i>Mis compañeros pueden ver mi planta</b><small>Solo tu planta del trimestre (las hojas y las flores), sin textos. Puedes cambiarlo cuando quieras.</small></span></label>').firstElementChild;
       app.appendChild(sw);
       sw.querySelector('input').onchange = async e => {
         const c = e.currentTarget, v = c.checked; c.disabled = true;
-        try { await api('/planta-visible', { visible: v }); if(state.gamifica) state.gamifica.plantaVisible = v; avisoBreve(v ? '🌿 Tus compañeros ya pueden ver tu planta' : 'Tu planta ya no se ve en el grupo'); }
+        try { await api('/planta-visible', { visible: v }); if(state.gamifica) state.gamifica.plantaVisible = v; avisoBreve(v ? 'Tus compañeros ya pueden ver tu planta' : 'Tu planta ya no se ve en el grupo'); }
         catch(err){ c.checked = !v; avisoBreve('No se pudo guardar. Revisa la conexión e inténtalo de nuevo.'); }
         c.disabled = false;
       };
@@ -9326,7 +9348,7 @@ lo que haces cada día es lo que vas a ser.`;
           const pill = entry
             ? (entry.cumplida ? `<span class="status-pill status-yes">Cumplida ✓</span>` : `<span class="status-pill status-no">Sin cumplir</span>`)
             : `<span class="status-pill status-no">Aún no responde</span>`;
-          const planta = m !== state.me && state.plantasCompas && state.plantasCompas[m] ? `<button type="button" class="planta-compa-btn" data-n="${escapeAttr(m)}">🌿 Ver su planta</button>` : '';
+          const planta = m !== state.me && state.plantasCompas && state.plantasCompas[m] ? `<button type="button" class="planta-compa-btn" data-n="${escapeAttr(m)}"><i data-ico=hoja></i>Ver su planta</button>` : '';
           return `<div class="roster-row"><span class="roster-name">${escapeAttr(conAvatar(m))}</span>${planta}${pill}</div>`;
         }).join('');
       }
@@ -12887,7 +12909,7 @@ lo que haces cada día es lo que vas a ser.`;
       app.appendChild(adm);
     }
     // El título, solo en la primera pantalla (26-10-2026, Gustavo)
-    if(fm.paso === 1) app.appendChild(el('<h2 style="text-align:center;margin:4px 0 12px;font-size:clamp(18px,5.5vw,24px);white-space:nowrap">🎯 Tu meta del trimestre</h2>'));
+    if(fm.paso === 1) app.appendChild(el('<h2 style="text-align:center;margin:4px 0 12px;font-size:clamp(18px,5.5vw,24px);white-space:nowrap"><i data-ico=diana></i>Tu meta del trimestre</h2>'));
     if(fm.paso === 0) app.appendChild(el('<h2 class="fm-portada-tit">Vamos a definir tu meta trimestral</h2>'));
     const preguntas = fmVisibles();
     const total = preguntas.length + 1;   // +1: el correo, al principio
@@ -12895,7 +12917,7 @@ lo que haces cada día es lo que vas a ser.`;
     // Pantalla final (enviado)
     if(fm.enviado){
       app.appendChild(el(`<div class="card" style="text-align:center">${practiHTML('celebracion', '', 120)}
-        <h2 style="margin:10px 0 6px">¡Gracias! 🎉</h2>
+        <h2 style="margin:10px 0 6px">¡Gracias! </h2>
         <p style="margin:0">Ya tengo tu meta. En unos 20 minutos tendrás tu guía de prácticas en <b>«Guía semanal»</b>.</p></div>`));
       app.appendChild(el(perfilPartidaHTML(fm)));
       app.appendChild(el('<button type="button" class="btn btn-yes" id="fmFin" style="text-align:center;margin-top:12px">Volver a la app</button>'));
@@ -12923,7 +12945,7 @@ lo que haces cada día es lo que vas a ser.`;
       if(conocido) fm.email = state.gamifica.email;
       card.innerHTML = barra + `<p class="fm-portada-sub">${(fm.seguir || fm.cambiar) ? '(Tu nueva meta trimestral: puedes aprovechar algunas respuestas de la anterior.)' : 'Son unos 5 minutos, y con tus respuestas te preparo tu guía de prácticas.'}</p>
         <div class="fm-portada-practi">${practiHTML('escribiendo1', '', 210)}</div>
-        ${conocido ? '' : `<label class="note-label strong" for="fmEmail" style="margin-top:14px">📧 ¿A qué correo te avisamos?</label>
+        ${conocido ? '' : `<label class="note-label strong" for="fmEmail" style="margin-top:14px"><i data-ico=correo></i>¿A qué correo te avisamos?</label>
         <p style="font-size:13px;color:var(--ink-soft);margin:0 0 6px">Lo necesitamos para enviarte tu guía de prácticas. Solo te lo pedimos esta vez.</p>
         <input id="fmEmail" type="email" inputmode="email" autocomplete="email" value="${escapeAttr(fm.email)}" placeholder="tu@correo.com" style="width:100%;box-sizing:border-box;font-size:17px;padding:12px 14px">`}
         <p class="fm-error" style="color:#B94A3A;font-size:13px;margin:6px 0 0"></p>
@@ -12938,10 +12960,10 @@ lo que haces cada día es lo que vas a ser.`;
 
     // Resumen y envío
     if(fm.paso > preguntas.length){
-      card.innerHTML = barra + `<h2 style="margin:0 0 10px">✅ Revisa tus respuestas</h2>` +
+      card.innerHTML = barra + `<h2 style="margin:0 0 10px"><i data-ico=hecho></i>Revisa tus respuestas</h2>` +
         preguntas.filter(p => fm.r[p.id]).map(p => `<p style="margin:0 0 2px;font-size:13px;color:var(--ink-soft)">${p.titulo}</p><p style="margin:0 0 10px;white-space:pre-wrap">${escapeAttr(fm.r[p.id])}</p>`).join('') +
         `<p class="fm-error" style="color:#B94A3A;font-size:13px;margin:6px 0 0"></p>
-        <button type="button" class="btn btn-yes" id="fmEnviar" style="text-align:center;margin-top:10px">Enviar mi meta 🚀</button>
+        <button type="button" class="btn btn-yes" id="fmEnviar" style="text-align:center;margin-top:10px">Enviar mi meta </button>
         <button type="button" class="link-quiet" id="fmAtras" style="display:block;margin:10px auto 0">← Atrás</button>`;
       card.querySelector('#fmAtras').onclick = () => { fm.paso--; fmGuardar(); render(); };
       card.querySelector('#fmEnviar').onclick = async (e) => {
@@ -12972,7 +12994,7 @@ lo que haces cada día es lo que vas a ser.`;
           setTimeout(sonidoPremio, 150);
           window.scrollTo(0,0); render();
         } catch(err){
-          b.disabled = false; b.textContent = 'Enviar mi meta 🚀';
+          b.disabled = false; b.textContent = 'Enviar mi meta ';
           card.querySelector('.fm-error').textContent = err.message || 'No se pudo enviar. Revisa tu conexión.';
         }
       };
@@ -13021,7 +13043,7 @@ lo que haces cada día es lo que vas a ser.`;
       ${p.ayuda ? `<p style="font-size:14px;color:var(--ink-soft);margin:0 0 10px">${p.ayuda}</p>` : ''}
       ${p.id === '785855484' ? `<p style="font-size:13px;margin:0 0 6px">Esta es la meta que escribiste, con plazo de <b>${escapeAttr(fm.r['1502404995'] || '')}</b>. Edítala aquí abajo para hacerla más pequeña o cambiar el plazo:</p>` : ''}
       ${campo}
-      ${p.id === '785855484' ? '<button type="button" class="link-quiet" id="fmVolverMeta" style="display:block;margin:8px 0 0">✏️ Prefiero cambiar la meta original</button>' : ''}
+      ${p.id === '785855484' ? '<button type="button" class="link-quiet" id="fmVolverMeta" style="display:block;margin:8px 0 0"><i data-ico=lapiz></i>Prefiero cambiar la meta original</button>' : ''}
       ${rep ? `<div class="practi-inicio" style="margin-top:12px">${practiReaccionHTML('pensativo','empujonPensando',70)}${bocadilloPracti(escapeAttr(rep), 'tono-calma')}</div>
         <textarea id="fmExtra" placeholder="Cuéntame un poco más…" style="min-height:80px;margin-top:8px"></textarea>` : ''}
       <p class="fm-error" style="color:#B94A3A;font-size:13px;margin:6px 0 0"></p>
@@ -13098,7 +13120,7 @@ lo que haces cada día es lo que vas a ser.`;
       // Repregunta de Prácti (una sola vez por pregunta)
       if(p.repreguntar && fm.r[p.id] && !fm.preguntado[p.id]){
         fm.preguntado[p.id] = true;
-        const b = e.currentTarget; b.disabled = true; b.textContent = '💭 Prácti está leyendo…';
+        const b = e.currentTarget; b.disabled = true; b.textContent = 'Prácti está leyendo…';
         try {
           const contexto = FM_PREGUNTAS.filter(x => !x.datos && x.id !== p.id && fm.r[x.id]).map(x => x.titulo + ': ' + fm.r[x.id]).join(' | ');
           const d = await api('/repregunta', { pregunta: p.titulo, respuesta: fm.r[p.id], contexto });
@@ -13291,4 +13313,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Meta" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V14.49 · App Amable Meta · 2026-11-05 14:10==== -->
+<!-- ==== Fin del index V14.50 · App Amable Meta · 2026-11-05 14:19==== -->
