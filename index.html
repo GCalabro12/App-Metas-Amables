@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V14.58 · App Amable Meta · 2026-11-06 17:41==== -->
+<!-- ==== index V14.59 · App Amable Meta · 2026-11-06 20:11==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2721,7 +2721,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V14.58';
+  const APP_VERSION = 'V14.59';
   // ===== Pantalla de inicio: versión, sonido corto y salida (5-11-2026) =====
   (function(){
     const sp = document.getElementById('inicioSplash'); if(!sp) return;
@@ -2983,7 +2983,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
         const r = await api('/login-google', { credential: resp.credential });
         if(r.nuevo){
           // Aún no tiene cuenta: se rellena «Crear cuenta» con su nombre y su correo de Google
-          state.altaDraft = Object.assign({}, state.altaDraft || {}, { nombre: r.nombre, email: r.email, fotoGoogle: r.fotoGoogle || '', googleEmail: r.email, googleFirma: r.googleFirma || '' });
+          state.altaDraft = Object.assign({}, state.altaDraft || {}, { nombre: r.nombre, email: r.email, fotoGoogle: r.fotoGoogle || '', googleEmail: r.email, googleFirma: r.googleFirma || '', googleSub: r.googleSub || '', googleSubFirma: r.googleSubFirma || '' });
           state.loginView = 'signup'; state.loginError = 'No hay ninguna cuenta con ' + r.email + '. Completa tus datos para crearla.'; render(); return;
         }
         guardarSesion(r.token); state.loginError = '';
@@ -3025,7 +3025,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     email = String(email || '').trim();
     pass = String(pass || '').trim();
     const previoGoogle = state.altaDraft || {};
-    state.altaDraft = { nombre, telefono, email, pass, whats: !!aceptaWhatsApp, emails: !!aceptaEmails, fotoGoogle: previoGoogle.fotoGoogle || '', googleEmail: previoGoogle.googleEmail || '', googleFirma: previoGoogle.googleFirma || '' };   // para no perder lo escrito si hay un aviso
+    state.altaDraft = { nombre, telefono, email, pass, whats: !!aceptaWhatsApp, emails: !!aceptaEmails, fotoGoogle: previoGoogle.fotoGoogle || '', googleEmail: previoGoogle.googleEmail || '', googleFirma: previoGoogle.googleFirma || '', googleSub: previoGoogle.googleSub || '', googleSubFirma: previoGoogle.googleSubFirma || '' };   // para no perder lo escrito si hay un aviso
     const digitos = telefono.replace(/[^0-9]/g, '');
     if(nombre.length < 2){ state.loginError = 'Escribe tu nombre y apellido'; render(); return; }
     if(digitos.length < 9){ state.loginError = 'Escribe un teléfono válido (con prefijo si no es de España)'; render(); return; }
@@ -3037,7 +3037,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       const ad = state.altaDraft || {};
       // Si el email es el mismo que dio Google, el Worker lo da por confirmado (firma de Google)
       const googleFirma = ad.googleFirma && String(ad.googleEmail).toLowerCase() === email.toLowerCase() ? ad.googleFirma : '';
-      const r = await api('/alta', { nombre, telefono, email, password: pass, aceptaWhatsApp: !!aceptaWhatsApp, aceptaEmails: !!aceptaEmails, fotoGoogle: ad.fotoGoogle || '', googleFirma });
+      const r = await api('/alta', { nombre, telefono, email, password: pass, aceptaWhatsApp: !!aceptaWhatsApp, aceptaEmails: !!aceptaEmails, fotoGoogle: ad.fotoGoogle || '', googleFirma, googleSub: googleFirma ? (ad.googleSub || '') : '', googleSubFirma: googleFirma ? (ad.googleSubFirma || '') : '' });
       guardarSesion(r.token);
       state.loginError = '';
       state.loginView = 'login';
@@ -7500,12 +7500,6 @@ lo que haces cada día es lo que vas a ser.`;
     plegar(app.querySelector('#btnInstalarAjustes') && app.querySelector('#btnInstalarAjustes').closest('.card'), '<span><i data-ico=instalar></i>Instalar la app en el móvil</span>');
     plegar(vozCard, '<span><i data-ico=voz></i>Voz de Prácti</span>');
     plegar(app.querySelector('#btnReponerIntros') && app.querySelector('#btnReponerIntros').closest('.card'), '<span><i data-ico=repetir></i>Pantallas de explicación</span>');
-    // Grow Panel: solo para quien abre la app desde Grow Panel. Activado de serie.
-    if(usaGrowPanel()){
-      const gp = el('<label class="card planta-compa-sw"><input type="checkbox" id="gpNumeros"' + (gpNumerosActivos() ? ' checked' : '') + '><span><b><i data-ico=grafico></i>Mandar mis números del día a Grow Panel</b><small>Solo números: días registrados, prácticas de la semana y metas sencillas. Nunca tus textos.</small></span></label>').firstElementChild;
-      app.appendChild(gp);
-      gp.querySelector('#gpNumeros').onchange = e => { try { localStorage.setItem('gp_numeros', e.target.checked ? '1' : '0'); } catch(err){} try { resumenGrowPanel(); } catch(err){} };
-    }
 
     // Banco de pruebas, solo para quien tenga "Moderador" en su grupo.
     // Enseña cada pantalla de resultado sin guardar nada en Airtable.
@@ -7842,8 +7836,33 @@ lo que haces cada día es lo que vas a ser.`;
   }
   // Grow Panel (15-10-2026): resumen del día para la tarjeta de Amable Meta. Solo números y una frase, nada personal.
   // Se llama tras cada pintado: así también se vuelve a poner el botón de la mini flor (la cabecera se repinta).
-  function gpNumerosActivos(){ try { return localStorage.getItem('gp_numeros') !== '0'; } catch(e){ return true; } }
-  function usaGrowPanel(){ try { return !!(localStorage.getItem('growpanel.n') || localStorage.getItem('growpanel.clave')); } catch(e){ return false; } }
+  // ===== Registro diario de Grow Panel: el «buzón común» (contrato en «0 Grow Panel/BOTON.md») =====
+  // Solo números del día, nunca textos. Con la sesión de la app («Bearer meta.<sesión>»): el registro le pregunta
+  // a nuestro Worker (/yo) quién es. El único interruptor está en Grow Panel → Ajustes; aquí no hay nada que tocar.
+  var REGISTRO_URL = 'https://registro-diario.proud-hill-016b.workers.dev/registro';
+  var regNumeros = null, regIntento = 0, regEspera = null, regPrimero = true;
+  function enviarRegistro(ya){
+    const ses = leerSesion();
+    if(!ses || !state.me || !state.datosOk || !regNumeros) return;          // primero, la sesión y los datos
+    const { fecha, datos } = regNumeros, firma = fecha + JSON.stringify(datos);
+    let hecho = {}; try { hecho = JSON.parse(localStorage.getItem('reg_meta')) || {}; } catch(e){}
+    if(hecho.firma === firma) return;                                        // ya está en el buzón
+    if(Object.values(datos).every(v => v === 0) && hecho.dia === fecha) return;
+    if(regPrimero){ regPrimero = false; ya = true; }                          // al abrir la app, sin esperar
+    const falta = (ya ? 30000 : 5 * 60000) - (Date.now() - regIntento);     // como mucho, uno cada 5 minutos
+    if(falta > 0){ if(!ya && !regEspera) regEspera = setTimeout(() => { regEspera = null; enviarRegistro(); }, falta); return; }
+    regIntento = Date.now();
+    try {
+      fetch(REGISTRO_URL, { method: 'POST', keepalive: true, headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer meta.' + ses },
+        body: JSON.stringify({ fecha, app: 'amable-meta', datos }) })
+        .then(r => { if(r.ok) try { localStorage.setItem('reg_meta', JSON.stringify({ firma, dia: fecha })); } catch(e){} }).catch(() => {});
+    } catch(e){}
+  }
+  // Al irse de la app (keepalive) y al volver a ella
+  document.addEventListener('visibilitychange', () => {
+    if(document.visibilityState === 'hidden') enviarRegistro(true);
+    else setTimeout(() => { try { resumenGrowPanel(); } catch(e){} enviarRegistro(true); }, 1500);
+  });
   function resumenGrowPanel(){
     if(!state.me || !state.datosOk) return;
     const hoyReg = registradoHoy();
@@ -7861,14 +7880,10 @@ lo que haces cada día es lo que vas a ser.`;
       { valor: comp ? dias + '/' + comp : dias + '/7', etiqueta: comp ? 'prácticas de tu compromiso' : 'días de práctica esta semana' }];
     if(tocanHoy.length) cifras.push({ valor: hechasHoy + '/' + tocanHoy.length, etiqueta: 'metas sencillas hoy' });
     const r = { estado: (hoyReg && !pendSencillas && metaHechaYa()) ? 'ok' : 'aviso', mensaje, cifras, version: APP_VERSION };
-    // Registro diario (6-11-2026): los números del día van en la ficha y Grow Panel los sube él solo (Grow Panel manda).
-    // Activado de serie; se apaga en Ajustes. Solo números, nunca textos. Si la app no se usa con Grow Panel, no sale de aquí.
-    if(gpNumerosActivos()){
-      const datos = { dias_registrados: Number(diasRegistradosMeta()) || 0, registrado_hoy: hoyReg ? 1 : 0, practicas_semana: dias };
-      if(comp) datos.compromiso_semana = comp;
-      if(tocanHoy.length){ datos.metas_sencillas_hoy = tocanHoy.length; datos.metas_sencillas_hechas = hechasHoy; }
-      r.datos = datos; r.fecha = hoyIso;
-    }
+    // Buzón común (6-11-2026): los números del día van al registro diario y Grow Panel los recoge desde cualquier aparato
+    regNumeros = { fecha: hoyIso, datos: Object.assign({ dias_registrados: Number(diasRegistradosMeta()) || 0, registrado_hoy: hoyReg ? 1 : 0, practicas_semana: dias },
+      comp ? { compromiso_semana: comp } : {}, tocanHoy.length ? { metas_sencillas_hoy: tocanHoy.length, metas_sencillas_hechas: hechasHoy } : {}) };
+    enviarRegistro();
     if(window.GrowPanel && window.GrowPanel.resumen) window.GrowPanel.resumen(r); else window.growPanelResumen = r;
   }
   function pintarErrorPantalla(err){
@@ -13391,4 +13406,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Meta" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V14.58 · App Amable Meta · 2026-11-06 17:41==== -->
+<!-- ==== Fin del index V14.59 · App Amable Meta · 2026-11-06 20:11==== -->
