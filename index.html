@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V14.60 · App Amable Meta · 2026-11-06 20:22==== -->
+<!-- ==== index V14.61 · App Amable Meta · 2026-11-06 20:50==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1815,7 +1815,7 @@ button.dc{cursor:pointer}button.dc:disabled{cursor:default}
 .av-pasos{text-align:left;font-size:16px;line-height:1.5;padding-left:22px;margin:0 0 6px}.av-pasos li{margin:0 0 8px}
 .av-nota{background:#FFF7E0;border-radius:12px;padding:10px 12px;font-size:14.5px !important}
 .av-msg{color:#B3261E;font-weight:700;font-size:15px !important;margin-top:12px !important}
-.unir-google .ug-tit{margin:0 0 4px;display:flex;align-items:center}.unir-google .ug-tx{margin:0 0 12px;font-size:14px;color:var(--ink-soft)}.unir-google .ug-boton{min-height:44px;margin:0 0 6px}.unir-google .ug-no{background:none;border:none;color:var(--ink-soft);font-size:13px;text-decoration:underline;cursor:pointer;padding:4px 0}
+.unir-google .ug-tit{margin:0 0 4px;display:flex;align-items:center}.unir-google .ug-tx{margin:0 0 12px;font-size:14px;color:var(--ink-soft)}.unir-google .ug-unir{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;max-width:320px;padding:11px 16px;margin:0 0 6px;border:1px solid #DADCE0;border-radius:999px;background:#fff;color:#3C4043;font:600 15px system-ui,-apple-system,Segoe UI,sans-serif;cursor:pointer}.unir-google .ug-unir svg{width:20px;height:20px;flex:none}.unir-google .ug-unir:disabled{opacity:.55;cursor:default}.unir-google .ug-no{background:none;border:none;color:var(--ink-soft);font-size:13px;text-decoration:underline;cursor:pointer;padding:4px 0}
 .aviso-breve{position:fixed;left:50%;bottom:calc(90px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:9900;max-width:86vw;padding:10px 16px;border-radius:14px;background:rgba(30,30,40,.9);color:#fff;font-size:15px;text-align:center;box-shadow:0 6px 18px rgba(0,0,0,.25)}
 .historial-intro{margin:4px 0 12px;font-size:15px}
 .historial-item{position:relative;border:2px solid #E39A9A;margin:0 0 12px}
@@ -2722,7 +2722,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V14.60';
+  const APP_VERSION = 'V14.61';
   // ===== Pantalla de inicio: versión, sonido corto y salida (5-11-2026) =====
   (function(){
     const sp = document.getElementById('inicioSplash'); if(!sp) return;
@@ -7887,24 +7887,31 @@ lo que haces cada día es lo que vas a ser.`;
       return null;
     }
     if(state.gpUnida !== false) return null;
+    const G = '<svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9 3.5l6.7-6.7C35.6 2.4 30.2 0 24 0 14.6 0 6.6 5.4 2.7 13.3l7.8 6C12.4 13.6 17.7 9.5 24 9.5z"/><path fill="#4285F4" d="M46.1 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.4c-.5 2.9-2.2 5.3-4.6 7l7.4 5.7c4.3-4 6.9-9.9 6.9-17.2z"/><path fill="#FBBC05" d="M10.5 28.7A14.5 14.5 0 0 1 9.5 24c0-1.6.3-3.2.8-4.7l-7.8-6A24 24 0 0 0 0 24c0 3.9.9 7.5 2.6 10.7l7.9-6z"/><path fill="#34A853" d="M24 48c6.5 0 11.9-2.1 15.9-5.8l-7.4-5.7c-2.1 1.4-4.8 2.3-8.5 2.3-6.3 0-11.6-4.1-13.5-9.8l-7.9 6C6.6 42.6 14.6 48 24 48z"/></svg>';
     const c = el('<div class="card unir-google"><p class="ug-tit"><i data-ico=enlace></i><b>Ve tus números en Grow Panel</b></p>'
-      + '<p class="ug-tx">Une tu cuenta con Google una sola vez. Usa la misma cuenta de Google que en Grow Panel' + (correo ? ': <b>' + escapeAttr(correo) + '</b>' : '') + '.</p>'
-      + '<div class="ug-boton"></div><button type="button" class="ug-no">Ahora no</button></div>').firstElementChild;
+      + '<p class="ug-tx">Une tu cuenta a tu Gmail' + (correo ? ' (<b>' + escapeAttr(correo) + '</b>)' : ', el mismo que usas en Grow Panel') + '. '
+      + 'Sigues en tu misma cuenta de Amable Meta, con todos tus datos: <b>no cambias de cuenta ni pierdes nada</b>. Solo sirve para ver tus números en Grow Panel.</p>'
+      + '<button type="button" class="ug-unir" disabled>' + G + 'Unir con Google</button><button type="button" class="ug-no">Ahora no</button></div>').firstElementChild;
     c.querySelector('.ug-no').onclick = () => { try { localStorage.setItem('meta_unir_no', String(Date.now())); } catch(e){} c.remove(); };
+    const bUnir = c.querySelector('.ug-unir');
+    // Botón propio (el de Google solo dice «Continuar con Google»): abre la ventana de Google para elegir la cuenta
     cargarGoogle().then(ok => {
-      if(!ok || !document.body.contains(c)) return;
-      google.accounts.id.initialize(Object.assign({ client_id: GOOGLE_CLIENT_ID, callback: async resp => {
+      if(!ok || !window.google || !google.accounts || !google.accounts.oauth2) return;
+      const cli = google.accounts.oauth2.initTokenClient(Object.assign({ client_id: GOOGLE_CLIENT_ID, scope: 'openid email', callback: async resp => {
+        if(!resp || !resp.access_token) return;
+        bUnir.disabled = true;
         try {
-          const r = await api('/unir-google', { credential: resp.credential });
-          if(correo && r.google && r.google !== correo){ avisoBreve('Has unido ' + r.google + ', pero en Grow Panel usas ' + correo + '. Únela con esa.'); return; }
+          const r = await api('/unir-google', { access_token: resp.access_token });
+          if(correo && r.google && r.google !== correo){ bUnir.disabled = false; avisoBreve('Has unido ' + r.google + ', pero en Grow Panel usas ' + correo + '. Únela con esa.'); return; }
           state.gpUnida = true;
           unidaCon(r.google); try { localStorage.removeItem('reg_meta'); } catch(e){}
           regPrimero = true; regIntento = 0;
-          avisoBreve('Listo: tu cuenta está unida con ' + (r.google || 'Google'));
+          avisoBreve('Listo: tu cuenta está unida a ' + (r.google || 'tu Gmail'));
           render();
-        } catch(e){ avisoBreve(mensajeError(e, 'No se pudo unir con Google. Inténtalo otra vez.')); }
-      } }, correo ? { login_hint: correo } : {}));
-      google.accounts.id.renderButton(c.querySelector('.ug-boton'), { theme: 'outline', size: 'large', shape: 'pill', text: 'continue_with', locale: 'es', width: Math.min(320, c.clientWidth - 40 || 280) });
+        } catch(e){ bUnir.disabled = false; avisoBreve(mensajeError(e, 'No se pudo unir con Google. Inténtalo otra vez.')); }
+      } }, correo ? { hint: correo } : {}));
+      bUnir.disabled = false;
+      bUnir.onclick = () => cli.requestAccessToken({ prompt: 'select_account' });
     });
     return c;
   }
@@ -13452,4 +13459,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Meta" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V14.60 · App Amable Meta · 2026-11-06 20:22==== -->
+<!-- ==== Fin del index V14.61 · App Amable Meta · 2026-11-06 20:50==== -->
