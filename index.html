@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V14.62 · App Amable Meta · 2026-11-06 20:54==== -->
+<!-- ==== index V14.63 · App Amable Meta · 2026-11-06 21:00==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2722,7 +2722,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V14.62';
+  const APP_VERSION = 'V14.63';
   // ===== Pantalla de inicio: versión, sonido corto y salida (5-11-2026) =====
   (function(){
     const sp = document.getElementById('inicioSplash'); if(!sp) return;
@@ -7842,10 +7842,14 @@ lo que haces cada día es lo que vas a ser.`;
   // Solo números del día, nunca textos. Con la sesión de la app («Bearer meta.<sesión>»): el registro le pregunta
   // a nuestro Worker (/yo) quién es. El único interruptor está en Grow Panel → Ajustes; aquí no hay nada que tocar.
   var REGISTRO_URL = 'https://registro-diario.proud-hill-016b.workers.dev/registro';
-  var regNumeros = null, regIntento = 0, regEspera = null, regPrimero = true;
+  var regNumeros = null, regIntento = 0, regEspera = null, regPrimero = true, regSesionAvisada = false;
+  // Unión automática con Grow Panel (6-11-2026, sin botón): al abrir la app desde su tarjeta, grow-panel-boton.js
+  // pide al registro que una esta cuenta con la cuenta de Google de Grow Panel. Solo necesita saber nuestra sesión.
+  window.growPanelSesion = () => { const s = leerSesion(); return (s && state.me) ? 'meta.' + s : null; };
   function enviarRegistro(ya){
     const ses = leerSesion();
     if(!ses || !state.me || !state.datosOk || !regNumeros) return;          // primero, la sesión y los datos
+    if(!regSesionAvisada){ regSesionAvisada = true; try { window.dispatchEvent(new Event('growpanel-sesion')); } catch(e){} }
     const { fecha, datos } = regNumeros, firma = fecha + JSON.stringify(datos);
     let hecho = {}; try { hecho = JSON.parse(localStorage.getItem('reg_meta')) || {}; } catch(e){}
     if(hecho.firma === firma) return;                                        // ya está en el buzón
@@ -8512,7 +8516,6 @@ lo que haces cada día es lo que vas a ser.`;
       const huecoPf = greetPanel.querySelector('.hueco-panel-fac');
       if(huecoPf){ let pf = null; try { pf = tarjetaPanelFacilitador(); } catch(e){} if(pf){ pf.style.textAlign = 'left'; pf.style.marginBottom = '12px'; huecoPf.replaceWith(pf); } else huecoPf.remove(); }
       app.appendChild(greetPanel);
-      if(!state.panelSub){ let ug = null; try { ug = tarjetaUnirGoogle(); } catch(e){} if(ug) app.appendChild(ug); }
       if(!state.panelSub && !bienvenidaVista()) app.appendChild(el(bienvenidaHTML()));
       if(nivelBtnPanel) nivelBtnPanel.onclick = () => { state.prevView = 'panel'; state.view = insigniasBloqueadas() ? 'planes' : 'perfil'; window.scrollTo(0,0); render(); };
 
@@ -13460,4 +13463,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Meta" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V14.62 · App Amable Meta · 2026-11-06 20:54==== -->
+<!-- ==== Fin del index V14.63 · App Amable Meta · 2026-11-06 21:00==== -->
