@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V14.61 · App Amable Meta · 2026-11-06 20:50==== -->
+<!-- ==== index V14.62 · App Amable Meta · 2026-11-06 20:54==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2722,7 +2722,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V14.61';
+  const APP_VERSION = 'V14.62';
   // ===== Pantalla de inicio: versión, sonido corto y salida (5-11-2026) =====
   (function(){
     const sp = document.getElementById('inicioSplash'); if(!sp) return;
@@ -3059,7 +3059,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   function itemsPreparar(){
     const g = state.gamifica || {};
     const it = [];
-    if(pushPosible()) it.push({ k: 'push', t: '<i data-ico=campana></i>Aviso diario en el móvil', d: 'A las ' + horaAviso() + ':00, solo si ese día aún no has registrado.', ok: pushActivo() });
+    if(pushPosible() && !usaGrowPanel()) it.push({ k: 'push', t: '<i data-ico=campana></i>Aviso diario en el móvil', d: 'A las ' + horaAviso() + ':00, solo si ese día aún no has registrado.', ok: pushActivo() });
     if(g.tieneTelefono) it.push({ k: 'wa', t: '<i data-ico=comentario></i>Mensajes de ánimo por WhatsApp', d: 'De vez en cuando, para no abandonar tu meta.', ok: !!g.aceptaWhatsApp });
     if(g.tieneEmail) it.push({ k: 'em', t: '<i data-ico=correo></i>Emails que te acompañan', d: 'Pocos, y te puedes dar de baja cuando quieras.', ok: !!g.aceptaEmails });
     if(!MODO_PLAY && !appInstalada()) it.push({ k: 'inst', t: '<i data-ico=movil></i>La app en tu pantalla de inicio', d: 'Para abrirla con un toque, como cualquier app.', ok: false });
@@ -3077,7 +3077,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   function listaPreparar(alCambiar, soloFaltan){
     const caja = document.createElement('div'); caja.className = 'prep-lista';
     const pintar = () => {
-      const todos = itemsPreparar().filter(x => !(soloFaltan && x.k === 'inst')), faltan = todos.filter(x => !x.ok);
+      // En Inicio, a quien usa Grow Panel no se le pide el aviso diario: los avisos los da Grow Panel (Gustavo, 6-11-2026)
+      const todos = itemsPreparar().filter(x => !(soloFaltan && (x.k === 'inst' || (x.k === 'push' && usaGrowPanel())))), faltan = todos.filter(x => !x.ok);
       const it = soloFaltan ? faltan : todos;   // en la tarjeta de Inicio, solo lo que falta
       caja.innerHTML = it.map(x => '<div class="prep-fila' + (x.ok ? ' ok' : '') + '"><span class="prep-tx"><b>' + x.t + '</b><small>' + x.d + '</small></span>'
           + (x.ok ? '<span class="prep-hecho">✓</span>' : '<button type="button" class="prep-btn" data-k="' + x.k + '">' + (x.k === 'inst' ? 'Instalar' : 'Activar') + '</button>') + '</div>').join('')
@@ -3092,7 +3093,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       if(todo) todo.onclick = async () => {
         todo.disabled = true;
         // Primero lo que no pide nada al móvil; el permiso de avisos, al final
-        for(const k of ['wa', 'em', 'push']){
+        for(const k of (soloFaltan && usaGrowPanel() ? ['wa', 'em'] : ['wa', 'em', 'push'])){
           if(!faltaPreparar().some(x => x.k === k)) continue;
           try { await activarPreparar(k); } catch(e){ caja.querySelector('.prep-msg').textContent = mensajeError(e, 'No se pudo activar todo. Prueba uno a uno.'); }
         }
@@ -3104,12 +3105,12 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
   function tarjetaPreparar(){
     if(!state.me || !state.datosOk) return null;
-    const faltan = faltaPreparar().filter(x => x.k !== 'inst');   // instalar ya tiene su botón arriba
+    const faltan = faltaPreparar().filter(x => x.k !== 'inst' && !(x.k === 'push' && usaGrowPanel()));   // instalar ya tiene su botón arriba; el aviso diario, en Grow Panel
     if(!faltan.length) return null;
     try { const luego = Number(localStorage.getItem('prep_luego_' + state.me) || 0); if(Date.now() - luego < 7 * 86400000) return null; } catch(e){}
     const c = el('<div class="card prep-card"><p class="prep-card-tit"><i data-ico=engranaje></i>Te falta activar ' + faltan.map(x => ({ push: 'el aviso diario', wa: 'los mensajes por WhatsApp', em: 'los emails' })[x.k]).join(' y ') + '</p>'
       + '<p class="prep-card-sub">Te ayuda a no abandonar tu meta.</p><div class="prep-hueco"></div><button type="button" class="link-quiet prep-luego">Ahora no</button></div>').firstElementChild;
-    c.querySelector('.prep-hueco').replaceWith(listaPreparar(() => { if(!faltaPreparar().filter(x => x.k !== 'inst').length) c.remove(); }, true));
+    c.querySelector('.prep-hueco').replaceWith(listaPreparar(() => { if(!faltaPreparar().filter(x => x.k !== 'inst' && !(x.k === 'push' && usaGrowPanel())).length) c.remove(); }, true));
     c.querySelector('.prep-luego').onclick = () => { try { localStorage.setItem('prep_luego_' + state.me, String(Date.now())); } catch(e){} c.remove(); };
     return c;
   }
@@ -13459,4 +13460,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Meta" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V14.61 · App Amable Meta · 2026-11-06 20:50==== -->
+<!-- ==== Fin del index V14.62 · App Amable Meta · 2026-11-06 20:54==== -->
