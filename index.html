@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V14.59 · App Amable Meta · 2026-11-06 20:11==== -->
+<!-- ==== index V14.60 · App Amable Meta · 2026-11-06 20:22==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1815,6 +1815,7 @@ button.dc{cursor:pointer}button.dc:disabled{cursor:default}
 .av-pasos{text-align:left;font-size:16px;line-height:1.5;padding-left:22px;margin:0 0 6px}.av-pasos li{margin:0 0 8px}
 .av-nota{background:#FFF7E0;border-radius:12px;padding:10px 12px;font-size:14.5px !important}
 .av-msg{color:#B3261E;font-weight:700;font-size:15px !important;margin-top:12px !important}
+.unir-google .ug-tit{margin:0 0 4px;display:flex;align-items:center}.unir-google .ug-tx{margin:0 0 12px;font-size:14px;color:var(--ink-soft)}.unir-google .ug-boton{min-height:44px;margin:0 0 6px}.unir-google .ug-no{background:none;border:none;color:var(--ink-soft);font-size:13px;text-decoration:underline;cursor:pointer;padding:4px 0}
 .aviso-breve{position:fixed;left:50%;bottom:calc(90px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:9900;max-width:86vw;padding:10px 16px;border-radius:14px;background:rgba(30,30,40,.9);color:#fff;font-size:15px;text-align:center;box-shadow:0 6px 18px rgba(0,0,0,.25)}
 .historial-intro{margin:4px 0 12px;font-size:15px}
 .historial-item{position:relative;border:2px solid #E39A9A;margin:0 0 12px}
@@ -2721,7 +2722,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V14.59';
+  const APP_VERSION = 'V14.60';
   // ===== Pantalla de inicio: versión, sonido corto y salida (5-11-2026) =====
   (function(){
     const sp = document.getElementById('inicioSplash'); if(!sp) return;
@@ -7863,6 +7864,50 @@ lo que haces cada día es lo que vas a ser.`;
     if(document.visibilityState === 'hidden') enviarRegistro(true);
     else setTimeout(() => { try { resumenGrowPanel(); } catch(e){} enviarRegistro(true); }, 1500);
   });
+  // Unir la cuenta con Google (6-11-2026): Grow Panel reconoce a cada persona por su cuenta de Google. Si la cuenta de
+  // Meta no está unida, sus números llegan al registro pero Grow Panel no sabe de quién son. Aviso en Inicio, solo para
+  // quien usa Grow Panel, con la cuenta de Google que usa allí (si Grow Panel la ha pasado). «Ahora no» lo esconde 7 días.
+  function usaGrowPanel(){ try { return !!(localStorage.getItem('growpanel.n') || localStorage.getItem('growpanel.clave') || localStorage.getItem('growpanel.correo')); } catch(e){ return false; } }
+  function correoGrowPanel(){ try { const c = String(localStorage.getItem('growpanel.correo') || '').trim().toLowerCase(); return /^[^\s@<>"]+@[^\s@<>"]+$/.test(c) ? c : ''; } catch(e){ return ''; } }
+  function tarjetaUnirGoogle(){
+    if(!GOOGLE_CLIENT_ID || !state.me || !state.datosOk || !leerSesion() || !usaGrowPanel()) return null;
+    const correo = correoGrowPanel();
+    // Unida y, si sabemos la cuenta de Grow Panel, unida con esa misma (si no, se vuelve a pedir: puede cambiarla)
+    const unidaCon = g => { try { localStorage.setItem('meta_google_unida', state.me + '|' + (g || '')); } catch(e){} };
+    try { const u = String(localStorage.getItem('meta_google_unida') || ''), i = u.indexOf('|');
+          if(i > 0 && u.slice(0, i) === state.me && (!correo || u.slice(i + 1) === correo)) return null;
+          if(Date.now() - Number(localStorage.getItem('meta_unir_no') || 0) < 7 * 86400000) return null; } catch(e){}
+    if(state.gpUnida === undefined){                                    // se pregunta al servidor una vez por visita
+      state.gpUnida = null;
+      api('/yo').then(r => {
+        state.gpUnida = !!(r && r.registro) && (!correo || r.google === correo);
+        if(state.gpUnida) unidaCon(r.google);
+        else if(state.view === 'panel' && !state.panelSub) render();
+      }).catch(() => {});
+      return null;
+    }
+    if(state.gpUnida !== false) return null;
+    const c = el('<div class="card unir-google"><p class="ug-tit"><i data-ico=enlace></i><b>Ve tus números en Grow Panel</b></p>'
+      + '<p class="ug-tx">Une tu cuenta con Google una sola vez. Usa la misma cuenta de Google que en Grow Panel' + (correo ? ': <b>' + escapeAttr(correo) + '</b>' : '') + '.</p>'
+      + '<div class="ug-boton"></div><button type="button" class="ug-no">Ahora no</button></div>').firstElementChild;
+    c.querySelector('.ug-no').onclick = () => { try { localStorage.setItem('meta_unir_no', String(Date.now())); } catch(e){} c.remove(); };
+    cargarGoogle().then(ok => {
+      if(!ok || !document.body.contains(c)) return;
+      google.accounts.id.initialize(Object.assign({ client_id: GOOGLE_CLIENT_ID, callback: async resp => {
+        try {
+          const r = await api('/unir-google', { credential: resp.credential });
+          if(correo && r.google && r.google !== correo){ avisoBreve('Has unido ' + r.google + ', pero en Grow Panel usas ' + correo + '. Únela con esa.'); return; }
+          state.gpUnida = true;
+          unidaCon(r.google); try { localStorage.removeItem('reg_meta'); } catch(e){}
+          regPrimero = true; regIntento = 0;
+          avisoBreve('Listo: tu cuenta está unida con ' + (r.google || 'Google'));
+          render();
+        } catch(e){ avisoBreve(mensajeError(e, 'No se pudo unir con Google. Inténtalo otra vez.')); }
+      } }, correo ? { login_hint: correo } : {}));
+      google.accounts.id.renderButton(c.querySelector('.ug-boton'), { theme: 'outline', size: 'large', shape: 'pill', text: 'continue_with', locale: 'es', width: Math.min(320, c.clientWidth - 40 || 280) });
+    });
+    return c;
+  }
   function resumenGrowPanel(){
     if(!state.me || !state.datosOk) return;
     const hoyReg = registradoHoy();
@@ -8459,6 +8504,7 @@ lo que haces cada día es lo que vas a ser.`;
       const huecoPf = greetPanel.querySelector('.hueco-panel-fac');
       if(huecoPf){ let pf = null; try { pf = tarjetaPanelFacilitador(); } catch(e){} if(pf){ pf.style.textAlign = 'left'; pf.style.marginBottom = '12px'; huecoPf.replaceWith(pf); } else huecoPf.remove(); }
       app.appendChild(greetPanel);
+      if(!state.panelSub){ let ug = null; try { ug = tarjetaUnirGoogle(); } catch(e){} if(ug) app.appendChild(ug); }
       if(!state.panelSub && !bienvenidaVista()) app.appendChild(el(bienvenidaHTML()));
       if(nivelBtnPanel) nivelBtnPanel.onclick = () => { state.prevView = 'panel'; state.view = insigniasBloqueadas() ? 'planes' : 'perfil'; window.scrollTo(0,0); render(); };
 
@@ -13406,4 +13452,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Meta" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V14.59 · App Amable Meta · 2026-11-06 20:11==== -->
+<!-- ==== Fin del index V14.60 · App Amable Meta · 2026-11-06 20:22==== -->
