@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V14.66 · App Amable Meta · 2026-11-08 22:31==== -->
+<!-- ==== index V14.67 · App Amable Meta · 2026-11-08 22:47==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2728,7 +2728,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V14.66';
+  const APP_VERSION = 'V14.67';
   // ===== Pantalla de inicio: versión, sonido corto y salida (5-11-2026) =====
   (function(){
     const sp = document.getElementById('inicioSplash'); if(!sp) return;
@@ -3294,6 +3294,10 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       }
     } catch(e){}
     try { if(new URLSearchParams(location.search).get('regar') === '1'){ history.replaceState(null, '', location.pathname); if(diaHechoFecha(ahoraRegistro()) === 0) setTimeout(abrirMomentoRiego, 700); else setTimeout(() => avisoBreve('Hoy ya has regado tu meta'), 700); } } catch(e){}
+    // Desde Amable Life (?registrar=1): si hoy no ha regado, se abre el registro del día; si ya regó, se va a las metas sencillas para marcarlas
+    try { if(new URLSearchParams(location.search).get('registrar') === '1'){ history.replaceState(null, '', location.pathname);
+      if(diaHechoFecha(ahoraRegistro()) === 0) setTimeout(abrirMomentoRiego, 700);
+      else setTimeout(() => { const t = document.querySelector('.ms-tarjeta') || document.querySelector('.ms-bloque'); if(t) t.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 1100); } } catch(e){}
     // Accesos directos del icono (dejarlo pulsado): «Abonar» y «Mi guía»
     try { const qs = new URLSearchParams(location.search); if(qs.get('abonar') === '1' || qs.get('clima') === '1'){ history.replaceState(null, '', location.pathname); setTimeout(() => abrirMomentoRiego(true), 700); } } catch(e){}
     try { if(new URLSearchParams(location.search).get('guia') === '1'){ history.replaceState(null, '', location.pathname);
@@ -13483,4 +13487,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Meta" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V14.66 · App Amable Meta · 2026-11-08 22:31==== -->
+<!-- ==== Fin del index V14.67 · App Amable Meta · 2026-11-08 22:47==== -->
