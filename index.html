@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V14.67 · App Amable Meta · 2026-11-08 22:47==== -->
+<!-- ==== index V14.68 · App Amable Meta · 2026-11-08 23:38==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2728,7 +2728,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V14.67';
+  const APP_VERSION = 'V14.68';
   // ===== Pantalla de inicio: versión, sonido corto y salida (5-11-2026) =====
   (function(){
     const sp = document.getElementById('inicioSplash'); if(!sp) return;
@@ -11583,14 +11583,21 @@ lo que haces cada día es lo que vas a ser.`;
   }
   // Animación de Prácti con la planta (archivos aparte: practi-crece.json / practi-revive.json). Se ve una vez y queda el dibujo
   const animPlantaCache = {};
-  let animPlantaActiva = null;   // solo una a la vez (al volver a pintar Inicio se para la anterior)
+  // Se paran solo las animaciones que ya no están en pantalla (o la del mismo hueco). Antes se paraba siempre la anterior,
+  // y si Inicio se volvía a pintar con «Registra cada día» abierto, la planta del registro se quedaba en blanco (8-11-2026)
+  const animsPlanta = [];
+  function limpiarAnimsPlanta(caja){
+    for(let i = animsPlanta.length - 1; i >= 0; i--){ const a = animsPlanta[i], c = a && a.wrapper;
+      if(!c || c === caja || !document.body.contains(c)){ try { a.destroy(); } catch(e){} animsPlanta.splice(i, 1); } }
+  }
   async function animarPlantaEn(caja, archivo, enBucle){
     const L = await cargarLottie(); if(!L || !caja) return null;
     if(!animPlantaCache[archivo]) animPlantaCache[archivo] = await fetch(archivo).then(r => { if(!r.ok) throw new Error(r.status); return r.json(); });
-    if(animPlantaActiva){ try { animPlantaActiva.destroy(); } catch(e){} }
+    limpiarAnimsPlanta(caja);
     caja.innerHTML = '';
-    animPlantaActiva = L.loadAnimation({ container: caja, renderer: 'svg', loop: !!enBucle, autoplay: true, animationData: JSON.parse(JSON.stringify(animPlantaCache[archivo])) });
-    return animPlantaActiva;
+    const an = L.loadAnimation({ container: caja, renderer: 'svg', loop: !!enBucle, autoplay: true, animationData: JSON.parse(JSON.stringify(animPlantaCache[archivo])) });
+    animsPlanta.push(an);
+    return an;
   }
   async function animarPlanta(img, archivo, enBucle){
     if(!img) return null;
@@ -11599,9 +11606,11 @@ lo que haces cada día es lo que vas a ser.`;
       if(!animPlantaCache[archivo]) animPlantaCache[archivo] = await fetch(archivo).then(r => { if(!r.ok) throw new Error(r.status); return r.json(); });
       const caja = document.createElement('span'); caja.className = 'planta-anim';
       caja.style.width = img.offsetWidth + 'px'; caja.style.height = (img.offsetHeight || img.offsetWidth * 640 / 600) + 'px';
+      if(!img.isConnected) return null;   // la pantalla cambió mientras se cargaba
       img.replaceWith(caja);
-      if(animPlantaActiva){ try { animPlantaActiva.destroy(); } catch(e){} }
-      const an = animPlantaActiva = L.loadAnimation({ container: caja, renderer: 'svg', loop: !!enBucle, autoplay: true, animationData: JSON.parse(JSON.stringify(animPlantaCache[archivo])) });
+      limpiarAnimsPlanta(caja);
+      const an = L.loadAnimation({ container: caja, renderer: 'svg', loop: !!enBucle, autoplay: true, animationData: JSON.parse(JSON.stringify(animPlantaCache[archivo])) });
+      animsPlanta.push(an);
       if(!enBucle) an.addEventListener('complete', () => { an.goToAndStop(an.totalFrames - 1, true); });
       return an;
     } catch(e){ console.warn('No se pudo cargar ' + archivo, e); return null; }
@@ -13487,4 +13496,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Meta" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V14.67 · App Amable Meta · 2026-11-08 22:47==== -->
+<!-- ==== Fin del index V14.68 · App Amable Meta · 2026-11-08 23:38==== -->
