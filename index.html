@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V14.63 · App Amable Meta · 2026-11-06 21:00==== -->
+<!-- ==== index V14.64 · App Amable Meta · 2026-11-08 22:23==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1817,6 +1817,9 @@ button.dc{cursor:pointer}button.dc:disabled{cursor:default}
 .av-msg{color:#B3261E;font-weight:700;font-size:15px !important;margin-top:12px !important}
 .unir-google .ug-tit{margin:0 0 4px;display:flex;align-items:center}.unir-google .ug-tx{margin:0 0 12px;font-size:14px;color:var(--ink-soft)}.unir-google .ug-unir{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;max-width:320px;padding:11px 16px;margin:0 0 6px;border:1px solid #DADCE0;border-radius:999px;background:#fff;color:#3C4043;font:600 15px system-ui,-apple-system,Segoe UI,sans-serif;cursor:pointer}.unir-google .ug-unir svg{width:20px;height:20px;flex:none}.unir-google .ug-unir:disabled{opacity:.55;cursor:default}.unir-google .ug-no{background:none;border:none;color:var(--ink-soft);font-size:13px;text-decoration:underline;cursor:pointer;padding:4px 0}
 .aviso-breve{position:fixed;left:50%;bottom:calc(90px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:9900;max-width:86vw;padding:10px 16px;border-radius:14px;background:rgba(30,30,40,.9);color:#fff;font-size:15px;text-align:center;box-shadow:0 6px 18px rgba(0,0,0,.25)}
+.aviso-musica{line-height:1.7;width:max-content;max-width:min(86vw,340px)}
+.aviso-play{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;margin:0 3px;border-radius:50%;background:#7B5FB8;color:#fff;vertical-align:middle}
+.aviso-play .ico{width:14px;height:14px}
 .historial-intro{margin:4px 0 12px;font-size:15px}
 .historial-item{position:relative;border:2px solid #E39A9A;margin:0 0 12px}
 .historial-item.actual{border-color:#C0392B;box-shadow:0 4px 12px rgba(192,57,43,.15)}
@@ -2722,7 +2725,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V14.63';
+  const APP_VERSION = 'V14.64';
   // ===== Pantalla de inicio: versión, sonido corto y salida (5-11-2026) =====
   (function(){
     const sp = document.getElementById('inicioSplash'); if(!sp) return;
@@ -6899,9 +6902,19 @@ lo que haces cada día es lo que vas a ser.`;
     const b = document.querySelector('#musicaBarra .musica-pausa');
     if(b){ b.innerHTML = ICO.play; b.setAttribute('aria-label', 'Empezar la música'); }
     const o = document.querySelector('#musicaBarra .musica-onda'); if(o) o.classList.add('quieta');
-    avisoBreve('Toca ▶ abajo para que empiece la música');
+    avisoMusicaPlay();
+  }
+  // Aviso de iPhone: dice que toque el play morado de la barra; sale encima de la barra, dura 10 s y se quita al tocar play
+  function avisoMusicaPlay(){
+    document.querySelectorAll('.aviso-breve').forEach(x => x.remove());
+    const a = document.createElement('div'); a.className = 'aviso-breve aviso-musica';
+    a.innerHTML = 'Toca <span class="aviso-play" aria-label="play">' + ICO.play + '</span> abajo de nuevo para escuchar la música';
+    const barra = document.getElementById('musicaBarra');
+    if(barra){ const r = barra.getBoundingClientRect(); if(r.top > 0) a.style.bottom = Math.round(window.innerHeight - r.top + 14) + 'px'; }
+    document.body.appendChild(a); setTimeout(() => a.remove(), 10000);
   }
   function musicaPausar(){
+    document.querySelectorAll('.aviso-musica').forEach(x => x.remove());
     musica.pausada = !musica.pausada;
     if(musica.id === 'oficial'){ try { if(musica.pausada) sintonia.pause(); else sintonia.play(); } catch(e){} }
     else musicaOrden(musica.pausada ? 'pauseVideo' : 'playVideo');
@@ -13463,4 +13476,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Meta" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V14.63 · App Amable Meta · 2026-11-06 21:00==== -->
+<!-- ==== Fin del index V14.64 · App Amable Meta · 2026-11-08 22:23==== -->
