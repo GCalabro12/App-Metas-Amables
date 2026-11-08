@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V14.64 · App Amable Meta · 2026-11-08 22:23==== -->
+<!-- ==== index V14.65 · App Amable Meta · 2026-11-08 22:29==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1323,6 +1323,8 @@ body.riego-abierto{overflow:hidden}
 body.ms-capa-abierta{overflow:hidden}
 .ms-capa-in{max-width:520px;margin:0 auto;padding:calc(14px + env(safe-area-inset-top)) 16px calc(28px + env(safe-area-inset-bottom));box-sizing:border-box}
 .ms-capa-cab{display:flex;align-items:center;gap:12px;margin:0 0 20px}.ms-capa-cab b{font:700 19px Nunito,serif;color:var(--ink)}
+.ms-capa-cab.ms-cab-col{flex-direction:column;align-items:flex-start;gap:14px}.ms-cab-col b{white-space:nowrap;font-size:clamp(17px,5.2vw,21px)}
+.ms-letras{margin:6px 2px 0;text-align:right;font:600 13px Karla,sans-serif;color:#8A8070}.ms-letras.agotado{color:#C62828}
 .ms-capa .ms-et{font-size:17px;margin:18px 0 8px}
 .ms-capa .ms-acciones{margin-top:22px}.ms-capa .ms-acciones button{padding:13px;font-size:16px}
 textarea.ms-nombre-in{display:block;width:100%;min-height:58px;resize:vertical;overflow:hidden;font:600 17px/1.35 Karla,sans-serif;padding:12px 14px;border:1.5px solid #D9CFB8;border-radius:12px;box-sizing:border-box}
@@ -2725,7 +2727,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V14.64';
+  const APP_VERSION = 'V14.65';
   // ===== Pantalla de inicio: versión, sonido corto y salida (5-11-2026) =====
   (function(){
     const sp = document.getElementById('inicioSplash'); if(!sp) return;
@@ -4479,8 +4481,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       const plan = m && !vecesSemanaSencilla(m) ? diasPlanSencilla(m) : DIAS_SEMANA.slice(), veces = m ? vecesSemanaSencilla(m) : 0;
       document.querySelectorAll('.ms-capa').forEach(x => x.remove());
       const f = el('<div class="ms-capa" role="dialog" aria-label="' + (m ? 'Cambiar' : 'Crear') + ' mi ' + TXT_SENCILLA.toLowerCase() + '"><div class="ms-capa-in">'
-        + '<div class="ms-capa-cab"><button type="button" class="back-btn ms-no">← Volver</button><b>' + (m ? 'Cambiar' : 'Crear') + ' mi ' + TXT_SENCILLA.toLowerCase() + '</b></div>'
-        + '<label class="ms-et" for="msNombre">¿Qué quieres hacer?</label><textarea id="msNombre" class="ms-input ms-nombre-in" rows="2" maxlength="80" placeholder="Ej.: beber 2 litros de agua, caminar 20 minutos…">' + escapeAttr(m ? m.nombre : '') + '</textarea>'
+        + '<div class="ms-capa-cab ms-cab-col"><button type="button" class="back-btn ms-no">← Volver</button><b>' + (m ? 'Cambiar' : 'Crear') + ' mi ' + TXT_SENCILLA.toLowerCase() + '</b></div>'
+        + '<label class="ms-et" for="msNombre">¿Qué quieres hacer?</label><textarea id="msNombre" class="ms-input ms-nombre-in" rows="2" maxlength="90" placeholder="Ej.: beber 2 litros de agua, caminar 20 minutos…">' + escapeAttr(m ? m.nombre : '') + '</textarea><p class="ms-letras" aria-live="polite"></p>'
         + '<label class="ms-et">¿Con qué frecuencia?</label><div class="ms-modo"><button type="button" data-m="dias"' + (veces ? '' : ' class="on"') + '>Días concretos</button><button type="button" data-m="semana"' + (veces ? ' class="on"' : '') + '>Veces por semana</button></div>'
         + '<div class="ms-por-dias"' + (veces ? ' hidden' : '') + '><label class="ms-et">¿Qué días?</label><div class="ms-elegir">' + DIAS_SEMANA.map(L => '<button type="button" class="ms-elige' + (plan.includes(L) ? ' on' : '') + '" data-l="' + L + '">' + L + '</button>').join('') + '</div>'
         + '<div class="ms-rapidos"><button type="button" data-r="todos">Todos los días</button><button type="button" data-r="semana">De lunes a viernes</button></div>'
@@ -4497,6 +4499,10 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       // El cuadro del nombre crece mientras escribes (y se puede estirar desde la esquina)
       const crecer = () => { inp.style.height = 'auto'; inp.style.height = (inp.scrollHeight + 2) + 'px'; };
       inp.addEventListener('input', crecer); setTimeout(() => { crecer(); inp.focus(); }, 0);
+      // Letras que quedan (de 90): «19 de 90»; en rojo al llegar a 0
+      const cuentaLetras = f.querySelector('.ms-letras');
+      const contar = () => { const max = Number(inp.maxLength) || 90, q = Math.max(0, max - inp.value.length); cuentaLetras.textContent = q + ' de ' + max; cuentaLetras.classList.toggle('agotado', q === 0); };
+      inp.addEventListener('input', contar); contar();
       const elegidos = () => [...f.querySelectorAll('.ms-elige.on')].map(b => b.dataset.l);
       const modo = () => f.querySelector('.ms-modo .on').dataset.m, vecesElegidas = () => Number(f.querySelector('.ms-vez.on').dataset.n);
       f.querySelectorAll('.ms-modo button').forEach(b => b.onclick = () => {
@@ -13476,4 +13482,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Meta" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V14.64 · App Amable Meta · 2026-11-08 22:23==== -->
+<!-- ==== Fin del index V14.65 · App Amable Meta · 2026-11-08 22:29==== -->
