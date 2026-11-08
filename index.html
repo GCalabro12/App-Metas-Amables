@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V14.65 · App Amable Meta · 2026-11-08 22:29==== -->
+<!-- ==== index V14.66 · App Amable Meta · 2026-11-08 22:31==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1336,6 +1336,7 @@ textarea.ms-nombre-in:focus{outline:none;border-color:#C9942D;box-shadow:0 0 0 3
 .ms-modo{display:flex;gap:6px;padding:4px;border-radius:999px;background:#F1ECDF}.ms-modo button{flex:1;padding:10px 8px;border:none;border-radius:999px;background:none;font:800 14.5px Karla,sans-serif;color:#6B4A26;cursor:pointer}.ms-modo button.on{background:#C9942D;color:#fff}
 .ms-veces{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px}.ms-vez{aspect-ratio:1;width:100%;max-width:50px;margin:auto;border-radius:50%;border:2px solid #D9CFB8;background:#fff;font:800 17px Karla,sans-serif;color:var(--ink);cursor:pointer;padding:0}.ms-vez.on{background:#C9942D;border-color:#C9942D;color:#fff}
 .ms-rapidos{display:flex;gap:8px;margin-top:8px}.ms-rapidos button{flex:1;padding:7px;border-radius:999px;border:1.5px solid #D9CFB8;background:#fff;font:700 13px Karla,sans-serif;color:#6B4A26;cursor:pointer}
+.ms-capa-2 .ms-modo button,.ms-capa-2 .ms-rapidos button{color:#4A2E17}.ms-capa-2 .ms-modo{background:#EBDCCB}.ms-capa-2 textarea.ms-nombre-in:focus{border-color:#7A4E2D;box-shadow:0 0 0 3px rgba(122,78,45,.2)}.ms-capa-2 .ms-acciones .ms-si{background:#4A2E17;border-color:#4A2E17}.ms-capa-2 .ms-acciones button{border-color:#7A4E2D;color:#4A2E17}.ms-capa-2 .ms-acciones .ms-si{color:#fff}.ms-capa-2 .ms-elige.on,.ms-capa-2 .ms-vez.on,.ms-capa-2 .ms-modo button.on{background:#7A4E2D;border-color:#7A4E2D;color:#fff}
 .ms-aviso{font-size:12.5px;color:var(--ink-soft);margin:10px 0 0}
 .ms-fin{display:flex;justify-content:center;gap:22px;margin-top:6px}.ms-capa .ms-borrar{display:block;margin:12px 0 0;border:none;background:none;color:#7A6A5A;font:700 14px Karla,sans-serif;text-decoration:underline;cursor:pointer}
 .ms-capa .ms-acciones .ms-rojo{background:#B3261E;border-color:#B3261E;color:#fff}
@@ -1354,7 +1355,7 @@ textarea.ms-nombre-in:focus{outline:none;border-color:#C9942D;box-shadow:0 0 0 3
 /* El nombre de cada meta sencilla, bien destacado: fondo amarillo (marrón claro en la segunda) y aire arriba y abajo */
 .ms-tarjeta > .ms-nombre,.ms-reg > .ms-nombre{margin:10px 0 10px;padding:12px 14px;border-radius:12px;background:var(--ms-n,#FCEFC2);font-size:17px;line-height:1.3}
 .ms-punto{display:inline-block;width:12px;height:12px;border-radius:50%;background:var(--ms-c,#C9942D);margin-right:8px;vertical-align:0}
-.ms-tarjeta .ms-cambiar{background:var(--ms-c,#C9942D)}.ms-tarjeta .ms-ver-cal{border-color:var(--ms-c,#A0703C);color:var(--ms-t,#6B4A26)}
+.ms-tarjeta .ms-cambiar{background:#fff;border:1.5px solid var(--ms-c,#A0703C);color:var(--ms-t,#6B4A26)}.ms-tarjeta .ms-ver-cal{background:var(--ms-c,#C9942D);border:none;color:#fff}
 .ms-dia-m.hecho,.ms-dia.hecho{background:#4C8C4A;border-color:#4C8C4A;color:#fff}
 .ms-dia-m.fallo,.ms-dia.fallo{background:#D9483B;border-color:#D9483B;color:#fff}
 .ms-dia-m.libre,.ms-dia.libre{background:#2B2B2B;border-color:#2B2B2B;color:#fff}
@@ -2727,7 +2728,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V14.65';
+  const APP_VERSION = 'V14.66';
   // ===== Pantalla de inicio: versión, sonido corto y salida (5-11-2026) =====
   (function(){
     const sp = document.getElementById('inicioSplash'); if(!sp) return;
@@ -4477,11 +4478,11 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       pintar();
     };
     // Crear o cambiar: en una pantalla propia, a todo lo ancho. El nombre y los días de la semana (como en las apps de hábitos)
-    const editor = (destino, m) => {
+    const editor = (destino, m, num) => {
       const plan = m && !vecesSemanaSencilla(m) ? diasPlanSencilla(m) : DIAS_SEMANA.slice(), veces = m ? vecesSemanaSencilla(m) : 0;
       document.querySelectorAll('.ms-capa').forEach(x => x.remove());
-      const f = el('<div class="ms-capa" role="dialog" aria-label="' + (m ? 'Cambiar' : 'Crear') + ' mi ' + TXT_SENCILLA.toLowerCase() + '"><div class="ms-capa-in">'
-        + '<div class="ms-capa-cab ms-cab-col"><button type="button" class="back-btn ms-no">← Volver</button><b>' + (m ? 'Cambiar' : 'Crear') + ' mi ' + TXT_SENCILLA.toLowerCase() + '</b></div>'
+      const f = el('<div class="ms-capa' + (m && num === 2 ? ' ms-capa-2' : '') + '" role="dialog" aria-label="' + (m ? 'Cambiar' : 'Crear') + ' mi ' + TXT_SENCILLA.toLowerCase() + '"><div class="ms-capa-in">'
+        + '<div class="ms-capa-cab ms-cab-col"><button type="button" class="back-btn ms-no">← Volver</button><b>' + (m ? 'Cambiar' : 'Crear') + ' mi ' + TXT_SENCILLA.toLowerCase() + (m && num ? ' ' + num : '') + '</b></div>'
         + '<label class="ms-et" for="msNombre">¿Qué quieres hacer?</label><textarea id="msNombre" class="ms-input ms-nombre-in" rows="2" maxlength="90" placeholder="Ej.: beber 2 litros de agua, caminar 20 minutos…">' + escapeAttr(m ? m.nombre : '') + '</textarea><p class="ms-letras" aria-live="polite"></p>'
         + '<label class="ms-et">¿Con qué frecuencia?</label><div class="ms-modo"><button type="button" data-m="dias"' + (veces ? '' : ' class="on"') + '>Días concretos</button><button type="button" data-m="semana"' + (veces ? ' class="on"' : '') + '>Veces por semana</button></div>'
         + '<div class="ms-por-dias"' + (veces ? ' hidden' : '') + '><label class="ms-et">¿Qué días?</label><div class="ms-elegir">' + DIAS_SEMANA.map(L => '<button type="button" class="ms-elige' + (plan.includes(L) ? ' on' : '') + '" data-l="' + L + '">' + L + '</button>').join('') + '</div>'
@@ -4544,7 +4545,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       }
       zona.innerHTML = activas.map((m, i) => '<div class="ms-tarjeta' + (i ? ' ms-b' : '') + '" data-id="' + escapeAttr(m.id) + '"><p class="ms-nombre">' + escapeAttr(m.nombre) + '</p>'
           + (vecesSemanaSencilla(m) ? '<p class="ms-dias-plan"><i data-ico=calendario></i>' + textoDiasSencilla(m) + '</p>' : '') + '<p class="ms-cuenta">' + cuenta(m) + '</p>' + sieteDiasSencillaHTML(m) + LEYENDA_SENCILLA
-          + '<button type="button" class="ms-btn ms-cambiar">Cambiar mi ' + TXT_SENCILLA.toLowerCase() + ' →</button>'
+          + '<button type="button" class="ms-btn ms-cambiar">Cambiar mi ' + TXT_SENCILLA.toLowerCase() + ' ' + (i + 1) + ' →</button>'
           + '<button type="button" class="ms-btn ms-ver-cal"><i data-ico=calendario></i>Calendario</button>'
           + (oculto('recordatorio') ? '' : '<div class="ms-rec"><button type="button" class="ms-alarma">' + textoAlarmaSencilla(m) + '</button></div>')
           + '</div>').join('')
@@ -4566,7 +4567,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
         const al = t.querySelector('.ms-alarma');
         if(al) al.onclick = () => abrirAlarmaSencilla(m, () => { al.innerHTML = textoAlarmaSencilla(m); });
         enlazarDiasSencilla(t.querySelector('.ms-semana'), id, refrescar, verCal);
-        t.querySelector('.ms-cambiar').onclick = () => editor(t, m);
+        t.querySelector('.ms-cambiar').onclick = () => editor(t, m, activas.indexOf(m) + 1);
       });
       // Recuperar una meta del historial: vuelve activa con sus días (si cabe en el plan)
       zona.querySelectorAll('.ms-recuperar').forEach(b => b.onclick = () => {
@@ -13482,4 +13483,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Meta" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V14.65 · App Amable Meta · 2026-11-08 22:29==== -->
+<!-- ==== Fin del index V14.66 · App Amable Meta · 2026-11-08 22:31==== -->
