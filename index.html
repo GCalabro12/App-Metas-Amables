@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V14.73 · App Amable Meta · 2026-11-09 14:59==== -->
+<!-- ==== index V14.74 · App Amable Meta · 2026-11-09 15:04==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1616,6 +1616,18 @@ button.dc{cursor:pointer}button.dc:disabled{cursor:default}
 .voz-cerrado{display:flex;gap:12px;align-items:center;background:#F4F0FB;border:2px dashed #B9A6E0;border-radius:14px;padding:12px 14px;margin:6px 0 4px}
 .voz-cerrado svg{width:34px;height:34px;flex:none}.voz-cerrado b{display:block;color:#4A3A8C}.voz-cerrado span{font-size:14px;color:#555}
 .voz-abierto{background:#FFF7E0;border:2px solid #E0B341;border-radius:14px;padding:12px;margin:0 0 12px}
+/* Reproductor de las notas de voz (9-11-2026): arriba play, tiempo y volumen; abajo la línea de avance a todo lo ancho */
+.voz-archivar.nota-archivar{margin:14px 0 4px}
+.voz-archivar{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;margin:12px 0 0;padding:10px 12px;border-radius:12px;border:2px solid #C9A227;background:#fff;color:#7A5B12;font:inherit;font-weight:700;font-size:15px;cursor:pointer}
+.aud{display:flex;flex-direction:column;gap:10px;background:#F3F1F6;border-radius:18px;padding:12px 14px;margin:4px 0 8px}
+.aud-fila{display:flex;align-items:center;gap:10px}
+.aud-play{width:42px;height:42px;flex:0 0 42px;border-radius:50%;border:0;background:#7B5FB8;color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0}
+.aud-play svg{width:18px;height:18px}
+.aud-t{font-weight:700;font-size:14px;color:#2B2420;white-space:nowrap;font-variant-numeric:tabular-nums}
+.aud-volbox{margin-left:auto;display:flex;align-items:center;gap:6px;color:#7B5FB8;min-width:0}
+.aud-volbox svg{width:20px;height:20px;flex:0 0 20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.aud-vol{width:min(26vw,110px);min-width:60px;accent-color:#7B5FB8;margin:0}
+.aud-barra{width:100%;accent-color:#7B5FB8;margin:0;height:22px}
 .voz-aviso{display:flex;gap:12px;align-items:center;border:2px solid #E0B341;background:#FFF7E0}.voz-aviso-ico{font-size:34px}.voz-aviso b{display:block;margin:0 0 8px}
 .voz-aviso .panel-link-btn{border:none;cursor:pointer;background:#C9942D;width:100%}
 .avisos-capa{position:fixed;inset:0;z-index:9300;background:linear-gradient(180deg,#fff 0%,#fff 62%,#F4EEFB 100%);overflow-y:auto;color:#2B2B2B;padding:calc(18px + env(safe-area-inset-top)) 22px calc(28px + env(safe-area-inset-bottom))}
@@ -2455,7 +2467,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V14.73';
+  const APP_VERSION = 'V14.74';
   // ===== Pantalla de inicio: versión, sonido corto y salida (5-11-2026) =====
   (function(){
     const sp = document.getElementById('inicioSplash'); if(!sp) return;
@@ -4879,6 +4891,47 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   function icoMenu(n){ return '<svg class="mi-ico" viewBox="0 0 24 24" aria-hidden="true">' + (ICONOS_MENU[n] || '') + '</svg>'; }
   // Corona propia de los planes (5-11-2026): sustituye al emoji 👑 en toda la app
   const CORONA_SVG = '<svg class="corona-svg" viewBox="0 0 24 21" aria-hidden="true"><path d="M3 7.6 7.6 12 12 4.4 16.4 12 21 7.6 19.2 16.4H4.8Z" fill="#EDBB2B" stroke="#A06D08" stroke-width="1.2" stroke-linejoin="round"/><path d="M12 4.4 16.4 12 21 7.6 19.2 16.4H12Z" fill="#D9A21A"/><rect x="4.4" y="16.6" width="15.2" height="3" rx="1.2" fill="#C58C10" stroke="#A06D08" stroke-width="1"/><circle cx="3" cy="6.6" r="1.7" fill="#FFF3C9" stroke="#A06D08" stroke-width="1"/><circle cx="12" cy="3.1" r="1.8" fill="#FFF3C9" stroke="#A06D08" stroke-width="1"/><circle cx="21" cy="6.6" r="1.7" fill="#FFF3C9" stroke="#A06D08" stroke-width="1"/><circle cx="12" cy="18.1" r="0.95" fill="#B5307A"/></svg>';
+  // ===== Reproductor de las notas de voz (9-11-2026, idea de Gustavo) =====
+  // El reproductor del móvil, en un recuadro estrecho, dejaba la línea de avance como un punto. Este pone arriba
+  // ▶/⏸, el tiempo y una línea para el volumen, y abajo la línea de avance a todo lo ancho.
+  function audioHTML(url){
+    return '<div class="aud"><audio preload="metadata" src="' + url + '"></audio>'
+      + '<div class="aud-fila"><button type="button" class="aud-play" aria-label="Reproducir">' + ICO.play + '</button><span class="aud-t">0:00 / 0:00</span>'
+      + '<span class="aud-volbox"><svg viewBox="0 0 24 24" aria-hidden="true">' + ICONOS_MENU.altavoz + '</svg><input type="range" class="aud-vol" min="0" max="1" step="0.05" value="1" aria-label="Volumen"></span></div>'
+      + '<input type="range" class="aud-barra" min="0" max="1000" step="1" value="0" aria-label="Avance del audio"></div>';
+  }
+  const audMinSeg = s => (isFinite(s) && s > 0) ? Math.floor(s / 60) + ':' + String(Math.floor(s % 60)).padStart(2, '0') : '0:00';
+  function audPintar(a){
+    const c = a.closest('.aud'); if(!c) return;
+    const d = isFinite(a.duration) ? a.duration : 0;
+    c.querySelector('.aud-t').textContent = audMinSeg(a.currentTime > d && d ? d : a.currentTime) + ' / ' + audMinSeg(d);
+    if(!c.moviendo && d > 0) c.querySelector('.aud-barra').value = Math.round(Math.min(a.currentTime, d) / d * 1000);
+    const b = c.querySelector('.aud-play');
+    b.innerHTML = a.paused ? ICO.play : ICO.pausa; b.setAttribute('aria-label', a.paused ? 'Reproducir' : 'Pausa');
+  }
+  // Los eventos del audio no suben por la página: se escuchan en la fase de captura
+  ['loadedmetadata', 'durationchange', 'timeupdate', 'play', 'pause', 'ended'].forEach(ev => document.addEventListener(ev, e => {
+    const a = e.target;
+    if(!(a instanceof HTMLAudioElement) || !a.closest('.aud')) return;
+    // Las grabaciones webm no dicen su duración hasta leerlas enteras: se salta al final y se vuelve al principio
+    if(ev === 'loadedmetadata' && a.duration === Infinity){ a.calculando = true; try { a.currentTime = 1e101; } catch(err){} return; }
+    if(a.calculando && isFinite(a.duration)){ a.calculando = false; try { a.currentTime = 0; } catch(err){} }
+    if(ev === 'ended'){ try { a.currentTime = 0; } catch(err){} }
+    audPintar(a);
+  }, true));
+  document.addEventListener('click', e => {
+    const b = e.target.closest && e.target.closest('.aud-play'); if(!b) return;
+    const a = b.closest('.aud').querySelector('audio');
+    if(a.paused) a.play().catch(() => {}); else a.pause();
+  });
+  document.addEventListener('input', e => {
+    const t = e.target, c = t.closest && t.closest('.aud'); if(!c) return;
+    const a = c.querySelector('audio');
+    if(t.classList.contains('aud-vol')) a.volume = Number(t.value);
+    else if(t.classList.contains('aud-barra') && isFinite(a.duration) && a.duration > 0){ c.moviendo = true; a.currentTime = Number(t.value) / 1000 * a.duration; }
+  });
+  document.addEventListener('change', e => { const c = e.target.closest && e.target.closest('.aud'); if(c) c.moviendo = false; });
+
   // Cambia en la pantalla las marcas <i data-ico=nombre></i> por su icono de línea, y cada 👑 por la corona
   function adornarIconos(raiz){
     if(!raiz || raiz.nodeType !== 1) return;
@@ -9818,7 +9871,7 @@ lo que haces cada día es lo que vas a ser.`;
       const x = l[Number(b.dataset.i)], d = document.createElement('div'); d.className = 'reac-texto';
       if(x.tipo === 'semanal'){
         d.textContent = 'Cargando tu nota de voz…'; item.appendChild(d);
-        try { const url = await vozDescargar(x.fecha); d.innerHTML = url ? '<audio controls src="' + url + '" style="width:100%"></audio>' : 'Esta nota de voz ya no está guardada.'; } catch(e){ d.textContent = 'No se pudo cargar la nota de voz.'; }
+        try { const url = await vozDescargar(x.fecha); d.innerHTML = url ? audioHTML(url) : 'Esta nota de voz ya no está guardada.'; } catch(e){ d.textContent = 'No se pudo cargar la nota de voz.'; }
         return;
       }
       d.innerHTML = x.texto ? escapeAttr(x.texto).replace(/\n/g, '<br>') : 'El texto de esta carta no está guardado en este móvil.';
@@ -9841,10 +9894,20 @@ lo que haces cada día es lo que vas a ser.`;
       caja.innerHTML = '<div class="centro-pantalla">' + cajaHTML('Caja cerrada hasta el lunes ' + diaUnoTexto(e.abre) + (faltan > 0 ? '<small>Faltan ' + faltan + (faltan === 1 ? ' día' : ' días') + '</small>' : ''), true) + '</div>';
       return;
     }
+    // «Leída - Archivar» (9-11-2026): la nota leída se guarda en este móvil como archivada y se pasa a escribir la nueva
+    const archivoPosit = e.p ? 'posit_archivada_' + state.me + '_' + e.p.fecha : '';
+    let positArchivada = false; try { positArchivada = !!(archivoPosit && localStorage.getItem(archivoPosit)); } catch(err){}
+    if(e.estado === 'abrir' && positArchivada) state.positNueva = true;
     if(e.estado === 'abrir' && !state.positNueva){
       caja.innerHTML = '<p class="posit-intro">Tu yo de principio del mes pasado te dejó esta nota:</p><div class="posit posit-abierto"><p class="posit-fecha">Escrita el ' + new Date(e.p.fecha + 'T00:00:00').toLocaleDateString('es-ES', { day: 'numeric', month: 'long' }) + '</p>' + escapeAttr(e.p.texto).replace(/\n/g, '<br>') + '</div>' + bloqueReaccionHTML(true)
         + '<button type="button" class="btn-nota" id="positOtra">Escribir la nota para el lunes ' + diaUnoTexto(ultimoLunes(mesClave())) + '</button>';
       caja.querySelector('#positOtra').onclick = () => { state.positNueva = true; renderVista(); };
+      caja.querySelector('#positOtra').insertAdjacentHTML('beforebegin', '<button type="button" class="voz-archivar nota-archivar" id="positArchivar">' + icoMenu('hecho') + 'Leída - Archivar</button>');
+      caja.querySelector('#positArchivar').onclick = () => {
+        try { localStorage.setItem(archivoPosit, '1'); } catch(err){}
+        avisoBreve('Nota archivada. Ya puedes escribir la nueva.');
+        state.positNueva = true; renderVista();
+      };
       activarReaccion(caja, 'mensual', 'mensual_' + e.p.fecha, e.p.fecha, e.p.texto);
       if(typeof sonarSintonia === 'function') sonarSintonia(12, 0.5);
       return;
@@ -10513,11 +10576,21 @@ lo que haces cada día es lo que vas a ser.`;
       return card;
     }
     // El que te dejaste el lunes pasado
-    vozDescargar(isoLocal(pasado)).then(url => {
+    // «Escuchada - Archivar» (9-11-2026, idea de Gustavo): la nota escuchada desaparece en este móvil y queda grabar la nueva
+    const claveArchivo = 'voz_archivada_' + state.me + '_' + isoLocal(pasado);
+    let archivada = false; try { archivada = !!localStorage.getItem(claveArchivo); } catch(e){}
+    if(!archivada) vozDescargar(isoLocal(pasado)).then(url => {
       if(!url) return;
       const z = card.querySelector('.voz-escuchar');
-      z.innerHTML = '<div class="voz-abierto"><p style="margin:0 0 6px;font-size:15px"><b><i data-ico=reloj></i>¡Ya puedes escuchar la nota que te dejaste el lunes ' + pasado.getDate() + '!</b></p><audio controls src="' + url + '" style="width:100%"></audio>' + bloqueReaccionHTML(false) + '</div>';
+      z.innerHTML = '<div class="voz-abierto"><p style="margin:0 0 6px;font-size:15px"><b><i data-ico=reloj></i>¡Ya puedes escuchar la nota que te dejaste el lunes ' + pasado.getDate() + '!</b></p>' + audioHTML(url) + bloqueReaccionHTML(false)
+        + '<button type="button" class="voz-archivar">' + icoMenu('hecho') + 'Escuchada - Archivar</button></div>';
       activarReaccion(z, 'semanal', 'semanal_' + isoLocal(pasado), isoLocal(pasado), '');
+      z.querySelector('.voz-archivar').onclick = () => {
+        try { localStorage.setItem(claveArchivo, '1'); localStorage.setItem('voz_oida_' + state.me + '_' + isoLocal(pasado), '1'); } catch(e){}
+        try { z.querySelector('audio').pause(); } catch(e){}
+        z.innerHTML = ''; vozPendienteCache = null;
+        avisoBreve('Nota archivada. Ya puedes grabar la nueva.');
+      };
       z.querySelector('audio').addEventListener('play', () => { try { localStorage.setItem('voz_oida_' + state.me + '_' + isoLocal(pasado), '1'); } catch(e){} });
       if(state.irVoz){ state.irVoz = false; setTimeout(() => card.scrollIntoView({ behavior: 'smooth', block: 'center' }), 80); }
     }).catch(() => {});
@@ -10526,7 +10599,7 @@ lo que haces cada día es lo que vas a ser.`;
     const pintar = (estado, url) => {
       if(estado === 'inicio') zona.innerHTML = boton('<i data-ico=voz></i>Grabar mi nota', 'voz-rec', '#7B5FB8');
       else if(estado === 'grabando') zona.innerHTML = '<p class="voz-tiempo" style="text-align:center;font-weight:700;color:#C0392B;margin:0">● Grabando… 0:00</p>' + boton(ICO.parar + ' Parar', 'voz-parar', '#555');
-      else if(estado === 'listo') zona.innerHTML = '<audio controls src="' + url + '" style="width:100%"></audio>' + boton('✓ Guardar mi nota', 'voz-guardar', '#6B9362') + boton('↺ Volver a grabar', 'voz-rec', '#9A9A9A');
+      else if(estado === 'listo') zona.innerHTML = audioHTML(url) + boton('✓ Guardar mi nota', 'voz-guardar', '#6B9362') + boton('↺ Volver a grabar', 'voz-rec', '#9A9A9A');
       else if(estado === 'guardado') zona.innerHTML = boton('✓ Nota guardada', 'voz-ver', '#7B5FB8') + '<div class="voz-detalle" hidden><div class="voz-cerrado">' + candadoSVG() + '<div><b>Nota guardada y cerrada</b><span>Se abrirá el lunes ' + proximo.getDate() + ' de ' + monthNamesEs[proximo.getMonth()] + '.</span></div></div>' + '</div>';
       const r = zona.querySelector('.voz-rec'); if(r) r.onclick = grabar;
       const p = zona.querySelector('.voz-parar'); if(p) p.onclick = parar;
@@ -10535,9 +10608,13 @@ lo que haces cada día es lo que vas a ser.`;
     };
     const grabar = async () => {
       try {
-        flujo = await navigator.mediaDevices.getUserMedia({ audio: true });
+        // Calidad (9-11-2026): sin el filtro de ruido ni el anti-eco del móvil, que dejaban la voz apagada y metálica, y a 96 kbps
+        try { flujo = await navigator.mediaDevices.getUserMedia({ audio: { channelCount: 1, echoCancellation: false, noiseSuppression: false, autoGainControl: true } }); }
+        catch(err){ flujo = await navigator.mediaDevices.getUserMedia({ audio: true }); }
         const tipo = ['audio/webm;codecs=opus', 'audio/webm', 'audio/mp4'].find(t => window.MediaRecorder && MediaRecorder.isTypeSupported(t)) || '';
-        rec = new MediaRecorder(flujo, tipo ? { mimeType: tipo } : undefined); trozos = [];
+        const opcRec = { audioBitsPerSecond: 96000 }; if(tipo) opcRec.mimeType = tipo;
+        try { rec = new MediaRecorder(flujo, opcRec); } catch(err){ rec = new MediaRecorder(flujo, tipo ? { mimeType: tipo } : undefined); }
+        trozos = [];
         rec.ondataavailable = e => { if(e.data && e.data.size) trozos.push(e.data); };
         rec.onstop = () => { flujo.getTracks().forEach(t => t.stop()); clearInterval(reloj); grabado = new Blob(trozos, { type: rec.mimeType || tipo || 'audio/webm' }); pintar('listo', URL.createObjectURL(grabado)); };
         rec.start(); inicio = Date.now(); pintar('grabando');
@@ -11801,6 +11878,9 @@ lo que haces cada día es lo que vas a ser.`;
   function pintarCartaFuturo(caja){
     if(!caja) return;
     const c = cartaGuardada();
+    // «Leída - Archivar» (9-11-2026): la carta ya leída y archivada en este móvil no vuelve a salir; se pasa a escribir la nueva
+    const archivoCarta = c ? 'carta_archivada_' + state.me + '_' + c.fecha : '';
+    try { if(c && !caja.dataset.editando && localStorage.getItem(archivoCarta) && !(aperturaCarta(c) && new Date() < aperturaCarta(c))) caja.dataset.editando = '1'; } catch(err){}
     if(c && !caja.dataset.editando){
       const abre = aperturaCarta(c), hoy = new Date();
       const cerrada = abre && hoy < abre;
@@ -11810,10 +11890,12 @@ lo que haces cada día es lo que vas a ser.`;
             + '<div class="matasellos"><span>' + escapeAttr(fechaConAnio(new Date(c.fecha + 'T00:00:00'))) + '</span></div>'
             + '<p class="sobre-para">Para ' + escapeAttr(String(state.me || '').trim().split(' ')[0]) + '<br>del ' + diaUnoTexto(abre) + '</p></div>'
             + '<p class="sobre-texto"><b>Carta cerrada</b><br>Se abrirá el lunes ' + diaUnoTexto(abre) + '<br><small>Faltan ' + Math.ceil((abre - hoy) / 86400000) + ' días</small></p></div>'
-          : cartaLeidaHTML(c) + bloqueReaccionHTML(true))
+          : cartaLeidaHTML(c) + bloqueReaccionHTML(true) + '<button type="button" class="voz-archivar nota-archivar" id="cartaArchivar">' + icoMenu('hecho') + 'Leída - Archivar</button>')
         // Cerrada: no se puede reescribir. Ya abierta (trimestre nuevo): se puede escribir la del siguiente
         + (cerrada ? '' : '<button type="button" class="carta-btn-sec" id="cartaEditar">Escribir mi nota para el próximo trimestre</button>');
       const ed = caja.querySelector('#cartaEditar'); if(ed) ed.onclick = () => { caja.dataset.editando = '1'; pintarCartaFuturo(caja); };
+      const ar = caja.querySelector('#cartaArchivar');
+      if(ar) ar.onclick = () => { try { localStorage.setItem(archivoCarta, '1'); } catch(err){} avisoBreve('Carta archivada. Ya puedes escribir la nueva.'); caja.dataset.editando = '1'; pintarCartaFuturo(caja); };
       if(!cerrada) activarReaccion(caja, 'trimestral', 'trimestral_' + c.fecha, c.fecha, String(c.texto || ''));
       return;
     }
@@ -12807,4 +12889,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Meta" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V14.73 · App Amable Meta · 2026-11-09 14:59==== -->
+<!-- ==== Fin del index V14.74 · App Amable Meta · 2026-11-09 15:04==== -->
