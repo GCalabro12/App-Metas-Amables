@@ -4,7 +4,39 @@
 // Avisos en el móvil: el Worker manda un aviso sin contenido y aquí se pone el texto.
 const CACHE = 'metas-amables-v1';
 
-self.addEventListener('install', () => self.skipWaiting());
+// Archivos que se ven al abrir la app (animaciones de Prácti y fondos, 9-11-2026): se guardan ya al instalar,
+// para que funcionen sin conexión desde el primer día. Si alguno falla, la instalación sigue igual.
+const PRECARGA = [
+  'practi-saludo.json',
+  'practi-empujon-saludo.json',
+  'practi-leyendo.json',
+  'practi-leyendo-cae.json',
+  'practi-escribiendo1.json',
+  'practi-escribiendo2.json',
+  'practi-sesion.json',
+  'practi-pizarra.json',
+  'practi-calma.json',
+  'practi-celebracion.json',
+  'practi-animo.json',
+  'practi-cartel.json',
+  'fondo-nivel-1.jpg',
+  'fondo-nivel-2.jpg',
+  'fondo-nivel-3.jpg',
+  'fondo-nivel-4.jpg',
+  'fondo-nivel-5.jpg',
+  'fondo-neutro.jpg',
+  'fondo-paso-0.jpg',
+  'fondo-paso-a.jpg',
+  'fondo-paso-b.jpg',
+  'fondo-paso-c.jpg',
+  'fondo-paso-d.jpg'
+];
+self.addEventListener('install', e => {
+  self.skipWaiting();
+  e.waitUntil(caches.open(CACHE)
+    .then(c => Promise.all(PRECARGA.map(u => c.add(u).catch(() => {}))))
+    .catch(() => {}));
+});
 self.addEventListener('activate', e => e.waitUntil(self.clients.claim()));
 
 self.addEventListener('fetch', e => {
@@ -13,7 +45,9 @@ self.addEventListener('fetch', e => {
   if(req.method !== 'GET' || new URL(req.url).origin !== self.location.origin) return;
   // Los vídeos van directos (piden trozos sueltos y no se pueden guardar así)
   if(req.headers.has('range') || /\.mp4$/i.test(new URL(req.url).pathname)) return;
-  const pagina = req.mode === 'navigate';
+  // El juego (iframe) también es una navegación, pero no es la app: se guarda con su propio nombre, no como './'
+  // Lo mismo con privacidad.html, terminos.html, etc.: solo la app (/ o /index.html) se guarda como './'
+  const pagina = req.mode === 'navigate' && req.destination !== 'iframe' && /\/(index\.html)?$/.test(new URL(req.url).pathname);
   // Lo que lleva ?… y no es una página (p. ej. la comprobación de versión nueva) no se guarda: llenaría la caché
   const guardar = pagina || !new URL(req.url).search;
   e.respondWith(
