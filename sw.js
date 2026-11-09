@@ -14,10 +14,12 @@ self.addEventListener('fetch', e => {
   // Los vídeos van directos (piden trozos sueltos y no se pueden guardar así)
   if(req.headers.has('range') || /\.mp4$/i.test(new URL(req.url).pathname)) return;
   const pagina = req.mode === 'navigate';
+  // Lo que lleva ?… y no es una página (p. ej. la comprobación de versión nueva) no se guarda: llenaría la caché
+  const guardar = pagina || !new URL(req.url).search;
   e.respondWith(
     fetch(req, pagina ? { cache: 'no-cache' } : undefined)
       .then(res => {
-        if(res.ok){
+        if(res.ok && guardar){
           const copia = res.clone();
           caches.open(CACHE).then(c => c.put(pagina ? './' : req, copia));
         }
