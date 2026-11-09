@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V14.75 · App Amable Meta · 2026-11-09 20:20==== -->
+<!-- ==== index V14.76 · App Amable Meta · 2026-11-09 23:26==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2466,7 +2466,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V14.75';
+  const APP_VERSION = 'V14.76';
   // ===== Pantalla de inicio: versión, sonido corto y salida (5-11-2026) =====
   (function(){
     const sp = document.getElementById('inicioSplash'); if(!sp) return;
@@ -5878,7 +5878,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     { v: 'V12.60', f: '11 de octubre de 2026', n: [
       'En el <b>modo minimalista</b> tampoco sale el recuadro del juego al final de Inicio.' ] },
     { v: 'V12.59', f: '11 de octubre de 2026', n: [
-      'En <b>Registros amables</b>, en «Cómo vas esta semana», hay un botón para <b>ver el calendario mensual</b>.' ] },
+      'En <b>Registros amables</b>, en «Cómo vas esta semana», hay un botón para <b>ver el calendario de tu meta con guía</b>.' ] },
     { v: 'V12.58', f: '11 de octubre de 2026', n: [
       'En el <b>modo minimalista</b> tampoco salen las insignias, y en el camino del reto de 15 días ya no aparece el regalo del juego.' ] },
     { v: 'V12.57', f: '11 de octubre de 2026', n: [
@@ -10772,7 +10772,21 @@ lo que haces cada día es lo que vas a ser.`;
     // Cómo vas esta semana (los días y la alarma), en el mismo recuadro que tu práctica de hoy
     const hoyLetra = DIAS_SEMANA[(ahoraRegistro().getDay() + 6) % 7];
     const regado = (d, antes, n) => {
-      if(d !== hoyLetra || antes || !n) return;
+      if(d !== hoyLetra) return;
+      // Quitado el riego de hoy: vuelven el consejo, la flecha y la planta según cómo esté ahora (sed, mustia…)
+      if(antes && !n){
+        capa.querySelector('.riego-consejo').textContent = consejo;
+        capa.querySelector('.rp-flecha').firstChild.textContent = 'Toca el día y marca +1';
+        try {
+          const e2 = estadoPlanta(), esc = capa.querySelector('.riego-escena');
+          esc.querySelectorAll('.planta-anim, .riego-img').forEach(x => x.remove());
+          const img = el('<img class="riego-img" src="' + e2.img + '" alt="">').firstElementChild;
+          esc.appendChild(img);
+          if(e2.anim) animarPlanta(img, e2.anim, true);
+        } catch(err){}
+        return;
+      }
+      if(antes || !n) return;
       try { launchConfetti(); } catch(err){}
       capa.querySelector('.riego-consejo').textContent = 'Hoy has cuidado tu meta. Mañana, otro pequeño riego.';
       capa.querySelector('.rp-flecha').firstChild.textContent = 'Hoy ya regaste tu meta';
@@ -10785,8 +10799,8 @@ lo que haces cada día es lo que vas a ser.`;
         const lista = (state.checkins && state.checkins[state.me]) || [];
         const sem = tarjetaDias(lista.find(c => c.week === currentWeekShort), '', 'Cómo vas esta semana', regado);
         sem.classList.add('rp-semana');
-        // «Ver calendario mensual»: cierra Registros amables y abre el calendario del mes («← Volver» regresa a donde estaba)
-        const verMes = el('<button type="button" class="panel-link-btn rp-vermes" style="width:100%;border:2px solid #C0392B;background:#fff;color:#A93226;cursor:pointer;margin:12px 0 0"><i data-ico=calendario></i>Ver calendario mensual</button>').firstElementChild;
+        // «Ver calendario meta con guía»: cierra Registros amables y abre el calendario del mes («← Volver» regresa a donde estaba)
+        const verMes = el('<button type="button" class="panel-link-btn rp-vermes" style="width:100%;border:2px solid #C0392B;background:#fff;color:#A93226;cursor:pointer;margin:12px 0 0"><i data-ico=calendario></i>Ver calendario meta con guía</button>').firstElementChild;
         verMes.onclick = () => { const desde = state.view; quitar(); state.prevView = desde; state.view = 'calendarioPracticas'; window.scrollTo(0, 0); render(); };
         sem.appendChild(verMes);
         const vieja = capa.querySelector('.rp-semana');
@@ -12888,4 +12902,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Meta" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V14.75 · App Amable Meta · 2026-11-09 20:20==== -->
+<!-- ==== Fin del index V14.76 · App Amable Meta · 2026-11-09 23:26==== -->
