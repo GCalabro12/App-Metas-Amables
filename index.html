@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V14.76 · App Amable Meta · 2026-11-09 23:26==== -->
+<!-- ==== index V14.77 · App Amable Meta · 2026-11-09 23:31==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2466,7 +2466,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V14.76';
+  const APP_VERSION = 'V14.77';
   // ===== Pantalla de inicio: versión, sonido corto y salida (5-11-2026) =====
   (function(){
     const sp = document.getElementById('inicioSplash'); if(!sp) return;
@@ -3053,7 +3053,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       const latest = list[list.length - 1];
       // La identidad no se arrastra: se reescribe cada lunes (la de la semana pasada sale en gris)
       state.identidadDraft = '';
-      state.metaTrimDraft = latest.metaTrim || '';
+      const conMetaTrim = list.slice().reverse().find(c => c.metaTrim && c.metaTrim.trim());
+      state.metaTrimDraft = (conMetaTrim && conMetaTrim.metaTrim) || '';
       state.guiaUrl = latest.urlGuia || '';
       const conGuia = list.slice().reverse().find(c => c.guiaTexto);
       state.guiaTexto = (conGuia && conGuia.guiaTexto) || '';
@@ -8473,7 +8474,9 @@ lo que haces cada día es lo que vas a ser.`;
       const curIdentidad = state.identidadDraft || identidadEstaSemana;
       // La meta del trimestre: la que la persona corrigió en la app (si lo hizo); si no, la del último lunes
       const dfmLunes = (state.gamifica && state.gamifica.datosFormulario) || {};
-      const metaLunes = (dfmLunes.metaCortaPropia && String(dfmLunes.metaCorta || '').trim()) || (latest ? latest.metaTrim : '') || '';
+      const conMetaTrim = list.slice().reverse().find(c => c.metaTrim && c.metaTrim.trim());
+      let metaVista = ''; try { metaVista = metaVisibleTexto(); } catch(e){}
+      const metaLunes = (dfmLunes.metaCortaPropia && String(dfmLunes.metaCorta || '').trim()) || (conMetaTrim ? conMetaTrim.metaTrim : '') || metaVista || '';
       const curMetaTrim = state.metaTrimTocado ? state.metaTrimDraft : (metaLunes || state.metaTrimDraft || '');
       let curMetaSem = state.metaSemDraft || (thisWeek ? thisWeek.metaSem : '') || '';
 
@@ -8680,7 +8683,7 @@ lo que haces cada día es lo que vas a ser.`;
         <div class="question paso-titulo">Tu compromiso para esta semana ${rangoSemanaTexto(today)}</div>
 
         <label class="note-label strong" for="metaTrim" style="margin-top:14px"><i data-ico=diana></i>Meta ${currentQLabel} (${currentQMonths.join(', ')})</label>
-        <textarea id="metaTrim" placeholder="¿Cuál es tu meta para este trimestre?" style="min-height:44px;margin-bottom:16px">${curMetaTrim}</textarea>
+        <textarea id="metaTrim" placeholder="¿Cuál es tu meta para este trimestre?" style="min-height:44px;margin-bottom:16px">${escapeAttr(curMetaTrim)}</textarea>
 
         <label class="note-label strong" for="identidad"><i data-ico=persona></i>Mi identidad de meta</label>
         <p class="identidad-ayuda" style="font-size:13px;color:var(--ink-soft);margin:0 0 6px">
@@ -9149,29 +9152,35 @@ lo que haces cada día es lo que vas a ser.`;
     if(!dias) return '';
     return dias + (dias === 1 ? ' día' : ' días') + (veces > dias ? ' · ' + veces + ' veces' : '');
   }
+  // Los últimos 7 días con HOY a la derecha, como en las metas sencillas (9-11-2026, Gustavo). Cada día se guarda
+  // en «Días hechos» de su propia semana («L,M:3,X»), así que los días de la semana pasada van a su fila.
   function tarjetaDias(estaSemana, extraHTML, titulo, alCambiar){
-    const hoy = (ahoraRegistro().getDay() + 6) % 7;   // 0 = lunes
-    let veces = leerDias(estaSemana && estaSemana.diasHechos);
+    const lista = () => state.checkins[state.me] || (state.checkins[state.me] = []);
+    const dias = () => { const h = ahoraRegistro(); return [6, 5, 4, 3, 2, 1, 0].map(k => new Date(h.getFullYear(), h.getMonth(), h.getDate() - k)); };
+    const letraDe = f => DIAS_SEMANA[(f.getDay() + 6) % 7];
+    const resumen7 = () => { const o = {}; dias().forEach(f => { const v = diaHechoFecha(f); if(v) o[letraDe(f)] = v; }); return resumenDias(o); };
     const card = document.createElement('div');
     card.className = 'card dias-card';
+    card.style.cssText = '--ms-f:#EAF4E4;--ms-c:#6B9362;--ms-t:#2F5A2C';   // en verde: es el registro de la planta
     const cont = document.createElement('div');
     card.appendChild(cont);
     const pintar = () => {
+      const hoyIso = isoLocal(ahoraRegistro());
       cont.innerHTML = `
         <p style="margin:0 0 4px;font-size:16px;display:flex;align-items:center;gap:8px"><svg class="icono-regar" viewBox="0 0 44 30" width="38" height="26" aria-hidden="true"><g stroke="#2B2B2B" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"><path d="M6 10 a5 5 0 0 1 8 0" fill="none"/><rect x="3" y="10" width="13" height="11" rx="2.5" fill="#7B3FB0"/><path d="M4 14.5 h11" stroke="#fff" stroke-width="1.8"/><path d="M16 13 L24 9" stroke="#7B3FB0" stroke-width="3.2"/><path d="M29 21 h12 l-1.8 8 h-8.4 z" fill="#C9942D"/><path d="M35 21 V13" fill="none" stroke="#3E7A2E" stroke-width="2"/><path d="M35 16 q-6 -5 -7 -1 q2 3 7 1z" fill="#6BAE4F"/><path d="M35 13.5 q6 -6 7 -1.5 q-2 3.2 -7 1.5z" fill="#6BAE4F"/></g><g fill="#4FA3E3"><circle cx="25.5" cy="12.5" r="1.3"/><circle cx="27" cy="16" r="1.3"/><circle cx="25" cy="18.5" r="1.2"/></g></svg><b>${titulo || 'Registra tu práctica'}</b></p>
         ${extraHTML || ''}
-        <div class="ms-semana">${DIAS_SEMANA.map((d, i) => {
-          const lun = lunesDe(ahoraRegistro()), f = new Date(lun.getFullYear(), lun.getMonth(), lun.getDate() + i), v = veces[d] || 0;
-          return '<div class="ms-col"><button type="button" class="ms-dia toca' + (v ? ' hecho' : '') + '" data-dia="' + d + '"' + (i > hoy ? ' disabled' : '') + ' aria-label="' + d + ' ' + f.getDate() + (v > 1 ? ', ' + v + ' veces' : '') + '">'
-            + (v > 1 ? '<span class="ms-nveces">' + v + '✓</span>' : '<span>' + d + '</span>') + '<b>' + f.getDate() + '</b></button>' + (i === hoy ? '<small>HOY</small>' : '') + '</div>';
+        <div class="ms-semana">${dias().map(f => {
+          const d = letraDe(f), v = diaHechoFecha(f), iso = isoLocal(f);
+          return '<div class="ms-col"><button type="button" class="ms-dia toca' + (v ? ' hecho' : '') + '" data-iso="' + iso + '" aria-label="' + d + ' ' + f.getDate() + (v > 1 ? ', ' + v + ' veces' : '') + '">'
+            + (v > 1 ? '<span class="ms-nveces">' + v + '✓</span>' : '<span>' + d + '</span>') + '<b>' + f.getDate() + '</b></button>' + (iso === hoyIso ? '<small>HOY</small>' : '') + '</div>';
         }).join('')}</div>
-        <p class="dias-msg" style="font-size:12px;color:var(--ink-soft);margin:8px 0 0">${resumenDias(veces) ? 'Esta semana: ' + resumenDias(veces) : 'Toca el día en que hiciste tu práctica.'}</p>`;
+        <p class="dias-msg" style="font-size:12px;color:var(--ink-soft);margin:8px 0 0">${resumen7() ? 'Últimos 7 días: ' + resumen7() : 'Toca el día en que hiciste tu práctica.'}</p>`;
       // Al tocar un día: +1 (una vez más, hasta 9) o ✕ (no lo hice), como en las metas sencillas
-      card.querySelectorAll('.ms-semana [data-dia]:not([disabled])').forEach(b => b.onclick = () => {
+      card.querySelectorAll('.ms-semana [data-iso]').forEach(b => b.onclick = () => {
         const { pop, cerrar } = popJuntoA(b, '<button type="button" data-n="1" class="o-hecho" aria-label="Hecho, una vez más">+1</button><button type="button" data-n="0" class="o-fallo" aria-label="No lo hice">✕</button>');
         pop.querySelectorAll('button').forEach(o => o.onclick = () => {
           cerrar();
-          const d = b.dataset.dia, antes = veces[d] || 0, n = o.dataset.n === '1' ? antes + 1 : 0;
+          const f = new Date(b.dataset.iso + 'T12:00:00'), antes = diaHechoFecha(f), n = o.dataset.n === '1' ? antes + 1 : 0;
           if(n > 9){ avisoBreve('Ya llevas 9 este día: es el máximo.'); return; }
           if(n === antes) return;
           // De 0 a algo: sonidito y fuego artificial. A 0: solo se quita.
@@ -9180,25 +9189,28 @@ lo que haces cada día es lo que vas a ser.`;
             fuegoArtificial(r.left + r.width / 2, r.top + r.height / 2);
             sonidoRiego();
           }
-          cambiar(d, n);
+          cambiar(f, n);
         });
       });
     };
-    const cambiar = async (d, n) => {
-      const antes = Object.assign({}, veces), antesN = veces[d] || 0;
+    const cambiar = async (f, n) => {
+      const d = letraDe(f), sem = weekShort(f), antesN = diaHechoFecha(f);
+      let fila = lista().find(c => c.week === sem), nueva = false;
+      if(!fila){ fila = { id: null, week: sem, label: weekLabel(f), cumplida: false, nota: '', estadoSemana: '', compromisoVeces: null, vecesRealizadas: null, diasHechos: '' }; lista().push(fila); nueva = true; }
+      const textoAntes = fila.diasHechos || '', veces = leerDias(textoAntes);
       if(n > 0) veces[d] = n; else delete veces[d];
+      fila.diasHechos = escribirDias(veces);
       pintar();
       try {
-        const campos = {}; campos[AIR.fields.semana] = currentWeekShort; campos[AIR.fields.diasHechos] = escribirDias(veces);
+        const campos = {}; campos[AIR.fields.semana] = sem; campos[AIR.fields.diasHechos] = fila.diasHechos;
         const data = await guardarSemana(campos);
-        const lista = state.checkins[state.me] || (state.checkins[state.me] = []);
-        let fila = lista.find(c => c.week === currentWeekShort);
-        if(!fila){ fila = { id: data.id, week: currentWeekShort, label: currentWeekLabel, cumplida: false, nota: '', estadoSemana: '', compromisoVeces: null, vecesRealizadas: null }; lista.push(fila); }
-        fila.diasHechos = escribirDias(veces);
-        card.querySelector('.dias-msg').textContent = '✓ Guardado' + (resumenDias(veces) ? ' · esta semana: ' + resumenDias(veces) : '');
+        if(nueva && data && data.id) fila.id = data.id;
+        const r7 = resumen7();
+        card.querySelector('.dias-msg').textContent = '✓ Guardado' + (r7 ? ' · últimos 7 días: ' + r7 : '');
         if(alCambiar) alCambiar(d, antesN, n);
       } catch(e){
-        veces = antes; pintar();
+        if(nueva){ const i = lista().indexOf(fila); if(i >= 0) lista().splice(i, 1); } else fila.diasHechos = textoAntes;
+        pintar();
         card.querySelector('.dias-msg').textContent = 'No se pudo guardar. Revisa tu conexión e inténtalo de nuevo.';
       }
     };
@@ -12902,4 +12914,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Meta" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V14.76 · App Amable Meta · 2026-11-09 23:26==== -->
+<!-- ==== Fin del index V14.77 · App Amable Meta · 2026-11-09 23:31==== -->
