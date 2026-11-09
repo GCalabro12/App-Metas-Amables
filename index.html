@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V14.74 · App Amable Meta · 2026-11-09 15:04==== -->
+<!-- ==== index V14.75 · App Amable Meta · 2026-11-09 20:20==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1617,8 +1617,7 @@ button.dc{cursor:pointer}button.dc:disabled{cursor:default}
 .voz-cerrado svg{width:34px;height:34px;flex:none}.voz-cerrado b{display:block;color:#4A3A8C}.voz-cerrado span{font-size:14px;color:#555}
 .voz-abierto{background:#FFF7E0;border:2px solid #E0B341;border-radius:14px;padding:12px;margin:0 0 12px}
 /* Reproductor de las notas de voz (9-11-2026): arriba play, tiempo y volumen; abajo la línea de avance a todo lo ancho */
-.voz-archivar.nota-archivar{margin:14px 0 4px}
-.voz-archivar{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;margin:12px 0 0;padding:10px 12px;border-radius:12px;border:2px solid #C9A227;background:#fff;color:#7A5B12;font:inherit;font-weight:700;font-size:15px;cursor:pointer}
+.voz-archivar{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;margin:12px 0 6px;padding:10px 12px;border-radius:12px;border:2px solid #C9A227;background:#fff;color:#7A5B12;font:inherit;font-weight:700;font-size:15px;cursor:pointer}
 .aud{display:flex;flex-direction:column;gap:10px;background:#F3F1F6;border-radius:18px;padding:12px 14px;margin:4px 0 8px}
 .aud-fila{display:flex;align-items:center;gap:10px}
 .aud-play{width:42px;height:42px;flex:0 0 42px;border-radius:50%;border:0;background:#7B5FB8;color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0}
@@ -2467,7 +2466,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V14.74';
+  const APP_VERSION = 'V14.75';
   // ===== Pantalla de inicio: versión, sonido corto y salida (5-11-2026) =====
   (function(){
     const sp = document.getElementById('inicioSplash'); if(!sp) return;
@@ -9835,9 +9834,10 @@ lo que haces cada día es lo que vas a ser.`;
   // Se guarda en este móvil: [{ id, tipo, fecha, r, t }]. En «otras cartas», la valoración más nueva arriba.
   const REAC_CARTA = [['neutro', 'Neutro'], ['alegrado', 'Me ha alegrado'], ['emocionado', 'Me ha emocionado']];
   function reaccionesCartas(){ try { return JSON.parse(localStorage.getItem('cartas_reac_' + state.me) || '[]'); } catch(e){ return []; } }
-  function bloqueReaccionHTML(conCompartir){
+  function bloqueReaccionHTML(conCompartir, archivar){
     return '<div class="carta-reac"><p class="posit-intro">¿Qué te ha parecido esta carta?</p>'
       + '<div class="posit-reac">' + REAC_CARTA.map(([k, t]) => '<button type="button" data-r="' + k + '">' + t + '</button>').join('') + '</div>'
+      + (archivar || '')
       + (conCompartir ? '<button type="button" class="posit-compartir">' + icoMenu('compartir') + 'Compartir</button>' : '')
       + '<button type="button" class="link-quiet reac-otras">Ver qué te han parecido las otras cartas</button></div>';
   }
@@ -9899,10 +9899,9 @@ lo que haces cada día es lo que vas a ser.`;
     let positArchivada = false; try { positArchivada = !!(archivoPosit && localStorage.getItem(archivoPosit)); } catch(err){}
     if(e.estado === 'abrir' && positArchivada) state.positNueva = true;
     if(e.estado === 'abrir' && !state.positNueva){
-      caja.innerHTML = '<p class="posit-intro">Tu yo de principio del mes pasado te dejó esta nota:</p><div class="posit posit-abierto"><p class="posit-fecha">Escrita el ' + new Date(e.p.fecha + 'T00:00:00').toLocaleDateString('es-ES', { day: 'numeric', month: 'long' }) + '</p>' + escapeAttr(e.p.texto).replace(/\n/g, '<br>') + '</div>' + bloqueReaccionHTML(true)
+      caja.innerHTML = '<p class="posit-intro">Tu yo de principio del mes pasado te dejó esta nota:</p><div class="posit posit-abierto"><p class="posit-fecha">Escrita el ' + new Date(e.p.fecha + 'T00:00:00').toLocaleDateString('es-ES', { day: 'numeric', month: 'long' }) + '</p>' + escapeAttr(e.p.texto).replace(/\n/g, '<br>') + '</div>' + bloqueReaccionHTML(true, '<button type="button" class="voz-archivar" id="positArchivar">' + icoMenu('hecho') + 'Leída - Archivar</button>')
         + '<button type="button" class="btn-nota" id="positOtra">Escribir la nota para el lunes ' + diaUnoTexto(ultimoLunes(mesClave())) + '</button>';
       caja.querySelector('#positOtra').onclick = () => { state.positNueva = true; renderVista(); };
-      caja.querySelector('#positOtra').insertAdjacentHTML('beforebegin', '<button type="button" class="voz-archivar nota-archivar" id="positArchivar">' + icoMenu('hecho') + 'Leída - Archivar</button>');
       caja.querySelector('#positArchivar').onclick = () => {
         try { localStorage.setItem(archivoPosit, '1'); } catch(err){}
         avisoBreve('Nota archivada. Ya puedes escribir la nueva.');
@@ -10582,8 +10581,8 @@ lo que haces cada día es lo que vas a ser.`;
     if(!archivada) vozDescargar(isoLocal(pasado)).then(url => {
       if(!url) return;
       const z = card.querySelector('.voz-escuchar');
-      z.innerHTML = '<div class="voz-abierto"><p style="margin:0 0 6px;font-size:15px"><b><i data-ico=reloj></i>¡Ya puedes escuchar la nota que te dejaste el lunes ' + pasado.getDate() + '!</b></p>' + audioHTML(url) + bloqueReaccionHTML(false)
-        + '<button type="button" class="voz-archivar">' + icoMenu('hecho') + 'Escuchada - Archivar</button></div>';
+      z.innerHTML = '<div class="voz-abierto"><p style="margin:0 0 6px;font-size:15px"><b><i data-ico=reloj></i>¡Ya puedes escuchar la nota que te dejaste el lunes ' + pasado.getDate() + '!</b></p>' + audioHTML(url)
+        + bloqueReaccionHTML(false, '<button type="button" class="voz-archivar">' + icoMenu('hecho') + 'Escuchada - Archivar</button>') + '</div>';
       activarReaccion(z, 'semanal', 'semanal_' + isoLocal(pasado), isoLocal(pasado), '');
       z.querySelector('.voz-archivar').onclick = () => {
         try { localStorage.setItem(claveArchivo, '1'); localStorage.setItem('voz_oida_' + state.me + '_' + isoLocal(pasado), '1'); } catch(e){}
@@ -11890,7 +11889,7 @@ lo que haces cada día es lo que vas a ser.`;
             + '<div class="matasellos"><span>' + escapeAttr(fechaConAnio(new Date(c.fecha + 'T00:00:00'))) + '</span></div>'
             + '<p class="sobre-para">Para ' + escapeAttr(String(state.me || '').trim().split(' ')[0]) + '<br>del ' + diaUnoTexto(abre) + '</p></div>'
             + '<p class="sobre-texto"><b>Carta cerrada</b><br>Se abrirá el lunes ' + diaUnoTexto(abre) + '<br><small>Faltan ' + Math.ceil((abre - hoy) / 86400000) + ' días</small></p></div>'
-          : cartaLeidaHTML(c) + bloqueReaccionHTML(true) + '<button type="button" class="voz-archivar nota-archivar" id="cartaArchivar">' + icoMenu('hecho') + 'Leída - Archivar</button>')
+          : cartaLeidaHTML(c) + bloqueReaccionHTML(true, '<button type="button" class="voz-archivar" id="cartaArchivar">' + icoMenu('hecho') + 'Leída - Archivar</button>'))
         // Cerrada: no se puede reescribir. Ya abierta (trimestre nuevo): se puede escribir la del siguiente
         + (cerrada ? '' : '<button type="button" class="carta-btn-sec" id="cartaEditar">Escribir mi nota para el próximo trimestre</button>');
       const ed = caja.querySelector('#cartaEditar'); if(ed) ed.onclick = () => { caja.dataset.editando = '1'; pintarCartaFuturo(caja); };
@@ -12889,4 +12888,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Meta" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V14.74 · App Amable Meta · 2026-11-09 15:04==== -->
+<!-- ==== Fin del index V14.75 · App Amable Meta · 2026-11-09 20:20==== -->
