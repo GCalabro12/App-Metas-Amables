@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V14.69 · App Amable Meta · 2026-11-08 23:39==== -->
+<!-- ==== index V14.70 · App Amable Meta · 2026-11-09 11:06==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2728,7 +2728,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V14.69';
+  const APP_VERSION = 'V14.70';
   // ===== Pantalla de inicio: versión, sonido corto y salida (5-11-2026) =====
   (function(){
     const sp = document.getElementById('inicioSplash'); if(!sp) return;
@@ -13491,9 +13491,63 @@ lo que haces cada día es lo que vas a ser.`;
   if('serviceWorker' in navigator){
     window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js').catch(() => {}); });
   }
+
+  // ===== Autoactualización (9-11-2026, receta de Amable Sleep): al volver a la app (estaba abierta por detrás),
+  // mira si hay una versión nueva y, si la hay, se recarga sola con un aviso. Como mucho una vez por minuto.
+  // Lee version.txt (unos bytes) o, si falla, solo los primeros 200 bytes del index (línea 1 «index V…»): el index pesa 8 MB.
+  // No recarga si estás en mitad de algo (formulario, ventana abierta, texto escrito, música sonando): espera a que acabes.
+  const VISTAS_A_MEDIAS = ['formMeta', 'checkin', 'reflect', 'carta', 'contrato', 'encuesta', 'opinion', 'posit', 'habla', 'situacion', 'bienvenidaAlta', 'celebrate', 'practicaSemanal'];
+  function ocupadoParaActualizar(){
+    try {
+      if(VISTAS_A_MEDIAS.indexOf(state.view) >= 0) return true;
+      if(document.querySelector('[role="dialog"], [class$="-capa"], [class*="-capa "]')) return true;
+      if(musica.id && !musica.pausada) return true;
+      if(montanaSonando()) return true;
+      const a = document.activeElement;
+      if(a && /^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName)) return true;
+      for(const c of document.querySelectorAll('textarea, input[type="text"], input[type="email"], input:not([type])')){
+        if(c.value.trim() && c.value !== c.defaultValue) return true;
+      }
+    } catch(e){}
+    return false;
+  }
+  let ultMiraVersion = 0, versionPendiente = '', esperaVersion = null;
+  function recargarAVersion(v){
+    let ya = false; try { ya = sessionStorage.getItem('meta-recarga') === v; } catch(e){}
+    if(ya) return;                                      // una sola vez por versión: nunca en bucle
+    if(ocupadoParaActualizar()){                        // en mitad de algo: se vuelve a mirar (sin descargar nada) cada 20 s
+      versionPendiente = v;
+      clearTimeout(esperaVersion);
+      esperaVersion = setTimeout(() => { if(document.visibilityState === 'visible') recargarAVersion(v); }, 20000);
+      return;
+    }
+    try { sessionStorage.setItem('meta-recarga', v); } catch(e){}
+    avisoBreve('Actualizando a la ' + v + '…');
+    setTimeout(() => location.reload(), 900);
+  }
+  async function miraVersion(){
+    if(versionPendiente){ recargarAVersion(versionPendiente); return; }
+    if(Date.now() - ultMiraVersion < 60000 || location.protocol !== 'https:') return;
+    ultMiraVersion = Date.now();
+    try {
+      try { navigator.serviceWorker.getRegistration().then(r => r && r.update()).catch(() => {}); } catch(e){}
+      let v = null;
+      try {   // version.txt (lo escribe publicar-metas.ps1): unos pocos bytes
+        const rv = await fetch('./version.txt?v=' + Date.now(), { cache: 'no-store' });
+        if(rv.ok) v = ((await rv.text()).trim().match(/^V\d+\.\d+$/) || [])[0] || null;
+      } catch(e){}
+      if(!v){   // si no, los primeros 200 bytes del index.html
+        const r = await fetch('./?v=' + Date.now(), { cache: 'no-store', headers: { Range: 'bytes=0-200' } });
+        const t = (await r.text()).slice(0, 400);
+        v = (t.match(/==== index (V\d+\.\d+) /) || [])[1];
+      }
+      if(v && v !== APP_VERSION) recargarAVersion(v);
+    } catch(e){}
+  }
+  document.addEventListener('visibilitychange', () => { if(document.visibilityState === 'visible') miraVersion(); });
 })();
 </script>
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Meta" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V14.69 · App Amable Meta · 2026-11-08 23:39==== -->
+<!-- ==== Fin del index V14.70 · App Amable Meta · 2026-11-09 11:06==== -->
