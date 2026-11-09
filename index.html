@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V14.78 · App Amable Meta · 2026-11-09 23:37==== -->
+<!-- ==== index V14.79 · App Amable Meta · 2026-11-09 23:39==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2468,7 +2468,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V14.78';
+  const APP_VERSION = 'V14.79';
   // ===== Pantalla de inicio: versión, sonido corto y salida (5-11-2026) =====
   (function(){
     const sp = document.getElementById('inicioSplash'); if(!sp) return;
@@ -3860,7 +3860,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
   // Alarma de cada meta sencilla (3-11-2026, como la de Amable Fit): hora y días, guardados en este móvil.
   // Con la app Android que tenga alarma (window.AmableMetaAndroid.guardarAlarma) suena de verdad; en la web se apunta en el calendario del móvil
-  const ALARMA_HORA = '21:00', ALARMA_PRACTICA = 'practica';
+  const ALARMA_HORA = '21:00';
   function alarmasSencillas(){ try { return JSON.parse(localStorage.getItem('ms-alarmas')) || {}; } catch(e){ return {}; } }
   function alarmaSencilla(m){
     const a = alarmasSencillas()[m.id], dias = a && Array.isArray(a.dias) ? DIAS_SEMANA.filter(L => a.dias.includes(L)) : [];
@@ -9219,7 +9219,6 @@ lo que haces cada día es lo que vas a ser.`;
       }
     };
     pintar();
-    card.appendChild(recordatorioDiarioHTML());
     return card;
   }
 
@@ -9330,25 +9329,6 @@ lo que haces cada día es lo que vas a ser.`;
       const p = new URLSearchParams({ action: 'TEMPLATE', text: titulo, details: detalle, dates: loc(ini) + '/' + loc(fin), recur: rrule });
       window.open('https://calendar.google.com/calendar/render?' + p.toString(), '_blank', 'noopener');
     }
-  }
-  function recordatorioDiarioHTML(){
-    if(oculto('recordatorio')) return document.createDocumentFragment();   // «Mostrar» sin el recordatorio del calendario
-    const caja = document.createElement('div');
-    caja.style.cssText = 'border-top:1px solid var(--border);margin-top:14px;padding-top:12px';
-    caja.innerHTML = '<button type="button" class="ms-alarma">' + textoAlarmaSencilla({ id: ALARMA_PRACTICA }) + '</button>';
-    // La misma alarma que en las metas sencillas (hora y días), para la práctica de tu meta
-    const bt = caja.querySelector('.ms-alarma');
-    bt.onclick = () => {
-      const lista = state.checkins[state.me] || [];
-      const ultima = lista.slice().reverse().find(c => c.metaSem && c.metaSem.trim());
-      // El título empieza por tu práctica (o tu meta), con el brote 🌱 de Amable Meta
-      const meta = String(((state.gamifica && state.gamifica.datosFormulario) || {}).metaTexto || textosCiclo().meta || '').trim();
-      const textoRec = (meta || (ultima ? ultima.metaSem : '') || 'Mi práctica de Amable Meta').trim().replace(/[.。]+$/, '');
-      const titulo = '' + (textoRec.length > 70 ? textoRec.slice(0, 69).trim() + '…' : textoRec);
-      const detalle = (ultima ? 'Tu práctica: ' + ultima.metaSem + '\n\n' : '') + 'Amable Meta · primero mira cómo está tu clima y después registra si hiciste tu práctica: https://app.practicaintegral.club';
-      abrirAlarmaSencilla({ id: ALARMA_PRACTICA, nombre: textoRec, diasDef: DIAS_SEMANA.slice(), cab: '<i data-ico=alarma></i>Alarma de tu práctica', titulo, detalle }, () => { bt.innerHTML = textoAlarmaSencilla({ id: ALARMA_PRACTICA }); });
-    };
-    return caja;
   }
 
   // Prácti de la sesión grupal: al tocarlo se rompe la pantalla (animación en
@@ -10404,7 +10384,7 @@ lo que haces cada día es lo que vas a ser.`;
     const yaPermitido = permiso === 'granted' && !quitados;
     if(yaPermitido && !pushActivo()) activarAvisosPlanta(true);
     if(!pushActivo() && !yaPermitido){
-      p.innerHTML = 'Ahora el móvil no te avisa. <button type="button" class="rp-hora-btn">Activar el aviso</button>';
+      p.innerHTML = '<b>Aviso para registrar tu práctica:</b> desactivado. <button type="button" class="rp-hora-btn">Activar</button>';
       p.querySelector('button').onclick = async () => {
         // Un solo toque: el móvil pregunta una vez. Solo si el permiso está bloqueado se abre la guía para desbloquearlo
         if(permiso !== 'denied' && await activarAvisosPlanta(true)){ pintarHoraAviso(p); avisoBreve('Listo: te avisaré a las ' + horaAviso() + ':00 si aún no has registrado.'); return; }
@@ -10413,7 +10393,7 @@ lo que haces cada día es lo que vas a ser.`;
       };
       return;
     }
-    p.innerHTML = 'Ahora el móvil te avisa a las <b>' + horaAviso() + ':00</b>. <button type="button" class="rp-hora-btn">Cambiar</button>';
+    p.innerHTML = '<b>Aviso para registrar tu práctica:</b> a las ' + horaAviso() + ':00. <button type="button" class="rp-hora-btn">Cambiar</button>';
     p.querySelector('button').onclick = () => {
       let ops = ''; for(let h = 7; h <= 23; h++) ops += '<option value="' + h + '"' + (h === horaAviso() ? ' selected' : '') + '>' + h + ':00</option>';
       p.innerHTML = '¿A qué hora te aviso? <select class="rp-hora-sel">' + ops + '</select><button type="button" class="rp-hora-btn">Guardar</button><span class="rp-hora-msg"></span>';
@@ -12918,4 +12898,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Meta" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V14.78 · App Amable Meta · 2026-11-09 23:37==== -->
+<!-- ==== Fin del index V14.79 · App Amable Meta · 2026-11-09 23:39==== -->
