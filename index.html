@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V14.77 · App Amable Meta · 2026-11-09 23:31==== -->
+<!-- ==== index V14.78 · App Amable Meta · 2026-11-09 23:37==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1157,6 +1157,8 @@ body.riego-abierto{overflow:hidden}
 .riego-capa .abonar,.riego-capa .rp-seccion,.riego-capa .entorno.rp-marco{border:2px solid rgba(169,50,38,.35);box-shadow:0 4px 14px rgba(0,0,0,.06)}
 .riego-capa .entorno.rp-marco{width:min(420px,100%);max-width:none;margin:16px auto 0;padding:16px 12px 14px;border-radius:20px;background:rgba(255,255,255,.88);text-align:center;box-sizing:border-box}
 .riego-capa .abonar,.riego-capa .rp-seccion{margin-top:16px}
+.riego-capa .rp-seccion{border-color:#6B9362}
+.riego-capa .rp-sencillas{border-color:var(--ms-c,#C9942D)!important}
 .metas-sub{margin:2px 0 10px;font:800 17px Karla,sans-serif;letter-spacing:.04em;text-transform:uppercase;color:#5B4A1E}
 .metas-cab{display:flex;align-items:center;gap:14px;margin:0 0 12px}.metas-cab .panel-badge{margin:0}
 .ms-bloque{margin-top:14px}
@@ -2466,7 +2468,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V14.77';
+  const APP_VERSION = 'V14.78';
   // ===== Pantalla de inicio: versión, sonido corto y salida (5-11-2026) =====
   (function(){
     const sp = document.getElementById('inicioSplash'); if(!sp) return;
@@ -4250,11 +4252,13 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   function registroSencillas(){
     const activas = sencillasActivas();
     if(!activas.length) return null;
-    const caja = el('<div class="rp-sencillas"><p class="abonar-tit">5 · <i data-ico=check></i>Tu ' + TXT_SENCILLA.toLowerCase() + (activas.length > 1 ? ' 1' : '') + '</p>' + LEYENDA_SENCILLA + '</div>').firstElementChild;
+    // Cada una en su recuadro (9-11-2026, Gustavo): la 1 con borde dorado y la 2 con borde marrón, como sus círculos
+    const caja = document.createDocumentFragment();
     activas.forEach((m, i) => {
-      // La segunda, con su propio título: «Tu meta sencilla 2»
-      const f = el('<div class="ms-reg' + (i ? ' ms-b' : '') + '">' + (i ? '<p class="abonar-tit ms-reg-tit"><i data-ico=check></i>Tu ' + TXT_SENCILLA.toLowerCase() + ' ' + (i + 1) + '</p>' : '') + '<p class="ms-nombre">' + escapeAttr(m.nombre) + (vecesSemanaSencilla(m) ? ' <small>· ' + textoDiasSencilla(m) + '</small>' : '') + '</p>' + sieteDiasSencillaHTML(m) + '</div>').firstElementChild;
-      caja.appendChild(f);
+      const marco = el('<div class="rp-sencillas' + (i ? ' ms-b' : '') + '"><p class="abonar-tit"><i data-ico=check></i>Tu ' + TXT_SENCILLA.toLowerCase() + (activas.length > 1 ? ' ' + (i + 1) : '') + '</p>' + (i ? '' : LEYENDA_SENCILLA) + '</div>').firstElementChild;
+      caja.appendChild(marco);
+      const f = el('<div class="ms-reg' + (i ? ' ms-b' : '') + '">' + '<p class="ms-nombre">' + escapeAttr(m.nombre) + (vecesSemanaSencilla(m) ? ' <small>· ' + textoDiasSencilla(m) + '</small>' : '') + '</p>' + sieteDiasSencillaHTML(m) + '</div>').firstElementChild;
+      marco.appendChild(f);
       enlazarDiasSencilla(f, m.id, (est, b) => pintarDiaSencilla(b, est, vecesDiaSencilla(datosSencillas().lista.find(x => x.id === m.id) || {}, b.dataset.iso)));
     });
     return caja;
@@ -10764,7 +10768,7 @@ lo que haces cada día es lo que vas a ser.`;
       + '<button type="button" class="riego-cerrar" aria-label="Cerrar">✕</button><button type="button" class="riego-ir">Ir a Amable Meta</button><button type="button" class="riego-son" aria-label="Música"><i data-ico=altavoz></i></button>'
       + '<h2 class="riego-tit">Registra cada día</h2><p class="rp-intro">Al menos tus sentimientos y tu entorno.</p>'
       + '<p class="rp-hora-tip">Mejor siempre a la misma hora.</p><p class="rp-hora"></p>'
-      + '<div class="rp-seccion"><p class="abonar-tit">3 · Tu meta con guía</p>'
+      + '<div class="rp-seccion"><p class="abonar-tit">Tu meta con guía</p>'
       + ((practica || meta) ? '<p class="rp-practica">«' + escapeAttr(practica || meta) + '»</p>' : '')
       + '<p class="riego-consejo">' + escapeAttr(consejo) + '</p>'
       + '<div class="riego-escena"><span class="riego-sol"></span><span class="riego-mariposa">🦋</span><span class="riego-brillo b1"></span><span class="riego-brillo b2"></span><span class="riego-brillo b3"></span>'
@@ -10779,7 +10783,7 @@ lo que haces cada día es lo que vas a ser.`;
       const clima = crearMacetaAbonar(null, true), rp = capa.querySelector('.rp-seccion');
       capa.insertBefore(clima, rp);
       const ent = clima.querySelector('.entorno');
-      if(ent){ ent.classList.add('rp-marco'); capa.insertBefore(ent, rp); }   // 2 · entorno, en su propio marco
+      if(ent){ ent.classList.add('rp-marco'); capa.insertBefore(ent, rp); }   // el entorno, en su propio marco
     } catch(e){}
     // Cómo vas esta semana (los días y la alarma), en el mismo recuadro que tu práctica de hoy
     const hoyLetra = DIAS_SEMANA[(ahoraRegistro().getDay() + 6) % 7];
@@ -10820,7 +10824,7 @@ lo que haces cada día es lo que vas a ser.`;
       } catch(e){ console.error('Semana:', e); }
     };
     ponerSemana();
-    // 5 · Las metas sencillas, debajo de todo lo de la meta con guía
+    // Las metas sencillas, debajo de todo lo de la meta con guía
     try { const ms = registroSencillas(); if(ms) capa.appendChild(ms); } catch(e){ console.error('Metas sencillas:', e); }
     // Abajo del todo, el mismo «Ir a Amable Meta» que arriba (la semana se repinta en su sitio, así que este botón sigue el último)
     const irAbajo = el('<button type="button" class="riego-ir-abajo">← Volver a Amable Meta</button>').firstElementChild;
@@ -10947,9 +10951,9 @@ lo que haces cada día es lo que vas a ser.`;
 
   function crearMacetaAbonar(alGuardar, numerado){
     let sel = abonoDeHoy(), modo = sel.length ? 'ver' : 'grid', guardado = sel.length > 0;
-    const caja = el('<div class="abonar"><p class="abonar-tit">' + (numerado ? '1 · ' : '') + '<i data-ico=sol></i>Tus sentimientos de hoy</p><p class="abonar-sub">Aceptar lo que sientes es un acto que te ayuda a cumplir tu meta. <b>¿Cómo te has sentido hoy, en general?</b></p>'
+    const caja = el('<div class="abonar"><p class="abonar-tit"><i data-ico=sol></i>Tus sentimientos de hoy</p><p class="abonar-sub">Aceptar lo que sientes es un acto que te ayuda a cumplir tu meta. <b>¿Cómo te has sentido hoy, en general?</b></p>'
       + '<p class="abonar-eje">Más energía</p><div class="clima-fila"><span class="clima-lado izq">Desagradable</span><div class="clima-sol">' + RAYOS_SOL + '<div class="clima-disco"></div></div><span class="clima-lado der">Agradable</span></div><p class="abonar-eje">Menos energía</p>'
-      + '<div class="entorno"><p class="abonar-tit">' + (numerado ? '2 · ' : '') + '<svg class="entorno-ico" viewBox="0 0 20 20" aria-hidden="true"><rect x="2" y="2" width="8" height="8" fill="#FFFFFF"/><rect x="10" y="2" width="8" height="8" fill="#D4D4D4"/><rect x="2" y="10" width="8" height="8" fill="#9C9C9C"/><rect x="10" y="10" width="8" height="8" fill="#565656"/><rect x="2" y="2" width="16" height="16" rx="3" fill="none" stroke="#565656" stroke-width="1.5"/></svg> Tu entorno de hoy</p>'
+      + '<div class="entorno"><p class="abonar-tit"><svg class="entorno-ico" viewBox="0 0 20 20" aria-hidden="true"><rect x="2" y="2" width="8" height="8" fill="#FFFFFF"/><rect x="10" y="2" width="8" height="8" fill="#D4D4D4"/><rect x="2" y="10" width="8" height="8" fill="#9C9C9C"/><rect x="10" y="10" width="8" height="8" fill="#565656"/><rect x="2" y="2" width="16" height="16" rx="3" fill="none" stroke="#565656" stroke-width="1.5"/></svg> Tu entorno de hoy</p>'
       + '<p class="abonar-sub">Lo que ocurre en tu entorno no depende de ti, pero influye en tu práctica.</p><div class="entorno-ops">'
       + ENTORNOS.map(x => '<button type="button" class="entorno-op" data-n="' + x.n + '"><span class="entorno-cuadro" style="background:' + x.c + '"></span>' + x.t + '</button>').join('')
       + '</div><p class="entorno-msg"></p></div>'
@@ -12914,4 +12918,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Meta" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V14.77 · App Amable Meta · 2026-11-09 23:31==== -->
+<!-- ==== Fin del index V14.78 · App Amable Meta · 2026-11-09 23:37==== -->
