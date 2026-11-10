@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V14.91 · App Amable Meta · 2026-11-10 09:09==== -->
+<!-- ==== index V14.92 · App Amable Meta · 2026-11-10 09:11==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -808,7 +808,7 @@ body.con-fondo-nivel{background:#fff}
 body.con-fondo-vivo{background:#3A2A8C}
 /* Inicio con el fondo oscuro: los textos que van directamente sobre él, en claro */
 body.con-fondo-vivo .wordmark{color:#FFFFFF}
-.wordmark-nombre{display:inline-flex;align-items:center;gap:10px;font-family:'Anton',sans-serif;font-weight:400;font-size:30px;line-height:1;letter-spacing:.03em}
+.wordmark-nombre{display:inline-flex;align-items:center;gap:10px;font-family:'Anton',sans-serif;font-weight:400;font-size:24px;line-height:1;letter-spacing:.03em}
 .wordmark-ico{width:34px;height:34px;border-radius:9px;flex:none;box-shadow:0 1px 4px rgba(0,0,0,.18)}
 body.con-fondo-vivo .lema, body.con-fondo-vivo .fecha-hoy{color:#E6DEFF}
 body.con-fondo-vivo .version-tag{color:#CFC3F5}
@@ -2505,7 +2505,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V14.91';
+  const APP_VERSION = 'V14.92';
   // ===== Pantalla de inicio: versión, sonido corto y salida (5-11-2026) =====
   (function(){
     const sp = document.getElementById('inicioSplash'); if(!sp) return;
@@ -5024,7 +5024,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       <button class="menu-item" id="ajustesBtn">${icoMenu('ajustes')}Ajustes</button>
       <button class="menu-item" id="mpAyuda">${icoMenu('ayuda')}Centro de ayuda</button>
       <button class="menu-item" id="mpOpinion">${icoMenu('comentario')}Comentarios y mejoras para la app</button>
-      ${soyModerador() ? '<button class="menu-item" id="miInicioBtn">' + icoMenu('hogar') + 'Inicio <small style="font-weight:600;color:var(--ink-soft)">(cambiar de cuenta)</small></button><button class="menu-item" id="miPanelFacBtn">' + icoMenu('panel') + 'Panel de control <small style="font-weight:600;color:var(--ink-soft)">(solo lo ve admin Metas A.)</small></button><button class="menu-item" id="miSituacionBtn">' + icoMenu('grupo') + 'Situación de tu grupo</button>' : ''}
+      ${soyModerador() ? '<button class="menu-item" id="miPanelFacBtn" style="color:#7A7F87">' + icoMenu('panel') + '<span>Panel de control (solo lo ve el admin de Metas A.)</span></button><button class="menu-item" id="miSituacionBtn">' + icoMenu('grupo') + 'Situación de tu grupo</button>' : ''}
       ${esCuentaPruebas() && !soyModerador() ? `<div class="menu-divider"></div>
       <p style="font-size:13px;font-weight:700;margin:6px 14px 4px">Moderador · entrar como:</p>
       <div style="display:flex;gap:6px;flex-wrap:wrap;margin:0 14px 8px">${[['Libre (moderador)','Libre'],['Guías (moderador)','Guías'],['Gustavo','Guías + Grupo']].map(([cuenta, t]) =>
@@ -5061,7 +5061,6 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     };
     if(panel.querySelector('#miSituacionBtn')) panel.querySelector('#miSituacionBtn').onclick = () => { state.menuOpen = false; state.prevView = 'panel'; state.view = 'situacion'; window.scrollTo(0,0); render(); };
     if(panel.querySelector('#miPanelFacBtn')) panel.querySelector('#miPanelFacBtn').onclick = () => { state.menuOpen = false; abrirPanelFacilitador(); };
-    if(panel.querySelector('#miInicioBtn')) panel.querySelector('#miInicioBtn').onclick = () => { state.menuOpen = false; switchUser(); };
     // Moderador: cambiar de plan al momento para probar la app (solo en este móvil)
     // Moderador: pasar a otra de sus cuentas de prueba (Libre / Guías / Gustavo) sin contraseña
     panel.querySelectorAll('.mod-cuenta').forEach(b => b.onclick = () => entrarComoCuenta(b));
@@ -5415,6 +5414,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 
   function renderPanelFacilitador(){
     renderBackTopbar('<i data-ico=llave></i>PANEL DE CONTROL ADMIN METAS A.');
+    const bInicio = el('<button type="button" class="pf-btn" style="width:100%;margin:0 0 12px"><i data-ico=persona></i>Inicio · cambiar de cuenta</button>').firstElementChild;
+    bInicio.onclick = switchUser; app.appendChild(bInicio);
     const p = state.panelFac || {}, d = p.datos;
     const fichaDe = d && state.pfPersona ? (d.personas || []).find(x => x.nombre === state.pfPersona) : null;
     if(fichaDe){ renderFichaPersona(d, fichaDe); return; }
@@ -12938,4 +12939,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Meta" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V14.91 · App Amable Meta · 2026-11-10 09:09==== -->
+<!-- ==== Fin del index V14.92 · App Amable Meta · 2026-11-10 09:11==== -->
