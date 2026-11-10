@@ -38,6 +38,12 @@ p{margin:0}.soft{color:var(--soft)}.small{font-size:14px}
 .logos a{display:block;line-height:0}
 .logo-am{width:48px;height:48px;border-radius:12px;display:block}
 .logo-pi{height:48px;width:auto;background:#fff;border:1px solid var(--line);border-radius:10px;padding:3px 8px;display:block}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.fija{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);display:flex;flex-direction:column;gap:4px;padding-block:8px 10px;border-bottom:1px solid var(--line);margin-top:-8px}
+.fija h1{font-size:clamp(24px,5.5vw,36px)}
+.fija .lema{margin-top:0}
+.fija-fila{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.version{font-size:12px;color:var(--soft);font-variant-numeric:tabular-nums;white-space:nowrap;border:1px solid var(--line);border-radius:999px;padding:2px 8px}
 .card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:24px;display:flex;flex-direction:column;gap:16px}
 .bar{height:6px;background:var(--chip);border-radius:9px;overflow:hidden}.bar i{display:block;height:100%;background:var(--accent);transition:width .3s}
 .nav{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
@@ -81,9 +87,12 @@ input[type=text],input[type=email],input[type=tel]{font:inherit;font-weight:400;
       <a href="https://app.practicaintegral.club/" target="_blank" rel="noopener"><img src="icon-192.png" alt="Amable Meta" class="logo-am" width="48" height="48"></a>
       <a href="https://practicaintegral.club/" target="_blank" rel="noopener"><img src="logo-practica-integral.png" alt="Práctica Integral" class="logo-pi" width="115" height="48"></a>
     </div>
-    <h1>Descubre tu meta principal</h1>
-    <p class="lema">Sin distracciones. Solo tu meta.</p>
   </header>
+  <!-- Título fijo arriba al bajar por la página; a la derecha, la versión publicada -->
+  <div class="fija">
+    <div class="fija-fila"><h1>Descubre tu meta principal</h1><span class="version" id="version"></span></div>
+    <p class="lema">Sin distracciones. Solo tu meta.</p>
+  </div>
 
   <section class="card" id="p0">
     <h2 tabindex="-1">¿Qué parte de tu vida te está pidiendo atención?</h2>
@@ -153,6 +162,9 @@ input[type=text],input[type=email],input[type=tel]{font:inherit;font-weight:400;
 </div>
 
 <script>
+// Versión de la página: subirla en cada publicación (sale arriba a la derecha)
+const VERSION_PAGINA = 'v1.03';
+document.getElementById('version').textContent = VERSION_PAGINA;
 const APIS = ['https://metas-amables-api.proud-hill-016b.workers.dev', 'https://rigid-thrush-3387.gcalabro12.deno.net'];
 const CLAVE = 'testMetaPrincipal';
 const D = {

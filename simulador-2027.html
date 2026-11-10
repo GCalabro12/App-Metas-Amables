@@ -45,6 +45,13 @@ p{margin:0}.soft{color:var(--soft)}.small{font-size:14px}
 .logo-am{width:48px;height:48px;border-radius:12px;display:block}
 .logo-pi{height:48px;width:auto;background:#fff;border:1px solid var(--line);border-radius:10px;padding:3px 8px;display:block}
 .titulo-sim{display:flex;align-items:center;gap:12px}
+/* Barra fija: título, lema y paso siguen arriba al bajar */
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.fija{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);display:flex;flex-direction:column;gap:6px;padding-block:8px 10px;border-bottom:1px solid var(--line);margin-top:-8px}
+.fija h1{font-size:clamp(26px,6vw,40px)}
+.fija .lema{margin-top:0}
+.fija-fila{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.version{font-size:12px;color:var(--soft);font-variant-numeric:tabular-nums;white-space:nowrap;border:1px solid var(--line);border-radius:999px;padding:2px 8px}
 .ico-sim{width:clamp(34px,7vw,44px);height:auto;flex:none}
 /* Muestra del panel final en la portada */
 .muestra{display:flex;flex-direction:column;gap:10px}
@@ -76,6 +83,9 @@ p{margin:0}.soft{color:var(--soft)}.small{font-size:14px}
 input[type=text],input[type=email],input[type=tel],textarea{font:inherit;font-weight:400;background:var(--bg);color:var(--fg);border:1.5px solid var(--line);border-radius:10px;padding:12px 14px;width:100%}
 textarea{resize:vertical;min-height:96px}
 .carta{min-height:220px;font-family:var(--display);font-size:16px;line-height:1.6}
+.mic{align-self:flex-start;display:inline-flex;align-items:center;gap:8px;padding:8px 16px;font-size:15px}
+.mic svg{width:18px;height:18px;flex:none}
+.mic.grabando{background:var(--accent);color:var(--on-accent)}
 .rango{display:grid;grid-template-columns:1fr auto;gap:2px 12px;align-items:center}
 .rango b{font-size:22px;font-variant-numeric:tabular-nums;min-width:2ch;text-align:right;color:var(--accent)}
 .rango .soft{grid-column:1/-1;font-size:14px;margin-top:-2px}
@@ -116,7 +126,7 @@ summary{cursor:pointer;font-weight:700;color:var(--accent2)}
  /* El PDF siempre en claro, también con el móvil en modo oscuro */
  :root,:root:not([data-theme="light"]),:root[data-theme="dark"]{--bg:#fff;--card:#fff;--fg:#26343B;--soft:#55636A;--line:#E8DCCB;--accent:#C8642F;--accent2:#3F6F66;--chip:#F6EEE3;color-scheme:light}
  body{padding:0;background:#fff;font-size:12.5pt}
- .noprint,#cabecera,#progreso,.pie{display:none!important}
+ .noprint,#cabecera,#fija,#progreso,.pie{display:none!important}
  .wrap{max-width:none}
  #p6{border:0;padding:0}
  #panel{border:1px solid #E8DCCB}
@@ -132,13 +142,16 @@ summary{cursor:pointer;font-weight:700;color:var(--accent2)}
       <a href="https://app.practicaintegral.club/" target="_blank" rel="noopener"><img src="icon-192.png" alt="Amable Meta" class="logo-am" width="48" height="48"></a>
       <a href="https://practicaintegral.club/" target="_blank" rel="noopener"><img src="logo-practica-integral.png" alt="Práctica Integral" class="logo-pi" width="115" height="48"></a>
     </div>
-    <h1 class="titulo-sim"><svg class="ico-sim" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="21.5" fill="none" stroke="var(--line)" stroke-width="1.5"/><path d="M24 24L24 4A20 20 0 0 1 44 24Z" fill="var(--c-cuerpo)"/><path d="M24 24L38 24A14 14 0 0 1 24 38Z" fill="var(--c-entorno)"/><path d="M24 24L24 42A18 18 0 0 1 6 24Z" fill="var(--c-relaciones)"/><path d="M24 24L13 24A11 11 0 0 1 24 13Z" fill="var(--c-mente)"/></svg>Simulador 2027</h1>
-    <p class="lema">Sin distracciones. Solo tu meta.</p>
   </header>
 
-  <div id="progreso" hidden>
-    <p class="soft small" id="pasoTxt"></p>
-    <div class="bar"><i id="pasoBar" style="width:0"></i></div>
+  <!-- Título y paso fijos arriba al bajar por la página; a la derecha, la versión publicada -->
+  <div class="fija" id="fija">
+    <div class="fija-fila"><h1 class="titulo-sim"><svg class="ico-sim" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="21.5" fill="none" stroke="var(--line)" stroke-width="1.5"/><path d="M24 24L24 4A20 20 0 0 1 44 24Z" fill="var(--c-cuerpo)"/><path d="M24 24L38 24A14 14 0 0 1 24 38Z" fill="var(--c-entorno)"/><path d="M24 24L24 42A18 18 0 0 1 6 24Z" fill="var(--c-relaciones)"/><path d="M24 24L13 24A11 11 0 0 1 24 13Z" fill="var(--c-mente)"/></svg>Simulador 2027</h1><span class="version" id="version"></span></div>
+    <p class="lema">Sin distracciones. Solo tu meta.</p>
+    <div id="progreso" hidden>
+      <p class="soft small" id="pasoTxt"></p>
+      <div class="bar"><i id="pasoBar" style="width:0"></i></div>
+    </div>
   </div>
 
   <!-- 0 · Entrada -->
@@ -275,6 +288,9 @@ summary{cursor:pointer;font-weight:700;color:var(--accent2)}
 </div>
 
 <script>
+// Versión de la página: subirla en cada publicación (sale arriba a la derecha)
+const VERSION_PAGINA = 'v1.05';
+document.getElementById('version').textContent = VERSION_PAGINA;
 const APIS = ['https://metas-amables-api.proud-hill-016b.workers.dev', 'https://rigid-thrush-3387.gcalabro12.deno.net'];
 const CLAVE = 'simulador2027';
 const PASOS = ['', 'Tu punto de partida', 'El precio de no cambiar', 'Una carta desde el 31-12-2027', 'Una sola meta', 'Tus primeros 90 días', 'Tu panel 2027'];
@@ -376,7 +392,32 @@ function chips(cont, lista, activo, alPulsar){
 }
 const dimChips = (cont, campo, despues) => chips(cont, DIMS.map(k => [k, esc(D[k].n) + ' <small>' + S.rueda[k] + '/10 · ' + esc(D[k].hint) + '</small>']),
   k => S[campo] === k, k => { S[campo] = k; S[campo + 'Elegida'] = true; guardar(); despues && despues(); });
-const enlazar = (id, campo) => { const el = $(id); el.value = S[campo] || ''; el.oninput = () => { S[campo] = el.value; guardar(); }; };
+// Algunos textos empiezan ya escritos para que la persona solo tenga que seguir; si no añade nada, cuentan como vacíos
+const INICIOS = { precio: 'Si nada cambia, dentro de un año, ', carta: 'Hoy es 31 de diciembre de 2027 y ' };
+const enlazar = (id, campo) => { const el = $(id), ini = INICIOS[campo] || ''; el.value = S[campo] || ini;
+  el.oninput = () => { S[campo] = ini && el.value.trim() === ini.trim() ? '' : el.value; guardar(); };
+  if(ini) el.onfocus = () => setTimeout(() => { if(el.value === ini){ const n = el.value.length; el.setSelectionRange(n, n); } }, 0); };
+
+// Dictar con el micrófono (Chrome, Edge, Safari): el botón solo sale donde el navegador lo permite
+const Reco = window.SpeechRecognition || window.webkitSpeechRecognition;
+const MIC = '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21M8.5 21h7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>';
+function microfono(id){
+  const ta = $(id); if(!Reco || ta.dataset.mic) return; ta.dataset.mic = '1';
+  const b = document.createElement('button'); b.type = 'button'; b.className = 'btn ghost mic'; b.innerHTML = MIC + '<span>Dictar con el micrófono</span>';
+  ta.closest('label').insertAdjacentElement('afterend', b);
+  let r = null;
+  const parar = txt => { r = null; b.classList.remove('grabando'); b.querySelector('span').textContent = txt || 'Dictar con el micrófono'; };
+  b.onclick = () => {
+    if(r){ r.stop(); return; }
+    try { r = new Reco(); } catch(e){ return parar('El micrófono no está disponible'); }
+    r.lang = 'es-ES'; r.continuous = true; r.interimResults = false;
+    r.onresult = e => { let t = ''; for(let i = e.resultIndex; i < e.results.length; i++) if(e.results[i].isFinal) t += e.results[i][0].transcript;
+      t = t.trim(); if(!t) return; const v = ta.value; ta.value = v + (v && !/\s$/.test(v) ? ' ' : '') + t; ta.dispatchEvent(new Event('input')); };
+    r.onerror = e => parar(e.error === 'not-allowed' || e.error === 'service-not-allowed' ? 'Da permiso al micrófono en el navegador' : 'No se ha oído nada. Prueba otra vez');
+    r.onend = () => { if(r) parar(); };
+    r.start(); b.classList.add('grabando'); b.querySelector('span').textContent = 'Escuchando… pulsa para parar';
+  };
+}
 const rellenar = (cont, lista, id, campo) => chips(cont, lista.map(t => [t, esc(t)]), t => S[campo] === t, t => { S[campo] = t; $(id).value = t; guardar(); });
 
 // Paso 1: las 4 partes van numeradas; cada una cuenta como puntuada cuando la persona toca su barra.
@@ -421,11 +462,11 @@ function paso2(){
   const pinta = () => { $('precioPregunta').firstChild.textContent = 'Si el 31 de diciembre de 2027 todo sigue igual en ' + D[S.dim2].n.toLowerCase() + ', ¿qué te habrá costado?'; };
   dimChips($('dim2'), 'dim2', pinta); pinta();
   chips($('costes'), COSTES.map(t => [t, esc(t)]), t => S.costes.includes(t), t => { S.costes = S.costes.includes(t) ? S.costes.filter(x => x !== t) : S.costes.concat(t); guardar(); });
-  enlazar('precio', 'precio');
+  enlazar('precio', 'precio'); microfono('precio');
 }
 function paso3(){
   $('cartaPistas').textContent = D[S.dim2 || masBaja()].pistas + ' ¿Qué le dirías a quien eres hoy?';
-  enlazar('carta', 'carta'); enlazar('palabra', 'palabra');
+  enlazar('carta', 'carta'); microfono('carta'); enlazar('palabra', 'palabra');
   rellenar($('palabras'), PALABRAS, 'palabra', 'palabra');
 }
 function paso4(){
