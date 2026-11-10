@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V15.25 · App Amable Meta · 2026-11-11 00:14==== -->
+<!-- ==== index V15.26 · App Amable Meta · 2026-11-11 00:17==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2163,6 +2163,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
         } };
       window.vozNativaFin = (id, error) => {
         const u = pend[id]; if(!u) return; delete pend[id]; poli.speaking = Object.keys(pend).length > 0;
+        // Si el móvil no ha podido hablar, se dice (11-11-2026: Prácti se quedaba mudo sin saber por qué)
+        if(error && error !== 'cortada') try { avisoBreve(error === 'sin-voz' ? 'Tu móvil no tiene activada la voz (síntesis de voz de Google). Actívala en los ajustes del móvil.' : 'El móvil no ha podido leerlo en voz alta (' + error + ').'); } catch(e){}
         const f = (error && error !== 'cortada') ? (u.onerror || u.onend) : u.onend;
         try { if(f) f.call(u, { utterance: u, error: error || '' }); } catch(e){}
       };
@@ -2770,7 +2772,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V15.25';
+  const APP_VERSION = 'V15.26';
   // ===== Pantalla de inicio: versión, sonido corto y salida (5-11-2026) =====
   (function(){
     const sp = document.getElementById('inicioSplash'); if(!sp) return;
@@ -13329,4 +13331,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Meta" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V15.25 · App Amable Meta · 2026-11-11 00:14==== -->
+<!-- ==== Fin del index V15.26 · App Amable Meta · 2026-11-11 00:17==== -->
