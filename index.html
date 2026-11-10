@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V15.10 · App Amable Meta · 2026-11-10 15:16==== -->
+<!-- ==== index V15.11 · App Amable Meta · 2026-11-10 15:19==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1530,6 +1530,11 @@ body:has(#app[data-vista="perfil"])::before{opacity:.22}
 .pf-franja{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 20px;background:#fff;color:#2B2B2B;font:800 15px Karla,sans-serif;cursor:pointer;box-shadow:0 1px 6px rgba(0,0,0,.08);position:relative;z-index:2}
 .pf-franja span{display:flex;align-items:center;gap:8px}
 .mp-franja{margin:0;border-radius:0}
+.practi-bocadillo.latiendo{animation:latidoBocadillo 1.6s ease-in-out infinite;transform-origin:left center}
+@keyframes latidoBocadillo{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+@media (prefers-reduced-motion:reduce){.practi-bocadillo.latiendo{animation:none}}
+.como-funciona{display:flex;align-items:center;gap:8px;margin:0 auto 12px;padding:6px 14px;border:0;border-radius:999px;background:rgba(255,255,255,.85);color:#3A2A6B;font:700 14px Karla,sans-serif;cursor:pointer}
+.como-funciona b{transition:transform .2s}.como-funciona.on b{transform:rotate(90deg)}
 .mp-mod-franja{background:#fff;padding:10px 14px 12px;border-bottom:1px solid #ECE7DC}
 .mp-mod-franja>span{display:flex;align-items:center;gap:8px;font:700 13.5px Karla,sans-serif;color:#111;margin-bottom:8px}
 .mp-mod-botones{display:flex;gap:6px}
@@ -2712,7 +2717,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V15.10';
+  const APP_VERSION = 'V15.11';
   // ===== Pantalla de inicio: versión, sonido corto y salida (5-11-2026) =====
   (function(){
     const sp = document.getElementById('inicioSplash'); if(!sp) return;
@@ -4767,7 +4772,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     const nombre = String(state.me || '').split(' ')[0];
     const toca = tareaDelDia();
     if(toca === 'meta') return '' + nombre + ', lo primero es rellenar el formulario de tu meta trimestral. ¡Hazlo hoy!';
-    if(toca === 'a') return '' + nombre + ', tu guía de esta semana te está esperando. ¡Ábrela en «Guía semanal»!';
+    if(toca === 'a') return '¡Hola, ' + nombre + '! Recibirás tu guía ' + (tienePlan('guias') ? 'cada semana' : 'la primera semana de cada mes') + '. Ábrela en «Guía semanal».';
     if(haySesionEnDias(0) && tienePlan('sesiones')) return 'Hoy tenemos reunión, ' + nombre + '. Nos vemos en un rato.';
     if(haySesionEnDias(1) && tienePlan('sesiones')) return 'Mañana tenemos reunión, ' + nombre + '. Deja el rato apartado.';
     if(toca === 'c') return today.getDay() === 1
@@ -4805,7 +4810,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     const libre = !tienePlan('guias');
     // Pasos con las mismas letras que Inicio: a Metas, b Guía, c Registro (y d Grupo, con sesiones)
     const pasos = [
-      ['a', 'Metas.', metaHechaYa() ? 'Ya tienes rellenado tu formulario.' : 'Tienes pendiente rellenarlo (el primer botón).'],
+      ['a', 'Metas.', metaHechaYa() ? 'Tu meta del trimestre y tus metas sencillas.' : 'Tienes pendiente rellenar el formulario de tu meta (el primer botón).'],
       ['b', 'Guía semanal.', 'Recibirás tu guía de prácticas ' + (libre ? 'la primera semana de cada mes.' : 'cada semana.')],
       ['c', 'Registro y compromiso.', 'Cada día marca los días en que la hiciste.'],
     ];
@@ -4818,7 +4823,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       + pasos.map(p => '<span><b>Paso ' + p[0] + '. ' + escapeAttr(p[1]) + '</b> ' + escapeAttr(p[2]) + '</span>').join('') + '</span>'
       + '<span class="bienvenida-acciones">'
       + '<button type="button" class="link-quiet" id="btnOirBienvenida"><i data-ico=altavoz></i>Escúchalo</button>'
-      + '<button type="button" class="btn btn-yes" id="btnCerrarBienvenida">Entendido ✓</button>'
+      + '<button type="button" class="btn btn-yes" id="btnCerrarBienvenida">Cerrar</button>'
       + '</span></div>';
   }
   function activarBienvenida(raiz){
@@ -8401,14 +8406,24 @@ lo que haces cada día es lo que vas a ser.`;
                 : state.panelSub === 's4'
                   ? '<span class="practi-tocable" data-reaccion="practi-pizarra-empujon.json" title="Tócame">' + practiHTML('pizarra', '', 190) + '</span>'   // al tocarlo, empujón en la pizarra
                   : practiHTML(figuraSub[0], '', figuraSub[1], figuraSub[2] ? 'una-vez' : '')}</div>`)
-        : el(`<div class="saludo-inicio" style="position:relative;text-align:center;margin-bottom:14px"><div style="font-family:'Nunito',serif;font-size:24px;font-weight:600;color:var(--ink)">Hola, ${escapeAttr(state.me)}${avatarDe(state.me) ? ' ' + avatarDe(state.me) : ''}</div><div style="height:10px"></div><div class="hueco-panel-fac"></div><div class="practi-inicio" style="margin-bottom:10px">${practiReaccionHTML('saludo', 'empujonSaludo', 104, 'practi-saludo')}${bocadilloPracti(fraseInicio(), 'tono-calma')}</div></div>`);
+        : el(`<div class="saludo-inicio" style="position:relative;text-align:center;margin-bottom:14px"><div style="font-family:'Nunito',serif;font-size:24px;font-weight:600;color:var(--ink)">Hola, ${escapeAttr(state.me)}${avatarDe(state.me) ? ' ' + avatarDe(state.me) : ''}</div><div style="height:10px"></div><div class="hueco-panel-fac"></div><div class="practi-inicio" style="margin-bottom:10px">${practiReaccionHTML('saludo', 'empujonSaludo', 104, 'practi-saludo')}${bocadilloPracti(fraseInicio(), 'tono-calma' + (tareaDelDia() === 'a' ? ' latiendo' : ''))}</div></div>`);
       // (el() devuelve un fragmento: hay que buscar dentro antes de añadirlo a la página)
       greetPanel.querySelectorAll('.practi-tocable').forEach(c => { c.onclick = () => reaccionExterna(c, c.dataset.reaccion); });
       // «Panel de control admin Metas A.» (solo moderadores): justo debajo de la fecha, antes de Prácti saludando
       const huecoPf = greetPanel.querySelector('.hueco-panel-fac');
       if(huecoPf) huecoPf.remove();   // el panel de control va ahora en la franja blanca de arriba del todo
       app.appendChild(greetPanel);
-      if(!state.panelSub && !bienvenidaVista()) app.appendChild(el(bienvenidaHTML()));
+      if(!state.panelSub){
+        const cf = el('<button type="button" class="como-funciona"><i data-ico=ayuda></i>Cómo funciona la app <b>›</b></button>').firstElementChild;
+        app.appendChild(cf);
+        cf.onclick = () => {
+          const abierta = app.querySelector('#bienvenidaPracti');
+          if(abierta){ abierta.remove(); cf.classList.remove('on'); return; }
+          const caja = el(bienvenidaHTML()).firstElementChild;
+          cf.after(caja); cf.classList.add('on'); activarBienvenida(app);
+          caja.querySelector('#btnCerrarBienvenida').addEventListener('click', () => cf.classList.remove('on'));
+        };
+      }
       if(nivelBtnPanel) nivelBtnPanel.onclick = () => { state.prevView = 'panel'; state.view = insigniasBloqueadas() ? 'planes' : 'perfil'; window.scrollTo(0,0); render(); };
 
       const sinSesiones = !tienePlan('sesiones');
@@ -13241,4 +13256,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Meta" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V15.10 · App Amable Meta · 2026-11-10 15:16==== -->
+<!-- ==== Fin del index V15.11 · App Amable Meta · 2026-11-10 15:19==== -->
