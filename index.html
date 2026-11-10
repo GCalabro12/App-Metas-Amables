@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V15.04 · App Amable Meta · 2026-11-10 14:51==== -->
+<!-- ==== index V15.05 · App Amable Meta · 2026-11-10 14:53==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -910,7 +910,11 @@ body.theme-dark .progreso-dato b{color:#B3A8FF}
 @media (max-width: 380px){.cab-insta{width:30px;height:30px;margin-right:0}.cab-insta svg{width:20px;height:20px}}
 body.con-tabbar:has(.musica-barra) #app{padding-bottom:170px}
 .hamburger-btn-text.menu-avatar{width:42px;height:42px;padding:0;border-radius:50%;background:#4B3BC9;border:2px solid #fff;box-shadow:0 0 0 2px #4B3BC9;color:#fff;display:inline-flex;align-items:center;justify-content:center;overflow:hidden;font:800 16px/1 Karla,sans-serif;letter-spacing:.5px;cursor:pointer}
-.hamburger-btn-text.menu-avatar img{width:100%;height:100%;object-fit:cover}
+.hamburger-btn-text.menu-avatar img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+.menu-avatar{overflow:visible !important;position:relative}
+.av-nivel{position:absolute;top:-9px;right:-9px;width:22px;height:22px;pointer-events:none;filter:drop-shadow(0 1px 1px rgba(0,0,0,.25))}
+.av-nivel svg{width:100%;height:100%;display:block}
+.wordmark .menu-avatar{flex:none;margin-left:8px}
 .hamburger-btn-text.menu-avatar span{font-size:16px}
 .avatar-grande img.foto-perfil{width:96px;height:96px;border-radius:50%;object-fit:cover;display:block}
 #fotoPerfilBtn{width:96px;height:96px;font-size:44px;cursor:pointer;overflow:hidden}
@@ -1502,6 +1506,8 @@ body:has(#app[data-vista="perfil"])::before{opacity:.22}
 .insta-pie{display:flex;justify-content:center;margin:18px 0 4px}.insta-pie .cab-insta{margin:0}
 .pf-franja{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 20px;background:#fff;color:#2B2B2B;font:800 15px Karla,sans-serif;cursor:pointer;box-shadow:0 1px 6px rgba(0,0,0,.08);position:relative;z-index:2}
 .pf-franja span{display:flex;align-items:center;gap:8px}
+.pf-ver{margin-left:auto;color:#111;font:700 12px Karla,sans-serif;letter-spacing:.03em}
+.ver-pie{text-align:center;font:600 12px Karla,sans-serif;color:var(--ink-soft);letter-spacing:.04em;margin:6px 0 0}
 .pf-bola{flex:none;min-width:32px;height:32px;padding:0 6px;border-radius:16px;background:#E8002C;color:#fff;font:900 15px Karla,sans-serif;display:flex;align-items:center;justify-content:center;box-sizing:border-box}
 .pf-bola.cero{background:#4C8C4A}
 .pf-uso-tit{text-transform:uppercase;font-weight:900;letter-spacing:.03em}
@@ -2197,6 +2203,12 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
   // Escudos redondos de las insignias (dibujados, sin emojis): color del nivel y un símbolo alusivo
+  // Solo el dibujo de la insignia (la llama, la tienda, el trofeo…), del color del nivel, para la esquina de la foto
+  function simboloNivel(n){
+    const s = escudoInsignia(n), col = ['#E2321E', '#D9A23E', '#F08A1E', '#5FA645', '#7B5FB8'][n] || '#999';
+    const g = (s.match(/<g [^>]*>[\s\S]*<\/g>/) || [''])[0].replace(/fill="#fff"/g, 'fill="' + col + '"');
+    return '<svg viewBox="11 9 42 42" aria-hidden="true">' + g + '</svg>';
+  }
   function escudoInsignia(n){
     const col = ['#E2321E', '#D9A23E', '#F08A1E', '#5FA645', '#7B5FB8'][n] || '#999';
     const sim = [
@@ -2669,7 +2681,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V15.04';
+  const APP_VERSION = 'V15.05';
   // ===== Pantalla de inicio: versión, sonido corto y salida (5-11-2026) =====
   (function(){
     const sp = document.getElementById('inicioSplash'); if(!sp) return;
@@ -4751,7 +4763,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
          + (animacion ? ' data-anim="' + animacion + '"' : '') + '>'
          + frase
          + (segunda ? '<span class="linea-pregunta">' + segunda + '</span>' : '')
-         + '<span class="oir"><i data-ico=altavoz></i>Toca para escucharlo</span></button>';
+         + '</button>';
   }
   // Bienvenida de Prácti: sale en el panel hasta que la persona pulsa "Entendido".
   function claveBienvenida(){ return 'practi_bienvenida_' + (state.me || ''); }
@@ -4877,7 +4889,6 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       const volver = () => { huecos[1].classList.add('oculto'); par.classList.remove('reaccionando'); };
       anim.addEventListener('complete', volver);
       par.onclick = () => {
-        if(par.classList.contains('practi-saludo')) sonarSintonia(12);
         par.classList.add('reaccionando');           // el quieto se vuelve invisible pero guarda su sitio
         huecos[1].classList.remove('oculto');
         anim.goToAndPlay(0, true);
@@ -5400,7 +5411,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     const d = state.panelFac && state.panelFac.datos;
     const n = d ? (d.animos || []).length + personasAEscribir(d).length + (d.comunicados || []).length + pausasARecordar(d).length : null;
     const tx = n === null ? 'Panel de control: cargando tus tareas…' : (n ? (n === 1 ? 'Tienes 1 tarea para hoy' : 'Tienes ' + n + ' tareas para hoy') : 'No tienes tareas para hoy');
-    const f = el('<div class="pf-franja" role="button" tabindex="0" aria-label="Abrir el panel de control"><span><i data-ico=llave></i>' + tx + '</span><b class="pf-bola' + (n ? '' : ' cero') + '">' + (n === null ? '…' : (n || '✓')) + '</b></div>').firstElementChild;
+    const f = el('<div class="pf-franja" role="button" tabindex="0" aria-label="Abrir el panel de control"><span><i data-ico=llave></i>' + tx + '</span><small class="pf-ver">' + APP_VERSION + '</small><b class="pf-bola' + (n ? '' : ' cero') + '">' + (n === null ? '…' : (n || '✓')) + '</b></div>').firstElementChild;
     f.onclick = abrirPanelFacilitador;
     f.onkeydown = e => { if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); abrirPanelFacilitador(); } };
     return f;
@@ -7893,6 +7904,8 @@ lo que haces cada día es lo que vas a ser.`;
     try { botonesMenuConAvatar(); } catch(e){}
     // Sello «by Práctica Integral»: en la pantalla de entrada y abajo del todo en Inicio
     if(state.me && state.view === 'panel' && !state.panelSub)
+      setTimeout(() => { const s = app.querySelector('.pi-seal-fila'); if(s && !app.querySelector('.ver-pie')) s.insertAdjacentHTML('afterend', '<p class="ver-pie">' + APP_VERSION + '</p>'); }, 0);
+    if(state.me && state.view === 'panel' && !state.panelSub)
       app.appendChild(el('<div class="insta-pie"><a class="cab-insta" href="https://www.instagram.com/practicaintegral.club/" target="_blank" rel="noopener" aria-label="Instagram de Práctica Integral Club"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.4" cy="6.6" r="1.1" fill="currentColor" stroke="none"/></svg></a></div>'));   // Instagram, abajo del todo (10-11-2026, Gustavo)
     if(state.view === 'pick' || (state.me && state.view === 'panel' && !state.panelSub))
       app.appendChild(el('<div class="pi-seal-fila"><div class="sellos"><a class="pi-seal" href="https://practicaintegral.club" target="_blank" rel="noopener">by Práctica Integral</a><a class="gp-seal" href="https://practicaintegral.club/grow-panel/" target="_blank" rel="noopener"><svg viewBox="0 0 512 512" aria-hidden="true"><circle cx="256" cy="107.5" r="69.1" fill="#f59e0b"/><circle cx="397.2" cy="210.1" r="69.1" fill="#0f766e"/><circle cx="343.3" cy="376.1" r="69.1" fill="#8b5cf6"/><circle cx="168.7" cy="376.1" r="69.1" fill="#3b82f6"/><circle cx="114.8" cy="210.1" r="69.1" fill="#ef4444"/><circle cx="256" cy="256" r="79.4" fill="#6b7280"/></svg>with Grow Panel</a></div></div>'));
@@ -8033,7 +8046,7 @@ lo que haces cada día es lo que vas a ser.`;
     header.innerHTML = `
       <div class="brand-row" style="width:100%">
         
-        <div class="wordmark" style="display:flex;align-items:center;justify-content:space-between;width:100%"><b class="wordmark-nombre"><img class="wordmark-ico" src="icon-192.png" alt="">AMABLE META</b><small class="version-tag">${APP_VERSION}</small></div>
+        <div class="wordmark" style="display:flex;align-items:center;justify-content:space-between;width:100%"><b class="wordmark-nombre"><img class="wordmark-ico" src="icon-192.png" alt="">AMABLE META</b><span class="cab-hueco-avatar"></span></div>
         <div class="lema">Sin distracciones. Solo tu meta.</div>
       </div>
     `;
@@ -8321,6 +8334,8 @@ lo que haces cada día es lo que vas a ser.`;
       // vacía al insertarlo, y después ya no se encuentra (por eso no respondía).
       const btnPlanCab = topbarPanel.querySelector('#btnPlanCab');
       app.appendChild(topbarPanel);
+      // La foto de perfil sube arriba del todo, a la derecha de AMABLE META (10-11-2026, Gustavo)
+      try { const hueco = app.querySelector('.cab-hueco-avatar'), bm = app.querySelector('#btnMenuOpen'); if(hueco && bm) hueco.replaceWith(bm); } catch(e){}
       if(btnPlanCab) btnPlanCab.onclick = () => { state.prevView = 'panel'; state.view = 'planes'; window.scrollTo(0,0); render(); };
       btnMenuOpenPanel.onclick = () => { state.prevView = 'panel'; state.menuOpen = true; render(); };
 
@@ -8340,7 +8355,7 @@ lo que haces cada día es lo que vas a ser.`;
                 : state.panelSub === 's4'
                   ? '<span class="practi-tocable" data-reaccion="practi-pizarra-empujon.json" title="Tócame">' + practiHTML('pizarra', '', 190) + '</span>'   // al tocarlo, empujón en la pizarra
                   : practiHTML(figuraSub[0], '', figuraSub[1], figuraSub[2] ? 'una-vez' : '')}</div>`)
-        : el(`<div class="saludo-inicio" style="position:relative;text-align:center;margin-bottom:14px"><div style="font-family:'Nunito',serif;font-size:24px;font-weight:600;color:var(--ink)">Hola, ${escapeAttr(state.me)}${avatarDe(state.me) ? ' ' + avatarDe(state.me) : ''}</div><div class="fecha-hoy" id="fechaHoy" style="margin-bottom:10px">${textoFechaHoy()}</div><div class="hueco-panel-fac"></div><div class="practi-inicio" style="margin-bottom:10px">${practiReaccionHTML('saludo', 'empujonSaludo', 104, 'practi-saludo')}${bocadilloPracti(fraseInicio(), 'tono-calma')}</div></div>`);
+        : el(`<div class="saludo-inicio" style="position:relative;text-align:center;margin-bottom:14px"><div style="font-family:'Nunito',serif;font-size:24px;font-weight:600;color:var(--ink)">Hola, ${escapeAttr(state.me)}${avatarDe(state.me) ? ' ' + avatarDe(state.me) : ''}</div><div style="height:10px"></div><div class="hueco-panel-fac"></div><div class="practi-inicio" style="margin-bottom:10px">${practiReaccionHTML('saludo', 'empujonSaludo', 104, 'practi-saludo')}${bocadilloPracti(fraseInicio(), 'tono-calma')}</div></div>`);
       // (el() devuelve un fragmento: hay que buscar dentro antes de añadirlo a la página)
       greetPanel.querySelectorAll('.practi-tocable').forEach(c => { c.onclick = () => reaccionExterna(c, c.dataset.reaccion); });
       // «Panel de control admin Metas A.» (solo moderadores): justo debajo de la fecha, antes de Prácti saludando
@@ -12091,7 +12106,12 @@ lo que haces cada día es lo que vas a ser.`;
     const COLOR_NIVEL = ['#D9312B', '#F2B800', '#F07C1A', '#3E9B4F', '#7B5FB8'];
     const iNivel = state.nivel ? BADGE_SCALE.findIndex(x => x.label === state.nivel.label) : -1;
     document.querySelectorAll('.hamburger-btn-text').forEach(b => {
-      if(iNivel >= 0){ b.style.boxShadow = '0 0 0 3px ' + COLOR_NIVEL[iNivel]; b.title = 'Tu nivel: ' + state.nivel.label; }
+      if(iNivel >= 0){
+        b.style.boxShadow = '0 0 0 3px ' + COLOR_NIVEL[iNivel]; b.title = 'Tu nivel: ' + state.nivel.label;
+        let sim = b.querySelector('.av-nivel'); if(!sim){ sim = document.createElement('span'); sim.className = 'av-nivel'; }
+        sim.innerHTML = simboloNivel(iNivel);
+        if(b.dataset.avatar) b.appendChild(sim); else setTimeout(() => b.appendChild(sim), 0);
+      }
       if(b.dataset.avatar) return;
       b.dataset.avatar = '1'; b.classList.add('menu-avatar'); b.setAttribute('aria-label', 'Perfil y ajustes de ' + state.me);
       b.innerHTML = esImg ? '<img src="' + escapeAttr(av) + '" alt="" referrerpolicy="no-referrer">' : '<span>' + (av ? av : escapeAttr(inicialesDe(state.me))) + '</span>';
@@ -13166,4 +13186,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Meta" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V15.04 · App Amable Meta · 2026-11-10 14:51==== -->
+<!-- ==== Fin del index V15.05 · App Amable Meta · 2026-11-10 14:53==== -->
