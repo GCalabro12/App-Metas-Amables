@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V14.99 · App Amable Meta · 2026-11-10 12:09==== -->
+<!-- ==== index V15.00 · App Amable Meta · 2026-11-10 14:36==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1497,6 +1497,10 @@ body:has(#app[data-vista="perfil"])::before{opacity:.22}
 .av-detalle p{margin:8px 0 6px;font-size:14px;line-height:1.45}
 .av-lista{margin:0 0 8px;padding:0 0 0 22px;font-size:14px;line-height:1.45}.av-lista li{margin:0 0 6px}
 .av-anima{margin:8px 0 0;font-size:13px;line-height:1.4;color:#5E6B55}
+.pf-uso-tit{text-transform:uppercase;font-weight:900;letter-spacing:.03em}
+.pf-periodo{display:flex;gap:6px;flex-wrap:wrap;margin:4px 0 12px}
+.pf-periodo button{flex:1 1 auto;padding:8px 10px;border:1.5px solid #CFC6E6;border-radius:999px;background:#fff;color:#4B358A;font:700 13.5px Karla,sans-serif;cursor:pointer}
+.pf-periodo button.on{background:#4B358A;border-color:#4B358A;color:#fff}
 .av-ok{display:inline-block;min-width:16px;color:#4C8C4A;font-weight:800}.av-prueba{background:none;border:0;padding:0;color:#8E2B2B;text-decoration:underline;font:600 14px Karla,sans-serif;cursor:pointer}
 .ritual-card{background:#FFF8E6 !important;border:2px solid #F2C14E;padding:14px 16px}
 /* Panel de control admin Metas A. (solo moderadores) */
@@ -2658,7 +2662,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V14.99';
+  const APP_VERSION = 'V15.00';
   // ===== Pantalla de inicio: versión, sonido corto y salida (5-11-2026) =====
   (function(){
     const sp = document.getElementById('inicioSplash'); if(!sp) return;
@@ -5459,8 +5463,12 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       h += bloque('Todas', gente, 'Todavía no hay nadie inscrito.');
     } else if(det.tipo === 'plan'){
       h += `<h3 class="pf-seccion"><i data-ico=plan></i>Plan ${escapeAttr(PLAN_CORTO[det.plan] || '')}</h3>` + bloque('Personas en este plan', gente.filter(x => x.plan === det.plan), 'Nadie en este plan.');
-    } else if(det.tipo === 'nuevas'){
-      h += '<h3 class="pf-seccion">🆕 Nuevas esta semana</h3>' + bloque('Se han inscrito desde el lunes', gente.filter(x => x.alta && x.alta >= lunes), 'Nadie nuevo esta semana.');
+    } else if(det.tipo === 'nuevas' || det.tipo === 'activas'){
+      const per = [7, 15, 30, 0].includes(state.pfPeriodo) ? state.pfPeriodo : 7, des = per ? isoLocal(new Date(Date.now() - (per - 1) * 86400000)) : '';
+      const nomPer = { 7: 'en la última semana', 15: 'en los últimos 15 días', 30: 'en los últimos 30 días', 0: 'desde el principio' }[per];
+      h += det.tipo === 'nuevas'
+        ? '<h3 class="pf-seccion"><i data-ico=persona></i>Inscritas ' + nomPer + '</h3>' + bloque('Se han inscrito', gente.filter(x => x.alta && (!per || x.alta >= des)), 'Nadie se ha inscrito en ese periodo.')
+        : '<h3 class="pf-seccion"><i data-ico=gota></i>Han usado la app ' + nomPer + '</h3>' + bloque('Han regado al menos un día', gente.filter(x => x.diasSinRegar !== null && x.diasSinRegar !== undefined && (!per || x.diasSinRegar < per)), 'Nadie ha usado la app en ese periodo.');
     } else if(det.tipo === 'riegan'){
       h += '<h3 class="pf-seccion"><i data-ico=gota></i>Riego de hoy</h3>' + bloque('<i data-ico=gota></i>Han regado hoy', gente.filter(x => x.riegaHoy), 'Todavía nadie ha regado hoy.')
         + bloque('<i data-ico=espera></i>Aún no han regado hoy', gente.filter(x => !x.riegaHoy), '¡Todo el mundo ha regado hoy!');
@@ -5642,6 +5650,30 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       }).join('');
     }
     h = plegable('tareas', '<i data-ico=hecho></i>Tareas de hoy', h, true);
+    // «INSCRITOS Y USO DE LA APP» (10-11-2026, Gustavo): lo primero de todo, plegable, con el periodo a elegir.
+    // Cada cifra se toca para ver quiénes son
+    const gente = d.personas || [], periodo = [7, 15, 30, 0].includes(state.pfPeriodo) ? state.pfPeriodo : 7;
+    const desde = periodo ? isoLocal(new Date(Date.now() - (periodo - 1) * 86400000)) : '';
+    const nombrePeriodo = { 7: 'en la última semana', 15: 'en los últimos 15 días', 30: 'en los últimos 30 días', 0: 'desde el principio' }[periodo];
+    const nuevas = gente.filter(x => x.alta && (!periodo || x.alta >= desde));
+    const activas = gente.filter(x => x.diasSinRegar !== null && x.diasSinRegar !== undefined && (!periodo || x.diasSinRegar < periodo));
+    const riegan = gente.filter(x => x.riegaHoy).length, lunesHechos = gente.filter(x => x.lunesHecho).length;
+    const perdiendo = perdiendoInteres(gente);
+    const listaAbierta = !!state.pfListaAbierta;
+    let uso = '<div class="pf-periodo" role="group" aria-label="Periodo">'
+      + [[7, 'Última semana'], [15, '15 días'], [30, '30 días'], [0, 'Todo']].map(([n, tx]) => '<button type="button" data-periodo="' + n + '"' + (n === periodo ? ' class="on"' : '') + '>' + tx + '</button>').join('') + '</div>';
+    uso += `<div class="pf-cifras">
+      <button type="button" class="pf-cifra" data-detalle="inscritas"><b>${gente.length}</b><span>personas inscritas en total ›</span></button>
+      <button type="button" class="pf-cifra" data-detalle="nuevas"><b>${nuevas.length}</b><span>${nuevas.length === 1 ? 'se ha inscrito' : 'se han inscrito'} ${nombrePeriodo} ›</span></button>
+      <button type="button" class="pf-cifra" data-detalle="activas"><b>${activas.length}<small>/${gente.length}</small></b><span>han usado la app ${nombrePeriodo} ›</span></button>
+      <button type="button" class="pf-cifra" data-detalle="riegan"><b>${riegan}<small>/${gente.length}</small></b><span>han regado hoy ›</span></button>
+      <button type="button" class="pf-cifra" data-detalle="lunes"><b>${lunesHechos}<small>/${gente.length}</small></b><span>registro del lunes ›</span></button>
+      <button type="button" class="pf-cifra" data-detalle="whatsapp"><b>${gente.filter(x => x.aceptaWhatsApp).length}<small>/${gente.length}</small></b><span><i data-ico=comentario></i>aceptan WhatsApp ›</span></button>
+      <button type="button" class="pf-cifra" data-detalle="emails"><b>${gente.filter(x => x.aceptaEmails).length}<small>/${gente.length}</small></b><span><i data-ico=correo></i>aceptan emails ›</span><small class="pf-plan-det">${gente.filter(x => x.emailOk).length} con el email confirmado</small></button>
+      <button type="button" class="pf-cifra pf-cifra-ancha${perdiendo.length ? ' alerta' : ''}" data-detalle="perdiendo"><b>${perdiendo.length}</b><span><i data-ico=hoja></i>sin regar desde hace 5 días o más (se están desenganchando) ›</span></button></div>`;
+    uso += `<div class="card pf-lista"><button type="button" class="pf-desplegar" id="pfDesplegar" aria-expanded="${listaAbierta}"><span><i data-ico=grupo></i>Todas las personas (${gente.length})<small>Semana del ${escapeAttr(d.semana || '')}</small></span><b>${listaAbierta ? '▲' : '▼'}</b></button>
+      ${listaAbierta ? filasPersonasHTML(gente) + '<p class="pf-gris" style="margin:8px 0 0;font-size:12px">Último riego · días regados esta semana · ✓ = registro del lunes hecho. Toca a una persona para ver su ficha.</p>' : ''}</div>`;
+    h = plegable('uso', '<i data-ico=grafico></i><span class="pf-uso-tit">Inscritos y uso de la app</span>', uso, true) + h;
     // Emails enviados en los últimos 14 días (al principio, para ver qué recibe cada persona)
     const NOMBRES_EMAIL = { invitacion: 'Invitación a confirmar el email', bienvenida: 'Bienvenida', formulario1: 'Formulario sin rellenar (día 1)', formulario3: 'Formulario sin rellenar (día 3)',
       guia: 'Ya tienes tu guía', vuelta: 'Vuelta tras unos días', finprueba: 'Fin del plan', plazo: 'Final del plazo de la meta', trimestre: 'Trimestre nuevo', finpausa: 'Fin de la pausa' };
@@ -5656,23 +5688,6 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       + '<span class="pf-pantalla-tx"><b>Mapa de la app (flujo de usuario)</b><small>Todos los recorridos de la persona, pantalla a pantalla, en un esquema.</small><em>Abrir el mapa ↗</em></span></a>';
     h += plegable('esporadicas', '<i data-ico=ojo></i>Pantallas de acceso esporádico', '<p class="pf-gris" style="margin:0 0 10px;font-size:13.5px">Salen solo en momentos concretos. Toca una para verla tal como la ve la persona (sin guardar nada).</p>'
       + GRUPOS_ESPORADICAS.map(([g, titulo]) => '<p class="pf-sub" style="margin:14px 0 8px">' + titulo + '</p>' + pantallasEsporadicas().map((x, i) => x.grupo !== g ? '' : '<button type="button" class="card pf-pantalla" data-esporadica="' + i + '">' + x.img + '<span class="pf-pantalla-tx"><b>' + x.tit + '</b><small>' + x.cuando + '</small><em>Ver la pantalla ›</em></span></button>').join('')).join(''), false);
-    // Resumen: cada cifra se toca para ver quiénes son
-    const gente = d.personas || [], lunes = isoLocal(lunesHoy);
-    const nuevas = gente.filter(x => x.alta && x.alta >= lunes);
-    const riegan = gente.filter(x => x.riegaHoy).length, lunesHechos = gente.filter(x => x.lunesHecho).length;
-    const perdiendo = perdiendoInteres(gente);
-    h += '<h3 class="pf-seccion"><i data-ico=grafico></i>Resumen</h3>';
-    h += `<div class="pf-cifras">
-      <button type="button" class="pf-cifra" data-detalle="inscritas"><b>${gente.length}</b><span>personas inscritas ›</span></button>
-      <button type="button" class="pf-cifra" data-detalle="nuevas"><b>${nuevas.length}</b><span>${nuevas.length === 1 ? 'nueva' : 'nuevas'} esta semana ›</span></button>
-      <button type="button" class="pf-cifra" data-detalle="riegan"><b>${riegan}<small>/${gente.length}</small></b><span>han regado hoy ›</span></button>
-      <button type="button" class="pf-cifra" data-detalle="lunes"><b>${lunesHechos}<small>/${gente.length}</small></b><span>registro del lunes ›</span></button>
-      <button type="button" class="pf-cifra" data-detalle="whatsapp"><b>${gente.filter(x => x.aceptaWhatsApp).length}<small>/${gente.length}</small></b><span><i data-ico=comentario></i>aceptan WhatsApp ›</span></button>
-      <button type="button" class="pf-cifra" data-detalle="emails"><b>${gente.filter(x => x.aceptaEmails).length}<small>/${gente.length}</small></b><span><i data-ico=correo></i>aceptan emails ›</span><small class="pf-plan-det">${gente.filter(x => x.emailOk).length} con el email confirmado</small></button>
-      <button type="button" class="pf-cifra pf-cifra-ancha${perdiendo.length ? ' alerta' : ''}" data-detalle="perdiendo"><b>${perdiendo.length}</b><span><i data-ico=hoja></i>sin regar desde hace 5 días o más (se están desenganchando) ›</span></button></div>`;
-    const listaAbierta = !!state.pfListaAbierta;
-    h += `<div class="card pf-lista"><button type="button" class="pf-desplegar" id="pfDesplegar" aria-expanded="${listaAbierta}"><span><i data-ico=grupo></i>Todas las personas (${gente.length})<small>Semana del ${escapeAttr(d.semana || '')}</small></span><b>${listaAbierta ? '▲' : '▼'}</b></button>
-      ${listaAbierta ? filasPersonasHTML(gente) + '<p class="pf-gris" style="margin:8px 0 0;font-size:12px">Último riego · días regados esta semana · ✓ = registro del lunes hecho. Toca a una persona para ver su ficha.</p>' : ''}</div>`;
     h += `<button type="button" class="pf-btn pf-actualizar" id="pfActualizar">${p.cargando ? '<i data-ico=espera></i>Actualizando…' : '<i data-ico=ciclo></i>Actualizar'}</button>`;
     h += `<button type="button" class="link-quiet" id="pfTelegram" style="display:block;margin:-12px auto 20px;font-size:13.5px"><i data-ico=enviar></i>Mandarme ahora el resumen a Telegram y WhatsApp</button>`;
     app.appendChild(el(h));
@@ -5707,6 +5722,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     const esp = pantallasEsporadicas();
     app.querySelectorAll('[data-esporadica]').forEach(b => b.onclick = () => esp[Number(b.dataset.esporadica)].abrir());
     app.querySelectorAll('[data-detalle]').forEach(b => b.onclick = () => { state.pfDetalle = { tipo: b.dataset.detalle }; window.scrollTo(0, 0); render(); });
+    app.querySelectorAll('[data-periodo]').forEach(b => b.onclick = () => { state.pfPeriodo = Number(b.dataset.periodo); render(); });
     app.querySelector('#pfDesplegar').onclick = () => { state.pfListaAbierta = !state.pfListaAbierta; render(); };
     const ba = app.querySelector('#pfActualizar');
     ba.disabled = !!p.cargando;
@@ -8001,6 +8017,9 @@ lo que haces cada día es lo que vas a ser.`;
       </div>
     `;
     app.appendChild(header);
+    // Tocar el logo AMABLE META lleva a Inicio, en cualquier pantalla (10-11-2026, Gustavo)
+    const logoCab = header.querySelector('.wordmark-nombre');
+    if(logoCab && state.me){ logoCab.style.cursor = 'pointer'; logoCab.setAttribute('role', 'button'); logoCab.setAttribute('aria-label', 'Ir a Inicio'); logoCab.onclick = () => { state.menuOpen = false; irAlPanel(); }; }
     if(state.view === 'pick'){ header.classList.add('con-idioma'); header.insertAdjacentHTML('afterbegin', '<div class="idioma-fila">' + botonIdiomaHTML() + '</div>'); }
     // Mientras no esté instalada: botón «Instalar la app» arriba en todas las pantallas
     if(state.me && !MODO_PLAY && !appInstalada() && !['pick', 'bienvenidaAlta'].includes(state.view)){
@@ -13112,4 +13131,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Meta" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V14.99 · App Amable Meta · 2026-11-10 12:09==== -->
+<!-- ==== Fin del index V15.00 · App Amable Meta · 2026-11-10 14:36==== -->
