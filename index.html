@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V14.89 · App Amable Meta · 2026-11-10 09:05==== -->
+<!-- ==== index V14.90 · App Amable Meta · 2026-11-10 09:08==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -728,6 +728,7 @@ button, input, textarea, select{ font-family:inherit; }
 .juego-btn{display:flex;align-items:center;gap:12px;width:100%;margin-top:18px;padding:14px 16px;border:3px solid #111;border-radius:16px;background:#F4EFE3;color:#111;text-align:left;cursor:pointer;font:inherit;-webkit-tap-highlight-color:transparent}
 .juego-btn b{display:block;font-size:1.02rem}.juego-btn small{display:block;font-size:.82rem;opacity:.8;margin-top:2px}
 .juego-btn-ico{font-size:2rem;line-height:1}
+.juego-btn-ico{position:relative;width:58px;height:64px;flex:none;overflow:hidden}.juego-btn-ico .practi{position:absolute;left:-8px;top:-12px}
 .util-grid{display:grid;grid-template-columns:1fr;gap:14px;min-height:calc(100vh - 170px);grid-auto-rows:1fr}
 .util-card{display:flex;align-items:center;gap:14px;padding:16px;border:3px solid #101010;border-radius:20px;background:#E4DAF7;text-align:left;font:inherit;color:#101010;cursor:pointer;-webkit-tap-highlight-color:transparent}
 
@@ -1460,7 +1461,7 @@ body:has(#app[data-vista="perfil"])::before{opacity:.22}
 .seccion-cab{display:flex;justify-content:center;margin:0 0 12px}.seccion-cab .panel-badge{margin:0}
 .grupo-cab .panel-badge{color:#2E6B1F}
 .registro-cab .panel-badge{color:#B0201A}
-.titulo-pantalla.titulo-grande{text-transform:uppercase;font-weight:900 !important;font-size:clamp(26px,8vw,38px) !important;letter-spacing:.02em;line-height:1.05}
+.titulo-pantalla.titulo-grande{text-transform:uppercase;font-weight:900 !important;font-size:clamp(30px,9.5vw,44px) !important;letter-spacing:.02em;line-height:1.05}
 .viaje-paso .viaje-tx b{text-transform:uppercase;letter-spacing:.03em;font-size:15px}
 .av-card{padding:12px 16px}.av-cab{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}.av-cab .av-tit{white-space:nowrap}
 .ps-en-dias{margin:4px 0 10px;padding:0 0 10px;border-bottom:1px solid #EFE6E2}
@@ -1577,7 +1578,8 @@ html.ocultar-practi .practi-inicio,html.ocultar-practi .practi-bocadillo,html.oc
 .mostrar-caja .mostrar-tit{font-size:18px;font-weight:700;color:#3A342E}.mostrar-caja .mostrar-sub{font-size:13.5px;color:#5E574F}
 .mostrar-capa{position:fixed;inset:0;z-index:9000;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;padding:16px}
 .mostrar-panel{background:#fff;border-radius:22px;width:100%;max-width:420px;max-height:88vh;display:flex;flex-direction:column;overflow:hidden;font-family:Karla,sans-serif}
-.mostrar-panel h2{margin:0;padding:20px 22px 12px;font:700 24px Nunito,serif;color:#2B2B2B;border-bottom:1px solid #EAE5DB}
+.mostrar-panel h2{margin:0;padding:20px 22px 12px;font:700 24px Nunito,serif;color:#2B2B2B;border-bottom:1px solid #EAE5DB;display:flex;align-items:center;justify-content:space-between}
+.mostrar-x{width:40px;height:40px;border:0;border-radius:50%;background:#F1EEE8;color:#2B2B2B;font-size:18px;line-height:1;cursor:pointer;flex:none}
 .mostrar-lista{overflow-y:auto;padding:6px 10px}
 .mostrar-op{display:flex;align-items:flex-start;gap:14px;padding:11px 12px;cursor:pointer;font-size:16px;color:#2B2B2B}
 .mostrar-op input{width:22px;height:22px;margin:1px 0 0;flex:none;accent-color:#6B4FA8;cursor:pointer}
@@ -2502,7 +2504,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V14.89';
+  const APP_VERSION = 'V14.90';
   // ===== Pantalla de inicio: versión, sonido corto y salida (5-11-2026) =====
   (function(){
     const sp = document.getElementById('inicioSplash'); if(!sp) return;
@@ -3618,18 +3620,19 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
   function abrirMostrar(pant){
     pant = pant || 'inicio';
-    const fuera = ocultos(), opc = MOSTRAR_OPC.filter(o => o.p.includes(pant)).sort((a, b) => (b.fijo ? 1 : 0) - (a.fijo ? 1 : 0));   // las fijas, arriba
-    const capa = el('<div class="mostrar-capa" role="dialog" aria-modal="true" aria-label="Mostrar"><div class="mostrar-panel"><h2>Mostrar</h2><div class="mostrar-lista">'
+    const fuera = ocultos(), opc = MOSTRAR_OPC.filter(o => o.p.includes(pant) && !o.fijo).sort((a, b) => (b.fijo ? 1 : 0) - (a.fijo ? 1 : 0));   // las fijas, arriba
+    const capa = el('<div class="mostrar-capa" role="dialog" aria-modal="true" aria-label="Mostrar"><div class="mostrar-panel"><h2>Mostrar<button type="button" class="mostrar-x" aria-label="Cerrar">✕</button></h2><div class="mostrar-lista">'
       + opc.map(o => '<label class="mostrar-op' + (o.fijo ? ' fijo' : '') + '"><input type="checkbox" data-k="' + o.k + '"' + (o.fijo || !fuera.includes(o.k) ? ' checked' : '') + (o.fijo ? ' disabled' : '') + '><span><b>' + escapeAttr(o.t) + '</b>' + (o.fijo ? '<small>Siempre</small>' : (o.d ? '<small>' + escapeAttr(o.d) + '</small>' : '')) + '</span></label>').join('')
-      + '</div><div class="mostrar-pie"><button type="button" class="mostrar-ok">OK</button></div></div></div>').firstElementChild;
+      + '</div></div></div>').firstElementChild;
     const cerrar = () => { capa.remove(); };
-    capa.onclick = e => { if(e.target === capa) cerrar(); };
-    capa.querySelector('.mostrar-ok').onclick = () => {
+    const guardarYCerrar = () => {
       const aqui = opc.map(o => o.k);   // lo de otras pantallas se queda como estaba
       const lista = ocultos().filter(k => !aqui.includes(k)).concat([...capa.querySelectorAll('input[data-k]')].filter(c => !c.disabled && !c.checked).map(c => c.dataset.k));
       cerrar();
       if(JSON.stringify(lista.slice().sort()) !== JSON.stringify(ocultos().slice().sort())){ ponerOcultos(lista); try { avisoBreve('Listo: la app muestra lo que has elegido'); } catch(e){} }
     };
+    capa.querySelector('.mostrar-x').onclick = guardarYCerrar;
+    capa.onclick = e => { if(e.target === capa) guardarYCerrar(); };
     document.body.appendChild(capa);
   }
 
@@ -3712,7 +3715,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   // (antes iban incrustadas aquí y el index pesaba 8 MB). Se descargan la primera vez que hacen falta y se quedan en memoria;
   // mientras llegan se ve lo de siempre (el emoji o el hueco vacío), igual que cuando aún no ha llegado el reproductor.
   const PRACTI_ANIM = {};
-  const PRACTI_ARCHIVOS = {"leyendo": "practi-leyendo.json", "pizarra": "practi-pizarra.json", "sesion": "practi-sesion.json", "formacion": "practi-formacion.json", "correr": "practi-correr.json", "valla": "practi-valla.json", "escribiendo1": "practi-escribiendo1.json", "escribiendo2": "practi-escribiendo2.json", "saludo": "practi-saludo.json", "celebracion": "practi-celebracion.json", "animo": "practi-animo.json", "calma": "practi-calma.json", "empujonSaludo": "practi-empujon-saludo.json", "empujonPensando": "practi-empujon-pensando.json", "cartel": "practi-cartel.json", "pensandoEntero": "practi-pensando-entero.json", "guitarra": "practi-guitarra.json", "leyendoCae": "practi-leyendo-cae.json", "hablando1": "practi-hablando-1.json", "hablando2": "practi-hablando-2.json", "hablando3": "practi-hablando-3.json", "hablando4": "practi-hablando-4.json"};
+  const PRACTI_ARCHIVOS = {"leyendo": "practi-leyendo.json", "pizarra": "practi-pizarra.json", "sesion": "practi-sesion.json", "formacion": "practi-formacion.json", "correr": "practi-correr.json", "valla": "practi-valla.json", "salto": "practi-salto.json", "escribiendo1": "practi-escribiendo1.json", "escribiendo2": "practi-escribiendo2.json", "saludo": "practi-saludo.json", "celebracion": "practi-celebracion.json", "animo": "practi-animo.json", "calma": "practi-calma.json", "empujonSaludo": "practi-empujon-saludo.json", "empujonPensando": "practi-empujon-pensando.json", "cartel": "practi-cartel.json", "pensandoEntero": "practi-pensando-entero.json", "guitarra": "practi-guitarra.json", "leyendoCae": "practi-leyendo-cae.json", "hablando1": "practi-hablando-1.json", "hablando2": "practi-hablando-2.json", "hablando3": "practi-hablando-3.json", "hablando4": "practi-hablando-4.json"};
   const practiDescargas = {};
   // Promesa con los datos de la animación, o null si no tiene archivo o no se pudo descargar (nunca falla)
   function cargarPractiAnim(clave){
@@ -5609,7 +5612,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
   function renderUtilidades(){
-    renderBackTopbar('Utilidades', true);
+    renderBackTopbar('Utilidades', '#5B3FA8');   // el morado de Utilidades en Inicio
     const caja = document.createElement('div');
     caja.className = 'util-grid';
     const tarjeta = (id, titulo, sub, dibujo) => '<button type="button" class="util-card" data-util="' + id + '"><span class="util-dibujo">' + dibujo + '</span><span class="util-tx"><b>' + titulo + '</b><small>' + sub + '</small></span></button>';
@@ -6801,7 +6804,7 @@ lo que haces cada día es lo que vas a ser.`;
     const btnVolver = bar.querySelector('#btnVolver');
     const btnMenu = bar.querySelector('#btnMenuOpen2');
     app.appendChild(bar);
-    if(title) app.appendChild(el(`<h2 class="titulo-pantalla${grande ? ' titulo-grande' : ''}" style="font-family:'Nunito',serif;text-align:center;margin:4px 0 12px;font-size:clamp(18px,5.5vw,24px)">${title}</h2>`));
+    if(title) app.appendChild(el(`<h2 class="titulo-pantalla${grande ? ' titulo-grande' : ''}" style="${typeof grande === 'string' ? 'color:' + grande + ';' : ''}font-family:'Nunito',serif;text-align:center;margin:4px 0 12px;font-size:clamp(18px,5.5vw,24px)">${title}</h2>`));
     btnVolver.onclick = irAlPanel;
     btnMenu.onclick = () => { state.menuOpen = true; render(); };
   }
@@ -8481,7 +8484,7 @@ lo que haces cada día es lo que vas a ser.`;
       `;
       // «Instala la app» ya sale arriba del todo: aquí abajo no se repite (27-10-2026, Gustavo)
       // Juego extra, al final de la pantalla de inicio
-      const juego = el('<button type="button" class="juego-btn" style="margin-top:18px"><span class="juego-btn-ico"><i data-ico=juego></i></span><span><b>Salta la valla con Prácti</b><small>Un minuto de juego: cada valla es un obstáculo que superas</small></span></button>').firstElementChild;   // el() da un fragmento: se coge el botón
+      const juego = el('<button type="button" class="juego-btn" style="margin-top:18px"><span class="juego-btn-ico">' + practiHTML('salto', '', 92) + '</span><span><b>Salta la valla con Prácti</b><small>Un minuto de juego: cada valla es un obstáculo que superas</small></span></button>').firstElementChild;   // el() da un fragmento: se coge el botón
       juego.onclick = abrirJuegoVallas;
       if(!oculto('juego')) app.appendChild(juego);
       app.appendChild(cajaMostrar('inicio'));   // «Mostrar», casi al final de Inicio
@@ -12934,4 +12937,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Meta" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V14.89 · App Amable Meta · 2026-11-10 09:05==== -->
+<!-- ==== Fin del index V14.90 · App Amable Meta · 2026-11-10 09:08==== -->
