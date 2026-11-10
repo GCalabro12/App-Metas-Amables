@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V14.87 · App Amable Meta · 2026-11-10 08:57==== -->
+<!-- ==== index V14.88 · App Amable Meta · 2026-11-10 09:02==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1451,6 +1451,12 @@ body:has(#app[data-vista="perfil"])::before{opacity:.22}
 /* Todos los títulos de Inicio iguales: también Utilidades (26-10-2026) */
 [data-vista="panel"][data-sub=""] .ciclo-formacion .opcion-tx > b{font:800 clamp(15px,4.6vw,18px)/1.25 Nunito,sans-serif;text-transform:uppercase;letter-spacing:.02em}
 .panel-badge > span:last-child{text-transform:uppercase;letter-spacing:.04em;font-weight:800}
+.panel-badge{flex-wrap:wrap;justify-content:center;row-gap:6px}
+.panel-badge > span:last-child{font-family:'Nunito',sans-serif;font-weight:900;font-size:clamp(22px,6.8vw,38px);line-height:1.05;letter-spacing:.02em;white-space:nowrap}
+.registro-cab .panel-badge > span:last-child{font-size:clamp(18px,5.6vw,32px)}
+.seccion-cab{display:flex;justify-content:center;margin:0 0 12px}.seccion-cab .panel-badge{margin:0}
+.grupo-cab .panel-badge{color:#2E6B1F}
+.titulo-pantalla.titulo-grande{text-transform:uppercase;font-weight:900 !important;font-size:clamp(26px,8vw,38px) !important;letter-spacing:.02em;line-height:1.05}
 .viaje-paso .viaje-tx b{text-transform:uppercase;letter-spacing:.03em;font-size:15px}
 .av-card{padding:12px 16px}.av-cab{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}.av-cab .av-tit{white-space:nowrap}
 .ps-en-dias{margin:4px 0 10px;padding:0 0 10px;border-bottom:1px solid #EFE6E2}
@@ -2492,7 +2498,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V14.87';
+  const APP_VERSION = 'V14.88';
   // ===== Pantalla de inicio: versión, sonido corto y salida (5-11-2026) =====
   (function(){
     const sp = document.getElementById('inicioSplash'); if(!sp) return;
@@ -5599,7 +5605,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
   function renderUtilidades(){
-    renderBackTopbar('Utilidades');
+    renderBackTopbar('Utilidades', true);
     const caja = document.createElement('div');
     caja.className = 'util-grid';
     const tarjeta = (id, titulo, sub, dibujo) => '<button type="button" class="util-card" data-util="' + id + '"><span class="util-dibujo">' + dibujo + '</span><span class="util-tx"><b>' + titulo + '</b><small>' + sub + '</small></span></button>';
@@ -6784,14 +6790,14 @@ lo que haces cada día es lo que vas a ser.`;
     return b;
   }
 
-  function renderBackTopbar(title){
+  function renderBackTopbar(title, grande){
     app.querySelectorAll('.volver-arriba').forEach(b => b.remove());   // esta barra ya trae su «← Volver»
     // El título va en su propio renglón, debajo de «Volver» y «Menú» (nunca entre los dos botones)
     const bar = el(`<div class="topbar"><button class="back-btn" id="btnVolver" aria-label="Volver">← Volver</button><span></span><button class="hamburger-btn-text" id="btnMenuOpen2" aria-label="Menú"><i data-ico=menu></i>Menú</button></div>`).firstElementChild;
     const btnVolver = bar.querySelector('#btnVolver');
     const btnMenu = bar.querySelector('#btnMenuOpen2');
     app.appendChild(bar);
-    if(title) app.appendChild(el(`<h2 class="titulo-pantalla" style="font-family:'Nunito',serif;text-align:center;margin:4px 0 12px;font-size:clamp(18px,5.5vw,24px)">${title}</h2>`));
+    if(title) app.appendChild(el(`<h2 class="titulo-pantalla${grande ? ' titulo-grande' : ''}" style="font-family:'Nunito',serif;text-align:center;margin:4px 0 12px;font-size:clamp(18px,5.5vw,24px)">${title}</h2>`));
     btnVolver.onclick = irAlPanel;
     btnMenu.onclick = () => { state.menuOpen = true; render(); };
   }
@@ -8234,6 +8240,9 @@ lo que haces cada día es lo que vas a ser.`;
         fila.appendChild(botonVolver());
         fila.insertAdjacentHTML('beforeend', badgeSeccion('cero', 'Metas'));
         app.appendChild(fila);
+      } else if(state.panelSub === 's1'){
+        app.appendChild(botonVolver());
+        app.appendChild(el('<div class="seccion-cab grupo-cab">' + badgeSeccion('cpc', 'Grupo de apoyo') + '</div>'));
       } else {
         app.appendChild(botonVolver());
       }
@@ -8412,7 +8421,6 @@ lo que haces cada día es lo que vas a ser.`;
       // (sin «No volver a mostrar»): es la entrada a esos dos sitios.
       const proxSesion = textoProximaSesion();
       s5.innerHTML = `
-        ${badgeSeccion('cpc', 'Grupo de apoyo')}
         <div id="bloqueSesiones"><p style="font-weight:700;margin:0 0 4px"><i data-ico=grupo></i>Sesiones online</p>
         ${sinSesiones
           ? '<p style="font-size:14px;color:var(--ink-soft);margin:0 0 8px">Cada 15 días, en grupo reducido, para desatascar situaciones y automotivarte. Están incluidas en el Plan Guías + Grupo.</p><a class="panel-link-btn honey" id="btnVerPlanes" href="#">Ver planes →</a>'
@@ -8879,7 +8887,7 @@ lo que haces cada día es lo que vas a ser.`;
       }
       app.appendChild(el('<div style="text-align:center;margin:0 0 4px">' + practiReaccionHTML('correr', 'valla', 170) + '</div>'));
       app.appendChild(botonVolver());
-      app.appendChild(el('<div style="display:flex;justify-content:center;margin:0 0 6px">' + badgeSeccion('b', 'Registro y compromiso') + '</div>'
+      app.appendChild(el('<div class="registro-cab" style="display:flex;justify-content:center;margin:0 0 6px">' + badgeSeccion('b', 'Registro y compromiso') + '</div>'
         ));
       // Se pueden marcar los días desde el primer momento, aunque aún no haya registro.
       // La meta del trimestre (y el compromiso semanal) van dentro de «Registra tu práctica»
@@ -12921,4 +12929,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Meta" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V14.87 · App Amable Meta · 2026-11-10 08:57==== -->
+<!-- ==== Fin del index V14.88 · App Amable Meta · 2026-11-10 09:02==== -->
