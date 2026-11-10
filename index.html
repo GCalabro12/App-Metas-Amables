@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V15.00 · App Amable Meta · 2026-11-10 14:36==== -->
+<!-- ==== index V15.01 · App Amable Meta · 2026-11-10 14:45==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1497,6 +1497,10 @@ body:has(#app[data-vista="perfil"])::before{opacity:.22}
 .av-detalle p{margin:8px 0 6px;font-size:14px;line-height:1.45}
 .av-lista{margin:0 0 8px;padding:0 0 0 22px;font-size:14px;line-height:1.45}.av-lista li{margin:0 0 6px}
 .av-anima{margin:8px 0 0;font-size:13px;line-height:1.4;color:#5E6B55}
+.pf-franja{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 20px;background:#fff;color:#2B2B2B;font:800 15px Karla,sans-serif;cursor:pointer;box-shadow:0 1px 6px rgba(0,0,0,.08);position:relative;z-index:2}
+.pf-franja span{display:flex;align-items:center;gap:8px}
+.pf-bola{flex:none;min-width:32px;height:32px;padding:0 6px;border-radius:16px;background:#E8002C;color:#fff;font:900 15px Karla,sans-serif;display:flex;align-items:center;justify-content:center;box-sizing:border-box}
+.pf-bola.cero{background:#4C8C4A}
 .pf-uso-tit{text-transform:uppercase;font-weight:900;letter-spacing:.03em}
 .pf-periodo{display:flex;gap:6px;flex-wrap:wrap;margin:4px 0 12px}
 .pf-periodo button{flex:1 1 auto;padding:8px 10px;border:1.5px solid #CFC6E6;border-radius:999px;background:#fff;color:#4B358A;font:700 13.5px Karla,sans-serif;cursor:pointer}
@@ -2662,7 +2666,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V15.00';
+  const APP_VERSION = 'V15.01';
   // ===== Pantalla de inicio: versión, sonido corto y salida (5-11-2026) =====
   (function(){
     const sp = document.getElementById('inicioSplash'); if(!sp) return;
@@ -5386,6 +5390,18 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     c.onclick = abrirPanelFacilitador;
     return c;
   }
+  // Franja blanca arriba del todo de Inicio, de lado a lado (solo moderadores): «Tienes N tareas para hoy» y el número en un círculo
+  function franjaPanelFacilitador(){
+    if(!soyModerador()) return null;
+    cargarPanelFac(false);
+    const d = state.panelFac && state.panelFac.datos;
+    const n = d ? (d.animos || []).length + personasAEscribir(d).length + (d.comunicados || []).length + pausasARecordar(d).length : null;
+    const tx = n === null ? 'Panel de control: cargando tus tareas…' : (n ? (n === 1 ? 'Tienes 1 tarea para hoy' : 'Tienes ' + n + ' tareas para hoy') : 'No tienes tareas para hoy');
+    const f = el('<div class="pf-franja" role="button" tabindex="0" aria-label="Abrir el panel de control"><span><i data-ico=llave></i>' + tx + '</span><b class="pf-bola' + (n ? '' : ' cero') + '">' + (n === null ? '…' : (n || '✓')) + '</b></div>').firstElementChild;
+    f.onclick = abrirPanelFacilitador;
+    f.onkeydown = e => { if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); abrirPanelFacilitador(); } };
+    return f;
+  }
   function textoRiego(p){
     if(p.diasSinRegar === null) return 'aún no ha regado nunca';
     if(p.diasSinRegar === 0) return 'ha regado hoy';
@@ -8016,6 +8032,13 @@ lo que haces cada día es lo que vas a ser.`;
         <div class="lema">Sin distracciones. Solo tu meta.</div>
       </div>
     `;
+    if(state.me && state.view === 'panel' && !state.panelSub){
+      let fr = null; try { fr = franjaPanelFacilitador(); } catch(e){}
+      if(fr){
+        app.appendChild(fr);
+        try { const cs = getComputedStyle(app); fr.style.margin = '-' + cs.paddingTop + ' -' + cs.paddingRight + ' 12px -' + cs.paddingLeft; } catch(e){}
+      }
+    }
     app.appendChild(header);
     // Tocar el logo AMABLE META lleva a Inicio, en cualquier pantalla (10-11-2026, Gustavo)
     const logoCab = header.querySelector('.wordmark-nombre');
@@ -8317,7 +8340,7 @@ lo que haces cada día es lo que vas a ser.`;
       greetPanel.querySelectorAll('.practi-tocable').forEach(c => { c.onclick = () => reaccionExterna(c, c.dataset.reaccion); });
       // «Panel de control admin Metas A.» (solo moderadores): justo debajo de la fecha, antes de Prácti saludando
       const huecoPf = greetPanel.querySelector('.hueco-panel-fac');
-      if(huecoPf){ let pf = null; try { pf = tarjetaPanelFacilitador(); } catch(e){} if(pf){ pf.style.textAlign = 'left'; pf.style.marginBottom = '12px'; huecoPf.replaceWith(pf); } else huecoPf.remove(); }
+      if(huecoPf) huecoPf.remove();   // el panel de control va ahora en la franja blanca de arriba del todo
       app.appendChild(greetPanel);
       if(!state.panelSub && !bienvenidaVista()) app.appendChild(el(bienvenidaHTML()));
       if(nivelBtnPanel) nivelBtnPanel.onclick = () => { state.prevView = 'panel'; state.view = insigniasBloqueadas() ? 'planes' : 'perfil'; window.scrollTo(0,0); render(); };
@@ -13131,4 +13154,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Meta" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V15.00 · App Amable Meta · 2026-11-10 14:36==== -->
+<!-- ==== Fin del index V15.01 · App Amable Meta · 2026-11-10 14:45==== -->
