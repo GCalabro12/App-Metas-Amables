@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V14.88 · App Amable Meta · 2026-11-10 09:02==== -->
+<!-- ==== index V14.89 · App Amable Meta · 2026-11-10 09:05==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -15,7 +15,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="application-name" content="Amable Meta">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,600;1,700&family=Karla:wght@400;500;600;700;800&family=UnifrakturMaguntia&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Nunito:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,600;1,700&family=Karla:wght@400;500;600;700;800&family=UnifrakturMaguntia&display=swap" rel="stylesheet">
 <style>
   /* Sin el recuadro azul que Android pinta al tocar */
   *{ -webkit-tap-highlight-color: transparent; }
@@ -797,13 +797,16 @@ button, input, textarea, select{ font-family:inherit; }
 body:has(.banda-fin-plan) #app{padding-bottom:28vh}
 .ayuda-voz ol{margin:0;padding-left:22px;line-height:1.55}.ayuda-voz li{margin:0 0 6px}
 .acceso-google{max-width:520px;margin:4px auto 14px;text-align:center}.acceso-google p{margin:0 0 8px;font-size:14px;color:var(--ink-soft)}.acceso-google #btnGoogle{display:flex;justify-content:center}
+.acceso-google.primero{margin:6px auto 4px}
+.acceso-google.primero #btnGoogle{align-items:center;min-height:60px;padding:8px 6px;border:2px solid #E8002C;border-radius:14px;background:#fff;box-sizing:border-box}
+.acceso-o{max-width:520px;margin:10px auto 12px;text-align:center;font-size:14px;color:var(--ink-soft)}
 svg.escudo{vertical-align:-0.18em;flex:0 0 auto}
 .tres-areas .area{display:flex;flex-direction:column;gap:2px;margin:8px 0;padding:10px 12px;border-radius:12px;background:#F1ECFC}.tres-areas .area b{font-size:16px}.tres-areas .area span{font-size:14px;line-height:1.4}
 body.con-fondo-nivel{background:#fff}
 body.con-fondo-vivo{background:#3A2A8C}
 /* Inicio con el fondo oscuro: los textos que van directamente sobre él, en claro */
 body.con-fondo-vivo .wordmark{color:#FFFFFF}
-.wordmark-nombre{display:inline-flex;align-items:center;gap:10px;font-weight:inherit;letter-spacing:.03em}
+.wordmark-nombre{display:inline-flex;align-items:center;gap:10px;font-family:'Anton',sans-serif;font-weight:400;font-size:30px;line-height:1;letter-spacing:.03em}
 .wordmark-ico{width:34px;height:34px;border-radius:9px;flex:none;box-shadow:0 1px 4px rgba(0,0,0,.18)}
 body.con-fondo-vivo .lema, body.con-fondo-vivo .fecha-hoy{color:#E6DEFF}
 body.con-fondo-vivo .version-tag{color:#CFC3F5}
@@ -1456,6 +1459,7 @@ body:has(#app[data-vista="perfil"])::before{opacity:.22}
 .registro-cab .panel-badge > span:last-child{font-size:clamp(18px,5.6vw,32px)}
 .seccion-cab{display:flex;justify-content:center;margin:0 0 12px}.seccion-cab .panel-badge{margin:0}
 .grupo-cab .panel-badge{color:#2E6B1F}
+.registro-cab .panel-badge{color:#B0201A}
 .titulo-pantalla.titulo-grande{text-transform:uppercase;font-weight:900 !important;font-size:clamp(26px,8vw,38px) !important;letter-spacing:.02em;line-height:1.05}
 .viaje-paso .viaje-tx b{text-transform:uppercase;letter-spacing:.03em;font-size:15px}
 .av-card{padding:12px 16px}.av-cab{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}.av-cab .av-tit{white-space:nowrap}
@@ -2498,7 +2502,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V14.88';
+  const APP_VERSION = 'V14.89';
   // ===== Pantalla de inicio: versión, sonido corto y salida (5-11-2026) =====
   (function(){
     const sp = document.getElementById('inicioSplash'); if(!sp) return;
@@ -8044,15 +8048,17 @@ lo que haces cada día es lo que vas a ser.`;
           <button class="btn btn-yes" id="btnAlta" style="text-align:center;margin-top:14px">Crear mi cuenta</button>
           ${state.loginError ? '<div style="color:' + (state.loginError.endsWith('…') ? 'var(--ink-soft)' : '#B94A3A') + ';font-size:13px;margin-top:8px">'+state.loginError+'</div>' : ''}
         `;
+        if(GOOGLE_CLIENT_ID && !d.email){ const g = el('<div class="acceso-google primero"><div id="btnGoogle"></div></div>').firstElementChild; app.appendChild(g); botonGoogle(g.querySelector('#btnGoogle')); app.appendChild(el('<p class="acceso-o">o con tus datos</p>')); }
         app.appendChild(altaCard);
-        if(GOOGLE_CLIENT_ID && !d.email){ const g = el('<div class="acceso-google"><p>o crea tu cuenta con</p><div id="btnGoogle"></div></div>').firstElementChild; app.appendChild(g); botonGoogle(g.querySelector('#btnGoogle')); }
         altaCard.querySelector('#btnAlta').onclick = () => (ofrecerInstalar(), crearCuenta(
           altaCard.querySelector('#altaNombre').value, altaCard.querySelector('#altaTel').value,
           altaCard.querySelector('#altaEmail').value, altaCard.querySelector('#altaPass').value,
           false, altaCard.querySelector('#altaEmails').checked));
       } else {
         // Pantalla de login
-        app.appendChild(el(`<h1>Entra en tu cuenta</h1><p class="lead">Escribe tu nombre y tu contraseña.</p>`));
+        app.appendChild(el(`<h1>Entra en tu cuenta</h1>`));
+        if(GOOGLE_CLIENT_ID){ const g = el('<div class="acceso-google primero"><div id="btnGoogle"></div></div>').firstElementChild; app.appendChild(g); botonGoogle(g.querySelector('#btnGoogle')); app.appendChild(el('<p class="acceso-o">o con tu nombre y tu contraseña</p>')); }
+        else app.appendChild(el(`<p class="lead">Escribe tu nombre y tu contraseña.</p>`));
         // Un <form> de verdad, con name/autocomplete: así el navegador (Chrome, Safari/iPhone)
         // ofrece guardar el nombre y la contraseña y los rellena la próxima vez
         const formCard = document.createElement('form');
@@ -8068,7 +8074,6 @@ lo que haces cada día es lo que vas a ser.`;
           ${state.savedMsg ? '<div class="saved-msg">'+state.savedMsg+'</div>' : ''}
         `;
         app.appendChild(formCard);
-        if(GOOGLE_CLIENT_ID){ const g = el('<div class="acceso-google"><p>o bien</p><div id="btnGoogle"></div></div>').firstElementChild; app.appendChild(g); botonGoogle(g.querySelector('#btnGoogle')); }
         const passInput = formCard.querySelector('#passInput');
         const nombreInput = formCard.querySelector('#nombreInput');
         formCard.onsubmit = (e) => { e.preventDefault(); ofrecerInstalar(); loginWithPassword(nombreInput.value, passInput.value); };
@@ -12929,4 +12934,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Meta" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V14.88 · App Amable Meta · 2026-11-10 09:02==== -->
+<!-- ==== Fin del index V14.89 · App Amable Meta · 2026-11-10 09:05==== -->
