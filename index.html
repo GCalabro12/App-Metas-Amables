@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V14.86 · App Amable Meta · 2026-11-10 08:53==== -->
+<!-- ==== index V14.87 · App Amable Meta · 2026-11-10 08:57==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -803,6 +803,8 @@ body.con-fondo-nivel{background:#fff}
 body.con-fondo-vivo{background:#3A2A8C}
 /* Inicio con el fondo oscuro: los textos que van directamente sobre él, en claro */
 body.con-fondo-vivo .wordmark{color:#FFFFFF}
+.wordmark-nombre{display:inline-flex;align-items:center;gap:10px;font-weight:inherit;letter-spacing:.03em}
+.wordmark-ico{width:34px;height:34px;border-radius:9px;flex:none;box-shadow:0 1px 4px rgba(0,0,0,.18)}
 body.con-fondo-vivo .lema, body.con-fondo-vivo .fecha-hoy{color:#E6DEFF}
 body.con-fondo-vivo .version-tag{color:#CFC3F5}
 body.con-fondo-vivo .saludo-inicio > div:not(.practi-inicio){color:#FFFFFF !important}
@@ -2490,7 +2492,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V14.86';
+  const APP_VERSION = 'V14.87';
   // ===== Pantalla de inicio: versión, sonido corto y salida (5-11-2026) =====
   (function(){
     const sp = document.getElementById('inicioSplash'); if(!sp) return;
@@ -5008,7 +5010,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       <button class="menu-item" id="ajustesBtn">${icoMenu('ajustes')}Ajustes</button>
       <button class="menu-item" id="mpAyuda">${icoMenu('ayuda')}Centro de ayuda</button>
       <button class="menu-item" id="mpOpinion">${icoMenu('comentario')}Comentarios y mejoras para la app</button>
-      ${soyModerador() ? '<button class="menu-item" id="miPanelFacBtn">' + icoMenu('panel') + 'Panel de control admin Metas A.</button><button class="menu-item" id="miSituacionBtn">' + icoMenu('grupo') + 'Situación de tu grupo</button>' : ''}
+      ${soyModerador() ? '<button class="menu-item" id="miInicioBtn">' + icoMenu('hogar') + 'Inicio <small style="font-weight:600;color:var(--ink-soft)">(cambiar de cuenta)</small></button><button class="menu-item" id="miPanelFacBtn">' + icoMenu('panel') + 'Panel de control <small style="font-weight:600;color:var(--ink-soft)">(solo lo ve admin Metas A.)</small></button><button class="menu-item" id="miSituacionBtn">' + icoMenu('grupo') + 'Situación de tu grupo</button>' : ''}
       ${esCuentaPruebas() && !soyModerador() ? `<div class="menu-divider"></div>
       <p style="font-size:13px;font-weight:700;margin:6px 14px 4px">Moderador · entrar como:</p>
       <div style="display:flex;gap:6px;flex-wrap:wrap;margin:0 14px 8px">${[['Libre (moderador)','Libre'],['Guías (moderador)','Guías'],['Gustavo','Guías + Grupo']].map(([cuenta, t]) =>
@@ -5045,6 +5047,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     };
     if(panel.querySelector('#miSituacionBtn')) panel.querySelector('#miSituacionBtn').onclick = () => { state.menuOpen = false; state.prevView = 'panel'; state.view = 'situacion'; window.scrollTo(0,0); render(); };
     if(panel.querySelector('#miPanelFacBtn')) panel.querySelector('#miPanelFacBtn').onclick = () => { state.menuOpen = false; abrirPanelFacilitador(); };
+    if(panel.querySelector('#miInicioBtn')) panel.querySelector('#miInicioBtn').onclick = () => { state.menuOpen = false; switchUser(); };
     // Moderador: cambiar de plan al momento para probar la app (solo en este móvil)
     // Moderador: pasar a otra de sus cuentas de prueba (Libre / Guías / Gustavo) sin contraseña
     panel.querySelectorAll('.mod-cuenta').forEach(b => b.onclick = () => entrarComoCuenta(b));
@@ -7815,14 +7818,11 @@ lo que haces cada día es lo que vas a ser.`;
     header.innerHTML = `
       <div class="brand-row" style="width:100%">
         
-        <div class="wordmark" style="display:flex;align-items:baseline;justify-content:space-between;width:100%">Amable Meta <small class="version-tag">${APP_VERSION}</small></div>
+        <div class="wordmark" style="display:flex;align-items:center;justify-content:space-between;width:100%"><b class="wordmark-nombre"><img class="wordmark-ico" src="icon-192.png" alt="">AMABLE META</b><small class="version-tag">${APP_VERSION}</small></div>
         <div class="lema">Sin distracciones. Solo tu meta.</div>
       </div>
-      ${state.me && soyModerador() ? `<div class="who"><button id="switchBtn">inicio</button></div>` : ''}
     `;
     app.appendChild(header);
-    // «inicio» (cerrar sesión rápido, para pruebas) solo lo ve el moderador
-    if(header.querySelector('#switchBtn')) header.querySelector('#switchBtn').onclick = switchUser;
     // Mientras no esté instalada: botón «Instalar la app» arriba en todas las pantallas
     if(state.me && !MODO_PLAY && !appInstalada() && !['pick', 'bienvenidaAlta'].includes(state.view)){
       const b = document.createElement('button');
@@ -12921,4 +12921,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Meta" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V14.86 · App Amable Meta · 2026-11-10 08:53==== -->
+<!-- ==== Fin del index V14.87 · App Amable Meta · 2026-11-10 08:57==== -->
