@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V15.20 · App Amable Meta · 2026-11-10 16:02==== -->
+<!-- ==== index V15.21 · App Amable Meta · 2026-11-10 16:11==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2734,7 +2734,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V15.20';
+  const APP_VERSION = 'V15.21';
   // ===== Pantalla de inicio: versión, sonido corto y salida (5-11-2026) =====
   (function(){
     const sp = document.getElementById('inicioSplash'); if(!sp) return;
@@ -8473,7 +8473,7 @@ lo que haces cada día es lo que vas a ser.`;
         const subGuia = !state.guiaTexto
           ? (formularioEnviado() ? '<i data-ico=espera></i>En breve tendrás tu guía' : 'Llegará cuando definas tu meta')
           : guiaPendienteDeAbrir()
-            ? '<span class="guia-nueva"><i data-ico=destellos></i>Ya tienes tu nueva guía de esta semana para leer</span>'
+            ? '<span class="guia-nueva"><i data-ico=destellos></i>Aún no has leído tu nueva guía de esta semana</span>'
             : '<i data-ico=libro></i>Ya tienes tu guía para leer' + (sinGuias ? ' · próxima: 1 de ' + monthNamesEs[proxMes.getMonth()] : '');
         const toca = tareaDelDia();
         const act = k => (k === toca ? ' actual' : '');
@@ -8543,7 +8543,7 @@ lo que haces cada día es lo que vas a ser.`;
         const hueco = opciones.querySelector('.hueco-guia-semana');
         if(hueco){
           try {
-            const tg = tarjetaGuiaSemana(() => irDestino('s3'), guiaPendienteDeAbrir() ? '<p class="ritual-tx"><span class="guia-nueva"><i data-ico=destellos></i>Ya tienes tu nueva guía de esta semana para leer</span></p>' : '');
+            const tg = tarjetaGuiaSemana(() => irDestino('s3'), guiaPendienteDeAbrir() ? '<p class="ritual-tx"><span class="guia-nueva"><i data-ico=destellos></i>Aún no has leído tu nueva guía de esta semana</span></p>' : '');
             if(act('a')) tg.classList.add('actual');
             hueco.replaceWith(tg);
           } catch(e){ hueco.remove(); }
@@ -13273,4 +13273,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Meta" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V15.20 · App Amable Meta · 2026-11-10 16:02==== -->
+<!-- ==== Fin del index V15.21 · App Amable Meta · 2026-11-10 16:11==== -->
