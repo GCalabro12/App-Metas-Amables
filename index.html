@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V14.83 · App Amable Meta · 2026-11-10 08:43==== -->
+<!-- ==== index V14.84 · App Amable Meta · 2026-11-10 08:48==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -603,7 +603,7 @@ button, input, textarea, select{ font-family:inherit; }
     cursor:pointer; font-size:18px; color:var(--ink); flex-shrink:0;
   }
   /* Botón «← Volver»: siempre morado (el color que más se ve en Inicio) y grande */
-  #pfVolverLista,#pfVolverDet,.riego-ir-abajo{background:#7B5FB8 !important;border-color:#7B5FB8 !important;color:#fff !important}
+  #pfVolverLista,#pfVolverDet,.riego-ir-abajo,.riego-capa .riego-ir{background:#4B3BC9 !important;border-color:#4B3BC9 !important;color:#fff !important}
   .visor-cerrar{background:#7B5FB8 !important;color:#fff !important}
   .back-btn{
     padding:10px 18px; border-radius:10px; border:none;
@@ -1164,6 +1164,7 @@ body.riego-abierto{overflow:hidden}
 .riego-capa .abonar-tit{text-transform:uppercase;letter-spacing:.03em;font-size:16px}
 .metas-sub{margin:2px 0 10px;font:800 17px Karla,sans-serif;letter-spacing:.04em;text-transform:uppercase;color:#5B4A1E}
 .metas-cab{display:flex;align-items:center;gap:14px;margin:0 0 12px}.metas-cab .panel-badge{margin:0}
+.metas-cab .panel-badge > span:last-child{font-family:'Nunito',sans-serif;font-size:38px;line-height:1;letter-spacing:.02em}
 .ms-bloque{margin-top:14px}
 .ms-btn{display:block;width:100%;margin:8px 0 0;padding:12px;border-radius:12px;border:none;background:#C9942D;color:#fff;font:700 15px Karla,sans-serif;cursor:pointer}
 .ms-btn.ms-ver-cal{background:#fff;color:#6B4A26;border:1.5px solid #A0703C}
@@ -2476,7 +2477,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V14.83';
+  const APP_VERSION = 'V14.84';
   // ===== Pantalla de inicio: versión, sonido corto y salida (5-11-2026) =====
   (function(){
     const sp = document.getElementById('inicioSplash'); if(!sp) return;
@@ -4429,7 +4430,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     if(tipo === 'a') return svg('<path d="M4 12 Q14 8 24 12 Q34 8 44 12 L44 38 Q34 34 24 38 Q14 34 4 38 Z" fill="#C6DBF2" stroke="#101010" stroke-width="2.4" stroke-linejoin="round"/>' + t(24, 30, 'b'));
     // a · Formulario de meta: una hoja con la esquina doblada y puntitos a la izquierda
     if(tipo === 'cero') return svg('<path d="M10 5 H31 L39 13 V43 H10 Z" fill="#E2C79A" stroke="#101010" stroke-width="2.4" stroke-linejoin="round"/><path d="M31 5 V13 H39" fill="#C9A86A" stroke="#101010" stroke-width="2.4" stroke-linejoin="round"/>'
-      + [17, 25, 33].map(y => '<circle cx="16" cy="' + y + '" r="1.9" fill="#101010"/>').join('') + t(28, 33, 'a'));
+      + [17, 25, 33].map(y => '<circle cx="16" cy="' + y + '" r="1.9" fill="#101010"/>').join('') + t(28, 33, 'A'));
     if(tipo === 'b') return svg('<ellipse cx="24" cy="30" rx="10.5" ry="13" fill="#F7C6C6" stroke="#101010" stroke-width="2.4"/>'
       + [[14,11,3.4],[20.5,8,3.6],[27.5,8,3.6],[34,11,3.2]].map(c => '<circle cx="' + c[0] + '" cy="' + c[1] + '" r="' + c[2] + '" fill="#F7C6C6" stroke="#101010" stroke-width="2.4"/>').join('') + t(24, 36, 'c'));
     if(tipo === 'c') return svg('<path d="M13 20 L24 5 L35 20 L35 43 L13 43 Z" fill="#CFE3C0" stroke="#101010" stroke-width="2.4" stroke-linejoin="round"/><path d="M20 10.5 L24 5 L28 10.5 Z" fill="#101010"/><path d="M13 20 H35" stroke="#101010" stroke-width="1.6"/>' + t(24, 37, 'd'));
@@ -10816,7 +10817,7 @@ lo que haces cada día es lo que vas a ser.`;
     // Las metas sencillas, debajo de todo lo de la meta con guía
     try { const ms = registroSencillas(); if(ms) capa.appendChild(ms); } catch(e){ console.error('Metas sencillas:', e); }
     // Abajo del todo, el mismo «Ir a Amable Meta» que arriba (la semana se repinta en su sitio, así que este botón sigue el último)
-    const irAbajo = el('<button type="button" class="riego-ir-abajo">← Volver a Amable Meta</button>').firstElementChild;
+    const irAbajo = el('<button type="button" class="riego-ir-abajo">Ir a Amable Meta</button>').firstElementChild;
     capa.appendChild(irAbajo);
     const quitar = () => { capa.remove(); document.body.classList.remove('riego-abierto'); try { apagarSintoniaSuave(1200); } catch(err){} setTimeout(() => { try { comprobarReto(); } catch(err){} }, 350); };
     // ✕ e «Ir a Amable Meta» hacen lo mismo: cerrar y volver a Inicio
@@ -12907,4 +12908,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Meta" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V14.83 · App Amable Meta · 2026-11-10 08:43==== -->
+<!-- ==== Fin del index V14.84 · App Amable Meta · 2026-11-10 08:48==== -->
