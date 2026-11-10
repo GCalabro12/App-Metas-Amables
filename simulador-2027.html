@@ -76,7 +76,10 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .chip{font:inherit;font-size:15px;background:var(--bg);color:var(--fg);border:1.5px solid var(--line);border-radius:999px;padding:7px 14px;cursor:pointer}
 .chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
 .dimsel{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
-.dimsel .chip{border-radius:12px;padding:10px 12px;text-align:left}
+.dimsel .chip{border-radius:12px;padding:10px 12px;text-align:left;border-color:color-mix(in srgb,var(--c,var(--line)) 45%,var(--line))}
+.dimsel .chip::before{content:"";display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--c,var(--accent));margin-right:8px;vertical-align:1px}
+.dimsel .chip[aria-pressed="true"]{background:var(--c,var(--accent));border-color:var(--c,var(--accent));color:#fff}
+.dimsel .chip[aria-pressed="true"]::before{background:#fff}
 .dimsel .chip small{display:block;opacity:.8;font-size:13px}
 .campo{display:flex;flex-direction:column;gap:6px;font-weight:600}
 .campo span.soft{font-weight:400;font-size:14px}
@@ -95,7 +98,7 @@ textarea{resize:vertical;min-height:96px}
 .rueda{width:100%;max-width:260px;margin:0 auto;display:block}
 /* Paso 1: la rueda sale tapada hasta que puntúa las 4 partes y pide verla */
 .tapa-caja{position:relative}
-.tapa-caja.tapada .rueda{filter:blur(7px);opacity:.55}
+.tapa-caja.tapada .rueda{filter:blur(9px);opacity:.5}
 .tapa{position:absolute;inset:0;display:grid;place-items:center;border:1.5px dashed var(--line);border-radius:16px}
 .tapa-caja:not(.tapada) .tapa{display:none}
 .rueda text{font-family:var(--body);font-size:13px;fill:var(--fg);font-weight:600}
@@ -290,7 +293,7 @@ summary{cursor:pointer;font-weight:700;color:var(--accent2)}
 
 <script>
 // Versión de la página: subirla en cada publicación (sale arriba a la derecha)
-const VERSION_PAGINA = 'v1.06';
+const VERSION_PAGINA = 'v1.09';
 document.getElementById('version').textContent = VERSION_PAGINA;
 const APIS = ['https://metas-amables-api.proud-hill-016b.workers.dev', 'https://rigid-thrush-3387.gcalabro12.deno.net'];
 const CLAVE = 'simulador2027';
@@ -391,8 +394,10 @@ function chips(cont, lista, activo, alPulsar){
     cont.appendChild(b);
   });
 }
-const dimChips = (cont, campo, despues) => chips(cont, DIMS.map(k => [k, esc(D[k].n) + ' <small>' + S.rueda[k] + '/10 · ' + esc(D[k].hint) + '</small>']),
+// Cada parte lleva su color (el mismo de la rueda) en los pasos 2 y 4
+const dimChips = (cont, campo, despues) => { chips(cont, DIMS.map(k => [k, esc(D[k].n) + ' <small>' + S.rueda[k] + '/10 · ' + esc(D[k].hint) + '</small>']),
   k => S[campo] === k, k => { S[campo] = k; S[campo + 'Elegida'] = true; guardar(); despues && despues(); });
+  [...cont.children].forEach((b, i) => b.style.setProperty('--c', 'var(--c-' + DIMS[i] + ')')); };
 // Algunos textos empiezan ya escritos para que la persona solo tenga que seguir; si no añade nada, cuentan como vacíos
 const INICIOS = { precio: 'Si nada cambia, dentro de un año, ', carta: 'Hoy es 31 de diciembre de 2027 y ' };
 const enlazar = (id, campo) => { const el = $(id), ini = INICIOS[campo] || ''; el.value = S[campo] || ini;
@@ -406,17 +411,31 @@ function microfono(id){
   const ta = $(id); if(!Reco || ta.dataset.mic) return; ta.dataset.mic = '1';
   const b = document.createElement('button'); b.type = 'button'; b.className = 'btn ghost mic'; b.innerHTML = MIC + '<span>Dictar con el micrófono</span>';
   ta.closest('label').insertAdjacentElement('afterend', b);
-  let r = null;
-  const parar = txt => { r = null; b.classList.remove('grabando'); b.querySelector('span').textContent = txt || 'Dictar con el micrófono'; };
+  const aviso = document.createElement('p'); aviso.className = 'soft small'; aviso.setAttribute('role', 'status'); aviso.hidden = true; b.insertAdjacentElement('afterend', aviso);
+  // El texto aparece mientras habla (resultados provisionales). Se escucha frase a frase y se vuelve a empezar
+  // solo hasta que pulsa «parar»: así funciona igual en Chrome de escritorio, Android y Safari.
+  const MSG = {
+    'not-allowed': 'El navegador no deja usar el micrófono. Pulsa el candado de la barra de direcciones, permite el micrófono y vuelve a probar.',
+    'service-not-allowed': 'Este navegador no permite dictar. Prueba en Chrome, o usa el micrófono del teclado del móvil.',
+    'network': 'Este navegador no puede dictar ahora. Usa el micrófono del teclado del móvil.',
+    'audio-capture': 'No encuentro ningún micrófono en este dispositivo.',
+    'language-not-supported': 'Este navegador no dicta en español. Usa el micrófono del teclado del móvil.'
+  };
+  let r = null, activo = false, base = '', vueltas = 0;
+  const fin = txt => { activo = false; r = null; b.classList.remove('grabando'); b.querySelector('span').textContent = 'Dictar con el micrófono'; if(txt){ aviso.textContent = txt; aviso.hidden = false; } };
+  const escuchar = () => {
+    try { r = new Reco(); } catch(e){ return fin(MSG['service-not-allowed']); }
+    base = ta.value; r.lang = 'es-ES'; r.continuous = false; r.interimResults = true;
+    r.onresult = e => { let t = ''; for(let i = 0; i < e.results.length; i++) t += e.results[i][0].transcript; t = t.trim();
+      ta.value = base + (base && t && !/\s$/.test(base) ? ' ' : '') + t; ta.dispatchEvent(new Event('input')); };
+    r.onerror = e => { if(e.error === 'no-speech' || e.error === 'aborted') return; fin(MSG[e.error] || 'El dictado ha fallado (' + e.error + '). Usa el micrófono del teclado del móvil.'); };
+    r.onend = () => { if(activo && vueltas++ < 40) escuchar(); else if(activo) fin(); };
+    try { r.start(); } catch(e){ fin(MSG['service-not-allowed']); }
+  };
   b.onclick = () => {
-    if(r){ r.stop(); return; }
-    try { r = new Reco(); } catch(e){ return parar('El micrófono no está disponible'); }
-    r.lang = 'es-ES'; r.continuous = true; r.interimResults = false;
-    r.onresult = e => { let t = ''; for(let i = e.resultIndex; i < e.results.length; i++) if(e.results[i].isFinal) t += e.results[i][0].transcript;
-      t = t.trim(); if(!t) return; const v = ta.value; ta.value = v + (v && !/\s$/.test(v) ? ' ' : '') + t; ta.dispatchEvent(new Event('input')); };
-    r.onerror = e => parar(e.error === 'not-allowed' || e.error === 'service-not-allowed' ? 'Da permiso al micrófono en el navegador' : 'No se ha oído nada. Prueba otra vez');
-    r.onend = () => { if(r) parar(); };
-    r.start(); b.classList.add('grabando'); b.querySelector('span').textContent = 'Escuchando… pulsa para parar';
+    if(activo){ activo = false; try { r && r.stop(); } catch(e){} fin(); return; }
+    aviso.hidden = true; activo = true; vueltas = 0; b.classList.add('grabando'); b.querySelector('span').textContent = 'Escuchando… pulsa para parar';
+    escuchar();
   };
 }
 const rellenar = (cont, lista, id, campo) => chips(cont, lista.map(t => [t, esc(t)]), t => S[campo] === t, t => { S[campo] = t; $(id).value = t; guardar(); });
@@ -439,7 +458,8 @@ function paso1(){
   pinta1();
 }
 function pinta1(){
-  const b = masBaja(); rueda($('rueda1'), b);
+  // Tapada: una rueda inventada y fija, sin nombres ni números, que no se mueve con las barras
+  const b = masBaja(); if(S.verRueda) rueda($('rueda1'), b); else rueda($('rueda1'), null, { cuerpo: 7, mente: 4, relaciones: 9, entorno: 5 }, false);
   const media = DIMS.reduce((s, k) => s + S.rueda[k], 0) / 4;
   $('ruedaTxt').textContent = 'Tu parte más baja hoy: ' + D[b].n + ' (' + S.rueda[b] + '). Media: ' + media.toFixed(1).replace('.', ',') + ' de 10.';
   $('ruedaCaja').classList.toggle('tapada', !S.verRueda);
