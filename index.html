@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V15.01 · App Amable Meta · 2026-11-10 14:45==== -->
+<!-- ==== index V15.02 · App Amable Meta · 2026-11-10 14:46==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1497,6 +1497,8 @@ body:has(#app[data-vista="perfil"])::before{opacity:.22}
 .av-detalle p{margin:8px 0 6px;font-size:14px;line-height:1.45}
 .av-lista{margin:0 0 8px;padding:0 0 0 22px;font-size:14px;line-height:1.45}.av-lista li{margin:0 0 6px}
 .av-anima{margin:8px 0 0;font-size:13px;line-height:1.4;color:#5E6B55}
+.tabbar button[data-tab="plan"]{color:#8A6A00}
+.tabbar button[data-tab="plan"] svg{background:#FFD23F;border-radius:50%;padding:4px;box-sizing:content-box;color:#5A4300;box-shadow:0 0 0 3px rgba(255,210,63,.35)}
 .pf-franja{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 20px;background:#fff;color:#2B2B2B;font:800 15px Karla,sans-serif;cursor:pointer;box-shadow:0 1px 6px rgba(0,0,0,.08);position:relative;z-index:2}
 .pf-franja span{display:flex;align-items:center;gap:8px}
 .pf-bola{flex:none;min-width:32px;height:32px;padding:0 6px;border-radius:16px;background:#E8002C;color:#fff;font:900 15px Karla,sans-serif;display:flex;align-items:center;justify-content:center;box-sizing:border-box}
@@ -2666,7 +2668,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V15.01';
+  const APP_VERSION = 'V15.02';
   // ===== Pantalla de inicio: versión, sonido corto y salida (5-11-2026) =====
   (function(){
     const sp = document.getElementById('inicioSplash'); if(!sp) return;
@@ -8386,8 +8388,7 @@ lo que haces cada día es lo que vas a ser.`;
                 (tx.practica ? '<span class="ciclo-dato">' + escapeAttr(corto(tx.practica, 110)) + '</span>' : registraLunes() ? 'La defines en tu compromiso del lunes' : 'Marca cada día que la hagas')
                 + (vecesTx ? '<br><span style="font-weight:700">' + vecesTx + '</span>' : ''), '', false);
         opciones.innerHTML =
-          '<button type="button" class="hablar-practi-btn"><i data-ico=comentario></i>Quiero hablar con Prácti</button>'
-          + '<div role="button" tabindex="0" class="opcion-inicio ciclo-btn tit-arriba ciclo-meta' + (metaHecha ? ' hecha' : ' pendiente') + act('meta') + '" data-ir="s4">'
+          '<div role="button" tabindex="0" class="opcion-inicio ciclo-btn tit-arriba ciclo-meta' + (metaHecha ? ' hecha' : ' pendiente') + act('meta') + '" data-ir="s4">'
           + '<b class="ciclo-tit">' + letraPaso('a') + 'Metas' + (metaHecha ? infoBoton('Aquí se guardan tus metas: tu <b>meta con guía</b>, definida para el ' + trimestreMeta()
                 + (sencillasActivas().length ? (sencillasActivas().length === 1 ? ', y tu <b>' + TXT_SENCILLA.toLowerCase() + '</b>' : ', y tus <b>' + sencillasActivas().length + ' ' + TXT_SENCILLAS.toLowerCase() + '</b>') : '') + '.'
                 + (limiteMetaIntentos() > 1 ? ' Puedes cambiar la meta hasta ' + limiteMetaIntentos() + ' veces por trimestre.' : '')) : '') + '</b>'
@@ -8414,7 +8415,7 @@ lo que haces cada día es lo que vas a ser.`;
         app.appendChild(opciones);
         try { const tp = tarjetaPlantaInicio(); if(tp) app.appendChild(tp); } catch(e){ console.error('Planta de Inicio:', e); }
         try { if(localStorage.getItem('tour_' + state.me) === 'pendiente' && state.view === 'panel'){ localStorage.setItem('tour_' + state.me, 'visto'); setTimeout(iniciarTour, 900); } } catch(e){}
-        opciones.querySelector('.hablar-practi-btn').onclick = () => { state.hablaDesdeInicio = true; state.view = 'habla'; window.scrollTo(0,0); render(); };
+        // «Quiero hablar con Prácti» ya no sale en Inicio (10-11-2026, Gustavo): está en Utilidades
         const irDestino = destino => {
             if(destino === 'util'){ state.view = 'utilidades'; window.scrollTo(0,0); render(); return; }
             if(destino === 'sB'){ state.prevView = 'panel'; state.view = 'practicaSemanal'; window.scrollTo(0,0); render(); return; }
@@ -12095,7 +12096,7 @@ lo que haces cada día es lo que vas a ser.`;
     // menos en el arranque, el formulario de la meta, la bienvenida y la encuesta
     const sinBarra = ['loading', 'pick', 'formMeta', 'bienvenidaAlta', 'encuesta', 'sinoportunidades'];
     const v = state.view;
-    const tab = (v === 'viaje' || state.desdeViaje) ? 'viaje'
+    const tab = (v === 'planes' && !tienePlan('guias')) ? 'plan' : (v === 'viaje' || state.desdeViaje) ? 'viaje'
       : (v === 'progreso' || v === 'historial') ? 'progreso'
       : (v === 'utilidades' || v === 'frases' || v === 'habla' || v === 'musica' || v === 'novedades' || (v === 'panel' && state.panelSub === 's5')) ? 'descubre'
       : (v === 'panel' || v === 'practicaSemanal' || v === 'calendarioPracticas' || v === 'practicas' || v === 'checkin' || v === 'contrato' || v === 'posit' || v === 'carta' || v === 'sesionesCal') ? 'inicio' : 'otra';
@@ -12108,13 +12109,17 @@ lo que haces cada día es lo que vas a ser.`;
       progreso: '<path d="M4.5 17a8 8 0 1 1 15 0"/><path d="m12 13 3.5-4"/><circle cx="12" cy="13" r="1.2"/>',
       descubre: '<circle cx="12" cy="12" r="8.5"/><path d="m15.5 8.5-2 5-5 2 2-5z"/>'
     };
-    const nombres = { inicio: 'Inicio', viaje: 'Viaje', progreso: 'Progreso', descubre: 'Utilidades' };
+    // Plan Libre (10-11-2026, Gustavo): en el centro, «Plan» en amarillo, que lleva a la descripción de los planes de pago
+    ic.plan = '<path d="M5 9h14v11H5z"/><path d="M3.5 6.5h17V9h-17z"/><path d="M12 6.5V20"/><path d="M12 6.5c-1.5-3-5-3-5-.8 0 1.4 2.6.8 5 .8 2.4 0 5 .6 5-.8 0-2.2-3.5-2.2-5 .8"/>';
+    const nombres = tienePlan('guias') ? { inicio: 'Inicio', viaje: 'Viaje', progreso: 'Progreso', descubre: 'Utilidades' }
+      : { inicio: 'Inicio', viaje: 'Viaje', plan: 'Plan', progreso: 'Progreso', descubre: 'Utilidades' };
     if(oculto('util')) delete nombres.descubre;   // «Mostrar» sin Utilidades
     const nav = document.createElement('nav'); nav.className = 'tabbar'; nav.setAttribute('aria-label', 'Secciones');
     nav.innerHTML = Object.keys(nombres).map(k => '<button type="button" data-tab="' + k + '" class="' + (k === tab ? 'activa' : '') + '"' + (k === tab ? ' aria-current="page"' : '') + '><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + ic[k] + '</svg><span>' + nombres[k] + '</span></button>').join('');
     nav.querySelectorAll('button').forEach(b => b.onclick = () => {
       const k = b.dataset.tab;
       state.panelSub = null; state.volverUtil = false; state.desdeViaje = false;
+      if(k === 'plan'){ state.prevView = 'panel'; state.view = 'planes'; window.scrollTo(0,0); render(); return; }
       state.view = k === 'inicio' ? 'panel' : k === 'descubre' ? 'utilidades' : k;
       window.scrollTo(0,0); render();
     });
@@ -13154,4 +13159,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Meta" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V15.01 · App Amable Meta · 2026-11-10 14:45==== -->
+<!-- ==== Fin del index V15.02 · App Amable Meta · 2026-11-10 14:46==== -->
