@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V14.94 · App Amable Meta · 2026-11-10 09:26==== -->
+<!-- ==== index V14.95 · App Amable Meta · 2026-11-10 09:33==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2508,7 +2508,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V14.94';
+  const APP_VERSION = 'V14.95';
   // ===== Pantalla de inicio: versión, sonido corto y salida (5-11-2026) =====
   (function(){
     const sp = document.getElementById('inicioSplash'); if(!sp) return;
@@ -3907,10 +3907,10 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     const a = alarmasSencillas()[m.id], dias = a && Array.isArray(a.dias) ? DIAS_SEMANA.filter(L => a.dias.includes(L)) : [];
     return a && /^\d\d:\d\d$/.test(a.hora) && dias.length ? { hora: a.hora, dias } : null;
   }
-  function textoAlarmaSencilla(m){
-    const a = alarmaSencilla(m);
-    if(!a) return '<i data-ico=alarma></i>Alarma a las ' + Number(ALARMA_HORA.slice(0, 2)) + ':' + ALARMA_HORA.slice(3) + '<small>Toca para elegir los días y activarla</small>';
-    return '<i data-ico=alarma></i>Alarma activada a las ' + Number(a.hora.slice(0, 2)) + ':' + a.hora.slice(3) + '<small>Días: ' + a.dias.join('-') + '</small>';
+  function textoAlarmaSencilla(m, num){
+    const a = alarmaSencilla(m), de = 'Alarma de tu ' + TXT_SENCILLA.toLowerCase() + (num ? ' ' + num : '');
+    if(!a) return '<i data-ico=alarma></i>' + de + '<small>A las ' + Number(ALARMA_HORA.slice(0, 2)) + ':' + ALARMA_HORA.slice(3) + ' · toca para elegir los días y activarla</small>';
+    return '<i data-ico=alarma></i>' + de + '<small>Activada a las ' + Number(a.hora.slice(0, 2)) + ':' + a.hora.slice(3) + ' · días: ' + a.dias.join('-') + '</small>';
   }
   function abrirAlarmaSencilla(m, alGuardar){
     document.querySelectorAll('.ms-al-capa').forEach(x => x.remove());
@@ -4247,7 +4247,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
           + (vecesSemanaSencilla(m) ? '<p class="ms-dias-plan"><i data-ico=calendario></i>' + textoDiasSencilla(m) + '</p>' : '') + '<p class="ms-cuenta">' + cuenta(m) + '</p>' + sieteDiasSencillaHTML(m) + LEYENDA_SENCILLA
           + '<button type="button" class="ms-btn ms-cambiar">Cambiar mi ' + TXT_SENCILLA.toLowerCase() + ' ' + (i + 1) + ' →</button>'
           + '<button type="button" class="ms-btn ms-ver-cal"><i data-ico=calendario></i>Calendario</button>'
-          + (oculto('recordatorio') ? '' : '<div class="ms-rec"><button type="button" class="ms-alarma">' + textoAlarmaSencilla(m) + '</button></div>')
+          + (oculto('recordatorio') ? '' : '<div class="ms-rec"><button type="button" class="ms-alarma">' + textoAlarmaSencilla(m, i + 1) + '</button></div>')
           + '</div>').join('')
         + (activas.length < max ? '<button type="button" class="ms-btn ms-crear"><span class="ms-mas" aria-hidden="true">+</span><span>' + (activas.length ? 'Crear otra ' : 'Crear mi ') + TXT_SENCILLA.toLowerCase() + '</span></button>' : '')
         + (max === 1 ? '<p class="ms-nota">Con el Plan Guías + Grupo puedes tener 2.</p>' : '')
@@ -4265,7 +4265,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
         };
         t.querySelector('.ms-ver-cal').onclick = verCal;
         const al = t.querySelector('.ms-alarma');
-        if(al) al.onclick = () => abrirAlarmaSencilla(m, () => { al.innerHTML = textoAlarmaSencilla(m); });
+        const numAl = activas.indexOf(m) + 1;
+        if(al) al.onclick = () => abrirAlarmaSencilla(Object.assign({}, m, { cab: '<i data-ico=alarma></i>Alarma de tu ' + TXT_SENCILLA.toLowerCase() + (numAl ? ' ' + numAl : '') }), () => { al.innerHTML = textoAlarmaSencilla(m, numAl); });
         enlazarDiasSencilla(t.querySelector('.ms-semana'), id, refrescar, verCal);
         t.querySelector('.ms-cambiar').onclick = () => editor(t, m, activas.indexOf(m) + 1);
       });
@@ -12942,4 +12943,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Meta" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V14.94 · App Amable Meta · 2026-11-10 09:26==== -->
+<!-- ==== Fin del index V14.95 · App Amable Meta · 2026-11-10 09:33==== -->
