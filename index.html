@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V15.24 · App Amable Meta · 2026-11-10 23:10==== -->
+<!-- ==== index V15.25 · App Amable Meta · 2026-11-11 00:14==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2734,7 +2734,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       html += `<div style="margin-bottom:20px"${g.year === todayY && g.monthIdx === todayM ? ' id="sescalMesActual"' : ''}>`;
       html += `<div class="sescal-mes">${monthNamesEs[g.monthIdx]} ${g.year}</div>`;
       html += `<div class="sescal-dias-header">
-        <div>L</div><div>M</div><div>X</div><div>J</div><div>V</div><div>S</div><div>D</div></div>`;
+        ${DIAS_SEMANA.map(l => '<div>' + letraVer(l) + '</div>').join('')}</div>`;
       weeks.forEach(week => {
         html += `<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:4px">`;
         week.forEach(day => {
@@ -2770,7 +2770,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V15.24';
+  const APP_VERSION = 'V15.25';
   // ===== Pantalla de inicio: versión, sonido corto y salida (5-11-2026) =====
   (function(){
     const sp = document.getElementById('inicioSplash'); if(!sp) return;
@@ -4206,7 +4206,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     const f = el('<div class="ms-al-capa" role="dialog" aria-label="Alarma"><div class="ms-al-caja"><b class="ms-al-tit">' + (m.cab || '<i data-ico=alarma></i>Alarma de tu meta sencilla') + '</b>'
       + '<p class="ms-al-nombre">' + escapeAttr(m.nombre) + '</p>'
       + (nativa ? '' : '<p class="ms-al-aviso">Desde la web no puede sonar una alarma: se apunta un aviso en el calendario de tu móvil, a esa hora y esos días.</p>')
-      + '<p class="ms-al-sub">¿Qué días?</p><div class="ms-al-dias">' + DIAS_SEMANA.map(L => '<label><input type="checkbox" value="' + L + '"' + (a.dias.includes(L) ? ' checked' : '') + '>' + L + '</label>').join('') + '</div>'
+      + '<p class="ms-al-sub">¿Qué días?</p><div class="ms-al-dias">' + DIAS_SEMANA.map(L => '<label><input type="checkbox" value="' + L + '"' + (a.dias.includes(L) ? ' checked' : '') + '>' + letraVer(L) + '</label>').join('') + '</div>'
       + '<label class="ms-al-sub">Hora de la alarma</label><input type="time" class="ms-al-hora" value="' + a.hora + '">'
       + '<button type="button" class="ms-al-ok">' + (nativa ? 'Activar alarma' : 'Activar y añadir a mi calendario') + '</button>'
       + (ya ? '<button type="button" class="ms-al-quitar">Quitar la alarma</button>' : '')
@@ -4439,7 +4439,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     const hoy = hoyISO(), hueco = (new Date(y, mes, 1).getDay() + 6) % 7, n = new Date(y, mes + 1, 0).getDate();
     let s = '<div class="ms-mes-cab"><button type="button" class="ms-mes-ant" aria-label="Mes anterior">‹</button><b>' + monthNamesEs[mes] + ' ' + y + '</b>'
       + '<button type="button" class="ms-mes-sig" aria-label="Mes siguiente">›</button></div><div class="ms-mes">'
-      + DIAS_SEMANA.map(L => '<span class="ms-mes-l">' + L + '</span>').join('') + '<span></span>'.repeat(hueco);
+      + DIAS_SEMANA.map(L => '<span class="ms-mes-l">' + letraVer(L) + '</span>').join('') + '<span></span>'.repeat(hueco);
     for(let d = 1; d <= n; d++){
       const f = new Date(y, mes, d), iso = isoLocal(f), L = DIAS_SEMANA[(f.getDay() + 6) % 7];
       s += '<button type="button" class="ms-dia-m' + claseDiaSencilla(m, iso, L) + (iso === hoy ? ' hoy' : '') + '" data-iso="' + iso + '"' + (vecesDiaSencilla(m, iso) > 1 ? ' data-veces="' + vecesDiaSencilla(m, iso) + '"' : '') + (iso > hoy ? ' disabled' : '') + '>' + d + '</button>';
@@ -4476,7 +4476,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
         + '<div class="ms-capa-cab ms-cab-col"><button type="button" class="back-btn ms-no">← Volver</button><b>' + (m ? 'Cambiar' : 'Crear') + ' mi ' + TXT_SENCILLA.toLowerCase() + (m && num ? ' ' + num : '') + '</b></div>'
         + '<label class="ms-et" for="msNombre">¿Qué quieres hacer?</label><textarea id="msNombre" class="ms-input ms-nombre-in" rows="2" maxlength="90" placeholder="Ej.: beber 2 litros de agua, caminar 20 minutos…">' + escapeAttr(m ? m.nombre : '') + '</textarea><p class="ms-letras" aria-live="polite"></p>'
         + '<label class="ms-et">¿Con qué frecuencia?</label><div class="ms-modo"><button type="button" data-m="dias"' + (veces ? '' : ' class="on"') + '>Días concretos</button><button type="button" data-m="semana"' + (veces ? ' class="on"' : '') + '>Veces por semana</button></div>'
-        + '<div class="ms-por-dias"' + (veces ? ' hidden' : '') + '><label class="ms-et">¿Qué días?</label><div class="ms-elegir">' + DIAS_SEMANA.map(L => '<button type="button" class="ms-elige' + (plan.includes(L) ? ' on' : '') + '" data-l="' + L + '">' + L + '</button>').join('') + '</div>'
+        + '<div class="ms-por-dias"' + (veces ? ' hidden' : '') + '><label class="ms-et">¿Qué días?</label><div class="ms-elegir">' + DIAS_SEMANA.map(L => '<button type="button" class="ms-elige' + (plan.includes(L) ? ' on' : '') + '" data-l="' + L + '">' + letraVer(L) + '</button>').join('') + '</div>'
         + '<div class="ms-rapidos"><button type="button" data-r="todos">Todos los días</button><button type="button" data-r="semana">De lunes a viernes</button></div>'
         + '<p class="ms-aviso">Los días en color son los días que harás tu práctica.</p></div>'
         + '<div class="ms-por-semana"' + (veces ? '' : ' hidden') + '><label class="ms-et">¿Cuántas veces por semana?</label><div class="ms-veces">' + [1, 2, 3, 4, 5, 6].map(n => '<button type="button" class="ms-vez' + (n === (veces || 3) ? ' on' : '') + '" data-n="' + n + '">' + n + '</button>').join('') + '</div>'
@@ -9500,7 +9500,7 @@ lo que haces cada día es lo que vas a ser.`;
         celdas += futuro ? celdaDiaHTML(dd, hoy, 'span') : celdaDiaHTML(dd, hoy, 'button', ' type="button" data-iso="' + isoLocal(dd) + '" aria-label="Marcar o quitar el ' + k + ' de ' + monthNamesEs[m] + '"');
       }
       caja.appendChild(el('<div class="card cv-mes"><p class="cv-titulo"><b>' + monthNamesEs[m].charAt(0).toUpperCase() + monthNamesEs[m].slice(1) + ' ' + y + '</b><span>' + (total ? total + (total === 1 ? ' día hecho' : ' días hechos') : '') + '</span></p>'
-        + '<div class="cd-grid">' + DIAS_SEMANA.map(l => '<span class="cd-sem">' + l + '</span>').join('') + celdas + '</div>' + resumenSemanasMes(y, m) + '</div>').firstElementChild);
+        + '<div class="cd-grid">' + DIAS_SEMANA.map(l => '<span class="cd-sem">' + letraVer(l) + '</span>').join('') + celdas + '</div>' + resumenSemanasMes(y, m) + '</div>').firstElementChild);
     }
     app.appendChild(caja);
     // Tocar un día pasado: marca o quita «hice mi práctica» (en la fila de su semana; el clima y el entorno no se tocan)
@@ -9544,6 +9544,8 @@ lo que haces cada día es lo que vas a ser.`;
     app.appendChild(caja);
   }
   const DIAS_SEMANA = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
+  // Lo que se ve: en inglés, M T W T F S S (11-11-2026, Gustavo); lo que se guarda no cambia
+  function letraVer(L){ return IDIOMA === 'en' ? ({ L: 'M', M: 'T', X: 'W', J: 'T', V: 'F', S: 'S', D: 'S' }[L] || L) : L; }
   // «Días hechos» guarda cada día y cuántas veces: «L,M:3,X» (sin número = 1 vez, como antes)
   function leerDias(texto){
     const o = {};
@@ -9696,7 +9698,7 @@ lo que haces cada día es lo que vas a ser.`;
         <p style="margin:0 0 4px;font-size:16px"><b><i data-ico=calendario></i>Mi calendario de prácticas</b></p>
         <p style="font-size:13px;color:var(--ink-soft);margin:0 0 10px">Cada día es un cuadrado: el borde es tu entorno (blanco, tranquilo; gris claro, acelerado; gris, fuera de la rutina; gris oscuro, enfermo o cuidando a alguien), el círculo tu clima (verde si solo regaste) y la tilde, que hiciste tu práctica. En blanco, los días sin registro.</p>
         <div class="cd-cab"><button type="button" class="cd-atras" ${puedeAtras ? '' : 'disabled'} aria-label="Mes anterior">‹</button><b>${monthNamesEs[m].charAt(0).toUpperCase() + monthNamesEs[m].slice(1)} ${y}</b><button type="button" class="cd-adelante" ${puedeAdelante ? '' : 'disabled'} aria-label="Mes siguiente">›</button></div>
-        <div class="cd-grid">${DIAS_SEMANA.map(l => '<span class="cd-sem">' + l + '</span>').join('')}${celdas}</div>
+        <div class="cd-grid">${DIAS_SEMANA.map(l => '<span class="cd-sem">' + letraVer(l) + '</span>').join('')}${celdas}</div>
         ${resumenSemanasMes(y, m)}
         <p class="cd-msg" style="font-size:12px;color:var(--ink-soft);margin:8px 0 0">${msg || (total ? 'Este mes: ' + total + (total === 1 ? ' día hecho' : ' días hechos') + (totalVeces > total ? ' · ' + totalVeces + ' veces' : '') : 'Aún no has marcado ningún día este mes.')}</p>`;
       card.querySelector('.cd-atras').onclick = () => { calDiarioMes = new Date(y, m - 1, 1); pintar(); };
@@ -13327,4 +13329,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Meta" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V15.24 · App Amable Meta · 2026-11-10 23:10==== -->
+<!-- ==== Fin del index V15.25 · App Amable Meta · 2026-11-11 00:14==== -->
