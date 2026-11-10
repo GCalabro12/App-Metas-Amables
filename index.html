@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V14.80 · App Amable Meta · 2026-11-09 23:40==== -->
+<!-- ==== index V14.81 · App Amable Meta · 2026-11-10 08:38==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1200,7 +1200,8 @@ textarea.ms-nombre-in:focus{outline:none;border-color:#C9942D;box-shadow:0 0 0 3
 .ms-dia-m.toca,.ms-dia.toca{background:var(--ms-f,#F6EBD3);border-color:var(--ms-c,#C9942D);color:var(--ms-t,#6B4A26)}
 .ms-b{--ms-c:#7A4E2D;--ms-f:#EBDCCB;--ms-t:#4A2E17;--ms-n:#E9D7C2}
 /* El nombre de cada meta sencilla, bien destacado: fondo amarillo (marrón claro en la segunda) y aire arriba y abajo */
-.ms-tarjeta > .ms-nombre,.ms-reg > .ms-nombre{margin:10px 0 10px;padding:12px 14px;border-radius:12px;background:var(--ms-n,#FCEFC2);font-size:17px;line-height:1.3}
+.ms-tarjeta > .ms-nombre,.ms-reg > .ms-nombre{margin:10px 0 10px;padding:12px 14px;border-radius:12px;background:var(--ms-c,#C9942D);color:#fff;font-size:17px;line-height:1.3}
+.ms-reg > .ms-nombre small{color:rgba(255,255,255,.88)}
 .ms-tarjeta .ms-cambiar{background:#fff;border:1.5px solid var(--ms-c,#A0703C);color:var(--ms-t,#6B4A26)}.ms-tarjeta .ms-ver-cal{background:var(--ms-c,#C9942D);border:none;color:#fff}
 .ms-dia-m.hecho,.ms-dia.hecho{background:#4C8C4A;border-color:#4C8C4A;color:#fff}
 .ms-dia-m.fallo,.ms-dia.fallo{background:#D9483B;border-color:#D9483B;color:#fff}
@@ -1209,7 +1210,7 @@ textarea.ms-nombre-in:focus{outline:none;border-color:#C9942D;box-shadow:0 0 0 3
 .ms-dia-m.con-nota::after{content:'•••';position:absolute;left:0;right:0;bottom:3px;font-size:12px;font-weight:900;line-height:.6;letter-spacing:1px;text-align:center;color:currentColor}
 .ms-dia-m.con-nota{padding-bottom:6px}
 .ms-notas{margin:10px 0 0;padding-top:8px;border-top:1px solid rgba(0,0,0,.08)}.ms-notas p{display:flex;gap:10px;margin:6px 0;font-size:14.5px}.ms-notas b{min-width:22px;text-align:right}
-.ms-capa-cal .ms-nombre{margin:4px 0 8px;padding:12px 14px;border-radius:12px;background:var(--ms-n,#FCEFC2);font-size:18px;font-weight:800;line-height:1.3}
+.ms-capa-cal .ms-nombre{margin:4px 0 8px;padding:12px 14px;border-radius:12px;background:var(--ms-c,#C9942D);color:#fff;font-size:18px;font-weight:800;line-height:1.3}
 .ms-capa-cal .ms-cuenta{margin:0 0 14px;font-size:14.5px}
 .ms-capa-cal .ms-mes{gap:8px 6px}.ms-capa-cal .ms-dia-m{max-width:60px;font-size:16px}
 .ms-capa-cal .ms-mes-cab b{font-size:18px}.ms-capa-cal .ms-mes-cab button{width:44px;height:38px;font-size:22px}
@@ -1228,7 +1229,9 @@ textarea.ms-nombre-in:focus{outline:none;border-color:#C9942D;box-shadow:0 0 0 3
 .ms-pop::after{content:'';position:absolute;left:var(--flecha,50%);width:14px;height:14px;background:#fff;transform:translateX(-50%) rotate(45deg)}
 .ms-pop.arriba::after{bottom:-6px}.ms-pop.abajo::after{top:-6px}
 .ms-pop button{width:48px;height:48px;border-radius:50%;border:none;font:800 20px Karla,sans-serif;color:#fff;cursor:pointer;position:relative;z-index:1}
-.ms-pop .o-hecho{background:#4C8C4A}.ms-pop .o-fallo{background:#D9483B}.ms-pop .o-libre{background:#2B2B2B}.ms-pop .o-mas{background:#EDEBE6;color:#333;font-size:15px}.ms-pop .o-hecho{font-size:18px}
+.ms-pop .o-hecho{background:#4C8C4A}
+.ms-marron .ms-dia-m.hecho,.ms-marron .ms-dia.hecho{background:var(--ms-c,#C9942D);border-color:var(--ms-c,#C9942D)}
+.ms-marron .ms-leyenda .ly.hecho{background:var(--ms-c,#C9942D)}.ms-pop .o-fallo{background:#D9483B}.ms-pop .o-libre{background:#2B2B2B}.ms-pop .o-mas{background:#EDEBE6;color:#333;font-size:15px}.ms-pop .o-hecho{font-size:18px}
 .ms-pop.texto{flex-direction:column;gap:4px}.ms-pop .o-txt{width:auto;height:auto;border-radius:10px;padding:10px 14px;background:#F6F3EC;color:var(--ink);font:700 14.5px Karla,sans-serif;text-align:left}
 .ms-acciones{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:10px}
 .ms-acciones button{flex:1;min-width:110px;padding:9px 10px;border-radius:10px;border:1.5px solid #A0703C;background:#fff;color:#6B4A26;font:700 14px Karla,sans-serif;cursor:pointer}
@@ -2469,7 +2472,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V14.80';
+  const APP_VERSION = 'V14.81';
   // ===== Pantalla de inicio: versión, sonido corto y salida (5-11-2026) =====
   (function(){
     const sp = document.getElementById('inicioSplash'); if(!sp) return;
@@ -3970,8 +3973,11 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     setTimeout(() => { window.addEventListener('scroll', cerrar, true); document.addEventListener('pointerdown', fuera, true); }, 0);
     return { pop, colocar, cerrar };
   }
+  try { document.documentElement.classList.toggle('ms-marron', localStorage.getItem('ms_hecho_color') === 'marron'); } catch(e){}
   function opcionesDiaSencilla(b, id, alElegir, verCalendario){
-    const { pop, colocar, cerrar } = popJuntoA(b, '<button type="button" data-e="hecho" class="o-hecho" aria-label="Hecho, una vez más">+1</button><button type="button" data-e="fallo" class="o-fallo" aria-label="No lo hice">✕</button>'
+    const colorMeta = (getComputedStyle(b).getPropertyValue('--ms-c') || '').trim() || '#C9942D';
+    const { pop, colocar, cerrar } = popJuntoA(b, '<button type="button" data-e="hecho" data-color="verde" class="o-hecho" aria-label="Hecho, una vez más (verde)">+1</button>'
+      + '<button type="button" data-e="hecho" data-color="marron" class="o-hecho" style="background:' + colorMeta + '" aria-label="Hecho, una vez más (marrón)">+1</button><button type="button" data-e="fallo" class="o-fallo" aria-label="No lo hice">✕</button>'
       + '<button type="button" data-e="libre" class="o-libre" aria-label="No tocaba">–</button><button type="button" data-e="mas" class="o-mas" aria-label="Comentario">•••</button>');
     const aplicar = async e => {
       cerrar(); b.disabled = true;
@@ -3983,6 +3989,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       b.disabled = false;
     };
     pop.querySelectorAll('button').forEach(o => o.onclick = () => {
+      if(o.dataset.color){ try { localStorage.setItem('ms_hecho_color', o.dataset.color); } catch(e){} document.documentElement.classList.toggle('ms-marron', o.dataset.color === 'marron'); }
       if(o.dataset.e !== 'mas'){ aplicar(o.dataset.e); return; }
       // Comentario de ese día (y, abajo, quitar la marca o ver el calendario)
       const m = datosSencillas().lista.find(x => x.id === id) || {}, previo = (m.notas || {})[b.dataset.iso] || '';
@@ -12899,4 +12906,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Meta" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V14.80 · App Amable Meta · 2026-11-09 23:40==== -->
+<!-- ==== Fin del index V14.81 · App Amable Meta · 2026-11-10 08:38==== -->
