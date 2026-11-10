@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V15.05 · App Amable Meta · 2026-11-10 14:53==== -->
+<!-- ==== index V15.06 · App Amable Meta · 2026-11-10 14:55==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2681,7 +2681,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V15.05';
+  const APP_VERSION = 'V15.06';
   // ===== Pantalla de inicio: versión, sonido corto y salida (5-11-2026) =====
   (function(){
     const sp = document.getElementById('inicioSplash'); if(!sp) return;
@@ -12107,7 +12107,7 @@ lo que haces cada día es lo que vas a ser.`;
     const iNivel = state.nivel ? BADGE_SCALE.findIndex(x => x.label === state.nivel.label) : -1;
     document.querySelectorAll('.hamburger-btn-text').forEach(b => {
       if(iNivel >= 0){
-        b.style.boxShadow = '0 0 0 3px ' + COLOR_NIVEL[iNivel]; b.title = 'Tu nivel: ' + state.nivel.label;
+        b.style.boxShadow = 'none'; b.style.border = '3px solid ' + COLOR_NIVEL[iNivel]; b.title = 'Tu nivel: ' + state.nivel.label;   // solo el aro del nivel, sin el azul de antes
         let sim = b.querySelector('.av-nivel'); if(!sim){ sim = document.createElement('span'); sim.className = 'av-nivel'; }
         sim.innerHTML = simboloNivel(iNivel);
         if(b.dataset.avatar) b.appendChild(sim); else setTimeout(() => b.appendChild(sim), 0);
@@ -13186,4 +13186,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Meta" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V15.05 · App Amable Meta · 2026-11-10 14:53==== -->
+<!-- ==== Fin del index V15.06 · App Amable Meta · 2026-11-10 14:55==== -->
