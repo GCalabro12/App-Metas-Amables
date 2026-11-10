@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V14.96 · App Amable Meta · 2026-11-10 10:11==== -->
+<!-- ==== index V14.97 · App Amable Meta · 2026-11-10 10:40==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -810,6 +810,8 @@ header.top.con-idioma{flex-wrap:wrap}
 .idioma-btn svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8}
 .idioma-btn select{appearance:none;-webkit-appearance:none;border:0;background:transparent;font:inherit;color:inherit;padding:0 2px;cursor:pointer}
 .idioma-btn span{font-size:11px}
+.google-app{display:flex;align-items:center;justify-content:center;gap:12px;width:100%;max-width:360px;height:44px;border:1px solid #DADCE0;border-radius:22px;background:#fff;color:#3C4043;font:600 15px Karla,sans-serif;cursor:pointer}
+.google-app svg{width:20px;height:20px}
 .acceso-o{max-width:520px;margin:10px auto 12px;text-align:center;font-size:14px;color:var(--ink-soft)}
 svg.escudo{vertical-align:-0.18em;flex:0 0 auto}
 .tres-areas .area{display:flex;flex-direction:column;gap:2px;margin:8px 0;padding:10px 12px;border-radius:12px;background:#F1ECFC}.tres-areas .area b{font-size:16px}.tres-areas .area span{font-size:14px;line-height:1.4}
@@ -2025,6 +2027,85 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
   document.addEventListener('change', e => { if(e.target && e.target.closest && e.target.closest('.idioma-btn')) ponerIdioma(e.target.value); });
 
+  // ===== App Android nueva (WebView con código propio, 10-11-2026) =====
+  // El WebView no trae compartir, voz, dictado ni avisos del navegador: aquí se hacen con el puente window.AmableMetaAndroid,
+  // con la misma forma que las funciones del navegador, así el resto de la app no cambia. En la web y en la app de Chrome no hace nada.
+  const APP_ANDROID = !!(window.AmableMetaAndroid && window.AmableMetaAndroid.version);
+  if(APP_ANDROID){
+    const P = window.AmableMetaAndroid;
+    const definir = (o, k, v) => { try { Object.defineProperty(o, k, { value: v, configurable: true, writable: true }); } catch(e){} };
+    // Compartir: solo texto (el enlace va dentro del texto); las imágenes aún no
+    if(P.compartirTexto){
+      definir(navigator, 'share', d => { d = d || {}; try { P.compartirTexto([d.text, d.url].filter(Boolean).join(' ').trim() || d.title || ''); } catch(e){} return Promise.resolve(); });
+      definir(navigator, 'canShare', d => !(d && d.files && d.files.length));
+    }
+    // Voz (speechSynthesis): cada frase va al móvil y avisa al terminar con window.vozNativaFin(id, error)
+    if(P.hablarCon){
+      const pend = {}; let n = 0;
+      const poli = { speaking: false, pending: false, paused: false, onvoiceschanged: null, getVoices: () => [], pause(){}, resume(){},
+        speak(u){
+          if(!u) return;
+          const tx = String(u.text || '').trim();
+          if(!tx || u.volume === 0){ setTimeout(() => { try { if(u.onend) u.onend({ utterance: u }); } catch(e){} }, 0); return; }
+          const id = 'v' + (++n); pend[id] = u; poli.speaking = true;
+          try { P.hablarCon(tx, Number(u.rate) || 1, Number(u.pitch) || 1, id); } catch(e){ window.vozNativaFin(id, 'error'); }
+        },
+        cancel(){
+          const l = Object.keys(pend).map(id => pend[id]); Object.keys(pend).forEach(id => delete pend[id]); poli.speaking = false;
+          try { if(P.callar) P.callar(); } catch(e){}
+          l.forEach(u => setTimeout(() => { try { if(u.onerror) u.onerror({ utterance: u, error: 'interrupted' }); } catch(e){} }, 0));
+        } };
+      window.vozNativaFin = (id, error) => {
+        const u = pend[id]; if(!u) return; delete pend[id]; poli.speaking = Object.keys(pend).length > 0;
+        const f = (error && error !== 'cortada') ? (u.onerror || u.onend) : u.onend;
+        try { if(f) f.call(u, { utterance: u, error: error || '' }); } catch(e){}
+      };
+      class FraseApp { constructor(tx){ this.text = String(tx || ''); this.lang = 'es-ES'; this.rate = 1; this.pitch = 1; this.volume = 1; this.voice = null; this.onend = this.onerror = this.onstart = null; }
+        addEventListener(tipo, f){ this['on' + tipo] = f; } }
+      definir(window, 'speechSynthesis', poli);
+      definir(window, 'SpeechSynthesisUtterance', FraseApp);
+    }
+    // Dictado (SpeechRecognition): el dictado de Android devuelve el texto en window.dictadoNativo(texto, error)
+    if(P.dictar){
+      let actual = null;
+      window.dictadoNativo = (texto, error) => {
+        const r = actual; actual = null; if(!r) return;
+        try {
+          if(texto){ const res = [{ transcript: String(texto), confidence: 1 }]; res.isFinal = true; if(r.onresult) r.onresult({ resultIndex: 0, results: [res] }); }
+          else if(error && error !== 'cancelado' && r.onerror) r.onerror({ error });
+        } catch(e){}
+        try { if(r.onend) r.onend(); } catch(e){}
+      };
+      class DictadoApp { constructor(){ this.lang = 'es-ES'; this.continuous = false; this.interimResults = false; this.onresult = this.onend = this.onerror = this.onstart = null; }
+        start(){ actual = this; try { P.dictar(); } catch(e){ window.dictadoNativo('', 'sin-dictado'); } }
+        stop(){} abort(){ if(actual === this){ actual = null; try { if(this.onend) this.onend(); } catch(e){} } }
+        addEventListener(tipo, f){ this['on' + tipo] = f; } }
+      definir(window, 'SpeechRecognition', DictadoApp);
+      definir(window, 'webkitSpeechRecognition', DictadoApp);
+    }
+    // Permiso de avisos (Notification): lo pide Android y responde en window.permisoAvisosNativo(concedido)
+    if(P.pedirPermisoAvisos){
+      let esperando = [];
+      window.permisoAvisosNativo = ok => { const l = esperando; esperando = []; l.forEach(f => f(ok ? 'granted' : 'denied')); };
+      const N = function(){};
+      Object.defineProperty(N, 'permission', { get: () => { try { return P.avisosPermitidos() ? 'granted' : 'default'; } catch(e){ return 'default'; } } });
+      N.requestPermission = () => new Promise(ok => { esperando.push(ok); try { P.pedirPermisoAvisos(); } catch(e){ window.permisoAvisosNativo(false); } });
+      definir(window, 'Notification', N);
+    }
+    // Si Firebase cambia el token de este móvil y los avisos están activados, se guarda el nuevo
+    window.tokenAvisosNativo = tk => { try { if(tk && state && state.me && localStorage.getItem('push_on_' + state.me) === '1') api('/push', { fcm: tk }).catch(() => {}); } catch(e){} };
+  }
+  // Token de avisos (Firebase) de este móvil en la app Android; espera hasta 15 s si aún no ha llegado
+  function tokenAvisosApp(){
+    return new Promise(ok => {
+      let tk = ''; try { tk = window.AmableMetaAndroid.tokenAvisos() || ''; } catch(e){}
+      if(tk) return ok(tk);
+      const antes = window.tokenAvisosNativo; let hecho = false;
+      window.tokenAvisosNativo = x => { try { if(antes) antes(x); } catch(e){} if(!hecho && x){ hecho = true; window.tokenAvisosNativo = antes; ok(x); } };
+      setTimeout(() => { if(!hecho){ hecho = true; window.tokenAvisosNativo = antes; ok(''); } }, 15000);
+    });
+  }
+
   let state = {
     view: 'loading',
     me: null,
@@ -2575,7 +2656,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V14.96';
+  const APP_VERSION = 'V14.97';
   // ===== Pantalla de inicio: versión, sonido corto y salida (5-11-2026) =====
   (function(){
     const sp = document.getElementById('inicioSplash'); if(!sp) return;
@@ -2817,13 +2898,10 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     if(window.google && google.accounts) return Promise.resolve(true);
     return new Promise(r => { const s = document.createElement('script'); s.src = 'https://accounts.google.com/gsi/client'; s.async = true; s.onload = () => r(true); s.onerror = () => r(false); document.head.appendChild(s); });
   }
-  async function botonGoogle(caja){
-    if(!GOOGLE_CLIENT_ID || !caja) return;
-    if(!(await cargarGoogle())) return;
-    google.accounts.id.initialize({ client_id: GOOGLE_CLIENT_ID, callback: async resp => {
+  async function entrarConGoogle(credencial){
       state.loginError = 'Comprobando…'; render();
       try {
-        const r = await api('/login-google', { credential: resp.credential });
+        const r = await api('/login-google', { credential: credencial });
         if(r.nuevo){
           // Aún no tiene cuenta: se rellena «Crear cuenta» con su nombre y su correo de Google
           state.altaDraft = Object.assign({}, state.altaDraft || {}, { nombre: r.nombre, email: r.email, fotoGoogle: r.fotoGoogle || '', googleEmail: r.email, googleFirma: r.googleFirma || '', googleSub: r.googleSub || '', googleSubFirma: r.googleSubFirma || '' });
@@ -2833,7 +2911,20 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
         try{ localStorage.setItem('ma_user', r.nombre); }catch(e){}
         pickMe(r.nombre);
       } catch(e){ state.loginError = mensajeError(e, 'No se pudo entrar con Google. Prueba con tu nombre y contraseña.'); render(); }
-    }});
+  }
+  window.googleNativo = (token, error) => {
+    if(token){ entrarConGoogle(token); return; }
+    if(error && error !== 'cancelado'){ state.loginError = 'No se pudo entrar con Google. Prueba con tu nombre y contraseña.'; render(); }
+  };
+  async function botonGoogle(caja){
+    if(!GOOGLE_CLIENT_ID || !caja) return;
+    if(APP_ANDROID && window.AmableMetaAndroid.entrarGoogle){
+      caja.innerHTML = '<button type="button" class="google-app"><svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9.1 3.6l6.8-6.8C35.8 2.4 30.3 0 24 0 14.6 0 6.6 5.4 2.7 13.3l7.9 6.1C12.5 13.6 17.8 9.5 24 9.5z"/><path fill="#4285F4" d="M46.1 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.4c-.5 2.9-2.2 5.3-4.6 6.9l7.2 5.6c4.2-3.9 7.1-9.6 7.1-17z"/><path fill="#FBBC05" d="M10.6 28.6c-.5-1.4-.8-3-.8-4.6s.3-3.2.8-4.6l-7.9-6.1C1 16.6 0 20.2 0 24s1 7.4 2.7 10.7l7.9-6.1z"/><path fill="#34A853" d="M24 48c6.5 0 11.9-2.1 15.9-5.8l-7.2-5.6c-2 1.4-4.7 2.3-8.7 2.3-6.2 0-11.5-4.1-13.4-9.8l-7.9 6.1C6.6 42.6 14.6 48 24 48z"/></svg>Continuar con Google</button>';
+      caja.querySelector('button').onclick = () => { try { window.AmableMetaAndroid.entrarGoogle(GOOGLE_CLIENT_ID); } catch(e){ window.googleNativo('', 'error'); } };
+      return;
+    }
+    if(!(await cargarGoogle())) return;
+    google.accounts.id.initialize({ client_id: GOOGLE_CLIENT_ID, callback: resp => entrarConGoogle(resp.credential) });
     google.accounts.id.renderButton(caja, { theme: 'outline', size: 'large', shape: 'pill', text: 'continue_with', locale: IDIOMA, width: Math.min(360, caja.clientWidth || 320) });
   }
 
@@ -4016,6 +4107,10 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   async function guardarSencillas(lista, archivo){
     const r = await api('/metas-sencillas', { lista, archivo });
     if(state.gamifica && r.datosFormulario) state.gamifica.datosFormulario = r.datosFormulario;
+    if(APP_ANDROID && window.AmableMetaAndroid.alarmas) try {
+      const vivas = new Set((lista || []).map(m => m.id)), puestas = JSON.parse(window.AmableMetaAndroid.alarmas() || '{}');
+      Object.keys(puestas).forEach(id => { if(!vivas.has(id)) window.AmableMetaAndroid.quitarAlarma(id); });
+    } catch(e){}
   }
   // Estado de un día: 'hecho' (✓, verde), 'fallo' (✕, rojo: no hecho), 'libre' (–, negro: no tocaba) o '' (sin marcar).
   // Con «•••» se escribe un comentario de ese día (notas: { fecha: texto })
@@ -10456,12 +10551,20 @@ lo que haces cada día es lo que vas a ser.`;
   // ===== Avisos en el móvil: «Tu planta tiene sed» a las 20:00 si aún no has marcado tu práctica =====
   function vapidPublica(){ return 'BLrN-xVzI9ViyFZSu3ff9RvFQTcxzDqOIEp6byKztnXsKIy_FKzjUF6Iyj_lh6KTOuoZZMKscaVEv_sNXj6D0wQ'; }
   function pushActivo(){ try { return localStorage.getItem('push_on_' + state.me) === '1' && 'Notification' in window && Notification.permission === 'granted'; } catch(e){ return false; } }
-  function pushPosible(){ return 'serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window; }
+  function pushPosible(){ if(APP_ANDROID) return !!(window.AmableMetaAndroid.tokenAvisos && window.AmableMetaAndroid.pedirPermisoAvisos); return 'serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window; }
   async function activarAvisosPlanta(silencio){   // silencio: activación sola al entrar, sin mensajes
     try {
       if(!pushPosible()){ alert('Este móvil o navegador no permite avisos.' + (esIOS() ? ' En iPhone, primero añade la app a la pantalla de inicio (Compartir → Añadir a pantalla de inicio) y ábrela desde ahí.' : '')); return false; }
       const permiso = await Notification.requestPermission();
       if(permiso !== 'granted'){ avisoBreve('Sin tu permiso no te puedo avisar. Puedes darlo en los ajustes del móvil.'); return false; }
+      if(APP_ANDROID){
+        const tk = await tokenAvisosApp();
+        if(!tk) throw new Error('Sin token de Firebase');
+        await api('/push', { fcm: tk });
+        try { localStorage.setItem('push_on_' + state.me, '1'); localStorage.removeItem('push_off_' + state.me); } catch(e){}
+        if(!silencio) avisoBreve('Listo: si una tarde aún no has regado tu meta, te aviso.');
+        return true;
+      }
       const reg = await navigator.serviceWorker.register('sw.js'); await navigator.serviceWorker.ready;
       const s = vapidPublica(), clave = Uint8Array.from(atob(s.replace(/-/g, '+').replace(/_/g, '/') + '='.repeat((4 - s.length % 4) % 4)), c => c.charCodeAt(0));
       let sub = await reg.pushManager.getSubscription();
@@ -10473,7 +10576,8 @@ lo que haces cada día es lo que vas a ser.`;
     } catch(e){ console.error('Avisos:', e); if(!silencio) avisoBreve('No se pudieron activar los avisos. Inténtalo de nuevo.'); return false; }
   }
   async function desactivarAvisosPlanta(){
-    try {
+    if(APP_ANDROID) try { const tk = await tokenAvisosApp(); if(tk) await api('/push', { fcm: tk, quitar: true }); } catch(e){}
+    else try {
       const reg = await navigator.serviceWorker.getRegistration(); const sub = reg && await reg.pushManager.getSubscription();
       if(sub){ try { await api('/push', { sub: sub.toJSON(), quitar: true }); } catch(e){} await sub.unsubscribe(); }
     } catch(e){}
@@ -13006,4 +13110,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Meta" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V14.96 · App Amable Meta · 2026-11-10 10:11==== -->
+<!-- ==== Fin del index V14.97 · App Amable Meta · 2026-11-10 10:40==== -->
