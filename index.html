@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V15.16 · App Amable Meta · 2026-11-10 15:37==== -->
+<!-- ==== index V15.17 · App Amable Meta · 2026-11-10 15:41==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1504,7 +1504,8 @@ body:has(#app[data-vista="perfil"])::before{opacity:.22}
 .tabbar button[data-tab="plan"]{color:#8A6A00;font-size:11px;line-height:1.1;text-align:center;white-space:normal}
 .tabbar button[data-tab="plan"] svg{background:#FFD23F;border-radius:50%;padding:4px;box-sizing:content-box;color:#5A4300;box-shadow:0 0 0 3px rgba(255,210,63,.35)}
 .insta-pie{display:flex;justify-content:center;align-items:center;gap:12px;margin:10px 0 0}.insta-pie .cab-insta{margin:0;width:32px;height:32px}.insta-pie .cab-insta svg{width:20px;height:20px}
-.pl-titulo{font-size:clamp(38px,11vw,50px) !important;margin:0 0 10px !important;text-align:left !important}
+.pl-titulo{font-size:clamp(30px,8.5vw,36px) !important;margin:4px 0 10px !important;text-align:center !important}
+header.top.cab-fija{position:sticky;top:0;z-index:40;background:#fff;margin-top:-1px;padding-top:calc(env(safe-area-inset-top,0px) + 10px);padding-bottom:8px;box-shadow:0 6px 10px -8px rgba(0,0,0,.25)}
 .pl-caja{margin:0 -8px 16px}
 .pl-tabla{width:100%;border-collapse:collapse;table-layout:fixed;font:600 13px/1.25 Karla,sans-serif;color:var(--ink)}
 .pl-tabla th,.pl-tabla td{padding:9px 3px;text-align:center;border-bottom:1px solid rgba(0,0,0,.08);vertical-align:middle}
@@ -2722,7 +2723,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V15.16';
+  const APP_VERSION = 'V15.17';
   // ===== Pantalla de inicio: versión, sonido corto y salida (5-11-2026) =====
   (function(){
     const sp = document.getElementById('inicioSplash'); if(!sp) return;
@@ -9266,7 +9267,7 @@ lo que haces cada día es lo que vas a ser.`;
       // «Tu plan» (10-11-2026, Gustavo): los tres planes en columnas, sin recuadros; una ⓘ en cada fila explica ese punto;
       // debajo, el precio y la forma de pago de cada plan de pago. Sin la foto ni Prácti pensando.
       renderBackTopbar('Tu plan');
-      try { const bm = app.querySelector('#btnMenuOpen2'); if(bm) bm.style.visibility = 'hidden'; const tt = app.querySelector('.titulo-pantalla'); if(tt) tt.classList.add('pl-titulo'); } catch(e){}
+      try { app.querySelectorAll('.topbar').forEach(b => b.remove()); const tt = app.querySelector('.titulo-pantalla'); if(tt) tt.classList.add('pl-titulo'); const hd = app.querySelector('header.top'); if(hd) hd.classList.add('cab-fija'); } catch(e){}
       const actual = (!state.plan || state.plan === 'gratis') ? 'libre' : state.plan;
       const OK = '<span class="pl-ok" aria-label="Sí">✓</span>', NO = '<span class="pl-no" aria-label="No">–</span>';
       const FILAS = [
@@ -9284,7 +9285,7 @@ lo que haces cada día es lo que vas a ser.`;
       ];
       const colPlan = clave => clave === actual ? 'pl-suyo' : (ORDEN_PLAN[clave] > ORDEN_PLAN[actual] ? (clave === 'sesiones' ? 'pl-sube2' : 'pl-sube1') : '');
       const cab = (clave, nombre, coronas, precio) => '<th class="' + colPlan(clave) + '">' + (clave === actual ? '<em>Tu plan</em>' : '') + (coronas ? '<span class="pl-corona">' + coronas + '</span>' : '') + '<b>' + nombre + '</b>'
-        + (MODO_PLAY ? '' : '<small>' + precio + '</small>') + '</th>';
+        + '<small>' + precio + '</small></th>';
       let h = '<table class="pl-tabla"><thead><tr><th></th>' + cab('libre', 'Libre', '', 'gratis') + cab('guias', 'Guías', '👑', '6 €/mes') + cab('sesiones', 'Guías + Grupo', '👑👑', '105 €/trim.') + '</tr></thead><tbody>';
       FILAS.forEach(([nom, vals, info], i) => {
         h += '<tr><td class="pl-nom"><button type="button" class="pl-i" data-i="' + i + '" aria-label="Qué es: ' + escapeAttr(nom) + '">ⓘ</button>' + nom + '</td>' + vals.map((v, k) => '<td class="' + colPlan(['libre', 'guias', 'sesiones'][k]) + '">' + v + '</td>').join('') + '</tr>'
@@ -9294,10 +9295,9 @@ lo que haces cada día es lo que vas a ser.`;
       const tabla = el('<div class="pl-caja">' + h + '</div>').firstElementChild;
       tabla.querySelectorAll('.pl-i').forEach(b => b.onclick = () => { const r = tabla.querySelector('[data-info="' + b.dataset.i + '"]'); r.hidden = !r.hidden; b.classList.toggle('on', !r.hidden); });
       app.appendChild(tabla);
-      if(botonPruebaHTML()){ const bp = el('<div class="prueba-caja">' + botonPruebaHTML() + '</div>').firstElementChild; app.appendChild(bp); bp.querySelector('#btnPruebaGuias').onclick = ev => empezarPrueba(ev.currentTarget); }
       if(botonPruebaGrupoHTML()) app.appendChild(el('<div class="prueba-caja">' + botonPruebaGrupoHTML() + '</div>').firstElementChild);
       // Debajo: cuánto se paga y cómo, en cada plan de pago
-      if(!MODO_PLAY) ['guias', 'sesiones'].forEach(clave => {
+      ['guias', 'sesiones'].forEach(clave => {
         const pl = PLANES[clave], msg = 'Hola, escribo de la App Amable Meta. Me interesa el ' + pl.nombre + '.';
         const grande = clave === 'guias' ? '6 €<small>/mes</small>' : '105 €<small>/trimestre</small>';
         const otra = clave === 'guias' ? 'o 49 € al año (menos de 1 € a la semana)' : 'o 360 € el primer año (260 € a partir del segundo)';
@@ -9314,7 +9314,7 @@ lo que haces cada día es lo que vas a ser.`;
         const facNom = String(fac.nombre || 'Gustavo Calabró').replace(/[<>&"]/g, '').split(' ')[0];
         app.appendChild(el('<p style="font-size:14px;text-align:center;margin:6px 0 0">Pregunta a tu facilitador las dudas de los planes: <a style="color:var(--moss-deep);font-weight:700" target="_blank" rel="noopener" href="https://wa.me/' + facTel + '"><i data-ico=comentario></i>WhatsApp de ' + facNom + '</a></p>'));
       }
-      if(!MODO_PLAY) app.appendChild(el('<p style="font-size:13px;color:var(--ink-soft);text-align:center;margin:4px 0 0">El pago se hace de forma segura con Stripe. Si prefieres pagar por transferencia, escríbele a tu facilitador.</p>'));
+      app.appendChild(el('<p style="font-size:13px;color:var(--ink-soft);text-align:center;margin:4px 0 0">' + (MODO_PLAY ? 'La suscripción se hace en nuestra web, de forma segura con Stripe. Muy pronto podrás suscribirte desde la app.' : 'El pago se hace de forma segura con Stripe. Si prefieres pagar por transferencia, escríbele a tu facilitador.') + '</p>'));
       return;
     }
 
@@ -12713,7 +12713,7 @@ lo que haces cada día es lo que vas a ser.`;
   // PRUEBA_GRUPO_URL: el Payment Link de Stripe (trimestral de 105 € con 45 días de prueba); sin él, no se enseña el botón
   const PRUEBA_GRUPO_URL = 'https://buy.stripe.com/3cIcN47ep9Bt4Dv5yKbZe0m';
   function botonPruebaGrupoHTML(){
-    return (!MODO_PLAY && PRUEBA_GRUPO_URL && !tienePlan('sesiones') && !datosForm().pruebaGrupo)
+    return (PRUEBA_GRUPO_URL && !tienePlan('sesiones') && !datosForm().pruebaGrupo)
       ? '<a class="btn btn-yes prueba-grupo" style="display:block;text-align:center;text-decoration:none" target="_blank" rel="noopener" href="' + enlacePago(PRUEBA_GRUPO_URL) + '"><i data-ico=grupo></i>Prueba el grupo 45 días gratis</a>'
         + '<p class="prueba-nota">Incluye 3 sesiones de grupo. No se cobra nada hasta el día 46; si cancelas antes, no pagas. Después, 105 € al trimestre.</p>'
       : '';
@@ -13263,4 +13263,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Meta" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V15.16 · App Amable Meta · 2026-11-10 15:37==== -->
+<!-- ==== Fin del index V15.17 · App Amable Meta · 2026-11-10 15:41==== -->
