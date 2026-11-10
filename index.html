@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V15.02 · App Amable Meta · 2026-11-10 14:46==== -->
+<!-- ==== index V15.03 · App Amable Meta · 2026-11-10 14:49==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1499,6 +1499,7 @@ body:has(#app[data-vista="perfil"])::before{opacity:.22}
 .av-anima{margin:8px 0 0;font-size:13px;line-height:1.4;color:#5E6B55}
 .tabbar button[data-tab="plan"]{color:#8A6A00}
 .tabbar button[data-tab="plan"] svg{background:#FFD23F;border-radius:50%;padding:4px;box-sizing:content-box;color:#5A4300;box-shadow:0 0 0 3px rgba(255,210,63,.35)}
+.insta-pie{display:flex;justify-content:center;margin:18px 0 4px}.insta-pie .cab-insta{margin:0}
 .pf-franja{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 20px;background:#fff;color:#2B2B2B;font:800 15px Karla,sans-serif;cursor:pointer;box-shadow:0 1px 6px rgba(0,0,0,.08);position:relative;z-index:2}
 .pf-franja span{display:flex;align-items:center;gap:8px}
 .pf-bola{flex:none;min-width:32px;height:32px;padding:0 6px;border-radius:16px;background:#E8002C;color:#fff;font:900 15px Karla,sans-serif;display:flex;align-items:center;justify-content:center;box-sizing:border-box}
@@ -2668,7 +2669,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V15.02';
+  const APP_VERSION = 'V15.03';
   // ===== Pantalla de inicio: versión, sonido corto y salida (5-11-2026) =====
   (function(){
     const sp = document.getElementById('inicioSplash'); if(!sp) return;
@@ -5199,7 +5200,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       <div class="menu-divider"></div>
       <button class="menu-item" id="miPlanBtn">${icoMenu('plan')}Tu plan: ${state.plan === 'sesiones' ? 'Guías + Grupo' : (state.plan === 'guias' ? 'Guías' : 'Libre')}</button>
       ${MODO_PLAY ? '' : '<button class="menu-item" id="facturacionBtn">' + icoMenu('tarjeta') + 'Facturación</button>'}
-      <button class="menu-item" id="ajustesBtn">${icoMenu('ajustes')}Ajustes</button>
+      <button class="menu-item" id="ajustesBtn">${icoMenu('engranaje')}Ajustes</button>
       <button class="menu-item" id="mpAyuda">${icoMenu('ayuda')}Centro de ayuda</button>
       <button class="menu-item" id="mpOpinion">${icoMenu('comentario')}Comentarios y mejoras para la app</button>
       ${soyModerador() ? '<button class="menu-item" id="miPanelFacBtn" style="color:#7A7F87">' + icoMenu('panel') + '<span>Panel de control (solo lo ve el admin de Metas A.)</span></button><button class="menu-item" id="miSituacionBtn">' + icoMenu('grupo') + 'Situación de tu grupo</button>' : ''}
@@ -7891,6 +7892,8 @@ lo que haces cada día es lo que vas a ser.`;
     try { resumenGrowPanel(); } catch(e){}
     try { botonesMenuConAvatar(); } catch(e){}
     // Sello «by Práctica Integral»: en la pantalla de entrada y abajo del todo en Inicio
+    if(state.me && state.view === 'panel' && !state.panelSub)
+      app.appendChild(el('<div class="insta-pie"><a class="cab-insta" href="https://www.instagram.com/practicaintegral.club/" target="_blank" rel="noopener" aria-label="Instagram de Práctica Integral Club"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.4" cy="6.6" r="1.1" fill="currentColor" stroke="none"/></svg></a></div>'));   // Instagram, abajo del todo (10-11-2026, Gustavo)
     if(state.view === 'pick' || (state.me && state.view === 'panel' && !state.panelSub))
       app.appendChild(el('<div class="pi-seal-fila"><div class="sellos"><a class="pi-seal" href="https://practicaintegral.club" target="_blank" rel="noopener">by Práctica Integral</a><a class="gp-seal" href="https://practicaintegral.club/grow-panel/" target="_blank" rel="noopener"><svg viewBox="0 0 512 512" aria-hidden="true"><circle cx="256" cy="107.5" r="69.1" fill="#f59e0b"/><circle cx="397.2" cy="210.1" r="69.1" fill="#0f766e"/><circle cx="343.3" cy="376.1" r="69.1" fill="#8b5cf6"/><circle cx="168.7" cy="376.1" r="69.1" fill="#3b82f6"/><circle cx="114.8" cy="210.1" r="69.1" fill="#ef4444"/><circle cx="256" cy="256" r="79.4" fill="#6b7280"/></svg>with Grow Panel</a></div></div>'));
     if(state.view !== 'loading' && state.view !== 'bienvenidaAlta') app.appendChild(el('<p class="pie-derechos">© ' + new Date().getFullYear() + ' Gustavo Calabró · Práctica Integral Club. Todos los derechos reservados. · <a href="privacidad.html" target="_blank" rel="noopener">Privacidad</a> · <a href="terminos.html" target="_blank" rel="noopener">Términos de uso</a></p>'));
@@ -8311,7 +8314,7 @@ lo que haces cada día es lo que vas a ser.`;
     if(state.view === 'panel'){
 
       const nombrePlan = state.plan === 'sesiones' ? 'Plan Guías + Grupo' : (state.plan === 'guias' ? 'Plan Guías' : (state.plan ? 'Plan Libre' : ''));
-      const topbarPanel = el(`<div class="topbar">${nombrePlan ? `<button type="button" class="etiqueta-plan-cab" id="btnPlanCab"><i data-ico=plan></i>${nombrePlan} ›</button>` : '<span></span>'}<div class="topbar-der"><span id="grow-panel-boton"></span><a class="cab-insta" href="https://www.instagram.com/practicaintegral.club/" target="_blank" rel="noopener" aria-label="Instagram de Práctica Integral Club"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.4" cy="6.6" r="1.1" fill="currentColor" stroke="none"/></svg></a>${nivelBadgeHTML()}<button class="hamburger-btn-text" id="btnMenuOpen" aria-label="Menú"><i data-ico=menu></i>Menú</button></div></div>`);
+      const topbarPanel = el(`<div class="topbar"><span></span><div class="topbar-der"><span id="grow-panel-boton"></span>${nivelBadgeHTML()}<button class="hamburger-btn-text" id="btnMenuOpen" aria-label="Menú"><i data-ico=menu></i>Menú</button></div></div>`);
       const nivelBtnPanel = topbarPanel.querySelector('#nivelBadgeBtn');
       const btnMenuOpenPanel = topbarPanel.querySelector('#btnMenuOpen');
       // Buscar el botón ANTES de insertarlo: el() devuelve un fragmento que se
@@ -8389,7 +8392,7 @@ lo que haces cada día es lo que vas a ser.`;
                 + (vecesTx ? '<br><span style="font-weight:700">' + vecesTx + '</span>' : ''), '', false);
         opciones.innerHTML =
           '<div role="button" tabindex="0" class="opcion-inicio ciclo-btn tit-arriba ciclo-meta' + (metaHecha ? ' hecha' : ' pendiente') + act('meta') + '" data-ir="s4">'
-          + '<b class="ciclo-tit">' + letraPaso('a') + 'Metas' + (metaHecha ? infoBoton('Aquí se guardan tus metas: tu <b>meta con guía</b>, definida para el ' + trimestreMeta()
+          + '<b class="ciclo-tit">' + letraPaso('a') + 'Tus metas' + (metaHecha ? infoBoton('Aquí se guardan tus metas: tu <b>meta con guía</b>, definida para el ' + trimestreMeta()
                 + (sencillasActivas().length ? (sencillasActivas().length === 1 ? ', y tu <b>' + TXT_SENCILLA.toLowerCase() + '</b>' : ', y tus <b>' + sencillasActivas().length + ' ' + TXT_SENCILLAS.toLowerCase() + '</b>') : '') + '.'
                 + (limiteMetaIntentos() > 1 ? ' Puedes cambiar la meta hasta ' + limiteMetaIntentos() + ' veces por trimestre.' : '')) : '') + '</b>'
           + '<span class="opcion-tx">'
@@ -13159,4 +13162,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Meta" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V15.02 · App Amable Meta · 2026-11-10 14:46==== -->
+<!-- ==== Fin del index V15.03 · App Amable Meta · 2026-11-10 14:49==== -->
