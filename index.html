@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V15.14 · App Amable Meta · 2026-11-10 15:28==== -->
+<!-- ==== index V15.15 · App Amable Meta · 2026-11-10 15:31==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1537,6 +1537,8 @@ body:has(#app[data-vista="perfil"])::before{opacity:.22}
 @keyframes latidoBocadillo{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
 @media (prefers-reduced-motion:reduce){.practi-bocadillo.latiendo{animation:none}}
 .como-funciona{display:flex;align-items:center;gap:8px;margin:-10px auto 0;padding:4px 10px;border:0;border-radius:999px;background:none;color:#fff;font:700 14px Karla,sans-serif;cursor:pointer}
+#bienvenidaPracti{position:relative}
+.bienvenida-x{position:absolute;top:8px;right:10px;width:32px;height:32px;border:0;border-radius:50%;background:none;color:#555;font-size:18px;line-height:1;cursor:pointer}
 .como-funciona b{transition:transform .2s}.como-funciona.on b{transform:rotate(90deg)}
 .mp-mod-franja{background:#fff;padding:10px 14px 12px;border-bottom:1px solid #ECE7DC}
 .mp-mod-franja>span{display:flex;align-items:center;gap:8px;font:700 13.5px Karla,sans-serif;color:#111;margin-bottom:8px}
@@ -2720,7 +2722,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V15.14';
+  const APP_VERSION = 'V15.15';
   // ===== Pantalla de inicio: versión, sonido corto y salida (5-11-2026) =====
   (function(){
     const sp = document.getElementById('inicioSplash'); if(!sp) return;
@@ -4821,18 +4823,18 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     const frase = '¡Hola, ' + nombre + '! Soy Prácti y te acompaño en tus prácticas. Pasos a seguir: '
       + pasos.map(p => 'Paso ' + p[0] + ': ' + p[1] + ' ' + p[2]).join(' ');
     return '<div class="practi-bocadillo bienvenida" id="bienvenidaPracti" data-voz="' + escapeAttr(frase) + '">'
+      + '<button type="button" class="bienvenida-x" id="btnXBienvenida" aria-label="Cerrar">✕</button>'
       + '<b>¡Hola, ' + escapeAttr(nombre) + '! Soy Prácti</b> y te acompaño en tus prácticas.'
       + '<span class="bienvenida-pasos"><b>Pasos a seguir:</b>'
       + pasos.map(p => '<span><b>Paso ' + p[0] + '. ' + escapeAttr(p[1]) + '</b> ' + escapeAttr(p[2]) + '</span>').join('') + '</span>'
       + '<span class="bienvenida-acciones">'
-      + '<button type="button" class="link-quiet" id="btnOirBienvenida"><i data-ico=altavoz></i>Escúchalo</button>'
       + '<button type="button" class="btn btn-yes" id="btnCerrarBienvenida">Cerrar</button>'
       + '</span></div>';
   }
   function activarBienvenida(raiz){
     const b = raiz.querySelector('#bienvenidaPracti');
     if(!b) return;
-    b.querySelector('#btnOirBienvenida').onclick = () => speak(b.getAttribute('data-voz'));
+    const x = b.querySelector('#btnXBienvenida'); if(x) x.onclick = () => b.querySelector('#btnCerrarBienvenida').click();
     b.querySelector('#btnCerrarBienvenida').onclick = () => {
       try { localStorage.setItem(claveBienvenida(), '1'); } catch(e){}
       b.remove();
@@ -13260,4 +13262,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Meta" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V15.14 · App Amable Meta · 2026-11-10 15:28==== -->
+<!-- ==== Fin del index V15.15 · App Amable Meta · 2026-11-10 15:31==== -->
