@@ -17,7 +17,7 @@
 <link rel="icon" href="icon-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Domine:wght@400;700&family=Nunito+Sans:wght@400;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Domine:wght@400;700&family=Nunito+Sans:wght@400;600;700&display=swap">
 <style>
 :root{--bg:#FBF6EE;--card:#FFFDF9;--fg:#26343B;--soft:#55636A;--line:#E8DCCB;--accent:#C8642F;--accent2:#3F6F66;--chip:#F3E6D6;--on-accent:#FFFDF9;
 --display:'Domine',Georgia,serif;--body:'Nunito Sans',Arial,sans-serif;color-scheme:light;
@@ -44,6 +44,10 @@ p{margin:0}.soft{color:var(--soft)}.small{font-size:14px}
 .logos a{display:block;line-height:0}
 .logo-am{width:48px;height:48px;border-radius:12px;display:block}
 .logo-pi{height:48px;width:auto;background:#fff;border:1px solid var(--line);border-radius:10px;padding:3px 8px;display:block}
+/* Logotipo de La Vida Integral (Raúl Aramayo), arriba a la derecha del todo */
+.logo-derecha{margin-left:auto;line-height:0}
+.logo-vi{height:48px;width:auto;background:#fff;border:1px solid var(--line);border-radius:10px;padding:4px 8px;display:block}
+@media (max-width:480px){.logos{gap:8px}.logo-am{width:40px;height:40px}.logo-pi,.logo-vi{height:40px}}
 .titulo-sim{display:flex;align-items:center;gap:12px}
 /* Barra fija: título, lema y paso siguen arriba al bajar */
 body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
@@ -136,22 +140,26 @@ summary{cursor:pointer;font-weight:700;color:var(--accent2)}
  .box{break-inside:avoid}
  *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
 }
-</style>
+/* Marca «AMABLE META» como en la cabecera de la app (Anton, granate) */
+:root{--marca:#A8001F}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--marca:#FF6B81}}
+:root[data-theme="dark"]{--marca:#FF6B81}
+.logos .marca-am{display:inline-flex;align-items:center;gap:10px;text-decoration:none;line-height:1}
+.marca-am span{font-family:'Anton',Impact,'Arial Narrow',sans-serif;font-size:26px;letter-spacing:.03em;color:var(--marca)}
+@media (max-width:480px){.marca-am span{font-size:22px}}</style>
 </head>
 <body>
 <div class="wrap">
   <header id="cabecera">
     <div class="logos">
-      <a href="https://app.practicaintegral.club/" target="_blank" rel="noopener"><img src="icon-192.png" alt="Amable Meta" class="logo-am" width="48" height="48"></a>
-      <a href="https://practicaintegral.club/" target="_blank" rel="noopener"><img src="logo-practica-integral.png" alt="Práctica Integral" class="logo-pi" width="115" height="48"></a>
+      <a class="marca-am" href="https://app.practicaintegral.club/" target="_blank" rel="noopener"><img src="icon-192.png" alt="" class="logo-am" width="48" height="48"><span>AMABLE META</span></a>
+      <span class="logo-derecha"><img src="logo-la-vida-integral.png" alt="La Vida Integral" class="logo-vi" width="207" height="48"></span>
     </div>
-    <p class="eyebrow">Amable Meta · Práctica Integral</p>
   </header>
 
   <!-- Título y paso fijos arriba al bajar por la página; a la derecha, la versión publicada -->
   <div class="fija" id="fija">
     <div class="fija-fila"><h1 class="titulo-sim"><svg class="ico-sim" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="21.5" fill="none" stroke="var(--line)" stroke-width="1.5"/><path d="M24 24L24 4A20 20 0 0 1 44 24Z" fill="var(--c-cuerpo)"/><path d="M24 24L38 24A14 14 0 0 1 24 38Z" fill="var(--c-entorno)"/><path d="M24 24L24 42A18 18 0 0 1 6 24Z" fill="var(--c-relaciones)"/><path d="M24 24L13 24A11 11 0 0 1 24 13Z" fill="var(--c-mente)"/></svg>Simulador 2027</h1><span class="version" id="version"></span></div>
-    <p class="lema">Sin distracciones. Solo tu meta.</p>
     <div id="progreso" hidden>
       <p class="soft small" id="pasoTxt"></p>
       <div class="bar"><i id="pasoBar" style="width:0"></i></div>
@@ -293,7 +301,7 @@ summary{cursor:pointer;font-weight:700;color:var(--accent2)}
 
 <script>
 // Versión de la página: subirla en cada publicación (sale arriba a la derecha)
-const VERSION_PAGINA = 'v1.09';
+const VERSION_PAGINA = 'v1.11';
 document.getElementById('version').textContent = VERSION_PAGINA;
 const APIS = ['https://metas-amables-api.proud-hill-016b.workers.dev', 'https://rigid-thrush-3387.gcalabro12.deno.net'];
 const CLAVE = 'simulador2027';
