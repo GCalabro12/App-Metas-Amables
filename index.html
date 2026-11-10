@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V14.84 · App Amable Meta · 2026-11-10 08:48==== -->
+<!-- ==== index V14.85 · App Amable Meta · 2026-11-10 08:52==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -508,6 +508,18 @@ button, input, textarea, select{ font-family:inherit; }
   }
   .panel-section{ border-left: 4px solid var(--moss); padding-left:16px; margin-bottom:18px; }
   .panel-section.s2{ border-color: var(--honey); }
+/* Dentro de Metas, como en «Registra cada día» (10-11-2026, Gustavo): meta con guía en verde,
+   meta sencilla 1 en dorado (marrón claro) y meta sencilla 2 en marrón oscuro: bordes, títulos y botones */
+.panel-section.meta-guia-sec{border-color:#6B9362}
+.meta-guia-sec .metas-sub{color:#3E7A2E}
+.meta-guia-sec .panel-link-btn.honey{background:#6B9362 !important;color:#fff !important}
+.meta-guia-sec .panel-link-btn.fm-abrir:not(.honey){border-color:#6B9362 !important;color:#3E7A2E !important;background:#fff !important}
+.meta-guia-sec p[style*="honey-tint"]{background:#EAF4E4 !important}
+.meta-guia-sec .meta-actual{background:#EAF4E4;border-color:#6B9362}.meta-guia-sec .meta-actual span{color:#3E7A2E}
+.panel-section.ms-bloque{border-color:var(--ms-c,#C9942D)}
+.ms-bloque .metas-sub{color:var(--ms-c,#C9942D)}
+.ms-tarjeta .ms-alarma{border-color:var(--ms-c,#C9942D);color:var(--ms-t,#6B4A26)}
+.ms-bloque .ms-recuperar{border-color:var(--ms-c,#A0703C);color:var(--ms-t,#6B4A26)}
   .panel-section.s3{ border-color: #8FB3DA; }
   .panel-section.s4{ border-color: var(--honey); }
   .panel-section.s5{ border-color: var(--moss); }
@@ -2477,7 +2489,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V14.84';
+  const APP_VERSION = 'V14.85';
   // ===== Pantalla de inicio: versión, sonido corto y salida (5-11-2026) =====
   (function(){
     const sp = document.getElementById('inicioSplash'); if(!sp) return;
@@ -4133,7 +4145,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       + '<p class="ms-ayuda">Un hábito sencillo, con un calendario para marcar los días que lo haces. No cambia tu planta ni tu montaña.</p><div class="ms-lista"></div></div>').firstElementChild;
     const zona = caja.querySelector('.ms-lista');
     // Con dos metas sencillas, la segunda va en su propio recuadro (entre los dos se ve el fondo)
-    const caja2 = el('<div class="card panel-section s2 ms-bloque" style="display:none"><h3 class="metas-sub"><i data-ico=check></i>' + TXT_SENCILLA + ' 2</h3><div class="ms-lista"></div></div>').firstElementChild;
+    const caja2 = el('<div class="card panel-section s2 ms-bloque ms-b" style="display:none"><h3 class="metas-sub"><i data-ico=check></i>' + TXT_SENCILLA + ' 2</h3><div class="ms-lista"></div></div>').firstElementChild;
     const envoltorio = document.createElement('div');
     envoltorio.append(caja, caja2);
     const cuenta = textoCuentaSencilla;
@@ -8341,7 +8353,7 @@ lo que haces cada día es lo que vas a ser.`;
 
       // Bloque 2: Meta trimestral
       const s2 = document.createElement('div');
-      s2.className = 'card panel-section s2'; s2.id = 's4';
+      s2.className = 'card panel-section s2 meta-guia-sec'; s2.id = 's4';
       const enviado = formularioEnviado();
       const cambios = limiteMetaIntentos();   // Plan Libre: 1 vez por trimestre; planes de pago: hasta 2
       const reglaMeta = cambios > 1
@@ -12908,4 +12920,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Meta" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V14.84 · App Amable Meta · 2026-11-10 08:48==== -->
+<!-- ==== Fin del index V14.85 · App Amable Meta · 2026-11-10 08:52==== -->
