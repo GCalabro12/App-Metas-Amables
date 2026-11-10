@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V14.95 · App Amable Meta · 2026-11-10 09:33==== -->
+<!-- ==== index V14.96 · App Amable Meta · 2026-11-10 10:11==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -804,6 +804,12 @@ body:has(.banda-fin-plan) #app{padding-bottom:28vh}
 .acceso-google{max-width:520px;margin:4px auto 14px;text-align:center}.acceso-google p{margin:0 0 8px;font-size:14px;color:var(--ink-soft)}.acceso-google #btnGoogle{display:flex;justify-content:center}
 .acceso-google.primero{margin:6px auto 4px}
 .acceso-google.primero #btnGoogle{align-items:center;min-height:60px;padding:8px 6px;border:2px solid #E8002C;border-radius:14px;background:#fff;box-sizing:border-box}
+header.top.con-idioma{flex-wrap:wrap}
+.idioma-fila{flex:0 0 100%;width:100%;display:flex;justify-content:flex-start;margin:0 0 10px}
+.idioma-btn{position:relative;display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border:1.5px solid var(--border,#E2DDD0);border-radius:999px;background:#fff;color:#2B2B2B;font:700 14px Karla,sans-serif;cursor:pointer}
+.idioma-btn svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8}
+.idioma-btn select{appearance:none;-webkit-appearance:none;border:0;background:transparent;font:inherit;color:inherit;padding:0 2px;cursor:pointer}
+.idioma-btn span{font-size:11px}
 .acceso-o{max-width:520px;margin:10px auto 12px;text-align:center;font-size:14px;color:var(--ink-soft)}
 svg.escudo{vertical-align:-0.18em;flex:0 0 auto}
 .tres-areas .area{display:flex;flex-direction:column;gap:2px;margin:8px 0;padding:10px 12px;border-radius:12px;background:#F1ECFC}.tres-areas .area b{font-size:16px}.tres-areas .area span{font-size:14px;line-height:1.4}
@@ -1958,6 +1964,67 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
 <script>
 (function(){
   const app = document.getElementById('app');
+  // ===== Idioma: español o inglés (10-11-2026, idea de Gustavo). Fase 1: entrada, crear cuenta, contraseña,
+  // bienvenida y formulario de la meta; lo que aún no tiene traducción sigue en español.
+  // Se traduce solo lo que se ve (textos, placeholder, aria-label y title). Los valores que se guardan (data-v, value)
+  // no se tocan: la hoja, las guías y el Worker siguen recibiendo todo en español.
+  // Sin elegir: quien ya ha entrado alguna vez sigue en español; quien llega nuevo, en el idioma de su móvil
+  // (español si es es/ca/gl/eu; inglés en cualquier otro).
+  const IDIOMA = (() => {
+    try { const g = localStorage.getItem('ma_idioma'); if(g === 'es' || g === 'en') return g; } catch(e){}
+    try { if(localStorage.getItem('ma_sesion') || localStorage.getItem('ma_user')) return 'es'; } catch(e){}
+    return /^(es|ca|gl|eu)\b/i.test(String(navigator.language || 'es')) ? 'es' : 'en';
+  })();
+  const TRAD_EN = {"Bienvenido a":"Welcome to","Continuar con Google":"Continue with Google","Continuar con Google. Se abre en una pestaña nueva.":"Continue with Google. Opens in a new tab.","Botón Iniciar sesión con Google":"Sign in with Google button","Sin distracciones. Solo tu meta.":"No distractions. Just your goal.","Instalar la app":"Install the app","Basado en la ciencia de la conducta":"Based on behavioral science","Amable Meta se apoya en lo que la investigación sabe sobre cómo cambiamos de verdad. Toca cada una para ver sus ideas clave:":"Amable Meta builds on what research knows about how we really change. Tap each one to see its key ideas:","Práctica Integral de Vida":"Integral Life Practice","Crecemos de forma":"We grow in an",": cuerpo, mente, espíritu, sombra y relaciones.":" way: body, mind, spirit, shadow and relationships.","Vamos atravesando":"We move through","niveles de conciencia":"levels of consciousness",", como quien sube una montaña.":", like climbing a mountain.","Tres caminos que se complementan:":"Three paths that complement each other:","aprender (crecer), sanar y atención plena (despertar)":"learning (growing up), healing and mindfulness (waking up)","En la app:":"In the app:","la montaña de los 5 niveles, las insignias y el alpinista jardinero que cuida tres huertos y siembra en ellos sus metas.":"the mountain of 5 levels, the badges and the gardener-climber who tends three gardens and sows their goals in them.","Terapia de Aceptación y Compromiso, ACT":"Acceptance and Commitment Therapy (ACT)","Aceptar":"Accepting","lo que sentimos (miedo, pereza, dudas) en lugar de luchar contra ello.":"what we feel (fear, laziness, doubts) instead of fighting it.","Conectar con nuestros":"Connecting with our","valores":"values",": lo que de verdad nos importa.":": what truly matters to us.","Comprometernos":"Committing","con pequeñas acciones en esa dirección, aunque la emoción no acompañe.":"to small actions in that direction, even when our feelings don’t go along.","Ganar":"Gaining","flexibilidad psicológica":"psychological flexibility",": volver a intentarlo sin culpa.":": trying again without guilt.","tu meta parte de tus valores y la semana que no sale se acoge con amabilidad, sin castigo.":"your goal starts from your values, and a week that doesn’t go well is met with kindness, not punishment.","Psicología positiva: la felicidad SPIRE":"Positive psychology: SPIRE happiness","La felicidad no es un estado fijo, sino algo que se":"Happiness is not a fixed state but something you","entrena":"train",", como un músculo. Ben-Shahar la entiende como":", like a muscle. Ben-Shahar sees it as","bienestar completo":"whole-person wellbeing",", con cinco áreas que forman la palabra":", with five areas that spell the word","S · Espiritual":"S · Spiritual","(Spiritual): vivir con sentido y propósito, y estar presente en lo que haces.":": living with meaning and purpose, and being present in what you do.","P · Físico":"P · Physical","(Physical): cuidar el cuerpo con movimiento, descanso y alimentación, porque cuerpo y mente van unidos.":": caring for your body through movement, rest and food, because body and mind go together.","I · Intelectual":"I · Intellectual","(Intellectual): mantener la curiosidad, aprender y hacerte preguntas profundas.":": staying curious, learning and asking yourself deep questions.","R · Relacional":"R · Relational","(Relational): cultivar relaciones de calidad, empezando por la relación contigo.":": nurturing quality relationships, starting with the one you have with yourself.","E · Emocional":"E · Emotional","(Emotional): acoger todas las emociones, también las difíciles, y darte":": welcoming every emotion, including the difficult ones, and giving yourself","permiso para ser humano":"permission to be human","eliges el área de bienestar de tu meta y Prácti te anima con un tono amable.":"you choose the wellbeing area of your goal and Prácti cheers you on in a kind tone.","Hábitos atómicos":"Atomic Habits","Mejoras del":"Tiny","que se suman como el interés compuesto; lo que cuenta es tu":"improvements that add up like compound interest; what counts is your","sistema":"system","y tu":"and your","identidad":"identity","Hazlo obvio:":"Make it obvious:","«Después de [lo que ya haces], haré [mi nuevo hábito]».":"“After [something you already do], I will [my new habit].”","Hazlo atractivo:":"Make it attractive:","únelo a algo que te guste y rodéate de gente que lo practica.":"pair it with something you enjoy and surround yourself with people who do it.","Hazlo sencillo:":"Make it easy:","la regla de los 2 minutos.":"the 2-minute rule.","Hazlo satisfactorio:":"Make it satisfying:","recompensa inmediata, registro visual y «nunca falles dos veces».":"an immediate reward, a visual tracker and “never miss twice”.","la música mientras practicas, el grupo de apoyo, el calendario donde marcas cada día y las celebraciones.":"music while you practise, the support group, the calendar where you mark each day, and the celebrations.","Hábitos mínimos":"Tiny Habits","(BJ Fogg, Universidad de Stanford)":"(BJ Fogg, Stanford University)","una conducta ocurre cuando coinciden Motivación, Habilidad y una Señal. Como la motivación sube y baja, se trabaja la facilidad.":"a behavior happens when Motivation, Ability and a Prompt come together. Since motivation goes up and down, you work on making it easy.","Hazlo diminuto:":"Make it tiny:","dos flexiones en vez de 30 minutos; un párrafo en vez de un libro.":"two push-ups instead of 30 minutes; one paragraph instead of a book.","Anclas:":"Anchors:","«Después de servirme el café, beberé un sorbo de agua».":"“After I pour my coffee, I will drink a sip of water.”","Celebra al momento:":"Celebrate right away:","las emociones crean los hábitos, no la repetición.":"emotions create habits, not repetition.","metas amables y pequeñas, la práctica unida a una rutina tuya y el confeti con la música oficial al cumplir.":"small, kind goals, your practice linked to one of your routines, and confetti with the official music when you do it.","Por eso tu guía es personal, tus metas son amables y registras cada semana: así se crea un hábito que dura.":"That’s why your guide is personal, your goals are kind and you check in every week: that’s how a lasting habit is built.","Iniciar sesión":"Log in","Crear cuenta":"Sign up","Entra en tu cuenta":"Log in to your account","o con tu nombre y tu contraseña":"or with your name and password","Escribe tu nombre y tu contraseña.":"Enter your name and password.","Entrar":"Log in","¿Has olvidado tu contraseña?":"Forgot your password?","Cambiar contraseña":"Change password","Privacidad":"Privacy","Términos de uso":"Terms of use","Tu nombre":"Your name","Tu contraseña":"Your password","Ver contraseña":"Show password","Crea tu cuenta":"Create your account","Es gratis. Empiezas con el Plan Libre y puedes ampliarlo cuando quieras.":"It’s free. You start on the Free Plan and can upgrade whenever you like.","o con tus datos":"or with your details","Nombre y apellido":"First and last name","Teléfono (WhatsApp)":"Phone (WhatsApp)","Elige una contraseña":"Choose a password","Quiero recibir emails de Amable Meta que me acompañen con mi meta. Puedo darme de baja cuando quiera.":"I’d like to receive emails from Amable Meta to support me with my goal. I can unsubscribe at any time.","Al crear tu cuenta aceptas la":"By creating your account you accept the","política de privacidad":"privacy policy","Crear mi cuenta":"Create my account","Ej.: Laura Martín":"E.g. Laura Martin","Ej.: 612 345 678":"E.g. +44 7700 900123","Ej.: laura@gmail.com":"E.g. laura@gmail.com","Mínimo 6 caracteres":"At least 6 characters","Escribe el email de tu cuenta y te enviaremos un código de 6 cifras para poner una contraseña nueva.":"Enter your account email and we’ll send you a 6-digit code to set a new password.","Tu email":"Your email","Enviarme el código":"Send me the code","← Volver a iniciar sesión":"← Back to log in","tu@email.com":"you@email.com","Te hemos enviado un código a":"We’ve sent a code to",". Si no lo ves en unos segundos, mira en la carpeta de spam.":". If you don’t see it in a few seconds, check your spam folder.","Código de 6 cifras":"6-digit code","Nueva contraseña":"New password","Guardar y entrar":"Save and log in","Volver a enviar el código":"Resend the code","Escribe la nueva":"Type the new one","Escribe tu nombre, tu contraseña actual y la nueva.":"Enter your name, your current password and the new one.","Contraseña actual":"Current password","Tu contraseña actual":"Your current password","← Volver al inicio":"← Back","Ej.: Laura":"E.g. Laura","Escribe tu nombre":"Enter your name","Escribe tu contraseña":"Enter your password","Comprobando…":"Checking…","No se pudo conectar. Revisa tu conexión e inténtalo de nuevo.":"Couldn’t connect. Check your connection and try again.","Escribe tu nombre y apellido":"Enter your first and last name","Escribe un teléfono válido (con prefijo si no es de España)":"Enter a valid phone number (with the country code if it isn’t Spanish)","Escribe un email válido":"Enter a valid email","La contraseña debe tener al menos 6 caracteres":"The password must be at least 6 characters long","Creando tu cuenta…":"Creating your account…","No se pudo crear la cuenta. Revisa tu conexión e inténtalo de nuevo.":"Couldn’t create the account. Check your connection and try again.","Rellena todos los campos":"Fill in all the fields","La nueva contraseña debe tener al menos 6 caracteres":"The new password must be at least 6 characters long","Contraseña cambiada ✓":"Password changed ✓","No se pudo cambiar (revisa tu conexión)":"Couldn’t change it (check your connection)","Escribe el email de tu cuenta":"Enter your account email","Enviando…":"Sending…","No se pudo enviar el código. Revisa tu conexión e inténtalo de nuevo.":"Couldn’t send the code. Check your connection and try again.","Escribe el código de 6 cifras":"Enter the 6-digit code","Contraseña nueva guardada":"New password saved","No se pudo cambiar. Revisa tu conexión e inténtalo de nuevo.":"Couldn’t change it. Check your connection and try again.","No se pudo entrar con Google. Prueba con tu nombre y contraseña.":"Couldn’t log in with Google. Try your name and password.","Tu cuenta está creada ✓":"Your account is ready ✓","Siguiente →":"Next →","← Atrás":"← Back","¿Te planteas metas que acaban marchitándose?":"Do you set goals that end up withering away?","Empiezas con mucha ilusión… y al cabo de unas semanas, sin darte cuenta, se te van secando.":"You start full of excitement… and a few weeks later, without noticing, they dry up.","No es falta de voluntad: es que":"It isn’t a lack of willpower:","nadie te enseñó a regarlas":"nobody taught you how to water them","Aquí aprenderás a regar tu meta cada día":"Here you’ll learn to water your goal every day","Con Amable Meta conseguirás":"With Amable Meta you’ll achieve","una meta valiosa para ti cada trimestre":"a goal that matters to you every quarter",", con un registro cada lunes.":", with a check-in every Monday.","Prepara tu app":"Set up your app","Para que la app te acompañe de verdad, activa esto ahora. Solo se pide una vez.":"So the app can really support you, turn these on now. We only ask once.","Aviso diario en el móvil":"Daily reminder on your phone","Activar":"Turn on","Activar todo":"Turn everything on","La app en tu pantalla de inicio":"The app on your home screen","Para abrirla con un toque, como cualquier app.":"To open it with one tap, like any app.","Instalar":"Install","Ahora no →":"Not now →","Ahora no":"Not now","Mensajes de ánimo por WhatsApp":"Encouraging messages on WhatsApp","De vez en cuando, para no abandonar tu meta.":"Now and then, so you don’t give up on your goal.","Emails que te acompañan":"Emails that support you","Pocos, y te puedes dar de baja cuando quieras.":"Only a few, and you can unsubscribe any time.","No se pudo activar. Inténtalo de nuevo.":"Couldn’t turn it on. Please try again.","No se pudo activar todo. Prueba uno a uno.":"Couldn’t turn everything on. Try them one by one.","Guarda este número en tus contactos como":"Save this number in your contacts as",". Por ahí te llegarán los mensajes de ánimo.":". That’s where your encouraging messages will come from.","Salúdanos por WhatsApp":"Say hi on WhatsApp","Siembra tu meta del trimestre":"Plant your goal for the quarter","Para empezar, rellena un formulario con":"To start, fill in a form with","una meta importante para ti":"a goal that’s important to you","(lleva 5 minutos)":"(it takes 5 minutes)",". Con tus respuestas preparamos tu guía de prácticas.":". With your answers we’ll prepare your practice guide.","Rellenar el formulario":"Fill in the form","← Volver":"← Back","Volver":"Back","Volver a la app":"Back to the app","Vamos a definir tu meta trimestral":"Let’s define your goal for the quarter","Son unos 5 minutos, y con tus respuestas te preparo tu guía de prácticas.":"It takes about 5 minutes, and with your answers I’ll prepare your practice guide.","¿A qué correo te avisamos?":"Which email should we use?","Lo necesitamos para enviarte tu guía de prácticas. Solo te lo pedimos esta vez.":"We need it to send you your practice guide. We’ll only ask this once.","Empezar →":"Start →","Salir del formulario":"Leave the form","tu@correo.com":"you@email.com","Tu meta del trimestre":"Your goal for the quarter","Ciudad y país de residencia":"City and country where you live","(opcional)":"(optional)","Género":"Gender","Mujer":"Woman","Hombre":"Man","Prefiero no decirlo":"I’d rather not say","Franja de edad":"Age range","Menor de 25":"Under 25","25 a 34":"25 to 34","35 a 44":"35 to 44","45 a 54":"45 to 54","55 a 64":"55 to 64","65 o más":"65 or over","¿Cuál es tu disposición para hacer prácticas en este trimestre?":"How ready are you to do practices this quarter?","Quiero comenzar una práctica nueva":"I want to start a new practice","Prefiero no hacer prácticas personales (me tomaré una pausa)":"I’d rather not do personal practices (I’ll take a break)","Continuaré con lo del trimestre anterior":"I’ll continue with last quarter’s practice","¿Cuánto tiempo puedes dedicar a tus prácticas?":"How much time can you give to your practices?","¿Cuántos días a la semana?":"How many days a week?","Elige…":"Choose…","¿Cuánto tiempo cada día?":"How long each day?","1 hora":"1 hour","1 hora y media":"1 and a half hours","2 horas":"2 hours","Explica en detalle lo que quieres lograr este trimestre":"Explain in detail what you want to achieve this quarter","Cuantos más detalles me des, más personalizada será tu guía. Ej.: «Quiero meditar 10 minutos cada mañana para estar más tranquilo en el trabajo»":"The more details you give me, the more personal your guide will be. E.g. “I want to meditate for 10 minutes every morning to feel calmer at work”","Dictar":"Dictate","¿Durante cuánto tiempo quieres hacer la práctica?":"For how long do you want to do the practice?","1 mes":"1 month","2 meses":"2 months","3 meses o más":"3 months or more","Siendo sincero/a, ¿crees que puedes conseguirlo en ese tiempo?":"Honestly, do you think you can achieve it in that time?","Sí, seguro":"Yes, definitely","Creo que sí":"I think so","No estoy seguro/a":"I’m not sure","Ajustemos tu meta para que sea amable":"Let’s adjust your goal so it’s kind","Las metas amables funcionan mejor con un plazo realista. Escribe una meta más pequeña o un plazo más largo. Ej.: «En 1 mes, empezar a cuadrar la agenda los domingos; en 3 meses, que sea costumbre».":"Kind goals work better with a realistic deadline. Write a smaller goal or a longer deadline. E.g. “In 1 month, start planning my week on Sundays; in 3 months, make it a habit”.","Esta es la meta que escribiste, con plazo de":"This is the goal you wrote, with a deadline of",". Edítala aquí abajo para hacerla más pequeña o cambiar el plazo:":". Edit it below to make it smaller or change the deadline:","Prefiero cambiar la meta original":"I’d rather change the original goal","Del 1 al 5, ¿cómo calificas tu capacidad actual para conseguir esta meta?":"From 1 to 5, how would you rate your current ability to achieve this goal?","Muy bajo":"Very low","Muy alto":"Very high","¿Lo has intentado antes?":"Have you tried before?","Es la primera vez que lo intento":"It’s my first time trying","Lo intenté, pero lo dejé":"I tried, but I gave up","Me funcionó un tiempo, pero perdí la constancia":"It worked for a while, but I lost consistency","¿Con qué lo intentaste?":"What did you try it with?","Puedes marcar varias.":"You can tick several.","Por mi cuenta":"On my own","Con una app":"With an app","Con un libro o un curso":"With a book or a course","Con un grupo o alguien que me acompañaba":"With a group or someone supporting me","Con un profesional":"With a professional","¿Algo que quieras contarme de lo que funcionó o no? (opcional)":"Anything you’d like to tell me about what worked or didn’t? (optional)","¿Qué te suele frenar cuando intentas un cambio?":"What usually holds you back when you try to change?","Marca los que te pasan (puedes elegir varios).":"Tick the ones that happen to you (you can choose several).","Perfeccionismo («si no sale perfecto, no vale»)":"Perfectionism (“if it isn’t perfect, it doesn’t count”)","Postergación («lo hago luego»)":"Procrastination (“I’ll do it later”)","Frustración cuando me equivoco":"Frustration when I make mistakes","Falta de tiempo, agenda llena":"Lack of time, a packed schedule","Me distraigo (móvil, redes…)":"I get distracted (phone, social media…)","Dudo de mí («no soy capaz»)":"I doubt myself (“I can’t do it”)","Pierdo la motivación a los pocos días":"I lose motivation after a few days","¿Qué emoción o pensamiento aparece cuando se pone difícil? ¿Otro saboteador? (opcional)":"What emotion or thought shows up when it gets hard? Any other saboteur? (optional)","¿Cómo sabrás cada mes que has avanzado?":"How will you know each month that you’ve made progress?","Puedes elegir varias.":"You can choose several.","Si lo he logrado":"If I’ve achieved it","Si lo hago más días o más tiempo":"If I do it on more days or for longer","Si se me hizo costumbre (hábito)":"If it has become a habit","Si, cuando fallo, lo retomo sin culpa":"If, when I slip, I pick it up again without guilt","Si me siento mejor":"If I feel better","Si lo notan los demás":"If other people notice it","Si es un resultado medible, escríbelo (opcional)":"If it’s a measurable result, write it down (optional)","Ej.: leer 2 libros, meditar 20 días al mes":"E.g. read 2 books, meditate 20 days a month","Lo intenté:":"I tried:","Revisa tus respuestas":"Review your answers","Enviar mi meta":"Send my goal","Escribe un correo válido.":"Enter a valid email.","No se pudo enviar. Revisa tu conexión.":"Couldn’t send it. Check your connection.","Cuéntame un poco más…":"Tell me a bit more…","Añadir y seguir →":"Add and continue →","Seguir así, sin añadir":"Continue without adding","Elige los días y el tiempo de cada día.":"Choose the days and the time for each day.","Marca al menos uno o escribe el tuyo.":"Tick at least one or write your own.","Esta pregunta es obligatoria.":"This question is required.","Prácti está leyendo…":"Prácti is reading…","Solo administrador":"Admin only"};
+  const TRAD_EN_RE = [
+    ["^© (\\d{4}) Gustavo Calabró · Práctica Integral Club\\. Todos los derechos reservados\\. ·$", "© $1 Gustavo Calabró · Práctica Integral Club. All rights reserved. ·"],
+    ["^¡Te damos la bienvenida a Amable Meta, (.+)!$", "Welcome to Amable Meta, $1!"],
+    ["^A las (\\d{1,2}):00, solo si ese día aún no has registrado\\.$", "At $1:00, only if you haven’t checked in that day."],
+    ["^Pregunta (\\d+) de (\\d+)$", "Question $1 of $2"],
+    ["^Perfil y ajustes de (.+)$", "Profile and settings for $1"],
+    ["^(\\d+) minutos$", "$1 minutes"],
+    ["^1 día$", "1 day"],
+    ["^(\\d+) días$", "$1 days"],
+    ["^No hay ninguna cuenta con (.+)\\. Completa tus datos para crearla\\.$", "There’s no account with $1. Fill in your details to create it."]
+  ].map(([a, b]) => [new RegExp(a), b]);
+  function traducirTexto(s){
+    const x = String(s || ''), t = x.trim(); if(!t) return null;
+    let r = TRAD_EN[t];
+    if(r === undefined){ for(const [re, b] of TRAD_EN_RE){ if(re.test(t)){ r = t.replace(re, b); break; } } }
+    return r === undefined ? null : x.replace(t, r);
+  }
+  function traducirArbol(n){
+    if(IDIOMA !== 'en' || !n) return;
+    if(n.nodeType === 3){
+      const p = n.parentNode;
+      if(!p || /^(SCRIPT|STYLE|TEXTAREA)$/.test(p.nodeName) || (p.closest && p.closest('[translate="no"],.notranslate'))) return;
+      const r = traducirTexto(n.nodeValue); if(r !== null && r !== n.nodeValue) n.nodeValue = r;
+      return;
+    }
+    if(n.nodeType !== 1 && n.nodeType !== 11) return;
+    if(n.nodeType === 1){
+      if(/^(SCRIPT|STYLE)$/.test(n.nodeName) || n.getAttribute('translate') === 'no' || (n.classList && n.classList.contains('notranslate'))) return;
+      ['placeholder', 'aria-label', 'title'].forEach(a => { const v = n.getAttribute(a); if(v){ const r = traducirTexto(v); if(r !== null && r !== v) n.setAttribute(a, r); } });
+      if(n.nodeName === 'TEXTAREA') return;   // lo que escribe la persona no se toca
+    }
+    for(let h = n.firstChild; h; h = h.nextSibling) traducirArbol(h);
+  }
+  if(IDIOMA === 'en'){
+    try { document.documentElement.lang = 'en'; } catch(e){}
+    traducirArbol(document.body);
+    new MutationObserver(ms => { for(const m of ms){
+      if(m.type === 'childList') m.addedNodes.forEach(traducirArbol);
+      else traducirArbol(m.target);
+    } }).observe(document.documentElement, { childList: true, subtree: true, characterData: true, attributes: true, attributeFilter: ['placeholder', 'aria-label', 'title'] });
+  }
+  function ponerIdioma(l){ try { localStorage.setItem('ma_idioma', l); } catch(e){} location.reload(); }
+  // Botón «🌐 Español ▾» (con icono de línea): arriba a la izquierda en la entrada
+  function botonIdiomaHTML(){
+    return '<label class="idioma-btn notranslate" translate="no"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 3.8 5.6 3.8 9s-1.3 6.4-3.8 9c-2.5-2.6-3.8-5.6-3.8-9S9.5 5.6 12 3z"/></svg>'
+      + '<select aria-label="Idioma / Language"><option value="es"' + (IDIOMA === 'es' ? ' selected' : '') + '>Español</option><option value="en"' + (IDIOMA === 'en' ? ' selected' : '') + '>English</option></select><span aria-hidden="true">▾</span></label>';
+  }
+  document.addEventListener('change', e => { if(e.target && e.target.closest && e.target.closest('.idioma-btn')) ponerIdioma(e.target.value); });
+
   let state = {
     view: 'loading',
     me: null,
@@ -1981,7 +2048,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     metaSavedMsg: '',
     menuOpen: false,
     theme: localStorage.getItem('mac_theme') || 'light',
-    lang: /translate\.goog$/.test(location.hostname) ? (new URLSearchParams(location.search).get('_x_tr_tl') || 'en') : (localStorage.getItem('mac_lang') || 'es'),
+    lang: IDIOMA,
     prevView: 'panel',
     nivel: null,
     cierreEstado: null,
@@ -2508,7 +2575,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V14.95';
+  const APP_VERSION = 'V14.96';
   // ===== Pantalla de inicio: versión, sonido corto y salida (5-11-2026) =====
   (function(){
     const sp = document.getElementById('inicioSplash'); if(!sp) return;
@@ -2767,7 +2834,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
         pickMe(r.nombre);
       } catch(e){ state.loginError = mensajeError(e, 'No se pudo entrar con Google. Prueba con tu nombre y contraseña.'); render(); }
     }});
-    google.accounts.id.renderButton(caja, { theme: 'outline', size: 'large', shape: 'pill', text: 'continue_with', locale: 'es', width: Math.min(360, caja.clientWidth || 320) });
+    google.accounts.id.renderButton(caja, { theme: 'outline', size: 'large', shape: 'pill', text: 'continue_with', locale: IDIOMA, width: Math.min(360, caja.clientWidth || 320) });
   }
 
   async function loginWithPassword(nombre, pass){
@@ -6490,7 +6557,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     boton.onclick = () => {
       if(dictadoActivo){ try { dictadoActivo.stop(); } catch(e){} return; }
       const rec = new SR();
-      rec.lang = 'es-ES'; rec.continuous = true; rec.interimResults = false;
+      rec.lang = IDIOMA === 'en' ? 'en-US' : 'es-ES'; rec.continuous = true; rec.interimResults = false;
       rec.onresult = ev => {
         for(let i = ev.resultIndex; i < ev.results.length; i++){
           if(ev.results[i].isFinal){ const t = ev.results[i][0].transcript.trim(); if(t) campo.value = (campo.value ? campo.value.replace(/\s+$/, '') + ' ' : '') + t; }
@@ -7125,12 +7192,8 @@ lo que haces cada día es lo que vas a ser.`;
     </div>`));
   }
 
-  // Cambio de idioma: por ahora, a través del traductor de Google (la app está escrita en español)
-  function cambiarIdioma(lang){
-    const enTraductor = /translate\.goog$/.test(location.hostname);
-    if(lang === 'es'){ if(enTraductor) location.href = 'https://app.practicaintegral.club/'; else alert('La app ya está en español.'); return; }
-    location.href = 'https://app-practicaintegral-club.translate.goog/?_x_tr_sl=es&_x_tr_tl=' + lang + '&_x_tr_hl=' + lang;
-  }
+  // Cambio de idioma (10-11-2026): traducción propia, revisada; ya no se usa el traductor automático de Google
+  function cambiarIdioma(lang){ if(lang === 'es' || lang === 'en') ponerIdioma(lang); }
   // ===== Centro de ayuda (desde el menú «Perfil y Ajustes» y desde Ajustes) =====
   function renderAyuda(){
     renderBackTopbar('Centro de ayuda');
@@ -7186,16 +7249,15 @@ lo que haces cada día es lo que vas a ser.`;
       <select class="lang-select" id="langSelect">
         <option value="es" ${state.lang==='es'?'selected':''}>Español</option>
         <option value="en" ${state.lang==='en'?'selected':''}>English</option>
-        <option value="ca" ${state.lang==='ca'?'selected':''}>Català</option>
       </select>
       <button type="button" class="panel-link-btn" id="langCambiar" style="width:100%;border:none;cursor:pointer;margin-top:10px">Cambiar al idioma seleccionado</button>
       ${/translate\.goog$/.test(location.hostname) ? '<a class="volver-es notranslate" translate="no" href="https://app.practicaintegral.club/">🇪🇸 Volver a la app en español (sin traducir)</a>' : ''}
-      <p style="font-size:12px;color:var(--ink-soft);margin-top:8px"><em>Inglés y catalán: la app se abre traducida automáticamente por Google (tendrás que volver a entrar con tu nombre y contraseña). La versión completa en otros idiomas llegará más adelante.</em></p>
+      <p style="font-size:12px;color:var(--ink-soft);margin-top:8px"><em>La versión en inglés se está completando por partes: lo que aún no está traducido sale en español.</em></p>
     `;
     app.appendChild(card);
     card.querySelector('#themeLight').onclick = () => { state.theme='light'; localStorage.setItem('mac_theme','light'); render(); };
     card.querySelector('#themeDark').onclick = () => { state.theme='dark'; localStorage.setItem('mac_theme','dark'); render(); };
-    card.querySelector('#langSelect').onchange = (e) => { state.lang = e.target.value; localStorage.setItem('mac_lang', state.lang); };
+    card.querySelector('#langSelect').onchange = (e) => { state.lang = e.target.value; };
     card.querySelector('#langCambiar').onclick = () => cambiarIdioma(card.querySelector('#langSelect').value);
 
     // Instalar la app (siempre disponible aquí, también para volver a instalarla si falla)
@@ -7842,6 +7904,7 @@ lo que haces cada día es lo que vas a ser.`;
       </div>
     `;
     app.appendChild(header);
+    if(state.view === 'pick'){ header.classList.add('con-idioma'); header.insertAdjacentHTML('afterbegin', '<div class="idioma-fila">' + botonIdiomaHTML() + '</div>'); }
     // Mientras no esté instalada: botón «Instalar la app» arriba en todas las pantallas
     if(state.me && !MODO_PLAY && !appInstalada() && !['pick', 'bienvenidaAlta'].includes(state.view)){
       const b = document.createElement('button');
@@ -9634,7 +9697,7 @@ lo que haces cada día es lo que vas a ser.`;
     let rec = null;
     b.onclick = () => {
       if(rec){ try { rec.stop(); } catch(e){} return; }
-      rec = new SR(); rec.lang = 'es-ES'; rec.continuous = true; rec.interimResults = false;
+      rec = new SR(); rec.lang = IDIOMA === 'en' ? 'en-US' : 'es-ES'; rec.continuous = true; rec.interimResults = false;
       rec.onresult = ev => { for(let i = ev.resultIndex; i < ev.results.length; i++){ if(ev.results[i].isFinal){ const t = ev.results[i][0].transcript.trim(); if(t) ta.value = (ta.value ? ta.value.replace(/\s+$/, '') + ' ' : '') + t; } } };
       rec.onend = () => { rec = null; b.classList.remove('grabando'); };
       rec.onerror = () => { rec = null; b.classList.remove('grabando'); };
@@ -12072,7 +12135,7 @@ lo que haces cada día es lo que vas a ser.`;
     b.onclick = () => {
       if(dictadoActivo){ try { dictadoActivo.stop(); } catch(e){} return; }
       const rec = new SR();
-      rec.lang = 'es-ES'; rec.continuous = true; rec.interimResults = false;
+      rec.lang = IDIOMA === 'en' ? 'en-US' : 'es-ES'; rec.continuous = true; rec.interimResults = false;
       rec.onresult = ev => {
         for(let i = ev.resultIndex; i < ev.results.length; i++){
           if(ev.results[i].isFinal){
@@ -12943,4 +13006,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Meta" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V14.95 · App Amable Meta · 2026-11-10 09:33==== -->
+<!-- ==== Fin del index V14.96 · App Amable Meta · 2026-11-10 10:11==== -->
