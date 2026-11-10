@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V14.97 · App Amable Meta · 2026-11-10 10:40==== -->
+<!-- ==== index V14.98 · App Amable Meta · 2026-11-10 10:42==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2093,6 +2093,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       definir(window, 'Notification', N);
     }
     // Si Firebase cambia el token de este móvil y los avisos están activados, se guarda el nuevo
+    // Al tocar el aviso diario con la app abierta: se abre «Registra cada día»
+    window.abrirRegarNativo = () => { try { if(state && state.me) abrirMomentoRiego(); else location.href = './?regar=1'; } catch(e){} };
     window.tokenAvisosNativo = tk => { try { if(tk && state && state.me && localStorage.getItem('push_on_' + state.me) === '1') api('/push', { fcm: tk }).catch(() => {}); } catch(e){} };
   }
   // Token de avisos (Firebase) de este móvil en la app Android; espera hasta 15 s si aún no ha llegado
@@ -2656,7 +2658,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V14.97';
+  const APP_VERSION = 'V14.98';
   // ===== Pantalla de inicio: versión, sonido corto y salida (5-11-2026) =====
   (function(){
     const sp = document.getElementById('inicioSplash'); if(!sp) return;
@@ -13110,4 +13112,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Meta" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V14.97 · App Amable Meta · 2026-11-10 10:40==== -->
+<!-- ==== Fin del index V14.98 · App Amable Meta · 2026-11-10 10:42==== -->
