@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V15.18 · App Amable Meta · 2026-11-10 15:44==== -->
+<!-- ==== index V15.19 · App Amable Meta · 2026-11-10 15:56==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1513,7 +1513,10 @@ header.top.cab-fija{position:sticky;top:0;z-index:40;background:#fff;margin-top:
 .pl-tabla th{vertical-align:bottom;font-weight:800}
 .pl-tabla th b{display:block;font:800 14px/1.15 Nunito,sans-serif}
 .pl-tabla th small{display:block;font-weight:600;color:var(--ink-soft);font-size:12px;margin-top:2px}
-.pl-tabla th em{display:inline-block;margin:0 0 5px;padding:2px 6px;border-radius:99px;background:#4B3BC9;color:#fff;font:800 10.5px Karla,sans-serif;font-style:normal}
+.pl-tabla thead th{padding-top:24px}
+.pl-tabla th.pl-suyo{position:relative}
+.pl-tabla th em{position:absolute;top:-13px;left:3px;right:3px;display:block;padding:5px 2px;border-radius:99px;background:var(--moss-deep,#A8001F);color:#fff;font:800 13px/1.1 Karla,sans-serif;font-style:normal;text-align:center;white-space:nowrap}
+.pl-caja{padding-top:14px}
 .pl-tabla .pl-suyo{background:#ECEBE8}
 .pl-tabla .pl-sube1{background:#FFF4CC}
 .pl-tabla .pl-sube2{background:#FFDD55}
@@ -2731,7 +2734,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V15.18';
+  const APP_VERSION = 'V15.19';
   // ===== Pantalla de inicio: versión, sonido corto y salida (5-11-2026) =====
   (function(){
     const sp = document.getElementById('inicioSplash'); if(!sp) return;
@@ -5184,7 +5187,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   function icoMenu(n){ return '<svg class="mi-ico" viewBox="0 0 24 24" aria-hidden="true">' + (ICONOS_MENU[n] || '') + '</svg>'; }
   // Corona propia de los planes (5-11-2026): sustituye al emoji 👑 en toda la app
   // Corona de línea, como la del botón «Mejora» (10-11-2026, Gustavo: sin coronas de emoji)
-  const CORONA_SVG = '<svg class="corona-svg" viewBox="0 0 24 24" fill="none" stroke="#8A6400" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.5 8 12.5 12 5.5l4 7 4.5-4-2 10.5h-13z"/><path d="M6 21h12"/></svg>';
+  const CORONA_SVG = '<svg class="corona-svg" viewBox="0 0 24 24" fill="none" stroke="#8A6400" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.5 8 12.5 12 5.5l4 7 4.5-4-2 10.5h-13z" fill="#FFC400"/><path d="M6 21h12"/></svg>';
   // ===== Reproductor de las notas de voz (9-11-2026, idea de Gustavo) =====
   // El reproductor del móvil, en un recuadro estrecho, dejaba la línea de avance como un punto. Este pone arriba
   // ▶/⏸, el tiempo y una línea para el volumen, y abajo la línea de avance a todo lo ancho.
@@ -9270,7 +9273,7 @@ lo que haces cada día es lo que vas a ser.`;
     if(state.view === 'planes'){
       // «Tu plan» (10-11-2026, Gustavo): los tres planes en columnas, sin recuadros; una ⓘ en cada fila explica ese punto;
       // debajo, el precio y la forma de pago de cada plan de pago. Sin la foto ni Prácti pensando.
-      renderBackTopbar('Tu plan');
+      renderBackTopbar('Mejora tu plan');
       try { app.querySelectorAll('.topbar').forEach(b => b.remove()); const tt = app.querySelector('.titulo-pantalla'); if(tt) tt.classList.add('pl-titulo'); const hd = app.querySelector('header.top'); if(hd) hd.classList.add('cab-fija'); } catch(e){}
       const actual = (!state.plan || state.plan === 'gratis') ? 'libre' : state.plan;
       const OK = '<span class="pl-ok" aria-label="Sí">✓</span>', NO = '<span class="pl-no" aria-label="No">–</span>';
@@ -13267,4 +13270,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Meta" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V15.18 · App Amable Meta · 2026-11-10 15:44==== -->
+<!-- ==== Fin del index V15.19 · App Amable Meta · 2026-11-10 15:56==== -->
