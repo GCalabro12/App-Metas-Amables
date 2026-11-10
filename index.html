@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V15.19 · App Amable Meta · 2026-11-10 15:56==== -->
+<!-- ==== index V15.20 · App Amable Meta · 2026-11-10 16:02==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1505,7 +1505,7 @@ body:has(#app[data-vista="perfil"])::before{opacity:.22}
 .tabbar button[data-tab="plan"] svg{background:#FFD23F;border-radius:50%;padding:4px;box-sizing:content-box;color:#5A4300;box-shadow:0 0 0 3px rgba(255,210,63,.35)}
 .insta-pie{display:flex;justify-content:center;align-items:center;gap:12px;margin:10px 0 0}.insta-pie .cab-insta{margin:0;width:32px;height:32px}.insta-pie .cab-insta svg{width:20px;height:20px}
 .pl-titulo{font-size:clamp(30px,8.5vw,36px) !important;margin:4px 0 10px !important;text-align:center !important}
-header.top.cab-fija{position:sticky;top:0;z-index:40;background:#fff;margin-top:-1px;padding-top:calc(env(safe-area-inset-top,0px) + 10px);padding-bottom:8px;box-shadow:0 6px 10px -8px rgba(0,0,0,.25)}
+header.top.cab-fija{position:sticky;top:0;z-index:40;background:#fff;margin-top:-1px;margin-left:calc(50% - 50vw);margin-right:calc(50% - 50vw);padding-left:calc(50vw - 50%);padding-right:calc(50vw - 50%);padding-top:calc(env(safe-area-inset-top,0px) + 10px);padding-bottom:8px;box-shadow:0 6px 10px -8px rgba(0,0,0,.25)}
 .pl-caja{margin:0 -8px 16px}
 .pl-tabla{width:100%;border-collapse:collapse;table-layout:fixed;font:600 13px/1.25 Karla,sans-serif;color:var(--ink)}
 .pl-tabla th,.pl-tabla td{padding:9px 3px;text-align:center;border-bottom:1px solid rgba(0,0,0,.08);vertical-align:middle}
@@ -2734,7 +2734,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V15.19';
+  const APP_VERSION = 'V15.20';
   // ===== Pantalla de inicio: versión, sonido corto y salida (5-11-2026) =====
   (function(){
     const sp = document.getElementById('inicioSplash'); if(!sp) return;
@@ -3860,7 +3860,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
   function abrirMostrar(pant){
     pant = pant || 'inicio';
-    const fuera = ocultos(), opc = MOSTRAR_OPC.filter(o => o.p.includes(pant) && !o.fijo).sort((a, b) => (b.fijo ? 1 : 0) - (a.fijo ? 1 : 0));   // las fijas, arriba
+    const fuera = ocultos(), opc = MOSTRAR_OPC.filter(o => o.p.includes(pant) && !o.fijo && !(o.k === 'insignias' && insigniasBloqueadas())).sort((a, b) => (b.fijo ? 1 : 0) - (a.fijo ? 1 : 0));   // las fijas, arriba
     const capa = el('<div class="mostrar-capa" role="dialog" aria-modal="true" aria-label="Mostrar"><div class="mostrar-panel"><h2>Mostrar<button type="button" class="mostrar-x" aria-label="Cerrar">✕</button></h2><div class="mostrar-lista">'
       + opc.map(o => '<label class="mostrar-op' + (o.fijo ? ' fijo' : '') + '"><input type="checkbox" data-k="' + o.k + '"' + (o.fijo || !fuera.includes(o.k) ? ' checked' : '') + (o.fijo ? ' disabled' : '') + '><span><b>' + escapeAttr(o.t) + '</b>' + (o.fijo ? '<small>Siempre</small>' : (o.d ? '<small>' + escapeAttr(o.d) + '</small>' : '')) + '</span></label>').join('')
       + '</div></div></div>').firstElementChild;
@@ -4832,13 +4832,16 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       ['c', 'Registro y compromiso.', 'Cada día marca los días en que la hiciste.'],
     ];
     if(registraLunes()) pasos.push(['d', 'Grupo de apoyo.', 'Cada lunes haces tu compromiso con el grupo y cada 15 días tienes sesión con él.']);
+    const extra = '<span class="bienvenida-pasos"><b>Si lo prefieres:</b>'
+      + '<span><b>¿Quieres que Prácti no se mueva?</b> Tócalo y se queda quieto. Vuelve a tocarlo y se mueve otra vez.</span>'
+      + '<span><b>¿Quieres ver menos cosas?</b> Al final de Inicio, en «Mostrar», eliges qué ver y qué quitar.</span></span>';
     const frase = '¡Hola, ' + nombre + '! Soy Prácti y te acompaño en tus prácticas. Pasos a seguir: '
       + pasos.map(p => 'Paso ' + p[0] + ': ' + p[1] + ' ' + p[2]).join(' ');
     return '<div class="practi-bocadillo bienvenida" id="bienvenidaPracti" data-voz="' + escapeAttr(frase) + '">'
       + '<button type="button" class="bienvenida-x" id="btnXBienvenida" aria-label="Cerrar">✕</button>'
       + '<b>¡Hola, ' + escapeAttr(nombre) + '! Soy Prácti</b> y te acompaño en tus prácticas.'
       + '<span class="bienvenida-pasos"><b>Pasos a seguir:</b>'
-      + pasos.map(p => '<span><b>Paso ' + p[0] + '. ' + escapeAttr(p[1]) + '</b> ' + escapeAttr(p[2]) + '</span>').join('') + '</span>'
+      + pasos.map(p => '<span><b>Paso ' + p[0] + '. ' + escapeAttr(p[1]) + '</b> ' + escapeAttr(p[2]) + '</span>').join('') + '</span>' + extra
       + '<span class="bienvenida-acciones">'
       + '<button type="button" class="btn btn-yes" id="btnCerrarBienvenida">Cerrar</button>'
       + '</span></div>';
@@ -13270,4 +13273,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Meta" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V15.19 · App Amable Meta · 2026-11-10 15:56==== -->
+<!-- ==== Fin del index V15.20 · App Amable Meta · 2026-11-10 16:02==== -->
