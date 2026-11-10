@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V15.27 · App Amable Meta · 2026-11-11 00:24==== -->
+<!-- ==== index V15.28 · App Amable Meta · 2026-11-11 00:40==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2776,7 +2776,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V15.27';
+  const APP_VERSION = 'V15.28';
   // ===== Pantalla de inicio: versión, sonido corto y salida (5-11-2026) =====
   (function(){
     const sp = document.getElementById('inicioSplash'); if(!sp) return;
@@ -5852,6 +5852,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     h += `<button type="button" class="pf-btn pf-actualizar" id="pfActualizar">${p.cargando ? '<i data-ico=espera></i>Actualizando…' : '<i data-ico=ciclo></i>Actualizar'}</button>`;
     h += `<button type="button" class="link-quiet" id="pfTelegram" style="display:block;margin:-12px auto 20px;font-size:13.5px"><i data-ico=enviar></i>Mandarme ahora el resumen a Telegram y WhatsApp</button>`;
     app.appendChild(el(h));
+    try { app.appendChild(tarjetaDiagAdmin()); } catch(e){}   // datos de esta app y prueba de voz
     const hecho = async (b, cuerpo, quitar) => {
       b.disabled = true; b.textContent = '…';
       try { await api('/panel/hecho', cuerpo); quitar(); avisoBreve('Hecho ✓'); render(); }
@@ -7502,6 +7503,43 @@ lo que haces cada día es lo que vas a ser.`;
     caja.querySelector('#ayudaSoporte').onclick = () => { window.open('https://wa.me/34658825799?text=' + encodeURIComponent('Hola, soy ' + (state.me || '') + ' y necesito ayuda con la app Amable Meta'), '_blank'); };
     app.appendChild(caja);
   }
+  // «Datos para el administrador» (11-11-2026, Gustavo): de dónde viene esta app y cómo está la voz, para saber qué falla.
+  // Sale al final de Ajustes y al final del Panel de control (solo moderadores)
+  function tarjetaDiagAdmin(){
+    const A = window.AmableMetaAndroid || null, NAV = navigator['user' + 'Agent'] || '';
+    const standalone = (() => { try { return matchMedia('(display-mode: standalone)').matches || navigator.standalone === true; } catch(e){ return false; } })();
+    const origen = APP_ANDROID ? 'App de Android (WebView de Google Play)' : PLAY_AHORA ? 'App de Google Play antigua (abre Chrome por dentro)' : standalone ? 'Web instalada en el móvil (icono de Chrome)' : 'Navegador';
+    const filas = [
+      ['Versión de la web', APP_VERSION],
+      ['Origen', origen],
+      ['Versión de la app Android', A ? String(A.version) : '—'],
+      ['Voz del móvil por la app (hablarCon)', A ? (A.hablarCon ? 'sí' : 'no') : '—'],
+      ['Modo Play (sin precios antes)', MODO_PLAY ? 'sí' : 'no'],
+      ['Idioma de la app / del móvil', IDIOMA + ' / ' + (navigator.language || '?')],
+      ['Navegador', (NAV.match(/(Chrome|CriOS|Firefox|Safari|Edg)\/[\d.]+/) || ['?'])[0] + (/; wv\)/.test(NAV) ? ' (WebView)' : '')],
+      ['Sistema', (NAV.match(/Android [\d.]+|iPhone OS [\d_]+|Windows NT [\d.]+|Mac OS X [\d_]+/) || ['?'])[0]]
+    ];
+    const diag = el('<div class="card diag-admin"><p class="diag-tit"><i data-ico=llave></i>Datos para el administrador</p><div class="diag-filas">'
+      + filas.map(f => '<p><span>' + f[0] + '</span><b>' + escapeAttr(f[1]) + '</b></p>').join('')
+      + '<p><span>Voces del móvil</span><b class="diag-voces">…</b></p></div><button type="button" class="btn btn-no diag-probar" style="text-align:center">Probar voz y ver qué pasa</button><p class="diag-res"></p></div>').firstElementChild;
+    const pintaVoces = () => { try { const vs = window.speechSynthesis ? (window.speechSynthesis.getVoices() || []) : null; diag.querySelector('.diag-voces').textContent = !vs ? 'no hay voz en este navegador' : (vs.length + ' (en español: ' + vs.filter(v => /^es/i.test(v.lang)).length + ', en inglés: ' + vs.filter(v => /^en/i.test(v.lang)).length + ')' + (APP_ANDROID ? ' · en la app la voz la pone Android' : '')); } catch(e){ diag.querySelector('.diag-voces').textContent = 'error: ' + e.message; } };
+    pintaVoces(); setTimeout(pintaVoces, 1200);
+    diag.querySelector('.diag-probar').onclick = () => {
+      const res = diag.querySelector('.diag-res'); res.textContent = 'Hablando…';
+      try {
+        if(!('speechSynthesis' in window)){ res.textContent = 'Este navegador no tiene voz (speechSynthesis).'; return; }
+        window.speechSynthesis.cancel();
+        const u = new SpeechSynthesisUtterance('Hola, soy Prácti. Esto es una prueba de voz.'); u.lang = 'es-ES';
+        const v = vozEspanol('es'); if(v) u.voice = v;
+        const t0 = Date.now(); let fin = false;
+        u.onend = () => { fin = true; res.textContent = 'Terminó bien en ' + ((Date.now() - t0) / 1000).toFixed(1) + ' s' + (Date.now() - t0 < 600 ? ' (demasiado rápido: no ha sonado de verdad)' : ''); };
+        u.onerror = ev => { fin = true; res.textContent = 'Error de voz: ' + ((ev && ev.error) || 'desconocido'); };
+        window.speechSynthesis.speak(u);
+        setTimeout(() => { if(!fin) res.textContent = 'A los 8 s no ha terminado ni ha dado error: el móvil no responde.'; }, 8000);
+      } catch(e){ res.textContent = 'Error: ' + e.message; }
+    };
+    return diag;
+  }
   function renderAjustesView(){
     renderBackTopbar('Ajustes');
     const IDIOMAS = [['es', '🇪🇸', 'Español'], ['en', '🇬🇧', 'English']];
@@ -7614,42 +7652,7 @@ lo que haces cada día es lo que vas a ser.`;
 
     // Banco de pruebas, solo para quien tenga "Moderador" en su grupo.
     // Enseña cada pantalla de resultado sin guardar nada en Airtable.
-    // «Datos para el administrador» (11-11-2026, Gustavo): de dónde viene esta app y cómo está la voz, para saber qué falla
-    if(soyModerador()){
-      const A = window.AmableMetaAndroid || null, NAV = navigator['user' + 'Agent'] || '';
-      const standalone = (() => { try { return matchMedia('(display-mode: standalone)').matches || navigator.standalone === true; } catch(e){ return false; } })();
-      const origen = APP_ANDROID ? 'App de Android (WebView de Google Play)' : PLAY_AHORA ? 'App de Google Play antigua (abre Chrome por dentro)' : standalone ? 'Web instalada en el móvil (icono de Chrome)' : 'Navegador';
-      const filas = [
-        ['Versión de la web', APP_VERSION],
-        ['Origen', origen],
-        ['Versión de la app Android', A ? String(A.version) : '—'],
-        ['Voz del móvil por la app (hablarCon)', A ? (A.hablarCon ? 'sí' : 'no') : '—'],
-        ['Modo Play (sin precios antes)', MODO_PLAY ? 'sí' : 'no'],
-        ['Idioma de la app / del móvil', IDIOMA + ' / ' + (navigator.language || '?')],
-        ['Navegador', (NAV.match(/(Chrome|CriOS|Firefox|Safari|Edg)\/[\d.]+/) || ['?'])[0] + (/; wv\)/.test(NAV) ? ' (WebView)' : '')],
-        ['Sistema', (NAV.match(/Android [\d.]+|iPhone OS [\d_]+|Windows NT [\d.]+|Mac OS X [\d_]+/) || ['?'])[0]]
-      ];
-      const diag = el('<div class="card diag-admin"><p class="diag-tit"><i data-ico=llave></i>Datos para el administrador</p><div class="diag-filas">'
-        + filas.map(f => '<p><span>' + f[0] + '</span><b>' + escapeAttr(f[1]) + '</b></p>').join('')
-        + '<p><span>Voces del móvil</span><b class="diag-voces">…</b></p></div><button type="button" class="btn btn-no diag-probar" style="text-align:center">Probar voz y ver qué pasa</button><p class="diag-res"></p></div>').firstElementChild;
-      const pintaVoces = () => { try { const vs = window.speechSynthesis ? (window.speechSynthesis.getVoices() || []) : null; diag.querySelector('.diag-voces').textContent = !vs ? 'no hay voz en este navegador' : (vs.length + ' (en español: ' + vs.filter(v => /^es/i.test(v.lang)).length + ', en inglés: ' + vs.filter(v => /^en/i.test(v.lang)).length + ')' + (APP_ANDROID ? ' · en la app la voz la pone Android' : '')); } catch(e){ diag.querySelector('.diag-voces').textContent = 'error: ' + e.message; } };
-      pintaVoces(); setTimeout(pintaVoces, 1200);
-      diag.querySelector('.diag-probar').onclick = () => {
-        const res = diag.querySelector('.diag-res'); res.textContent = 'Hablando…';
-        try {
-          if(!('speechSynthesis' in window)){ res.textContent = 'Este navegador no tiene voz (speechSynthesis).'; return; }
-          window.speechSynthesis.cancel();
-          const u = new SpeechSynthesisUtterance('Hola, soy Prácti. Esto es una prueba de voz.'); u.lang = 'es-ES';
-          const v = vozEspanol('es'); if(v) u.voice = v;
-          const t0 = Date.now(); let fin = false;
-          u.onend = () => { fin = true; res.textContent = 'Terminó bien en ' + ((Date.now() - t0) / 1000).toFixed(1) + ' s' + (Date.now() - t0 < 600 ? ' (demasiado rápido: no ha sonado de verdad)' : ''); };
-          u.onerror = ev => { fin = true; res.textContent = 'Error de voz: ' + ((ev && ev.error) || 'desconocido'); };
-          window.speechSynthesis.speak(u);
-          setTimeout(() => { if(!fin) res.textContent = 'A los 8 s no ha terminado ni ha dado error: el móvil no responde.'; }, 8000);
-        } catch(e){ res.textContent = 'Error: ' + e.message; }
-      };
-      app.appendChild(diag);
-    }
+    if(soyModerador()) app.appendChild(tarjetaDiagAdmin());   // «Datos para el administrador»
     app.appendChild(soporte);   // «Ayuda y soporte», al final de todo
     const grupos = state.groups[state.me] || [];
     const esModerador = Array.isArray(grupos) ? grupos.some(g => String(g).toLowerCase().includes('moderador')) : String(grupos).toLowerCase().includes('moderador');
@@ -13371,4 +13374,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Meta" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V15.27 · App Amable Meta · 2026-11-11 00:24==== -->
+<!-- ==== Fin del index V15.28 · App Amable Meta · 2026-11-11 00:40==== -->
