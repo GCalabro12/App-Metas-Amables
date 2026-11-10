@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V15.21 · App Amable Meta · 2026-11-10 16:11==== -->
+<!-- ==== index V15.22 · App Amable Meta · 2026-11-10 22:35==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2734,7 +2734,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V15.21';
+  const APP_VERSION = 'V15.22';
   // ===== Pantalla de inicio: versión, sonido corto y salida (5-11-2026) =====
   (function(){
     const sp = document.getElementById('inicioSplash'); if(!sp) return;
@@ -8789,7 +8789,7 @@ lo que haces cada día es lo que vas a ser.`;
       `;
       // «Instala la app» ya sale arriba del todo: aquí abajo no se repite (27-10-2026, Gustavo)
       // Juego extra, al final de la pantalla de inicio
-      const juego = el('<button type="button" class="juego-btn" style="margin-top:18px"><span class="juego-btn-ico">' + practiHTML('salto', '', 34, 'una-vez') + '</span><span><b>Salta la valla con Prácti</b><small>Un minuto de juego: cada valla es un obstáculo que superas</small></span></button>').firstElementChild;   // el() da un fragmento: se coge el botón
+      const juego = el('<button type="button" class="juego-btn" style="margin-top:18px"><span class="juego-btn-ico">' + practiHTML('salto', '', 34, 'una-vez') + '</span><span><b>Salta la valla con Prácti</b><small>' + (premioRetoDesbloqueado('juego') ? 'Un minuto de juego: cada valla es un obstáculo que superas' : 'Se desbloquea cuando registres 15 días (llevas ' + diasRegistradosReto() + ')') + '</small></span></button>').firstElementChild;   // el() da un fragmento: se coge el botón
       juego.onclick = abrirJuegoVallas;
       if(!oculto('juego')) app.appendChild(juego);
       app.appendChild(cajaMostrar('inicio'));   // «Mostrar», casi al final de Inicio
@@ -13273,4 +13273,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Meta" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V15.21 · App Amable Meta · 2026-11-10 16:11==== -->
+<!-- ==== Fin del index V15.22 · App Amable Meta · 2026-11-10 22:35==== -->
