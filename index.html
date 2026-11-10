@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V15.11 · App Amable Meta · 2026-11-10 15:19==== -->
+<!-- ==== index V15.12 · App Amable Meta · 2026-11-10 15:23==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -909,7 +909,7 @@ body.theme-dark .progreso-dato{background:#26262c;border-color:rgba(255,255,255,
 body.theme-dark .progreso-dato b{color:#B3A8FF}
 @media (max-width: 380px){.cab-insta{width:30px;height:30px;margin-right:0}.cab-insta svg{width:20px;height:20px}}
 body.con-tabbar:has(.musica-barra) #app{padding-bottom:170px}
-.hamburger-btn-text.menu-avatar{width:42px;height:42px;padding:0;border-radius:50%;background:#4B3BC9;border:2px solid #fff;box-shadow:0 0 0 2px #4B3BC9;color:#fff;display:inline-flex;align-items:center;justify-content:center;overflow:hidden;font:800 16px/1 Karla,sans-serif;letter-spacing:.5px;cursor:pointer}
+.hamburger-btn-text.menu-avatar{width:42px;height:42px;padding:0;border-radius:50%;background:#4B3BC9;border:3px solid #D9312B;box-shadow:none;color:#fff;display:inline-flex;align-items:center;justify-content:center;overflow:hidden;font:800 16px/1 Karla,sans-serif;letter-spacing:.5px;cursor:pointer}
 .hamburger-btn-text.menu-avatar img{width:100%;height:100%;object-fit:cover;border-radius:50%}
 .menu-avatar{overflow:visible !important;position:relative}
 .av-nivel{position:absolute;top:-9px;right:-9px;width:22px;height:22px;pointer-events:none;filter:drop-shadow(0 1px 1px rgba(0,0,0,.25))}
@@ -1512,8 +1512,11 @@ body:has(#app[data-vista="perfil"])::before{opacity:.22}
 .pl-tabla th{vertical-align:bottom;font-weight:800}
 .pl-tabla th b{display:block;font:800 14px/1.15 Nunito,sans-serif}
 .pl-tabla th small{display:block;font-weight:600;color:var(--ink-soft);font-size:12px;margin-top:2px}
-.pl-tabla th em{display:inline-block;margin-top:4px;padding:2px 6px;border-radius:99px;background:#4B3BC9;color:#fff;font:800 10.5px Karla,sans-serif;font-style:normal}
-.pl-tabla .pl-suyo{background:rgba(75,59,201,.06)}
+.pl-tabla th em{display:inline-block;margin:0 0 5px;padding:2px 6px;border-radius:99px;background:#4B3BC9;color:#fff;font:800 10.5px Karla,sans-serif;font-style:normal}
+.pl-tabla .pl-suyo{background:#ECEBE8}
+.pl-tabla .pl-sube1{background:#FFF4CC}
+.pl-tabla .pl-sube2{background:#FFDD55}
+.pl-tabla .pl-sube2 small{color:#5A4500}
 .pl-corona{display:block;font-size:18px;line-height:1;margin-bottom:2px}
 .pl-ok{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;border:2px solid #3E9B4F;color:#3E9B4F;font:900 13px/1 Karla,sans-serif}
 .pl-no{color:#B9B4AA;font-weight:800}
@@ -1926,7 +1929,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   .dias-card{padding-left:12px;padding-right:12px}
   /* Colores por parte del ciclo: 0 meta = marrón, a guía = azul, b práctica = rojo, c compromiso = verde */
   [data-vista="formMeta"] .card{ border:2px solid #C9942D; }
-  [data-vista="panel"][data-sub=""] *:not(input):not(textarea):not(select):not(.practi-bocadillo):not(.practi-bocadillo *):not(.planta-edita *){ border-color:transparent !important; }   /* Inicio: sin bordes, salvo los bocadillos de Prácti */
+  [data-vista="panel"][data-sub=""] *:not(input):not(textarea):not(select):not(.practi-bocadillo):not(.practi-bocadillo *):not(.planta-edita *):not(.menu-avatar){ border-color:transparent !important; }   /* Inicio: sin bordes, salvo los bocadillos de Prácti */
   [data-vista="panel"][data-sub=""] .card{ box-shadow:0 2px 14px rgba(60,40,100,.08); }
   [data-vista="formMeta"] .btn-yes{ border-color:#C9942D !important; color:#7A5410 !important; }
   [data-vista="formMeta"] .btn-yes:hover, [data-vista="formMeta"] .btn-yes:active, [data-vista="formMeta"] .btn-yes:focus{ background:#C9942D !important; color:#fff !important; }
@@ -2717,7 +2720,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V15.11';
+  const APP_VERSION = 'V15.12';
   // ===== Pantalla de inicio: versión, sonido corto y salida (5-11-2026) =====
   (function(){
     const sp = document.getElementById('inicioSplash'); if(!sp) return;
@@ -8406,7 +8409,7 @@ lo que haces cada día es lo que vas a ser.`;
                 : state.panelSub === 's4'
                   ? '<span class="practi-tocable" data-reaccion="practi-pizarra-empujon.json" title="Tócame">' + practiHTML('pizarra', '', 190) + '</span>'   // al tocarlo, empujón en la pizarra
                   : practiHTML(figuraSub[0], '', figuraSub[1], figuraSub[2] ? 'una-vez' : '')}</div>`)
-        : el(`<div class="saludo-inicio" style="position:relative;text-align:center;margin-bottom:14px"><div style="font-family:'Nunito',serif;font-size:24px;font-weight:600;color:var(--ink)">Hola, ${escapeAttr(state.me)}${avatarDe(state.me) ? ' ' + avatarDe(state.me) : ''}</div><div style="height:10px"></div><div class="hueco-panel-fac"></div><div class="practi-inicio" style="margin-bottom:10px">${practiReaccionHTML('saludo', 'empujonSaludo', 104, 'practi-saludo')}${bocadilloPracti(fraseInicio(), 'tono-calma' + (tareaDelDia() === 'a' ? ' latiendo' : ''))}</div></div>`);
+        : el(`<div class="saludo-inicio" style="position:relative;text-align:center;margin-bottom:14px"><div class="hueco-panel-fac"></div><div class="practi-inicio" style="margin-bottom:10px">${practiReaccionHTML('saludo', 'empujonSaludo', 104, 'practi-saludo')}${bocadilloPracti(fraseInicio(), 'tono-calma' + (tareaDelDia() === 'a' ? ' latiendo' : ''))}</div></div>`);
       // (el() devuelve un fragmento: hay que buscar dentro antes de añadirlo a la página)
       greetPanel.querySelectorAll('.practi-tocable').forEach(c => { c.onclick = () => reaccionExterna(c, c.dataset.reaccion); });
       // «Panel de control admin Metas A.» (solo moderadores): justo debajo de la fecha, antes de Prácti saludando
@@ -9276,11 +9279,12 @@ lo que haces cada día es lo que vas a ser.`;
         ['Nota de voz a tu yo futuro', [NO, NO, OK], 'Cada semana te grabas una nota de voz que escucharás el lunes siguiente.'],
         ['Insignias', [NO, NO, OK], 'Insignias que reconocen tu constancia, del guerrero al integral.']
       ];
-      const cab = (clave, nombre, coronas, precio) => '<th class="' + (clave === actual ? 'pl-suyo' : '') + '">' + (coronas ? '<span class="pl-corona">' + coronas + '</span>' : '') + '<b>' + nombre + '</b>'
-        + (MODO_PLAY ? '' : '<small>' + precio + '</small>') + (clave === actual ? '<em>Tu plan</em>' : '') + '</th>';
+      const colPlan = clave => clave === actual ? 'pl-suyo' : (ORDEN_PLAN[clave] > ORDEN_PLAN[actual] ? (clave === 'sesiones' ? 'pl-sube2' : 'pl-sube1') : '');
+      const cab = (clave, nombre, coronas, precio) => '<th class="' + colPlan(clave) + '">' + (clave === actual ? '<em>Tu plan</em>' : '') + (coronas ? '<span class="pl-corona">' + coronas + '</span>' : '') + '<b>' + nombre + '</b>'
+        + (MODO_PLAY ? '' : '<small>' + precio + '</small>') + '</th>';
       let h = '<table class="pl-tabla"><thead><tr><th></th>' + cab('libre', 'Libre', '', 'gratis') + cab('guias', 'Guías', '👑', '6 €/mes') + cab('sesiones', 'Guías + Grupo', '👑👑', '105 €/trim.') + '</tr></thead><tbody>';
       FILAS.forEach(([nom, vals, info], i) => {
-        h += '<tr><td class="pl-nom"><button type="button" class="pl-i" data-i="' + i + '" aria-label="Qué es: ' + escapeAttr(nom) + '">ⓘ</button>' + nom + '</td>' + vals.map((v, k) => '<td class="' + (['libre', 'guias', 'sesiones'][k] === actual ? 'pl-suyo' : '') + '">' + v + '</td>').join('') + '</tr>'
+        h += '<tr><td class="pl-nom"><button type="button" class="pl-i" data-i="' + i + '" aria-label="Qué es: ' + escapeAttr(nom) + '">ⓘ</button>' + nom + '</td>' + vals.map((v, k) => '<td class="' + colPlan(['libre', 'guias', 'sesiones'][k]) + '">' + v + '</td>').join('') + '</tr>'
           + '<tr class="pl-info" data-info="' + i + '" hidden><td colspan="4">' + info + '</td></tr>';
       });
       h += '</tbody></table>';
@@ -13256,4 +13260,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Meta" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V15.11 · App Amable Meta · 2026-11-10 15:19==== -->
+<!-- ==== Fin del index V15.12 · App Amable Meta · 2026-11-10 15:23==== -->
