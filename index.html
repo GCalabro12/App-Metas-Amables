@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V15.03 · App Amable Meta · 2026-11-10 14:49==== -->
+<!-- ==== index V15.04 · App Amable Meta · 2026-11-10 14:51==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2669,7 +2669,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V15.03';
+  const APP_VERSION = 'V15.04';
   // ===== Pantalla de inicio: versión, sonido corto y salida (5-11-2026) =====
   (function(){
     const sp = document.getElementById('inicioSplash'); if(!sp) return;
@@ -8314,7 +8314,7 @@ lo que haces cada día es lo que vas a ser.`;
     if(state.view === 'panel'){
 
       const nombrePlan = state.plan === 'sesiones' ? 'Plan Guías + Grupo' : (state.plan === 'guias' ? 'Plan Guías' : (state.plan ? 'Plan Libre' : ''));
-      const topbarPanel = el(`<div class="topbar"><span></span><div class="topbar-der"><span id="grow-panel-boton"></span>${nivelBadgeHTML()}<button class="hamburger-btn-text" id="btnMenuOpen" aria-label="Menú"><i data-ico=menu></i>Menú</button></div></div>`);
+      const topbarPanel = el(`<div class="topbar"><span></span><div class="topbar-der"><span id="grow-panel-boton"></span><button class="hamburger-btn-text" id="btnMenuOpen" aria-label="Menú"><i data-ico=menu></i>Menú</button></div></div>`);
       const nivelBtnPanel = topbarPanel.querySelector('#nivelBadgeBtn');
       const btnMenuOpenPanel = topbarPanel.querySelector('#btnMenuOpen');
       // Buscar el botón ANTES de insertarlo: el() devuelve un fragmento que se
@@ -12087,7 +12087,11 @@ lo que haces cada día es lo que vas a ser.`;
     const foto = fotoDePerfil();
     const av = foto || avatarDe(state.me);
     const esImg = /^(data:image|https?:)/.test(av || '');
+    // El aro de la foto toma el color de tu nivel (10-11-2026, Gustavo): rojo guerrero, ámbar tribal, naranja, verde y violeta integral
+    const COLOR_NIVEL = ['#D9312B', '#F2B800', '#F07C1A', '#3E9B4F', '#7B5FB8'];
+    const iNivel = state.nivel ? BADGE_SCALE.findIndex(x => x.label === state.nivel.label) : -1;
     document.querySelectorAll('.hamburger-btn-text').forEach(b => {
+      if(iNivel >= 0){ b.style.boxShadow = '0 0 0 3px ' + COLOR_NIVEL[iNivel]; b.title = 'Tu nivel: ' + state.nivel.label; }
       if(b.dataset.avatar) return;
       b.dataset.avatar = '1'; b.classList.add('menu-avatar'); b.setAttribute('aria-label', 'Perfil y ajustes de ' + state.me);
       b.innerHTML = esImg ? '<img src="' + escapeAttr(av) + '" alt="" referrerpolicy="no-referrer">' : '<span>' + (av ? av : escapeAttr(inicialesDe(state.me))) + '</span>';
@@ -13162,4 +13166,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Meta" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V15.03 · App Amable Meta · 2026-11-10 14:49==== -->
+<!-- ==== Fin del index V15.04 · App Amable Meta · 2026-11-10 14:51==== -->
