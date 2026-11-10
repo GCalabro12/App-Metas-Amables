@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V15.30 · App Amable Meta · 2026-11-11 00:43==== -->
+<!-- ==== index V15.31 · App Amable Meta · 2026-11-11 00:52==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2158,7 +2158,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
           const tx = String(u.text || '').trim();
           if(!tx || u.volume === 0){ setTimeout(() => { try { if(u.onend) u.onend({ utterance: u }); } catch(e){} }, 0); return; }
           const id = 'v' + (++n); pend[id] = u; poli.speaking = true;
-          try { P.hablarCon(tx, Number(u.rate) || 1, Number(u.pitch) || 1, id); } catch(e){ window.vozNativaFin(id, 'error'); }
+          // Desde la versión 10 de Android, la app sabe el idioma de cada frase (voz inglesa para el inglés)
+          try { if(P.hablarEn) P.hablarEn(tx, Number(u.rate) || 1, Number(u.pitch) || 1, id, String(u.lang || 'es-ES')); else P.hablarCon(tx, Number(u.rate) || 1, Number(u.pitch) || 1, id); } catch(e){ window.vozNativaFin(id, 'error'); }
         },
         cancel(){
           const l = Object.keys(pend).map(id => pend[id]); Object.keys(pend).forEach(id => delete pend[id]); poli.speaking = false;
@@ -2189,7 +2190,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
         try { if(r.onend) r.onend(); } catch(e){}
       };
       class DictadoApp { constructor(){ this.lang = 'es-ES'; this.continuous = false; this.interimResults = false; this.onresult = this.onend = this.onerror = this.onstart = null; }
-        start(){ actual = this; try { P.dictar(); } catch(e){ window.dictadoNativo('', 'sin-dictado'); } }
+        start(){ actual = this; try { if(P.dictarEn) P.dictarEn(String(this.lang || 'es-ES')); else P.dictar(); } catch(e){ window.dictadoNativo('', 'sin-dictado'); } }
         stop(){} abort(){ if(actual === this){ actual = null; try { if(this.onend) this.onend(); } catch(e){} } }
         addEventListener(tipo, f){ this['on' + tipo] = f; } }
       definir(window, 'SpeechRecognition', DictadoApp);
@@ -2776,7 +2777,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V15.30';
+  const APP_VERSION = 'V15.31';
   // ===== Pantalla de inicio: versión, sonido corto y salida (5-11-2026) =====
   (function(){
     const sp = document.getElementById('inicioSplash'); if(!sp) return;
@@ -7513,7 +7514,7 @@ lo que haces cada día es lo que vas a ser.`;
     const filas = [
       ['Versión de la web', APP_VERSION],
       ['Origen', origen],
-      ['Versión de la app Android', A ? (() => { try { return String(typeof A.version === 'function' ? A.version() : A.version); } catch(e){ return '?'; } })() : '—'],
+      ['Versión de la app Android', A ? (() => { try { return String(typeof A.version === 'function' ? A.version() : A.version) + (A.versionCodigo ? ' · número ' + A.versionCodigo() : ' · anterior a la 10 (7, 8 o 9)'); } catch(e){ return '?'; } })() : '—'],
       ['Voz del móvil por la app (hablarCon)', A ? (A.hablarCon ? 'sí' : 'no') : '—'],
       ['Modo Play (sin precios antes)', MODO_PLAY ? 'sí' : 'no'],
       ['Idioma de la app / del móvil', IDIOMA + ' / ' + (navigator.language || '?')],
@@ -13374,4 +13375,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Meta" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V15.30 · App Amable Meta · 2026-11-11 00:43==== -->
+<!-- ==== Fin del index V15.31 · App Amable Meta · 2026-11-11 00:52==== -->
