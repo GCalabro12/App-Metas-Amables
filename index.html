@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V15.06 · App Amable Meta · 2026-11-10 14:55==== -->
+<!-- ==== index V15.07 · App Amable Meta · 2026-11-10 14:57==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1501,7 +1501,7 @@ body:has(#app[data-vista="perfil"])::before{opacity:.22}
 .av-detalle p{margin:8px 0 6px;font-size:14px;line-height:1.45}
 .av-lista{margin:0 0 8px;padding:0 0 0 22px;font-size:14px;line-height:1.45}.av-lista li{margin:0 0 6px}
 .av-anima{margin:8px 0 0;font-size:13px;line-height:1.4;color:#5E6B55}
-.tabbar button[data-tab="plan"]{color:#8A6A00}
+.tabbar button[data-tab="plan"]{color:#8A6A00;font-size:11px;line-height:1.1;text-align:center;white-space:normal}
 .tabbar button[data-tab="plan"] svg{background:#FFD23F;border-radius:50%;padding:4px;box-sizing:content-box;color:#5A4300;box-shadow:0 0 0 3px rgba(255,210,63,.35)}
 .insta-pie{display:flex;justify-content:center;margin:18px 0 4px}.insta-pie .cab-insta{margin:0}
 .pf-franja{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 20px;background:#fff;color:#2B2B2B;font:800 15px Karla,sans-serif;cursor:pointer;box-shadow:0 1px 6px rgba(0,0,0,.08);position:relative;z-index:2}
@@ -2681,7 +2681,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V15.06';
+  const APP_VERSION = 'V15.07';
   // ===== Pantalla de inicio: versión, sonido corto y salida (5-11-2026) =====
   (function(){
     const sp = document.getElementById('inicioSplash'); if(!sp) return;
@@ -12123,7 +12123,7 @@ lo que haces cada día es lo que vas a ser.`;
     // menos en el arranque, el formulario de la meta, la bienvenida y la encuesta
     const sinBarra = ['loading', 'pick', 'formMeta', 'bienvenidaAlta', 'encuesta', 'sinoportunidades'];
     const v = state.view;
-    const tab = (v === 'planes' && !tienePlan('guias')) ? 'plan' : (v === 'viaje' || state.desdeViaje) ? 'viaje'
+    const tab = v === 'planes' ? 'plan' : (v === 'viaje' || state.desdeViaje) ? 'viaje'
       : (v === 'progreso' || v === 'historial') ? 'progreso'
       : (v === 'utilidades' || v === 'frases' || v === 'habla' || v === 'musica' || v === 'novedades' || (v === 'panel' && state.panelSub === 's5')) ? 'descubre'
       : (v === 'panel' || v === 'practicaSemanal' || v === 'calendarioPracticas' || v === 'practicas' || v === 'checkin' || v === 'contrato' || v === 'posit' || v === 'carta' || v === 'sesionesCal') ? 'inicio' : 'otra';
@@ -12137,9 +12137,11 @@ lo que haces cada día es lo que vas a ser.`;
       descubre: '<circle cx="12" cy="12" r="8.5"/><path d="m15.5 8.5-2 5-5 2 2-5z"/>'
     };
     // Plan Libre (10-11-2026, Gustavo): en el centro, «Plan» en amarillo, que lleva a la descripción de los planes de pago
-    ic.plan = '<path d="M5 9h14v11H5z"/><path d="M3.5 6.5h17V9h-17z"/><path d="M12 6.5V20"/><path d="M12 6.5c-1.5-3-5-3-5-.8 0 1.4 2.6.8 5 .8 2.4 0 5 .6 5-.8 0-2.2-3.5-2.2-5 .8"/>';
-    const nombres = tienePlan('guias') ? { inicio: 'Inicio', viaje: 'Viaje', progreso: 'Progreso', descubre: 'Utilidades' }
-      : { inicio: 'Inicio', viaje: 'Viaje', plan: 'Plan', progreso: 'Progreso', descubre: 'Utilidades' };
+    // «Mejora tu plan» (10-11-2026, Gustavo): corona amarilla en el centro para quien aún no tiene el plan más completo
+    // (y para el moderador, para que lo vea); lleva a los planes
+    ic.plan = '<path d="M3.5 8.5 8 12.5 12 5.5l4 7 4.5-4-2 10.5h-13z"/><path d="M6 21h12"/>';
+    const nombres = (!tienePlan('sesiones') || soyModerador()) ? { inicio: 'Inicio', viaje: 'Viaje', plan: 'Mejora tu plan', progreso: 'Progreso', descubre: 'Utilidades' }
+      : { inicio: 'Inicio', viaje: 'Viaje', progreso: 'Progreso', descubre: 'Utilidades' };
     if(oculto('util')) delete nombres.descubre;   // «Mostrar» sin Utilidades
     const nav = document.createElement('nav'); nav.className = 'tabbar'; nav.setAttribute('aria-label', 'Secciones');
     nav.innerHTML = Object.keys(nombres).map(k => '<button type="button" data-tab="' + k + '" class="' + (k === tab ? 'activa' : '') + '"' + (k === tab ? ' aria-current="page"' : '') + '><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + ic[k] + '</svg><span>' + nombres[k] + '</span></button>').join('');
@@ -13186,4 +13188,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Meta" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V15.06 · App Amable Meta · 2026-11-10 14:55==== -->
+<!-- ==== Fin del index V15.07 · App Amable Meta · 2026-11-10 14:57==== -->
