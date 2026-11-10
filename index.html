@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V15.28 · App Amable Meta · 2026-11-11 00:40==== -->
+<!-- ==== index V15.29 · App Amable Meta · 2026-11-11 00:41==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2776,7 +2776,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V15.28';
+  const APP_VERSION = 'V15.29';
   // ===== Pantalla de inicio: versión, sonido corto y salida (5-11-2026) =====
   (function(){
     const sp = document.getElementById('inicioSplash'); if(!sp) return;
@@ -5852,7 +5852,6 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     h += `<button type="button" class="pf-btn pf-actualizar" id="pfActualizar">${p.cargando ? '<i data-ico=espera></i>Actualizando…' : '<i data-ico=ciclo></i>Actualizar'}</button>`;
     h += `<button type="button" class="link-quiet" id="pfTelegram" style="display:block;margin:-12px auto 20px;font-size:13.5px"><i data-ico=enviar></i>Mandarme ahora el resumen a Telegram y WhatsApp</button>`;
     app.appendChild(el(h));
-    try { app.appendChild(tarjetaDiagAdmin()); } catch(e){}   // datos de esta app y prueba de voz
     const hecho = async (b, cuerpo, quitar) => {
       b.disabled = true; b.textContent = '…';
       try { await api('/panel/hecho', cuerpo); quitar(); avisoBreve('Hecho ✓'); render(); }
@@ -7504,7 +7503,7 @@ lo que haces cada día es lo que vas a ser.`;
     app.appendChild(caja);
   }
   // «Datos para el administrador» (11-11-2026, Gustavo): de dónde viene esta app y cómo está la voz, para saber qué falla.
-  // Sale al final de Ajustes y al final del Panel de control (solo moderadores)
+  // Sale al final de Ajustes (solo moderadores)
   function tarjetaDiagAdmin(){
     const A = window.AmableMetaAndroid || null, NAV = navigator['user' + 'Agent'] || '';
     const standalone = (() => { try { return matchMedia('(display-mode: standalone)').matches || navigator.standalone === true; } catch(e){ return false; } })();
@@ -13374,4 +13373,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Meta" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V15.28 · App Amable Meta · 2026-11-11 00:40==== -->
+<!-- ==== Fin del index V15.29 · App Amable Meta · 2026-11-11 00:41==== -->
