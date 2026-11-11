@@ -59,6 +59,9 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .ico-sim{width:clamp(34px,7vw,44px);height:auto;flex:none}
 /* Muestra del panel final en la portada */
 .muestra{display:flex;flex-direction:column;gap:10px}
+/* Segundo recuadro dentro de un paso (la meta en el 4, la palabra del año en el 3) */
+.sub-card{border:1.5px solid var(--line);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:12px;background:var(--bg)}
+.ideas{display:flex;flex-direction:column;gap:6px}
 .dim-linea{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-weight:600}
 .dim-tag{background:var(--c,var(--accent));color:#fff;border-radius:999px;padding:4px 14px;font-weight:700}
 .duracion{font-weight:700;font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent2);background:var(--chip);border-radius:999px;padding:6px 14px;align-self:flex-start}
@@ -210,10 +213,14 @@ summary{cursor:pointer;font-weight:700;color:var(--accent2)}
     <h2 tabindex="-1">2 · El precio de no cambiar</h2>
     <p>Elige la parte de tu vida que más te pesa dejar como está. Te proponemos la que puntuaste más baja, pero decides tú.</p>
     <div class="dimsel" id="dim2" role="group" aria-label="Parte de tu vida"></div>
-    <p id="precioPregunta"><b></b></p>
-    <div class="chips" id="costes" role="group" aria-label="Lo que te costaría"></div>
-    <label class="campo">Escríbelo con tus palabras <span class="soft">Opcional</span>
-      <textarea id="precio" maxlength="1500" placeholder="Si nada cambia, dentro de un año…"></textarea></label>
+    <div class="sub-card">
+      <p id="precioPregunta"><b></b></p>
+      <div class="chips" id="costes" role="group" aria-label="Lo que te costaría"></div>
+    </div>
+    <div class="sub-card">
+      <label class="campo">Escríbelo con tus palabras <span class="soft">Opcional</span>
+        <textarea id="precio" maxlength="1500" placeholder="Si nada cambia, dentro de un año…"></textarea></label>
+    </div>
     <p class="soft small">No es para asustarte. Es para que veas con claridad lo que está en juego.</p>
     <div class="nav"><button class="btn" data-sig>Siguiente</button><button class="btn ghost" data-atras>Atrás</button></div>
   </section>
@@ -226,9 +233,11 @@ summary{cursor:pointer;font-weight:700;color:var(--accent2)}
     <label class="campo">Tu carta
       <textarea id="carta" class="carta" maxlength="6000" placeholder="Hoy es 31 de diciembre de 2027 y quiero contarte…"></textarea></label>
     <p class="soft small">Tu carta no se guarda en ninguna base de datos: solo sale en tu panel y, si lo pides, en tu correo.</p>
-    <label class="campo">Tu palabra del año <span class="soft">Una palabra que resuma cómo quieres vivir 2027</span>
-      <input type="text" id="palabra" maxlength="40" placeholder="Por ejemplo: Calma"></label>
-    <div class="chips" id="palabras"></div>
+    <div class="sub-card">
+      <label class="campo">Tu palabra del año <span class="soft">Opcional. Una palabra que resuma cómo quieres vivir 2027</span>
+        <input type="text" id="palabra" maxlength="40" placeholder="Por ejemplo: Calma"></label>
+      <div class="chips" id="palabras"></div>
+    </div>
     <div class="nav"><button class="btn" data-sig>Siguiente</button><button class="btn ghost" data-atras>Atrás</button></div>
   </section>
 
@@ -245,10 +254,12 @@ summary{cursor:pointer;font-weight:700;color:var(--accent2)}
         <div id="testCaja"></div>
       </details>
     </div>
-    <div class="box"><h3>Ideas para empezar</h3><div class="chips" id="ideas"></div></div>
-    <label class="campo">Mi meta para 2027 <span class="soft">En una frase, en positivo y que dependa de ti</span>
-      <input type="text" id="meta" maxlength="300" placeholder="Por ejemplo: Dormir mejor y tener energía por las tardes"></label>
-    <p class="estado mal" id="metaErr" hidden>Escribe tu meta en una frase para seguir.</p>
+    <div class="sub-card">
+      <label class="campo">Mi meta para 2027 <span class="soft">En una frase, en positivo y que dependa de ti</span>
+        <input type="text" id="meta" maxlength="300" placeholder="Por ejemplo: Dormir mejor y tener energía por las tardes"></label>
+      <div class="ideas"><p class="soft small">Ideas para empezar:</p><div class="chips" id="ideas"></div></div>
+      <p class="estado mal" id="metaErr" hidden>Escribe tu meta en una frase para seguir.</p>
+    </div>
     <div class="nav"><button class="btn" data-sig>Siguiente</button><button class="btn ghost" data-atras>Atrás</button></div>
   </section>
 
@@ -306,7 +317,7 @@ summary{cursor:pointer;font-weight:700;color:var(--accent2)}
 
 <script>
 // Versión de la página: subirla en cada publicación (sale arriba a la derecha)
-const VERSION_PAGINA = 'v1.17';
+const VERSION_PAGINA = 'v1.18';
 document.getElementById('version').textContent = VERSION_PAGINA;
 const APIS = ['https://metas-amables-api.proud-hill-016b.workers.dev', 'https://rigid-thrush-3387.gcalabro12.deno.net'];
 const CLAVE = 'simulador2027';
