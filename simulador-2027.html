@@ -363,12 +363,16 @@ summary{cursor:pointer;font-weight:700;color:var(--accent2)}
 
 <script>
 // Versión de la página: subirla en cada publicación (sale arriba a la derecha)
-const VERSION_PAGINA = 'v1.28';
+const VERSION_PAGINA = 'v1.29';
 document.getElementById('version').textContent = VERSION_PAGINA;
-// Charla de la que viene la gente: sale al principio y al final del panel hasta el día de la charla (después se oculta)
-const CHARLA = { titulo: 'Tu 2027 empieza por una meta', subtitulo: 'Cómo conseguir tus metas sin agobiarte',
-  fecha: '2026-11-28', cuando: 'Sábado 28 de noviembre de 2026 · 19:00 en España · 13:00 en Colombia',
-  zoom: '' };   // enlace de Zoom: cuando se pegue aquí, sale el botón «Entrar por Zoom»
+// Charlas: cada una tiene su enlace, simulador-2027.html?charla=28-11-2026. Con ese enlace sale la charla al principio
+// y al final del panel (hasta el día de la charla), su fecha va entre paréntesis en el título y el contacto se guarda con ella.
+const CHARLAS = {
+  '28-11-2026': { titulo: 'Tu 2027 empieza por una meta', subtitulo: 'Cómo conseguir tus metas sin agobiarte',
+    fecha: '2026-11-28', cuando: 'Sábado 28 de noviembre de 2026 · 19:00 en España · 13:00 en Colombia',
+    zoom: '' }   // enlace de Zoom: cuando se pegue aquí, sale el botón «Entrar por Zoom»
+};
+let CHARLA = null;   // la de esta persona (se elige al final del script, con el enlace o con lo guardado)
 function charlaHtml(){ if(!CHARLA || new Date() > new Date(CHARLA.fecha + 'T23:59:59')) return '';
   return '<span class="ceja">Charla gratuita</span><b>' + CHARLA.titulo + '</b><span>' + CHARLA.subtitulo + '</span><span class="soft small">' + CHARLA.cuando + ' · Por Zoom</span>'
     + (CHARLA.zoom ? '<a class="btn ghost" style="align-self:flex-start;margin-top:6px;padding:8px 16px" href="' + CHARLA.zoom + '" target="_blank" rel="noopener">Entrar por Zoom</a>' : ''); }
@@ -755,7 +759,7 @@ $('form').addEventListener('submit', async ev => {
   try {
     const { status, j } = await llamar({ nombre, email, telefono, pais, acepta: true, aceptaInfo: $('f-info').checked, web: $('f-web').value,
       rueda: S.rueda, dimension: dim, test: S.test, costes: S.costes, precio: S.precio, carta: S.carta, palabra: S.palabra,
-      meta: S.meta, practica: S.practica, momento: S.momento, senal: S.senal });
+      meta: S.meta, practica: S.practica, momento: S.momento, senal: S.senal, charla: S.charla || '' });
     if(status === 200 && j.ok){
       btn.disabled = false; btn.textContent = 'Ver y recibir mi panel';
       if(j.enviado) abrirPanel('Listo. Te lo hemos enviado a ' + email + '. Si no lo ves en unos minutos, mira en Promociones o en Spam.', true);
@@ -771,7 +775,11 @@ $('form').addEventListener('submit', async ev => {
   btn.disabled = false; btn.textContent = 'Ver y recibir mi panel';
 });
 
-{ const c0 = $('charla0'), h = charlaHtml(); if(h){ c0.innerHTML = h; c0.hidden = false; } }
+{ const cid = (new URLSearchParams(location.search).get('charla') || '').trim();
+  if(CHARLAS[cid] && S.charla !== cid){ S.charla = cid; guardar(); }
+  CHARLA = CHARLAS[S.charla] || null;
+  if(CHARLA) document.title = 'Simulador 2027 (' + S.charla + ') · Amable Meta';
+  const c0 = $('charla0'), h = charlaHtml(); if(h){ c0.innerHTML = h; c0.hidden = false; } }
 rueda($('ruedaMuestra'), 'mente', { cuerpo: 6, mente: 3, relaciones: 8, entorno: 5 }, false);
 mostrar(S.paso === 6 ? 6 : 0);
 </script>
