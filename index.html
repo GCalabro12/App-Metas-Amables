@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V15.33 · App Amable Meta · 2026-11-11 09:55==== -->
+<!-- ==== index V15.34 · App Amable Meta · 2026-11-11 09:58==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2778,7 +2778,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V15.33';
+  const APP_VERSION = 'V15.34';
   // ===== Pantalla de inicio: versión, sonido corto y salida (5-11-2026) =====
   (function(){
     const sp = document.getElementById('inicioSplash'); if(!sp) return;
@@ -5848,7 +5848,8 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       + CUENTAS_PRUEBA.map(([cuenta, t]) => '<button type="button" class="mod-cuenta' + (state.me === cuenta ? ' on' : '') + '" data-cuenta="' + escapeAttr(cuenta) + '">' + t + '</button>').join('') + '</div>', false);
     // La versión de la web y de la app, a la vista en el título, sin tener que desplegar (11-11-2026, Gustavo)
     const verAdmin = (() => { try { const A = window.AmableMetaAndroid; return 'web ' + APP_VERSION + (A ? ' · app Android ' + (A.versionCodigo ? A.versionCodigo() : '7, 8 o 9') + ' · ' + canalAndroid() : ' · navegador'); } catch(e){ return 'web ' + APP_VERSION; } })();
-    h += plegable('diag', '<i data-ico=llave></i>Datos para el administrador<small class="pf-diag-ver">' + verAdmin + '</small>', '<div id="pfDiagHueco"></div>');
+    // «Datos de la versión», lo primero del panel (11-11-2026, Gustavo)
+    h = plegable('diag', '<i data-ico=llave></i>Datos de la versión<small class="pf-diag-ver">' + verAdmin + '</small>', '<div id="pfDiagHueco"></div>') + h;
     // Mapa de la app (flujo de usuario): página privada de Gustavo en claude.ai; copia en «Documentos y sesiones/Mapa de Amable Vision.html»
     h += '<a class="card pf-pantalla" href="' + MAPA_APP_URL + '" target="_blank" rel="noopener" style="text-decoration:none;align-items:center;margin-top:14px">' + mini('#F6F8F3', '#4E7F2A', '<i data-ico=mapa></i>')
       + '<span class="pf-pantalla-tx"><b>Mapa de la app (flujo de usuario)</b><small>Todos los recorridos de la persona, pantalla a pantalla, en un esquema.</small><em>Abrir el mapa ↗</em></span></a>';
@@ -7508,7 +7509,7 @@ lo que haces cada día es lo que vas a ser.`;
     caja.querySelector('#ayudaSoporte').onclick = () => { window.open('https://wa.me/34658825799?text=' + encodeURIComponent('Hola, soy ' + (state.me || '') + ' y necesito ayuda con la app Amable Meta'), '_blank'); };
     app.appendChild(caja);
   }
-  // «Datos para el administrador» (11-11-2026, Gustavo): de dónde viene esta app y cómo está la voz, para saber qué falla.
+  // «Datos de la versión» (11-11-2026, Gustavo; antes «Datos para el administrador»): de dónde viene esta app y cómo está la voz, para saber qué falla.
   // Sale plegado en el Panel de control (solo moderadores)
   // Última versión de la app de Android publicada para TODOS (producción). Las de número mayor solo están en la prueba interna.
   // OJO: cambiar este número cuando se publique una versión nueva en producción.
@@ -7534,7 +7535,7 @@ lo que haces cada día es lo que vas a ser.`;
       ['Navegador', (NAV.match(/(Chrome|CriOS|Firefox|Safari|Edg)\/[\d.]+/) || ['?'])[0] + (/; wv\)/.test(NAV) ? ' (WebView)' : '')],
       ['Sistema', (NAV.match(/Android [\d.]+|iPhone OS [\d_]+|Windows NT [\d.]+|Mac OS X [\d_]+/) || ['?'])[0]]
     ];
-    const diag = el('<div class="card diag-admin"><p class="diag-tit"><i data-ico=llave></i>Datos para el administrador</p><div class="diag-filas">'
+    const diag = el('<div class="card diag-admin"><p class="diag-tit"><i data-ico=llave></i>Datos de la versión</p><div class="diag-filas">'
       + filas.map(f => '<p><span>' + f[0] + '</span><b>' + escapeAttr(f[1]) + '</b></p>').join('')
       + '<p><span>Voces del móvil</span><b class="diag-voces">…</b></p></div><button type="button" class="btn btn-no diag-probar" style="text-align:center">Probar voz y ver qué pasa</button><p class="diag-res"></p></div>').firstElementChild;
     const pintaVoces = () => { try { const vs = window.speechSynthesis ? (window.speechSynthesis.getVoices() || []) : null; diag.querySelector('.diag-voces').textContent = !vs ? 'no hay voz en este navegador' : (vs.length + ' (en español: ' + vs.filter(v => /^es/i.test(v.lang)).length + ', en inglés: ' + vs.filter(v => /^en/i.test(v.lang)).length + ')' + (APP_ANDROID ? ' · en la app la voz la pone Android' : '')); } catch(e){ diag.querySelector('.diag-voces').textContent = 'error: ' + e.message; } };
@@ -13390,4 +13391,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Meta" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V15.33 · App Amable Meta · 2026-11-11 09:55==== -->
+<!-- ==== Fin del index V15.34 · App Amable Meta · 2026-11-11 09:58==== -->
