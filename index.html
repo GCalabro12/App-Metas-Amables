@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V15.44 · App Amable Meta · 2026-11-11 22:24==== -->
+<!-- ==== index V15.45 · App Amable Meta · 2026-11-11 22:33==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1283,7 +1283,10 @@ textarea.ms-nombre-in:focus{outline:none;border-color:#C9942D;box-shadow:0 0 0 3
 .riego-capa .rp-sencillas{width:min(420px,100%);margin:16px auto 0;padding:16px 14px;box-sizing:border-box;border:2px solid rgba(169,50,38,.35);border-radius:20px;background:rgba(255,255,255,.92);text-align:left}
 .ms-reg{margin-top:10px}.ms-reg-tit{margin:18px 0 6px;padding-top:14px;border-top:1px solid rgba(0,0,0,.08)}.ms-semana{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px;margin-top:8px}
 .ms-dia{width:100%;max-width:46px;aspect-ratio:1;height:auto;border:2px solid #d8d3c6;border-radius:50%;background:#FCFCF9;font-family:Karla,sans-serif;color:var(--ink);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0}
-.ms-dia span{font-size:9.5px;font-weight:800;opacity:.8;line-height:1}.ms-dia span.ms-nveces{color:#FFE066;opacity:1;font-size:11px}
+/* 11-11-2026: en la app de Android (WebView 156, Android 16) los días y los iconos del registro dejaban de pintarse. Lo que tenían en común
+   era «opacity» por debajo de 1, así que aquí el tono suave se da con el color (y los iconos del registro van sin opacity). */
+.ms-dia span{font-size:9.5px;font-weight:800;line-height:1;color:color-mix(in srgb,currentColor 80%,transparent)}
+.riego-capa .mi-tx,.riego-capa svg{opacity:1}.ms-dia span.ms-nveces{color:#FFE066;opacity:1;font-size:11px}
 /* Varias veces el mismo día: «2✓» pequeño en amarillo encima del número */
 .ms-dia-m[data-veces]::before{content:attr(data-veces) '✓';position:absolute;top:2px;left:0;right:0;font-size:9.5px;font-weight:800;line-height:1;text-align:center;color:#FFE066}.ms-dia b{font-size:14px;line-height:1.1}
 .riego-capa .rp-semana{width:min(420px,100%);margin:16px auto 0;box-sizing:border-box;border:2px solid rgba(169,50,38,.35);border-radius:20px;background:rgba(255,255,255,.92);text-align:left}
@@ -2789,7 +2792,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V15.44';
+  const APP_VERSION = 'V15.45';
   // ===== Pantalla de inicio: versión, sonido corto y salida (5-11-2026) =====
   (function(){
     const sp = document.getElementById('inicioSplash'); if(!sp) return;
@@ -11148,7 +11151,7 @@ lo que haces cada día es lo que vas a ser.`;
       z.querySelector('audio').addEventListener('play', () => { try { localStorage.setItem('voz_oida_' + state.me + '_' + isoLocal(pasado), '1'); } catch(e){} });
       if(state.irVoz){ state.irVoz = false; setTimeout(() => card.scrollIntoView({ behavior: 'smooth', block: 'center' }), 80); }
     }).catch(() => {});
-    let rec = null, trozos = [], reloj = null, inicio = 0, grabado = null, flujo = null;
+    let rec = null, trozos = [], reloj = null, inicio = 0, grabado = null, flujo = null, ctxVoz = null;
     const boton = (txt, cls, color) => '<button type="button" class="panel-link-btn ' + cls + '" style="width:100%;border:none;cursor:pointer;background:' + color + ';margin:6px 0 0">' + txt + '</button>';
     const pintar = (estado, url) => {
       if(estado === 'inicio') zona.innerHTML = boton('<i data-ico=voz></i>Grabar mi nota', 'voz-rec', '#7B5FB8');
@@ -11156,8 +11159,16 @@ lo que haces cada día es lo que vas a ser.`;
       else if(estado === 'listo') zona.innerHTML = audioHTML(url) + boton('✓ Guardar mi nota', 'voz-guardar', '#6B9362') + boton('↺ Volver a grabar', 'voz-rec', '#9A9A9A');
       else if(estado === 'guardado') zona.innerHTML = boton('✓ Grabación guardada', 'voz-ver', '#7B5FB8') + '<div class="voz-detalle" hidden><div class="voz-cerrado">' + candadoSVG() + '<div><b>Nota grabada y cerrada</b><span>Se abrirá el lunes ' + proximo.getDate() + ' de ' + monthNamesEs[proximo.getMonth()] + '.</span></div></div>'
         // Solo el administrador (11-11-2026, Gustavo): puede abrir ya la nota grabada, debajo del candado
-        + (soyModerador() && url ? '<button type="button" class="link-quiet voz-admin-abrir">Abrir (solo admin app)</button><div class="voz-admin-audio" hidden>' + audioHTML(url) + '</div>' : '') + '</div>';
-      const ab = zona.querySelector('.voz-admin-abrir'); if(ab) ab.onclick = () => { const d = zona.querySelector('.voz-admin-audio'); d.hidden = !d.hidden; if(d.hidden){ try { d.querySelector('audio').pause(); } catch(e){} } };
+        + (soyModerador() && url ? '<button type="button" class="link-quiet voz-admin-abrir">Abrir (solo admin app)</button><div class="voz-admin-audio" hidden>' + audioHTML(url) + '<button type="button" class="link-quiet voz-admin-abrir voz-admin-otra">Borrar y regrabar (solo admin app)</button></div>' : '') + '</div>';
+      const ab = zona.querySelector('.voz-admin-abrir:not(.voz-admin-otra)'); if(ab) ab.onclick = () => { const d = zona.querySelector('.voz-admin-audio'); d.hidden = !d.hidden; if(d.hidden){ try { d.querySelector('audio').pause(); } catch(e){} } };
+      // Solo el administrador (11-11-2026, Gustavo): borra la nota de esta semana (también del servidor) y deja grabar y guardar otra
+      const otra = zona.querySelector('.voz-admin-otra'); if(otra) otra.onclick = async () => {
+        if(!confirm('¿Borrar esta nota de voz y grabar otra? La nota borrada no se puede recuperar.')) return;
+        try { zona.querySelector('audio').pause(); } catch(e){}
+        otra.disabled = true; otra.textContent = 'Borrando…';
+        try { await api('/voz-semana-borrar', { lunes: isoLocal(lunes) }); rec = null; grabado = null; vozPendienteCache = null; pintar('inicio'); avisoBreve('Nota borrada. Ya puedes grabar otra.'); }
+        catch(e){ otra.disabled = false; otra.textContent = 'Borrar y regrabar (solo admin app)'; avisoBreve(mensajeError(e, 'No se pudo borrar la nota. Revisa tu conexión.')); }
+      };
       const r = zona.querySelector('.voz-rec'); if(r) r.onclick = grabar;
       const p = zona.querySelector('.voz-parar'); if(p) p.onclick = parar;
       const g = zona.querySelector('.voz-guardar'); if(g) g.onclick = guardar;
@@ -11166,14 +11177,31 @@ lo que haces cada día es lo que vas a ser.`;
     const grabar = async () => {
       try {
         // Calidad (9-11-2026): sin el filtro de ruido ni el anti-eco del móvil, que dejaban la voz apagada y metálica, y a 96 kbps
-        try { flujo = await navigator.mediaDevices.getUserMedia({ audio: { channelCount: 1, echoCancellation: false, noiseSuppression: false, autoGainControl: true } }); }
+        // 11-11-2026 (Gustavo: «no suena muy bien; tendría que sonar como una nota de WhatsApp»): sin el filtro de ruido el móvil graba
+        // con el micrófono «de vídeo» (voz lejana y con soplido). Ahora: filtro de ruido puesto, anti-eco quitado (era el que la dejaba metálica)
+        try { flujo = await navigator.mediaDevices.getUserMedia({ audio: { channelCount: 1, echoCancellation: false, noiseSuppression: true, autoGainControl: true } }); }
         catch(err){ flujo = await navigator.mediaDevices.getUserMedia({ audio: true }); }
+        // Y, como hacen las apps de mensajes, se quita el zumbido grave y se iguala el volumen (lo flojo sube, lo fuerte no satura).
+        // Si el móvil no deja, se graba tal cual.
+        let paraGrabar = flujo;
+        try {
+          const AC = window.AudioContext || window.webkitAudioContext;
+          ctxVoz = new AC();
+          if(ctxVoz.state === 'suspended') await ctxVoz.resume();
+          const src = ctxVoz.createMediaStreamSource(flujo), grave = ctxVoz.createBiquadFilter(), comp = ctxVoz.createDynamicsCompressor(), sube = ctxVoz.createGain(), dest = ctxVoz.createMediaStreamDestination();
+          try { dest.channelCount = 1; } catch(err){}
+          grave.type = 'highpass'; grave.frequency.value = 90;
+          comp.threshold.value = -24; comp.knee.value = 24; comp.ratio.value = 3; comp.attack.value = 0.005; comp.release.value = 0.25;
+          sube.gain.value = 1.4;
+          src.connect(grave); grave.connect(comp); comp.connect(sube); sube.connect(dest);
+          if(ctxVoz.state === 'running' && dest.stream.getAudioTracks().length) paraGrabar = dest.stream;
+        } catch(err){ paraGrabar = flujo; }
         const tipo = ['audio/webm;codecs=opus', 'audio/webm', 'audio/mp4'].find(t => window.MediaRecorder && MediaRecorder.isTypeSupported(t)) || '';
         const opcRec = { audioBitsPerSecond: 96000 }; if(tipo) opcRec.mimeType = tipo;
-        try { rec = new MediaRecorder(flujo, opcRec); } catch(err){ rec = new MediaRecorder(flujo, tipo ? { mimeType: tipo } : undefined); }
+        try { rec = new MediaRecorder(paraGrabar, opcRec); } catch(err){ rec = new MediaRecorder(paraGrabar, tipo ? { mimeType: tipo } : undefined); }
         trozos = [];
         rec.ondataavailable = e => { if(e.data && e.data.size) trozos.push(e.data); };
-        rec.onstop = () => { flujo.getTracks().forEach(t => t.stop()); clearInterval(reloj); grabado = new Blob(trozos, { type: rec.mimeType || tipo || 'audio/webm' }); pintar('listo', URL.createObjectURL(grabado)); };
+        rec.onstop = () => { flujo.getTracks().forEach(t => t.stop()); try { if(ctxVoz) ctxVoz.close(); } catch(err){} ctxVoz = null; clearInterval(reloj); grabado = new Blob(trozos, { type: rec.mimeType || tipo || 'audio/webm' }); pintar('listo', URL.createObjectURL(grabado)); };
         rec.start(); inicio = Date.now(); pintar('grabando');
         reloj = setInterval(() => { const s = Math.floor((Date.now() - inicio) / 1000), t = zona.querySelector('.voz-tiempo'); if(t) t.textContent = '● Grabando… ' + Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); if(s >= 120) parar(); }, 300);
       } catch(e){ avisoBreve('No puedo usar el micrófono. Revisa el permiso del micrófono en los ajustes del móvil.'); }
@@ -13476,4 +13504,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Meta" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V15.44 · App Amable Meta · 2026-11-11 22:24==== -->
+<!-- ==== Fin del index V15.45 · App Amable Meta · 2026-11-11 22:33==== -->
