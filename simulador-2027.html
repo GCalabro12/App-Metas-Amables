@@ -99,6 +99,12 @@ input[type=text],input[type=email],input[type=tel],textarea{font:inherit;font-we
 textarea{resize:vertical;min-height:96px}
 .carta{min-height:220px;font-family:var(--display);font-size:16px;line-height:1.6}
 .mic{align-self:flex-start;display:inline-flex;align-items:center;gap:8px;padding:8px 16px;font-size:15px}
+.campo-mic{display:flex;gap:8px;align-items:center}
+.campo-mic input{flex:1;min-width:0}
+.mic-mini{flex:none;width:46px;height:46px;border-radius:50%;border:1.5px solid var(--accent);background:transparent;color:var(--accent);display:grid;place-items:center;cursor:pointer}
+.mic-mini svg{width:20px;height:20px}
+.mic-mini.grabando{background:var(--accent);color:var(--on-accent)}
+.mic-mini:focus-visible{outline:3px solid var(--accent2);outline-offset:2px}
 .mic svg{width:18px;height:18px;flex:none}
 .mic.grabando{background:var(--accent);color:var(--on-accent)}
 .rango{display:grid;grid-template-columns:1fr auto;gap:2px 12px;align-items:center}
@@ -319,7 +325,7 @@ summary{cursor:pointer;font-weight:700;color:var(--accent2)}
 
 <script>
 // Versión de la página: subirla en cada publicación (sale arriba a la derecha)
-const VERSION_PAGINA = 'v1.19';
+const VERSION_PAGINA = 'v1.20';
 document.getElementById('version').textContent = VERSION_PAGINA;
 const APIS = ['https://metas-amables-api.proud-hill-016b.workers.dev', 'https://rigid-thrush-3387.gcalabro12.deno.net'];
 const CLAVE = 'simulador2027';
@@ -438,15 +444,26 @@ function microfono(id){
   // Brave y Firefox no dictan (Brave trae la función pero no la deja funcionar): en su lugar, una pista.
   // En Windows, la tecla Windows + H dicta en cualquier cuadro de texto, sea cual sea el navegador.
   const sistema = navigator.platform || '', esWindows = /Win/.test(sistema), esMovil = matchMedia('(pointer:coarse)').matches;
+  // En los cuadros de una línea el micrófono es un botón pequeño a la derecha; en los grandes, un botón con texto debajo
+  const corto = ta.tagName === 'INPUT';
   if(!Reco || navigator.brave){
+    if(corto) return;
     const p = document.createElement('p'); p.className = 'soft small';
     p.textContent = 'Para dictar con el micrófono, abre esta página en Chrome, Edge o Safari.'
       + (esMovil ? ' También puedes usar el micrófono del teclado.' : esWindows ? ' En Windows también puedes pulsar la tecla Windows + H y hablar.' : '');
     ta.closest('label').insertAdjacentElement('afterend', p); return;
   }
-  const b = document.createElement('button'); b.type = 'button'; b.className = 'btn ghost mic'; b.innerHTML = MIC + '<span>Dictar con el micrófono</span>';
-  ta.closest('label').insertAdjacentElement('afterend', b);
-  const aviso = document.createElement('p'); aviso.className = 'soft small'; aviso.setAttribute('role', 'status'); aviso.hidden = true; b.insertAdjacentElement('afterend', aviso);
+  const b = document.createElement('button'); b.type = 'button';
+  const aviso = document.createElement('p'); aviso.className = 'soft small'; aviso.setAttribute('role', 'status'); aviso.hidden = true;
+  if(corto){
+    b.className = 'mic-mini'; b.innerHTML = MIC; b.title = 'Dictar con el micrófono'; b.setAttribute('aria-label', 'Dictar con el micrófono');
+    const w = document.createElement('div'); w.className = 'campo-mic'; ta.parentNode.insertBefore(w, ta); w.append(ta, b);
+    ta.closest('label').insertAdjacentElement('afterend', aviso);
+  } else {
+    b.className = 'btn ghost mic'; b.innerHTML = MIC + '<span>Dictar con el micrófono</span>';
+    ta.closest('label').insertAdjacentElement('afterend', b); b.insertAdjacentElement('afterend', aviso);
+  }
+  const etiqueta = t => { const s = b.querySelector('span'); if(s) s.textContent = t; else b.title = t; };
   // El texto aparece mientras habla (resultados provisionales). Se escucha frase a frase y se vuelve a empezar
   // solo hasta que pulsa «parar»: así funciona igual en Chrome de escritorio, Android y Safari.
   const MSG = {
@@ -457,7 +474,7 @@ function microfono(id){
     'language-not-supported': 'Este navegador no dicta en español. Usa el micrófono del teclado del móvil.'
   };
   let r = null, activo = false, base = '', vueltas = 0;
-  const fin = txt => { activo = false; r = null; b.classList.remove('grabando'); b.querySelector('span').textContent = 'Dictar con el micrófono'; if(txt){ aviso.textContent = txt; aviso.hidden = false; } };
+  const fin = txt => { activo = false; r = null; b.classList.remove('grabando'); etiqueta('Dictar con el micrófono'); if(txt){ aviso.textContent = txt; aviso.hidden = false; } };
   const escuchar = () => {
     try { r = new Reco(); } catch(e){ return fin(MSG['service-not-allowed']); }
     base = ta.value; r.lang = 'es-ES'; r.continuous = false; r.interimResults = true;
@@ -469,7 +486,7 @@ function microfono(id){
   };
   b.onclick = () => {
     if(activo){ activo = false; try { r && r.stop(); } catch(e){} fin(); return; }
-    aviso.hidden = true; activo = true; vueltas = 0; b.classList.add('grabando'); b.querySelector('span').textContent = 'Escuchando… pulsa para parar';
+    aviso.hidden = true; activo = true; vueltas = 0; b.classList.add('grabando'); etiqueta('Escuchando… pulsa para parar');
     escuchar();
   };
 }
@@ -533,7 +550,7 @@ function paso4(){
   // Al elegir otra parte en los cuadros, se cierra la elección y queda la línea con la parte nueva
   dimChips($('dim4'), 'dimension', () => { pintaIdeas(); $('dim4Mas').hidden = true; $('cambiarDim').textContent = 'Cambiar'; }); pintaIdeas();
   $('cambiarDim').onclick = () => { const m = $('dim4Mas'); m.hidden = !m.hidden; $('cambiarDim').textContent = m.hidden ? 'Cambiar' : 'Cerrar'; };
-  enlazar('meta', 'meta'); $('meta').addEventListener('input', () => { $('metaErr').hidden = true; });
+  enlazar('meta', 'meta'); microfono('meta'); $('meta').addEventListener('input', () => { $('metaErr').hidden = true; });
   testInicio();
 }
 // Mini test dentro del paso 4
@@ -562,6 +579,7 @@ function paso5(){
   const dim = S.dimension || masBaja();
   colorPaso('p5', dim);
   enlazar('practica', 'practica'); enlazar('momento', 'momento'); enlazar('senal', 'senal');
+  ['practica', 'momento', 'senal'].forEach(microfono);
   rellenar($('practicas'), D[dim].prac, 'practica', 'practica');
   rellenar($('momentos'), MOMENTOS, 'momento', 'momento');
 }
