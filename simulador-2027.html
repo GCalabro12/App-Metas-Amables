@@ -296,7 +296,7 @@ summary{cursor:pointer;font-weight:700;color:var(--accent2)}
 
 <script>
 // Versión de la página: subirla en cada publicación (sale arriba a la derecha)
-const VERSION_PAGINA = 'v1.12';
+const VERSION_PAGINA = 'v1.13';
 document.getElementById('version').textContent = VERSION_PAGINA;
 const APIS = ['https://metas-amables-api.proud-hill-016b.workers.dev', 'https://rigid-thrush-3387.gcalabro12.deno.net'];
 const CLAVE = 'simulador2027';
@@ -411,7 +411,15 @@ const enlazar = (id, campo) => { const el = $(id), ini = INICIOS[campo] || ''; e
 const Reco = window.SpeechRecognition || window.webkitSpeechRecognition;
 const MIC = '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21M8.5 21h7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>';
 function microfono(id){
-  const ta = $(id); if(!Reco || ta.dataset.mic) return; ta.dataset.mic = '1';
+  const ta = $(id); if(ta.dataset.mic) return; ta.dataset.mic = '1';
+  // Brave y Firefox no dictan (Brave trae la función pero no la deja funcionar): en su lugar, una pista.
+  // En Windows, la tecla Windows + H dicta en cualquier cuadro de texto, sea cual sea el navegador.
+  const sistema = navigator.platform || '', esWindows = /Win/.test(sistema), esMovil = matchMedia('(pointer:coarse)').matches;
+  if(!Reco || navigator.brave){
+    const p = document.createElement('p'); p.className = 'soft small';
+    p.textContent = esMovil ? 'Para dictar en vez de escribir: usa el micrófono del teclado.' : esWindows ? 'Para dictar en vez de escribir: pulsa la tecla Windows + H y habla.' : 'Para dictar en vez de escribir, usa Chrome o Edge.';
+    ta.closest('label').insertAdjacentElement('afterend', p); return;
+  }
   const b = document.createElement('button'); b.type = 'button'; b.className = 'btn ghost mic'; b.innerHTML = MIC + '<span>Dictar con el micrófono</span>';
   ta.closest('label').insertAdjacentElement('afterend', b);
   const aviso = document.createElement('p'); aviso.className = 'soft small'; aviso.setAttribute('role', 'status'); aviso.hidden = true; b.insertAdjacentElement('afterend', aviso);
@@ -420,7 +428,7 @@ function microfono(id){
   const MSG = {
     'not-allowed': 'El navegador no deja usar el micrófono. Pulsa el candado de la barra de direcciones, permite el micrófono y vuelve a probar.',
     'service-not-allowed': 'Este navegador no permite dictar. Prueba en Chrome, o usa el micrófono del teclado del móvil.',
-    'network': 'Este navegador no puede dictar ahora. Usa el micrófono del teclado del móvil.',
+    'network': 'Este navegador no puede dictar ahora. ' + (esWindows && !esMovil ? 'Prueba con la tecla Windows + H.' : 'Usa el micrófono del teclado del móvil.'),
     'audio-capture': 'No encuentro ningún micrófono en este dispositivo.',
     'language-not-supported': 'Este navegador no dicta en español. Usa el micrófono del teclado del móvil.'
   };
