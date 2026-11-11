@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V15.38 · App Amable Meta · 2026-11-11 18:01==== -->
+<!-- ==== index V15.39 · App Amable Meta · 2026-11-11 18:27==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1543,12 +1543,17 @@ header.top.cab-fija{position:sticky;top:0;z-index:40;background:#fff;margin-top:
 .bajo-practi{display:flex;align-items:center;gap:10px;margin:-10px 0 0}
 .hablar-bajo{flex:0 0 104px;padding:4px 0;border:0;background:none;color:#fff;font:700 14px Karla,sans-serif;text-align:center;cursor:pointer}
 html.ocultar-practi .hablar-bajo{display:none}
-.como-funciona{display:flex;align-items:center;gap:8px;margin:0 auto;padding:4px 10px;border:0;border-radius:999px;background:none;color:#fff;font:700 14px Karla,sans-serif;cursor:pointer}
+.bajo-practi{flex-wrap:nowrap}.hablar-bajo,.como-funciona{white-space:nowrap}
+@media (max-width:360px){.hablar-bajo{flex-basis:84px}.bajo-practi{gap:4px}}
+.como-funciona{display:flex;align-items:center;gap:8px;margin:0 auto;padding:4px 6px;border:0;border-radius:999px;background:none;color:#fff;font:700 14px Karla,sans-serif;cursor:pointer}
 #bienvenidaPracti{position:relative}
 .bienvenida-x{position:absolute;top:8px;right:10px;width:32px;height:32px;border:0;border-radius:50%;background:none;color:#555;font-size:18px;line-height:1;cursor:pointer}
 .idioma-fila{position:relative;display:flex;justify-content:flex-end;margin:-4px 0 12px}
 .idioma-circ{display:inline-flex;align-items:center;gap:8px;padding:6px 14px 6px 6px;border:1.5px solid #DDD6C8;border-radius:999px;background:#fff;color:var(--ink);font:700 15px Karla,sans-serif;cursor:pointer}
 .idioma-circ b{font-size:12px;color:var(--ink-soft)}
+.idioma-fila.mp-idioma{flex:none;align-items:center;justify-content:flex-start;margin:-34px 0 8px;padding:0 2px;z-index:5}
+.idioma-fila.mp-idioma + .mp-viaje{margin-top:0}
+.idioma-fila.mp-idioma .idioma-lista{left:2px;right:auto;top:calc(100% + 4px)}
 .idioma-bandera{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:50%;background:#F1EEE7;font-size:19px;line-height:1;overflow:hidden}
 .idioma-lista{position:absolute;top:calc(100% + 6px);right:0;z-index:20;min-width:180px;background:#fff;border-radius:14px;box-shadow:0 8px 24px rgba(0,0,0,.18);padding:6px}
 .idioma-lista button{display:flex;align-items:center;gap:10px;width:100%;padding:8px 10px;border:0;border-radius:10px;background:none;color:var(--ink);font:700 15px Karla,sans-serif;cursor:pointer;text-align:left}
@@ -2783,7 +2788,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V15.38';
+  const APP_VERSION = 'V15.39';
   // ===== Pantalla de inicio: versión, sonido corto y salida (5-11-2026) =====
   (function(){
     const sp = document.getElementById('inicioSplash'); if(!sp) return;
@@ -5354,6 +5359,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
       </div>
     `;
     
+    try { panel.querySelector('.mp-cuerpo').prepend(filaIdioma('mp-idioma')); } catch(e){}   // el idioma, lo primero del menú
     overlay.appendChild(panel);
     overlay.onclick = (e) => { if(e.target === overlay){ state.menuOpen = false; render(); } };
     panel.querySelector('#miPlanBtn').onclick = () => {
@@ -6809,12 +6815,12 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     if(habla.voz){ try { const u0 = new SpeechSynthesisUtterance(' '); u0.volume = 0; window.speechSynthesis.speak(u0); } catch(e){} }
     app.querySelector('#hablaTexto').textContent = 'Déjame pensar…'; hablaBoca(false); hablaPensando(true);
     let r = {};
-    try { r = await api('/habla', { mensaje, historial: habla.historial.slice(-8), contexto: hablaContexto(), idioma: IDIOMA }); }
+    try { r = await api('/habla', { mensaje, historial: habla.historial.filter(m => !m.idi || m.idi === IDIOMA).slice(-8), contexto: hablaContexto(), idioma: IDIOMA }); }
     catch(e){ r = { respuesta: 'Uy, no me llega bien la conexión. Prueba otra vez en un momento.' }; }
     habla.esperando = false; hablaPensando(false);
     const respuesta = r.respuesta || 'Uy, no te he entendido bien. ¿Me lo cuentas de otra forma?';
     habla.quedan = Math.max(0, Math.min(habla.quedan - 1, typeof r.quedan === 'number' ? r.quedan : hablaMaxDia()));
-    habla.historial.push({ de: 'yo', texto: mensaje }, { de: 'practi', texto: respuesta });
+    habla.historial.push({ de: 'yo', texto: mensaje, idi: IDIOMA }, { de: 'practi', texto: respuesta, idi: IDIOMA });
     hablaGuardar();
     if(state.view !== 'habla') return;
     const q = app.querySelector('#hablaQuedan'); if(q) q.textContent = textoQuedan();
@@ -7559,17 +7565,21 @@ lo que haces cada día es lo que vas a ser.`;
     };
     return diag;
   }
-  function renderAjustesView(){
-    renderBackTopbar('Ajustes');
+  // Botón redondo del idioma con su desplegable: lo primero en Ajustes y en el menú «Perfil y ajustes» (11-11-2026, Gustavo)
+  function filaIdioma(clase){
     const IDIOMAS = [['es', '🇪🇸', 'Español'], ['en', '🇬🇧', 'English']];
     const idAct = IDIOMAS.find(x => x[0] === IDIOMA) || IDIOMAS[0];
-    const idFila = el('<div class="idioma-fila notranslate" translate="no"><button type="button" class="idioma-circ" aria-haspopup="listbox" aria-expanded="false"><span class="idioma-bandera">' + idAct[1] + '</span>' + idAct[2] + '<b>▾</b></button>'
+    const idFila = el('<div class="idioma-fila notranslate' + (clase ? ' ' + clase : '') + '" translate="no"><button type="button" class="idioma-circ" aria-haspopup="listbox" aria-expanded="false"><span class="idioma-bandera">' + idAct[1] + '</span>' + idAct[2] + '<b>▾</b></button>'
       + '<div class="idioma-lista" role="listbox" hidden>' + IDIOMAS.map(x => '<button type="button" role="option" data-idioma="' + x[0] + '"' + (x[0] === idAct[0] ? ' class="on" aria-selected="true"' : '') + '><span class="idioma-bandera">' + x[1] + '</span>' + x[2] + '</button>').join('')
       + (/translate\.goog$/.test(location.hostname) ? '<a class="volver-es" href="https://app.practicaintegral.club/">🇪🇸 Volver a la app en español (sin traducir)</a>' : '') + '</div></div>').firstElementChild;
     const idBtn = idFila.querySelector('.idioma-circ'), idLista = idFila.querySelector('.idioma-lista');
     idBtn.onclick = () => { idLista.hidden = !idLista.hidden; idBtn.setAttribute('aria-expanded', String(!idLista.hidden)); };
     idLista.querySelectorAll('[data-idioma]').forEach(b => b.onclick = () => { if(b.dataset.idioma === IDIOMA){ idLista.hidden = true; return; } cambiarIdioma(b.dataset.idioma); });
-    app.appendChild(idFila);
+    return idFila;
+  }
+  function renderAjustesView(){
+    renderBackTopbar('Ajustes');
+    app.appendChild(filaIdioma());
     // 🆘 Ayuda y soporte: email y WhatsApp con la app y la versión ya escritas (26-10-2026, igual en todas las apps)
     const cuerpoSoporte = 'Hola, os escribo por Amable Meta (' + APP_VERSION + '). Me pasa esto: ';
     const soporte = el('<div class="card soporte-card"><p class="soporte-tit">🆘 Ayuda y soporte</p><p class="soporte-tx">¿Algo no funciona o tienes una duda? Escríbenos y te ayudamos.</p>'
@@ -8575,7 +8585,7 @@ lo que haces cada día es lo que vas a ser.`;
       if(!state.panelSub){
         // Debajo de Prácti, «Hablar» (lleva a «Habla con Prácti»); debajo del bocadillo, «Cómo funciona la app» (11-11-2026, Gustavo)
         const filaCf = el('<div class="bajo-practi">' + (oculto('util') ? '' : '<button type="button" class="hablar-bajo">Hablar</button>')
-          + '<button type="button" class="como-funciona"><i data-ico=ayuda></i>Cómo funciona la app <b>›</b></button></div>').firstElementChild;
+          + '<button type="button" class="como-funciona"><i data-ico=ayuda></i>Cómo funciona la app</button></div>').firstElementChild;
         const cf = filaCf.querySelector('.como-funciona'), hb = filaCf.querySelector('.hablar-bajo');
         app.appendChild(filaCf);
         if(hb) hb.onclick = () => { state.hablaDesdeInicio = true; state.prevView = 'panel'; state.view = 'habla'; window.scrollTo(0, 0); render(); };
@@ -13421,4 +13431,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Meta" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V15.38 · App Amable Meta · 2026-11-11 18:01==== -->
+<!-- ==== Fin del index V15.39 · App Amable Meta · 2026-11-11 18:27==== -->
