@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V15.39 · App Amable Meta · 2026-11-11 18:27==== -->
+<!-- ==== index V15.40 · App Amable Meta · 2026-11-11 18:32==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2788,7 +2788,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V15.39';
+  const APP_VERSION = 'V15.40';
   // ===== Pantalla de inicio: versión, sonido corto y salida (5-11-2026) =====
   (function(){
     const sp = document.getElementById('inicioSplash'); if(!sp) return;
@@ -6696,6 +6696,14 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     catch(e){ habla.historial = []; habla.quedan = hablaMaxDia(); }
     habla.quedan = Math.min(habla.quedan == null ? habla.max : habla.quedan, habla.max);
   }
+  // Idioma de un mensaje de la conversación: el que se apuntó al guardarlo o, en los de antes, el que parece por sus palabras
+  function hablaIdiDe(m){
+    if(m && (m.idi === 'es' || m.idi === 'en')) return m.idi;
+    const t = ' ' + String((m && m.texto) || '').toLowerCase() + ' ', n = re => (t.match(re) || []).length;
+    const es = n(/[áéíóúñ¿¡]/g) + n(/[^a-záéíóúñ](el|la|los|las|de|que|tu|una|con|para|por|muy|pero|hoy|es|en|te|hola)(?=[^a-záéíóúñ])/g);
+    const en = n(/[^a-z](the|you|your|is|are|and|to|of|with|how|what|can|i|my|hi|here|this|that)(?=[^a-z])/g);
+    return en > es ? 'en' : 'es';
+  }
   function hablaGuardar(){ try { localStorage.setItem(hablaClave(), JSON.stringify({ historial: habla.historial, quedan: habla.quedan })); } catch(e){} }
   const textoQuedan = () => tienePlan('sesiones') ? 'Preguntas sin límite 👑👑' : habla.quedan > 0 ? 'Te quedan ' + habla.quedan + (habla.quedan === 1 ? ' pregunta' : ' preguntas') + ' hoy' : 'Por hoy no quedan preguntas';
   const ICONO_MIC = '<svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3" fill="currentColor"/><path d="M6 11a6 6 0 0 0 12 0M12 17v4M9 21h6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';
@@ -6815,7 +6823,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     if(habla.voz){ try { const u0 = new SpeechSynthesisUtterance(' '); u0.volume = 0; window.speechSynthesis.speak(u0); } catch(e){} }
     app.querySelector('#hablaTexto').textContent = 'Déjame pensar…'; hablaBoca(false); hablaPensando(true);
     let r = {};
-    try { r = await api('/habla', { mensaje, historial: habla.historial.filter(m => !m.idi || m.idi === IDIOMA).slice(-8), contexto: hablaContexto(), idioma: IDIOMA }); }
+    try { r = await api('/habla', { mensaje, historial: habla.historial.filter(m => hablaIdiDe(m) === IDIOMA).slice(-8), contexto: hablaContexto(), idioma: IDIOMA }); }
     catch(e){ r = { respuesta: 'Uy, no me llega bien la conexión. Prueba otra vez en un momento.' }; }
     habla.esperando = false; hablaPensando(false);
     const respuesta = r.respuesta || 'Uy, no te he entendido bien. ¿Me lo cuentas de otra forma?';
@@ -6865,7 +6873,9 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     renderBackTopbar('<i data-ico=comentario></i>Habla con Prácti');
     app.querySelector('#btnVolver').onclick = () => { hablaCallar(); habla.turno = (habla.turno || 0) + 1; if(state.hablaDesdeInicio){ state.hablaDesdeInicio = false; irAlPanel(); return; } state.view = 'utilidades'; window.scrollTo(0,0); render(); };
     hablaCargar();
-    const ultima = habla.historial.length ? habla.historial[habla.historial.length - 1].texto : HABLA_SALUDO;
+    // Al entrar se ve lo último que dijo Prácti hoy, pero solo si está en el idioma de la app (si no, el saludo)
+    const delIdioma = habla.historial.filter(m => hablaIdiDe(m) === IDIOMA);
+    const ultima = delIdioma.length ? delIdioma[delIdioma.length - 1].texto : HABLA_SALUDO;
     const caja = el(`<div class="habla-caja">
         <div class="habla-burbuja"><p id="hablaTexto"></p></div>
         <div class="habla-medio">
@@ -13431,4 +13441,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Meta" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V15.39 · App Amable Meta · 2026-11-11 18:27==== -->
+<!-- ==== Fin del index V15.40 · App Amable Meta · 2026-11-11 18:32==== -->
