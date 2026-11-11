@@ -75,6 +75,9 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .dia[aria-pressed="true"] small{color:#fff}
 @media (max-width:480px){.registro{grid-template-columns:repeat(6,1fr)}}
 .meses-panel div{background:var(--card)}
+.charla{border-left:4px solid var(--accent);background:var(--chip);border-radius:10px;padding:12px 14px;display:flex;flex-direction:column;gap:2px;font-size:15px}
+.charla .ceja{font-weight:700;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}
+.charla b{font-family:var(--display);font-size:18px}
 .duracion{font-weight:700;font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent2);background:var(--chip);border-radius:999px;padding:6px 14px;align-self:flex-start}
 .muestra-panel{background:var(--bg);border:1px solid var(--line);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:8px;font-size:14px;box-shadow:0 8px 22px rgba(38,52,59,.10);transform:rotate(-.6deg)}
 .mp-cab{display:grid;grid-template-columns:1fr 96px;gap:10px;align-items:center}
@@ -200,6 +203,7 @@ summary{cursor:pointer;font-weight:700;color:var(--accent2)}
 
   <!-- 0 · Entrada -->
   <section class="card" id="p0">
+    <div class="charla" id="charla0" hidden></div>
     <h2 tabindex="-1">Tu año empieza por una meta</h2>
     <p>Hay quien planifica el año entero con diez propósitos a la vez y en febrero ya no queda ninguno. Aquí vamos a hacer lo contrario: mirar dónde estás, elegir <b>una sola meta</b> y empezar con 10 minutos al día.</p>
     <p class="duracion">6 pasos · unos 10 minutos</p>
@@ -358,8 +362,15 @@ summary{cursor:pointer;font-weight:700;color:var(--accent2)}
 
 <script>
 // Versión de la página: subirla en cada publicación (sale arriba a la derecha)
-const VERSION_PAGINA = 'v1.26';
+const VERSION_PAGINA = 'v1.27';
 document.getElementById('version').textContent = VERSION_PAGINA;
+// Charla de la que viene la gente: sale al principio y al final del panel hasta el día de la charla (después se oculta)
+const CHARLA = { titulo: 'Tu 2027 empieza por una meta', subtitulo: 'Cómo conseguir tus metas sin agobiarte',
+  fecha: '2026-11-28', cuando: 'Sábado 28 de noviembre de 2026 · 19:00 en España · 13:00 en Colombia',
+  zoom: '' };   // enlace de Zoom: cuando se pegue aquí, sale el botón «Entrar por Zoom»
+function charlaHtml(){ if(!CHARLA || new Date() > new Date(CHARLA.fecha + 'T23:59:59')) return '';
+  return '<span class="ceja">Charla gratuita</span><b>' + CHARLA.titulo + '</b><span>' + CHARLA.subtitulo + '</span><span class="soft small">' + CHARLA.cuando + ' · Por Zoom</span>'
+    + (CHARLA.zoom ? '<a class="btn ghost" style="align-self:flex-start;margin-top:6px;padding:8px 16px" href="' + CHARLA.zoom + '" target="_blank" rel="noopener">Entrar por Zoom</a>' : ''); }
 const APIS = ['https://metas-amables-api.proud-hill-016b.workers.dev', 'https://rigid-thrush-3387.gcalabro12.deno.net'];
 const CLAVE = 'simulador2027';
 const PASOS = ['', 'Tu punto de partida', 'El precio de no cambiar', 'Una carta desde el 31-12-2027', 'Una sola meta', 'Tu primer mes', 'Tu panel 2027'];
@@ -692,6 +703,7 @@ function paso6(){
     + fila('El ' + rm.final + ' sabré que avanzo porque…', br(S.senal))
     + fila('El precio de no cambiar' + (S.dim2 ? ' · ' + D[S.dim2].n : ''), [S.costes.length && esc(S.costes.join(' · ')), S.precio && br(S.precio)].filter(Boolean).join('<br>'))
     + (S.carta ? '<div class="box"><h3>Mi carta desde el 31-12-2027</h3><p class="cartaTxt">' + esc(S.carta) + '</p></div>' : '')
+    + (charlaHtml() ? '<div class="charla">' + charlaHtml() + '</div>' : '')
     + '<p class="soft small">Simulador 2027 · Amable Meta</p>';
   rueda($('rueda6'), dim);
   const cuenta = () => { const n = (S.hechos || []).length; $('registroTxt').textContent = n ? n + (n === 1 ? ' día hecho' : ' días hechos') + ' de 30. Se guarda en este dispositivo.' : 'Toca un día para marcarlo. Se guarda en este dispositivo.'; };
@@ -758,6 +770,7 @@ $('form').addEventListener('submit', async ev => {
   btn.disabled = false; btn.textContent = 'Ver y recibir mi panel';
 });
 
+{ const c0 = $('charla0'), h = charlaHtml(); if(h){ c0.innerHTML = h; c0.hidden = false; } }
 rueda($('ruedaMuestra'), 'mente', { cuerpo: 6, mente: 3, relaciones: 8, entorno: 5 }, false);
 mostrar(S.paso === 6 ? 6 : 0);
 </script>
