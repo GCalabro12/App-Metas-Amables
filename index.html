@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V15.43 · App Amable Meta · 2026-11-11 22:20==== -->
+<!-- ==== index V15.44 · App Amable Meta · 2026-11-11 22:24==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2789,7 +2789,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V15.43';
+  const APP_VERSION = 'V15.44';
   // ===== Pantalla de inicio: versión, sonido corto y salida (5-11-2026) =====
   (function(){
     const sp = document.getElementById('inicioSplash'); if(!sp) return;
@@ -2805,7 +2805,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     const sonar = () => {
       try {
         if(sonando || localStorage.getItem('practi_musica') === '0') return;
-        if(!audio){ audio = new Audio('sonido-inicio.mp3'); audio.volume = 0.7; audio.preload = 'auto'; }
+        if(!audio){ audio = new Audio('sonido-inicio.mp3'); audio.volume = 0.35; audio.preload = 'auto'; }   // 11-11-2026, Gustavo: a la mitad de como sonaba (0,7), por si el móvil está muy alto
         audio.play().then(() => { sonando = true; }).catch(() => {});
       } catch(e){}
     };
@@ -7540,6 +7540,35 @@ lo que haces cada día es lo que vas a ser.`;
     let n = 0; try { n = A.versionCodigo ? Number(A.versionCodigo()) : 7; } catch(e){ n = 7; }
     return n > ANDROID_PUBLICA ? 'prueba interna' : 'pública';
   }
+  // Comprobación de los días de las metas sencillas en el registro (11-11-2026): en el móvil de Gustavo faltan días (del 3.º al 7.º)
+  // y en el ordenador no se reproduce. Solo moderadores: al tener esos días en pantalla se apunta en este móvil cómo está cada botón
+  // (tamaño, si está oculto o transparente, si algo lo tapa) y se lee en «Datos de la versión». Quitar cuando se sepa la causa.
+  function diagDiasSencillas(capa){
+    if(!soyModerador()) return;
+    let t = null;
+    const medir = () => { try {
+      const sems = [...capa.querySelectorAll('.rp-sencillas .ms-semana')];
+      if(!sems.some(s => { const r = s.getBoundingClientRect(); return r.top > 0 && r.bottom < innerHeight; })) return;   // aún no están a la vista
+      const filas = sems.map(sem => Math.round(sem.getBoundingClientRect().width) + 'px: ' + [...sem.querySelectorAll('.ms-dia')].map(b => {
+        const c = getComputedStyle(b), r = b.getBoundingClientRect(), raros = [];
+        if(r.width < 20 || r.height < 20) raros.push(Math.round(r.width) + 'x' + Math.round(r.height));
+        if(c.display === 'none') raros.push('display none');
+        if(c.visibility !== 'visible') raros.push(c.visibility);
+        let op = 1; for(let e = b; e && e !== document.body; e = e.parentElement) op *= Number(getComputedStyle(e).opacity);
+        if(op < 0.9) raros.push('opacidad ' + op.toFixed(2));
+        if(/, 0\)$|transparent/.test(c.backgroundColor)) raros.push('fondo transparente');
+        const cx = r.left + r.width / 2, cy = r.top + r.height / 2;
+        if(cx > 0 && cy > 0 && cx < innerWidth && cy < innerHeight){ const el2 = document.elementFromPoint(cx, cy); if(el2 && el2 !== b && !b.contains(el2)) raros.push('tapado por ' + el2.tagName.toLowerCase() + '.' + String(el2.className).split(' ')[0]); }
+        else raros.push('fuera');
+        return b.dataset.iso.slice(8) + (raros.length ? '[' + raros.join(', ') + ']' : '✓');
+      }).join(' '));
+      const b3 = capa.querySelectorAll('.rp-sencillas .ms-dia')[2], c3 = b3 ? getComputedStyle(b3) : null;
+      localStorage.setItem('diag_dias', new Date().toTimeString().slice(0, 5) + ' · ' + filas.join(' ‖ ') + (c3 ? ' · 3.º: fondo ' + c3.backgroundColor + ', borde ' + c3.borderTopColor + ', letra ' + c3.color + ', ' + b3.className : ''));
+    } catch(e){ try { localStorage.setItem('diag_dias', 'error: ' + e.message); } catch(x){} } };
+    const luego = () => { clearTimeout(t); t = setTimeout(medir, 700); };
+    capa.addEventListener('scroll', luego, { passive: true });
+    luego();
+  }
   function tarjetaDiagAdmin(){
     const A = window.AmableMetaAndroid || null, NAV = navigator['user' + 'Agent'] || '';
     const standalone = (() => { try { return matchMedia('(display-mode: standalone)').matches || navigator.standalone === true; } catch(e){ return false; } })();
@@ -7553,7 +7582,8 @@ lo que haces cada día es lo que vas a ser.`;
       ['Modo Play (sin precios antes)', MODO_PLAY ? 'sí' : 'no'],
       ['Idioma de la app / del móvil', IDIOMA + ' / ' + (navigator.language || '?')],
       ['Navegador', (NAV.match(/(Chrome|CriOS|Firefox|Safari|Edg)\/[\d.]+/) || ['?'])[0] + (/; wv\)/.test(NAV) ? ' (WebView)' : '')],
-      ['Sistema', (NAV.match(/Android [\d.]+|iPhone OS [\d_]+|Windows NT [\d.]+|Mac OS X [\d_]+/) || ['?'])[0]]
+      ['Sistema', (NAV.match(/Android [\d.]+|iPhone OS [\d_]+|Windows NT [\d.]+|Mac OS X [\d_]+/) || ['?'])[0]],
+      ['Días de las metas sencillas (registro)', (() => { try { return localStorage.getItem('diag_dias') || 'sin medir: abre el registro y baja hasta las metas sencillas'; } catch(e){ return '?'; } })()]
     ];
     const diag = el('<div class="card diag-admin"><p class="diag-tit"><i data-ico=llave></i>Datos de la versión</p><div class="diag-filas">'
       + filas.map(f => '<p><span>' + f[0] + '</span><b>' + escapeAttr(f[1]) + '</b></p>').join('')
@@ -11338,6 +11368,7 @@ lo que haces cada día es lo que vas a ser.`;
     ponerSemana();
     // Las metas sencillas, debajo de todo lo de la meta con guía
     try { const ms = registroSencillas(); if(ms) capa.appendChild(ms); } catch(e){ console.error('Metas sencillas:', e); }
+    try { diagDiasSencillas(capa); } catch(e){}
     // Abajo del todo, el mismo «Ir a Amable Meta» que arriba (la semana se repinta en su sitio, así que este botón sigue el último)
     const irAbajo = el('<button type="button" class="riego-ir-abajo">Ir a Amable Meta</button>').firstElementChild;
     capa.appendChild(irAbajo);
@@ -13445,4 +13476,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Meta" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V15.43 · App Amable Meta · 2026-11-11 22:20==== -->
+<!-- ==== Fin del index V15.44 · App Amable Meta · 2026-11-11 22:24==== -->
