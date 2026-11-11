@@ -140,7 +140,6 @@ input[type=text],input[type=email],input[type=tel]{font:inherit;font-weight:400;
     <p class="soft">Te mandamos tu meta, tu frase de propósito y tu primera práctica, para que los tengas a mano.</p>
     <label class="campo">Nombre<input type="text" id="f-nombre" autocomplete="given-name" maxlength="60" required></label>
     <label class="campo">Correo electrónico<input type="email" id="f-email" autocomplete="email" maxlength="120" required placeholder="tu@correo.com"></label>
-    <label class="campo">Teléfono (WhatsApp)<input type="tel" id="f-tel" autocomplete="tel" maxlength="30" required placeholder="+34 600 000 000"></label>
     <label class="campo">País<input type="text" id="f-pais" autocomplete="country-name" maxlength="60" required list="paises" placeholder="España"></label>
     <datalist id="paises"><option>España</option><option>México</option><option>Colombia</option><option>Argentina</option><option>Chile</option><option>Perú</option><option>Uruguay</option><option>Venezuela</option><option>Ecuador</option><option>Estados Unidos</option></datalist>
     <div class="trampa" aria-hidden="true"><label>Web<input type="text" id="f-web" tabindex="-1" autocomplete="off"></label></div>
@@ -172,7 +171,7 @@ input[type=text],input[type=email],input[type=tel]{font:inherit;font-weight:400;
 
 <script>
 // Versión de la página: subirla en cada publicación (sale arriba a la derecha)
-const VERSION_PAGINA = 'v1.07';
+const VERSION_PAGINA = 'v1.09';
 document.getElementById('version').textContent = VERSION_PAGINA;
 const APIS = ['https://metas-amables-api.proud-hill-016b.workers.dev', 'https://rigid-thrush-3387.gcalabro12.deno.net'];
 const CLAVE = 'testMetaPrincipal';
@@ -247,7 +246,7 @@ function propuesta(){
   pintaIdeas();
 }
 $('aDatos').onclick = () => mostrar(S.enviado ? 4 : 3);
-function datos(){ ['nombre', 'email', 'telefono', 'pais'].forEach(k => { const el = $({ nombre: 'f-nombre', email: 'f-email', telefono: 'f-tel', pais: 'f-pais' }[k]); el.value = S[k] || ''; el.oninput = () => { S[k] = el.value; guardar(); }; }); }
+function datos(){ ['nombre', 'email', 'pais'].forEach(k => { const el = $({ nombre: 'f-nombre', email: 'f-email', pais: 'f-pais' }[k]); el.value = S[k] || ''; el.oninput = () => { S[k] = el.value; guardar(); }; }); }
 $('saltar').onclick = () => mostrar(4);
 function resultado(){
   const d = D[S.dim], p = puntos();
@@ -278,11 +277,10 @@ async function llamar(cuerpo){
 function estado(txt, ok){ const e = $('estado'); e.textContent = txt; e.className = 'estado ' + (ok ? 'ok' : 'mal'); e.hidden = false; }
 $('p3').addEventListener('submit', async ev => {
   ev.preventDefault();
-  const nombre = $('f-nombre').value.trim(), email = $('f-email').value.trim(), telefono = $('f-tel').value.trim(), pais = $('f-pais').value.trim();
+  const nombre = $('f-nombre').value.trim(), email = $('f-email').value.trim(), telefono = '', pais = $('f-pais').value.trim();
   let m = '';
   if(!nombre) m = 'Escribe tu nombre.';
   else if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) m = 'Revisa el correo: parece que le falta algo.';
-  else if(telefono.replace(/\D/g, '').length < 7) m = 'Revisa el teléfono: escribe al menos 7 cifras.';
   else if(!pais) m = 'Escribe tu país.';
   else if(!$('f-acepta').checked) m = 'Marca la primera casilla para que podamos guardar tus datos y enviarte tu resultado.';
   if(m){ estado(m, false); return; }
