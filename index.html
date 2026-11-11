@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V15.45 · App Amable Meta · 2026-11-11 22:33==== -->
+<!-- ==== index V15.46 · App Amable Meta · 2026-11-11 23:25==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2792,7 +2792,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V15.45';
+  const APP_VERSION = 'V15.46';
   // ===== Pantalla de inicio: versión, sonido corto y salida (5-11-2026) =====
   (function(){
     const sp = document.getElementById('inicioSplash'); if(!sp) return;
@@ -10131,6 +10131,14 @@ lo que haces cada día es lo que vas a ser.`;
       + '<rect x="8" y="30" width="48" height="38" rx="7" fill="#E2B23C"/><rect x="8" y="30" width="48" height="10" rx="5" fill="#F2CC5E"/><rect x="8" y="30" width="48" height="38" rx="7" fill="none" stroke="#A87A16" stroke-width="2"/>'
       + '<circle cx="32" cy="48" r="5" fill="#5A3E0A"/><path d="M30 51h4l1 9h-6z" fill="#5A3E0A"/></svg>';
   }
+  // La casilla crece con el texto (11-11-2026, Gustavo): antes se quedaba en 3 renglones y, al escribir mucho, lo de arriba
+  // se escondía bajo la pregunta («se va como apretando»). Ahora la nota se alarga y todo lo escrito queda a la vista.
+  function creceConTexto(ta){
+    const ajustar = () => { ta.style.height = 'auto'; ta.style.height = (ta.scrollHeight + 2) + 'px'; };
+    ta.style.overflow = 'hidden'; ta.style.resize = 'none';
+    ta.addEventListener('input', ajustar);
+    setTimeout(ajustar, 0);
+  }
   function micDentro(ta){
     const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
     const envoltura = document.createElement('div'); envoltura.className = 'campo-mic';
@@ -10143,7 +10151,7 @@ lo que haces cada día es lo que vas a ser.`;
     b.onclick = () => {
       if(rec){ try { rec.stop(); } catch(e){} return; }
       rec = new SR(); rec.lang = IDIOMA === 'en' ? 'en-US' : 'es-ES'; rec.continuous = true; rec.interimResults = false;
-      rec.onresult = ev => { for(let i = ev.resultIndex; i < ev.results.length; i++){ if(ev.results[i].isFinal){ const t = ev.results[i][0].transcript.trim(); if(t) ta.value = (ta.value ? ta.value.replace(/\s+$/, '') + ' ' : '') + t; } } };
+      rec.onresult = ev => { for(let i = ev.resultIndex; i < ev.results.length; i++){ if(ev.results[i].isFinal){ const t = ev.results[i][0].transcript.trim(); if(t){ ta.value = (ta.value ? ta.value.replace(/\s+$/, '') + ' ' : '') + t; try { ta.dispatchEvent(new Event('input', { bubbles: true })); } catch(e){} } } } };
       rec.onend = () => { rec = null; b.classList.remove('grabando'); };
       rec.onerror = () => { rec = null; b.classList.remove('grabando'); };
       try { rec.start(); b.classList.add('grabando'); } catch(e){ rec = null; }
@@ -10470,6 +10478,7 @@ lo que haces cada día es lo que vas a ser.`;
       + '<button type="button" class="panel-link-btn" id="positGuardar" style="background:#C9942D;border:none;width:100%;cursor:pointer;margin-top:12px">Guardar en la caja</button><p id="positMsg" style="margin:6px 0 0;font-size:14px"></p>';
     const ta = caja.querySelector('#positTexto'), ta2 = caja.querySelector('#positTexto2');
     micDentro(ta); micDentro(ta2);
+    creceConTexto(ta); creceConTexto(ta2);
     caja.querySelector('#positGuardar').onclick = async ev => {
       const b = ev.currentTarget, msg = caja.querySelector('#positMsg');
       if(ta.value.trim().length < 5){ msg.textContent = 'Cuéntate qué te habías planteado para esta fecha'; ta.focus(); return; }
@@ -13504,4 +13513,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Meta" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V15.45 · App Amable Meta · 2026-11-11 22:33==== -->
+<!-- ==== Fin del index V15.46 · App Amable Meta · 2026-11-11 23:25==== -->
