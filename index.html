@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V15.35 · App Amable Meta · 2026-11-11 09:59==== -->
+<!-- ==== index V15.36 · App Amable Meta · 2026-11-11 10:07==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2777,7 +2777,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V15.35';
+  const APP_VERSION = 'V15.36';
   // ===== Pantalla de inicio: versión, sonido corto y salida (5-11-2026) =====
   (function(){
     const sp = document.getElementById('inicioSplash'); if(!sp) return;
@@ -8068,6 +8068,28 @@ lo que haces cada día es lo que vas a ser.`;
     app.appendChild(c);
     c.querySelector('.er-otra').onclick = () => location.reload();
   }
+  // Los títulos grandes de Inicio van en una sola línea. Si alguno no cabe en su recuadro (móvil plegable abierto,
+  // inglés, letra grande del sistema…), se le baja la letra hasta que quepa (11-11-2026, Gustavo: se salían del borde)
+  const SEL_TITULOS = '.tit-arriba .ciclo-tit, .card.guia-semana .ritual-tit, .planta-card .planta-tit, .planta-inicio .planta-tit, .ciclo-formacion .opcion-tx > b, .ciclo-btn .opcion-tx > b';
+  function ajustarTitulos(){
+    if(app.getAttribute('data-vista') !== 'panel') return;
+    app.querySelectorAll(SEL_TITULOS).forEach(e => {
+      if(!e.offsetParent) return;
+      e.style.removeProperty('font-size');
+      const caja = e.closest('.card, .ciclo-btn, .opcion, button') || e.parentElement; if(!caja) return;
+      const tope = caja.getBoundingClientRect().right - (parseFloat(getComputedStyle(caja).paddingRight) || 0) - 2;
+      const ancho = () => { const r = document.createRange(); r.selectNodeContents(e); return r.getBoundingClientRect().right; };
+      let fs = parseFloat(getComputedStyle(e).fontSize) || 0, vueltas = 0;
+      while(fs > 13 && ancho() > tope && vueltas++ < 30){ fs -= 1; e.style.setProperty('font-size', fs + 'px', 'important'); }
+    });
+  }
+  let relojTitulos = null;
+  function ajustarTitulosPronto(){
+    try { ajustarTitulos(); } catch(e){}
+    clearTimeout(relojTitulos);   // otra vez cuando ya esté la traducción y la letra cargada
+    relojTitulos = setTimeout(() => { try { ajustarTitulos(); } catch(e){} }, 350);
+  }
+  try { window.addEventListener('resize', ajustarTitulosPronto); if(document.fonts && document.fonts.ready) document.fonts.ready.then(ajustarTitulosPronto); } catch(e){}
   function render(){
     lectorParar(); lector.caja = null;
     if(relojFecha){ clearInterval(relojFecha); relojFecha = null; }
@@ -8080,6 +8102,7 @@ lo que haces cada día es lo que vas a ser.`;
     if(state.view === 'viaje') state.desdeViaje = false;
     else if(state.desdeViaje) app.querySelectorAll('.back-btn').forEach(b => b.onclick = () => { state.desdeViaje = false; state.view = 'viaje'; state.panelSub = null; window.scrollTo(0,0); render(); });
     try { barraInferior(); } catch(e){}
+    try { ajustarTitulosPronto(); } catch(e){}
     try { anotarVisita(); } catch(e){}
     try { resumenGrowPanel(); } catch(e){}
     try { botonesMenuConAvatar(); } catch(e){}
@@ -13388,4 +13411,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Meta" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V15.35 · App Amable Meta · 2026-11-11 09:59==== -->
+<!-- ==== Fin del index V15.36 · App Amable Meta · 2026-11-11 10:07==== -->
