@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V15.48 · App Amable Meta · 2026-11-12 12:14==== -->
+<!-- ==== index V15.49 · App Amable Meta · 2026-11-12 13:36==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1289,7 +1289,12 @@ textarea.ms-nombre-in:focus{outline:none;border-color:#C9942D;box-shadow:0 0 0 3
 /* 11-11-2026: en la app de Android (WebView 156, Android 16) los días y los iconos del registro dejaban de pintarse. Lo que tenían en común
    era «opacity» por debajo de 1, así que aquí el tono suave se da con el color (y los iconos del registro van sin opacity). */
 .ms-dia span{font-size:9.5px;font-weight:800;line-height:1;color:color-mix(in srgb,currentColor 80%,transparent)}
-.riego-capa .mi-tx,.riego-capa svg{opacity:1}.ms-dia span.ms-nveces{color:#FFE066;opacity:1;font-size:11px}
+.riego-capa .mi-tx,.riego-capa svg{opacity:1}
+/* 12-11-2026: seguían desapareciendo las bolitas de las metas sencillas (y solo ellas). Son lo único «posicionado» (position:relative) que queda
+   por debajo de las animaciones del registro (sol, mariposa, brillos, flecha): el navegador las pinta en una capa aparte, encima de las
+   animaciones, y el WebView de Android a veces deja esa capa sin dibujar. En el registro van sin posición: se pintan con el resto de la pantalla.
+   OJO: debajo de esas animaciones no poner nada con position, opacity menor que 1, transform ni filter. */
+.riego-capa .ms-dia{position:static}.ms-dia span.ms-nveces{color:#FFE066;opacity:1;font-size:11px}
 /* Varias veces el mismo día: «2✓» pequeño en amarillo encima del número */
 .ms-dia-m[data-veces]::before{content:attr(data-veces) '✓';position:absolute;top:2px;left:0;right:0;font-size:9.5px;font-weight:800;line-height:1;text-align:center;color:#FFE066}.ms-dia b{font-size:14px;line-height:1.1}
 .riego-capa .rp-semana{width:min(420px,100%);margin:16px auto 0;box-sizing:border-box;border:2px solid rgba(169,50,38,.35);border-radius:20px;background:rgba(255,255,255,.92);text-align:left}
@@ -2795,7 +2800,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V15.48';
+  const APP_VERSION = 'V15.49';
   // ===== Pantalla de inicio: versión, sonido corto y salida (5-11-2026) =====
   (function(){
     const sp = document.getElementById('inicioSplash'); if(!sp) return;
@@ -13513,4 +13518,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Meta" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V15.48 · App Amable Meta · 2026-11-12 12:14==== -->
+<!-- ==== Fin del index V15.49 · App Amable Meta · 2026-11-12 13:36==== -->
