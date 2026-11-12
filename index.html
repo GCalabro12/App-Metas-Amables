@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V15.47 · App Amable Meta · 2026-11-12 12:11==== -->
+<!-- ==== index V15.48 · App Amable Meta · 2026-11-12 12:14==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1198,7 +1198,10 @@ body.riego-abierto{overflow:hidden}
 .riego-capa .abonar-tit{text-transform:uppercase;letter-spacing:.04em;font-size:16px;font-weight:900}
 .riego-capa .riego-tit{text-transform:uppercase;letter-spacing:.03em;font-weight:900;font-size:clamp(20px,6.2vw,28px)}
 .metas-sub{margin:2px 0 10px;font:800 17px Karla,sans-serif;letter-spacing:.04em;text-transform:uppercase;color:#5B4A1E}
-.metas-cab{display:flex;align-items:center;gap:14px;margin:0 0 12px}.metas-cab .panel-badge{margin:0}
+.metas-cab{display:flex;align-items:center;justify-content:center;gap:14px;margin:-4px 0 12px}.metas-cab .panel-badge{margin:0;flex-wrap:nowrap}
+/* «← Volver» arriba en las segundas pantallas (12-11-2026): ocupa el hueco entre la cabecera y el dibujo, sin empujarlo casi hacia abajo */
+.back-btn.suelto.volver-alto{position:relative;z-index:2;margin:-10px 0 -22px}
+[data-vista="practicaSemanal"] .back-btn.suelto.volver-alto{margin-top:14px}
 .metas-cab .panel-badge > span:last-child{font-family:'Nunito',sans-serif;font-size:38px;line-height:1;letter-spacing:.02em}
 .ms-bloque{margin-top:14px}
 .ms-btn{display:block;width:100%;margin:8px 0 0;padding:12px;border-radius:12px;border:none;background:#C9942D;color:#fff;font:700 15px Karla,sans-serif;cursor:pointer}
@@ -2792,7 +2795,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V15.47';
+  const APP_VERSION = 'V15.48';
   // ===== Pantalla de inicio: versión, sonido corto y salida (5-11-2026) =====
   (function(){
     const sp = document.getElementById('inicioSplash'); if(!sp) return;
@@ -8625,6 +8628,8 @@ lo que haces cada día es lo que vas a ser.`;
       // «Panel de control admin Metas A.» (solo moderadores): justo debajo de la fecha, antes de Prácti saludando
       const huecoPf = greetPanel.querySelector('.hueco-panel-fac');
       if(huecoPf) huecoPf.remove();   // el panel de control va ahora en la franja blanca de arriba del todo
+      // «← Volver» arriba en todas las segundas pantallas (12-11-2026, Gustavo): en el hueco entre la cabecera y el dibujo de Prácti
+      if(state.panelSub){ const va = botonVolver(); va.classList.add('volver-alto'); app.appendChild(va); }
       app.appendChild(greetPanel);
       if(!state.panelSub){
         // Debajo de Prácti, «Hablar» (lleva a «Habla con Prácti»); debajo del bocadillo, «Cómo funciona la app» (11-11-2026, Gustavo)
@@ -8749,15 +8754,10 @@ lo que haces cada día es lo que vas a ser.`;
           } catch(e){ hueco.remove(); }
         }
       } else if(state.panelSub === 's4'){
-        const fila = el('<div class="metas-cab"></div>').firstElementChild;
-        fila.appendChild(botonVolver());
-        fila.insertAdjacentHTML('beforeend', badgeSeccion('cero', 'Metas'));
-        app.appendChild(fila);
+        // El icono (la hoja con la A), a la izquierda de «Metas», en un renglón y pegado al dibujo (el «Volver» ya va arriba)
+        app.appendChild(el('<div class="metas-cab">' + badgeSeccion('cero', 'Metas') + '</div>'));
       } else if(state.panelSub === 's1'){
-        app.appendChild(botonVolver());
         app.appendChild(el('<div class="seccion-cab grupo-cab">' + badgeSeccion('cpc', 'Grupo de apoyo') + '</div>'));
-      } else {
-        app.appendChild(botonVolver());
       }
 
       // Bloque 1: Formación
@@ -9398,8 +9398,8 @@ lo que haces cada día es lo que vas a ser.`;
       } else {
         cuerpo = '<p class="ps-practica" style="font-style:normal">Aún no has definido tu práctica.</p><p class="ps-nota">La defines en tu compromiso del lunes, con la frase «Cuando…, haré…».</p>';
       }
+      { const va = botonVolver(); va.classList.add('volver-alto'); app.appendChild(va); }   // «Volver» arriba, encima del muñeco (12-11-2026)
       app.appendChild(el('<div style="text-align:center;margin:0 0 4px">' + practiReaccionHTML('correr', 'valla', 170) + '</div>'));
-      app.appendChild(botonVolver());
       app.appendChild(el('<div class="registro-cab" style="display:flex;justify-content:center;margin:0 0 6px">' + badgeSeccion('b', 'Registro y compromiso') + '</div>'
         ));
       // Se pueden marcar los días desde el primer momento, aunque aún no haya registro.
@@ -13513,4 +13513,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Meta" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V15.47 · App Amable Meta · 2026-11-12 12:11==== -->
+<!-- ==== Fin del index V15.48 · App Amable Meta · 2026-11-12 12:14==== -->
