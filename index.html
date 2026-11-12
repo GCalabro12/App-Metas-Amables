@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V15.49 · App Amable Meta · 2026-11-12 13:36==== -->
+<!-- ==== index V15.50 · App Amable Meta · 2026-11-12 20:02==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2800,7 +2800,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V15.49';
+  const APP_VERSION = 'V15.50';
   // ===== Pantalla de inicio: versión, sonido corto y salida (5-11-2026) =====
   (function(){
     const sp = document.getElementById('inicioSplash'); if(!sp) return;
@@ -5867,6 +5867,21 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     h += plegable('emails', '<i data-ico=correo></i>Emails enviados (' + enviadosEm.length + ')', enviadosEm.length
       ? '<div class="card pf-lista"><p class="pf-gris" style="margin:0 0 8px;font-size:13px">Últimos 14 días. Los textos están en «Revisar emails».</p>' + enviadosEm.map(x => '<p class="pf-dato" style="margin:0 0 6px"><b>' + escapeAttr(fechaEnvio(x.fecha)) + '</b> · ' + escapeAttr(x.nombre) + ' · ' + escapeAttr(NOMBRES_EMAIL[x.tipo] || x.tipo) + '</p>').join('') + '</div>'
       : '<div class="card pf-vacio">En los últimos 14 días no se ha enviado ningún email.</div>', false);
+    // Gasto de Gemini (12-11-2026, Gustavo): lo cuenta el Worker en D1 (tabla gemini_uso). Cifras orientativas
+    const gm = d.gemini;
+    if(gm){
+      const eur = (x, dec) => Number(x || 0).toFixed(dec || 2).replace('.', ',') + ' €';
+      const NOMBRES_GEMINI = { habla: 'Habla con Prácti', voz: 'Voz de Prácti', repregunta: 'Preguntas del formulario', resumen: 'Resumen de la meta', animo: 'Mensajes de ánimo', guia: 'Guías', 'guia-est': 'Guías (estimación a la baja)' };
+      const desdeTx = gm.desde ? gm.desde.slice(8, 10) + '/' + gm.desde.slice(5, 7) : '';
+      h += plegable('gemini', '<i data-ico=grafico></i>Gasto de Gemini (' + eur(gm.total) + ')', gm.personas
+        ? '<div class="card pf-lista"><p class="pf-gris" style="margin:0 0 8px;font-size:13px">Desde el ' + desdeTx + ' (como mucho, 30 días). Cifras orientativas.</p>'
+          + '<p class="pf-dato" style="margin:0 0 6px"><b>' + eur(gm.total) + '</b> en total · ' + gm.personas + (gm.personas === 1 ? ' persona' : ' personas') + ' · <b>' + eur(gm.media, 3) + '</b> por persona</p>'
+          + '<p class="pf-dato" style="margin:0 0 10px">Ayer: ' + eur(gm.ayer.euros) + ' en ' + gm.ayer.llamadas + ' llamadas</p>'
+          + gm.tipos.map(t => '<p class="pf-dato" style="margin:0 0 6px"><b>' + escapeAttr(NOMBRES_GEMINI[t.tipo] || t.tipo) + '</b> · ' + eur(t.euros, 3) + ' · ' + t.llamadas + ' llamadas · ' + t.personas + ' pers.</p>').join('')
+          + '<p class="pf-sub" style="margin:12px 0 6px">Quien más gasta</p>'
+          + gm.mas.map(x => '<p class="pf-dato" style="margin:0 0 6px">' + escapeAttr(x.nombre) + ' · ' + eur(x.euros, 3) + ' · ' + x.llamadas + ' llamadas</p>').join('') + '</div>'
+        : '<div class="card pf-vacio">Aún no hay llamadas apuntadas. El contador empezó el 12-11-2026.</div>', false);
+    }
     if(esCuentaPruebas()) h += plegable('moderador', '<i data-ico=llave></i>Moderador · entrar como', '<p class="pf-gris" style="margin:0 0 8px;font-size:13.5px">Entra con otra cuenta de prueba para ver la app con ese plan.</p><div class="pf-mod-cuentas">'
       + CUENTAS_PRUEBA.map(([cuenta, t]) => '<button type="button" class="mod-cuenta' + (state.me === cuenta ? ' on' : '') + '" data-cuenta="' + escapeAttr(cuenta) + '">' + t + '</button>').join('') + '</div>', false);
     // «Datos de la versión», lo primero del panel (11-11-2026, Gustavo)
@@ -13518,4 +13533,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Meta" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V15.49 · App Amable Meta · 2026-11-12 13:36==== -->
+<!-- ==== Fin del index V15.50 · App Amable Meta · 2026-11-12 20:02==== -->
