@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V15.65 · App Amable Meta · 2026-11-15 20:44==== -->
+<!-- ==== index V15.66 · App Amable Meta · 2026-11-15 20:46==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2842,7 +2842,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V15.65';
+  const APP_VERSION = 'V15.66';
   // ===== Pantalla de inicio: versión, sonido corto y salida (5-11-2026) =====
   (function(){
     const sp = document.getElementById('inicioSplash'); if(!sp) return;
@@ -4448,14 +4448,26 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     // Al desplazar se cierra, salvo escribiendo un comentario: en iPhone, al salir el teclado la página se mueve sola
     // y el recuadro desaparecía (15-11-2026); entonces solo se recoloca
     const alMover = () => { if(pop.classList.contains('texto')) colocar(); else cerrar(); };
-    const vvMueve = () => { if(pop.classList.contains('texto')) colocar(); };
+    // Al salir el teclado (15-11-2026, Gustavo): se sube la pantalla para que los días queden justo encima del teclado
+    // y el recuadro del comentario encima de ellos, sin que nada quede tapado
+    const desplazable = b.closest('.riego-capa') || document.scrollingElement || document.documentElement;
+    const ajustar = () => {
+      if(!pop.classList.contains('texto') || !document.body.contains(pop)) return;
+      const vv = window.visualViewport, abajo = vv ? vv.offsetTop + vv.height : window.innerHeight;
+      const r = b.getBoundingClientRect(), sobra = r.bottom - (abajo - 12);
+      if(sobra > 0) desplazable.scrollTop += sobra;
+      colocar();
+    };
+    const vvMueve = () => { if(pop.classList.contains('texto')){ colocar(); clearTimeout(pop._aj); pop._aj = setTimeout(ajustar, 120); } };
     const cerrar = () => {
       pop.remove(); window.removeEventListener('scroll', alMover, true); document.removeEventListener('pointerdown', fuera, true);
       if(window.visualViewport){ window.visualViewport.removeEventListener('resize', vvMueve); window.visualViewport.removeEventListener('scroll', vvMueve); }
+      window.removeEventListener('resize', vvMueve);
     };
     setTimeout(() => {
       window.addEventListener('scroll', alMover, true); document.addEventListener('pointerdown', fuera, true);
       if(window.visualViewport){ window.visualViewport.addEventListener('resize', vvMueve); window.visualViewport.addEventListener('scroll', vvMueve); }
+      window.addEventListener('resize', vvMueve);
     }, 0);
     return { pop, colocar, cerrar };
   }
@@ -13824,4 +13836,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Meta" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V15.65 · App Amable Meta · 2026-11-15 20:44==== -->
+<!-- ==== Fin del index V15.66 · App Amable Meta · 2026-11-15 20:46==== -->
