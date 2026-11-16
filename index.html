@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V15.66 · App Amable Meta · 2026-11-15 20:46==== -->
+<!-- ==== index V15.67 · App Amable Meta · 2026-11-16 20:01==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1211,6 +1211,9 @@ body.riego-abierto{overflow:hidden}
 .ms-btn.ms-ver-cal{background:#fff;color:#6B4A26;border:1.5px solid #A0703C}
 .ms-dias-plan{margin:2px 0 0;font-size:13.5px;color:var(--ink-soft)}
 .ms-capa{position:fixed;inset:0;z-index:9750;background:#FFFDF8;overflow:auto;-webkit-overflow-scrolling:touch}
+/* El editor de la meta sencilla tiene siempre fondo claro: con el móvil en modo oscuro la letra salía blanca sobre blanco (16-11-2026, aviso de Ana María Cadena) */
+.ms-capa{color:#2B2B2B}.ms-capa textarea,.ms-capa input:not([type=checkbox]):not([type=radio]),.ms-capa select{color:#2B2B2B;-webkit-text-fill-color:#2B2B2B;background:#fff;caret-color:#2B2B2B}
+.ms-capa textarea::placeholder,.ms-capa input::placeholder{color:#8A8170;-webkit-text-fill-color:#8A8170}
 body.ms-capa-abierta{overflow:hidden}
 .ms-capa-in{max-width:520px;margin:0 auto;padding:calc(14px + env(safe-area-inset-top)) 16px calc(28px + env(safe-area-inset-bottom));box-sizing:border-box}
 .ms-capa-cab{display:flex;align-items:center;gap:12px;margin:0 0 20px}.ms-capa-cab b{font:700 19px Nunito,serif;color:var(--ink)}
@@ -2842,7 +2845,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V15.66';
+  const APP_VERSION = 'V15.67';
   // ===== Pantalla de inicio: versión, sonido corto y salida (5-11-2026) =====
   (function(){
     const sp = document.getElementById('inicioSplash'); if(!sp) return;
@@ -13836,4 +13839,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Meta" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V15.66 · App Amable Meta · 2026-11-15 20:46==== -->
+<!-- ==== Fin del index V15.67 · App Amable Meta · 2026-11-16 20:01==== -->
