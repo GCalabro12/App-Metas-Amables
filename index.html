@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V15.70 · App Amable Meta · 2026-11-18 09:28==== -->
+<!-- ==== index V15.71 · App Amable Meta · 2026-11-18 09:33==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -895,7 +895,7 @@ body.con-tabbar:has(.banda-fin-plan) #app{padding-bottom:calc(28vh + 80px)}
 .viaje-final .viaje-punto{width:60px;height:60px;box-shadow:0 0 0 5px rgba(224,162,27,.25)}
 .viaje-final .viaje-punto svg{width:30px;height:30px}
 .viaje-final b{font-size:19px}
-.viaje-final small{color:#9A6B00;font-weight:700}
+.viaje-final small{color:#7A5200;font-weight:700;background:#FFF4D6;border-radius:8px;padding:3px 8px;display:inline-block}
 .viaje-final.hecho .viaje-punto::after{content:"🏆";position:absolute;right:-6px;bottom:-6px;width:24px;height:24px;border-radius:50%;background:#fff;font-size:14px;line-height:24px;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,.25)}
 .viaje-opcional{display:inline-block;font-size:11px;font-weight:700;color:#7B5FB8;background:#F1ECFC;border-radius:99px;padding:1px 8px;margin-left:6px;vertical-align:middle}
 .progreso-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:0 0 12px}
@@ -907,7 +907,8 @@ body.theme-dark .tabbar{background:#1E1E24;border-top-color:rgba(255,255,255,.1)
 body.theme-dark .tabbar button{color:#9AA0A6}
 body.theme-dark .tabbar button.activa{color:#B3A8FF}
 body.theme-dark .viaje-paso.ahora small,body.theme-dark .viaje-paso.hecho small{filter:brightness(1.7)}
-body.theme-dark .viaje-final small{color:#F2C14E}
+/* La meta cosechada: letra marrón dorado sobre una franja clara, legible tanto en modo claro como en oscuro (18-11-2026, aviso de Maru: amarillo sobre blanco) */
+body.theme-dark .viaje-final small{color:#7A5200;background:#FFF4D6;border-radius:8px;padding:3px 8px;display:inline-block}
 body.theme-dark .progreso-dato{background:#26262c;border-color:rgba(255,255,255,.1)}
 body.theme-dark .progreso-dato b{color:#B3A8FF}
 @media (max-width: 380px){.cab-insta{width:30px;height:30px;margin-right:0}.cab-insta svg{width:20px;height:20px}}
@@ -2845,7 +2846,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V15.70';
+  const APP_VERSION = 'V15.71';
   // ===== Pantalla de inicio: versión, sonido corto y salida (5-11-2026) =====
   (function(){
     const sp = document.getElementById('inicioSplash'); if(!sp) return;
@@ -13849,4 +13850,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Meta" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V15.70 · App Amable Meta · 2026-11-18 09:28==== -->
+<!-- ==== Fin del index V15.71 · App Amable Meta · 2026-11-18 09:33==== -->
