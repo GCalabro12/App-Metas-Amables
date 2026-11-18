@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V15.71 · App Amable Meta · 2026-11-18 09:33==== -->
+<!-- ==== index V15.72 · App Amable Meta · 2026-11-18 09:37==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1715,6 +1715,11 @@ html.ocultar-practi .hablar-bajo{display:none}
 .simp-puntos span{width:9px;height:9px;border-radius:50%;background:#D8D2C4}.simp-puntos span.on{background:#2F4A22}
 .simp-nav{display:flex;gap:10px}.simp-nav .btn{flex:1;text-align:center}
 html.ocultar-fondo body,html.ocultar-fondo .riego-capa{background:#fff!important}
+/* Tema oscuro con «Mostrar» sin fondo o con fondo de imagen (18-11-2026, aviso de Maru): el fondo se quedaba blanco y la letra clara
+   del tema oscuro no se leía (en el Viaje, títulos casi invisibles y la meta cosechada en amarillo). Ahora el fondo también es oscuro */
+html.ocultar-fondo body.theme-dark{background:var(--bg)!important}
+body.theme-dark.con-fondo-nivel{background:var(--bg)}
+body.theme-dark.con-fondo-nivel::before{background:linear-gradient(rgba(23,24,27,.8),rgba(23,24,27,.8)),var(--fondo-nivel) center/cover no-repeat}
 html.ocultar-practi .practi-inicio,html.ocultar-practi .practi-bocadillo,html.ocultar-practi .hablar-practi-btn,html.ocultar-insignias #nivelBadgeBtn,html.ocultar-insignias #progNivel,html.ocultar-juego .juego-btn{display:none!important}   /* «Mostrar» */
 .guia-semana .guia-fila{display:flex;align-items:center;justify-content:flex-end;gap:10px;margin:2px 0 6px}.guia-semana .guia-plegar{display:inline-flex;align-items:center;gap:6px;font:700 15px Karla,sans-serif;white-space:nowrap}.guia-semana .guia-plegar-tri{font-size:22px;line-height:1}.guia-semana .ritual-guia{white-space:nowrap}
 .mostrar-caja{display:flex;flex-direction:column;align-items:center;gap:2px;width:100%;margin:22px 0 8px;padding:16px 12px;border:2.5px dashed #6E665E;border-radius:22px;background:rgba(255,255,255,.94);cursor:pointer;font-family:Karla,sans-serif;color:#4A443E;box-shadow:0 1px 4px rgba(0,0,0,.08)}
@@ -2846,7 +2851,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V15.71';
+  const APP_VERSION = 'V15.72';
   // ===== Pantalla de inicio: versión, sonido corto y salida (5-11-2026) =====
   (function(){
     const sp = document.getElementById('inicioSplash'); if(!sp) return;
@@ -13850,4 +13855,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Meta" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V15.71 · App Amable Meta · 2026-11-18 09:33==== -->
+<!-- ==== Fin del index V15.72 · App Amable Meta · 2026-11-18 09:37==== -->
