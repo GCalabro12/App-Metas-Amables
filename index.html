@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V15.86 · App Amable Meta · 2026-11-25 23:26==== -->
+<!-- ==== index V15.87 · App Amable Meta · 2026-11-25 23:28==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1479,6 +1479,8 @@ body:has(#app[data-vista="perfil"])::before{opacity:.22}
 .mont-play{left:auto !important;right:10px;top:83%;transform:translateY(-50%) !important;font-size:12.5px !important;padding:5px 11px !important;gap:5px !important;border-width:1.5px !important;animation:montPlayD 2.4s ease-in-out infinite !important}
 .mont-play span{font-size:9px !important}
 @keyframes montPlayD{0%,100%{transform:translateY(-50%) scale(1)}50%{transform:translateY(-50%) scale(1.07)}}
+/* Entrada: sin el logo pequeño de arriba, que ya está el grande (25-11-2026) */
+#app[data-vista="pick"] > header.top{display:none !important}
 .fm-opcional{font:600 15px Karla,sans-serif;color:#6B6380;white-space:nowrap}
 .fm-admin{position:fixed;top:calc(10px + env(safe-area-inset-top));right:10px;z-index:61;display:flex;flex-direction:column;align-items:center;gap:3px}.fm-admin > div{display:flex;gap:6px}.fm-admin small{font:700 10.5px Karla,sans-serif;color:#5B3FA8;background:rgba(255,255,255,.85);border-radius:8px;padding:1px 6px}.fm-admin button{width:38px;height:38px;border:0;border-radius:50%;background:#FFD400;color:#3B2A86;font:800 15px Karla,sans-serif;box-shadow:0 2px 8px rgba(0,0,0,.15);cursor:pointer}
 [data-vista="formMeta"]:has(.fm-admin) .fm-prog{right:106px}
@@ -2858,7 +2860,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V15.86';
+  const APP_VERSION = 'V15.87';
   // ===== Pantalla de inicio: versión, sonido corto y salida (5-11-2026) =====
   (function(){
     const sp = document.getElementById('inicioSplash'); if(!sp) return;
@@ -13896,4 +13898,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Meta" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V15.86 · App Amable Meta · 2026-11-25 23:26==== -->
+<!-- ==== Fin del index V15.87 · App Amable Meta · 2026-11-25 23:28==== -->
