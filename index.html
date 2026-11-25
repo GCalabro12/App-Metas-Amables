@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V15.83 · App Amable Meta · 2026-11-25 23:16==== -->
+<!-- ==== index V15.84 · App Amable Meta · 2026-11-25 23:18==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2858,7 +2858,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   }
 
 
-  const APP_VERSION = 'V15.83';
+  const APP_VERSION = 'V15.84';
   // ===== Pantalla de inicio: versión, sonido corto y salida (5-11-2026) =====
   (function(){
     const sp = document.getElementById('inicioSplash'); if(!sp) return;
@@ -4904,7 +4904,7 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
     const url = 'juego-vallas.html';   // archivo aparte, en la misma web (9-11-2026; antes iba en base64 dentro del index)
     const ov = document.createElement('div');
     ov.className = 'juego-overlay';
-    ov.innerHTML = '<button type="button" class="back-btn juego-cerrar" aria-label="Volver">← Volver</button><button type="button" class="juego-girar"><i data-ico=ciclo></i>Girar pantalla</button><iframe title="Salta con Prácti" allow="autoplay"></iframe>';
+    ov.innerHTML = '<button type="button" class="back-btn juego-cerrar" aria-label="Volver">← Volver</button><button type="button" class="juego-girar"><i data-ico=ciclo></i>Girar pantalla</button><iframe title="Salta la valla con Prácti" allow="autoplay"></iframe>';
     ov.querySelector('iframe').src = url;
     // La música oficial suena solo mientras se juega y si el botón del juego está en «Sonido: sí»
     const ifr = ov.querySelector('iframe');
@@ -10842,12 +10842,16 @@ lo que haces cada día es lo que vas a ser.`;
   function fechaCorta(x){ return x.getDate() + ' ' + ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sept', 'oct', 'nov', 'dic'][x.getMonth()]; }
   function guiaVistaAlgunaVez(){ try { return !!localStorage.getItem(claveGuiaVista()); } catch(e){ return false; } }
   function hoyISO(){ const t = ahoraRegistro(); return t.getFullYear() + '-' + String(t.getMonth() + 1).padStart(2, '0') + '-' + String(t.getDate()).padStart(2, '0'); }
-  function extrasViaje(){ return [
-    { titulo: 'Comparte una frase con alguien', sub: 'Elige una frase motivadora y regálasela', ir: 'frases' },
-    { titulo: 'Elige una música para tu práctica', sub: 'La misma música, cada vez: será tu señal', ir: 'musica' },
-    { titulo: 'Habla con Prácti', sub: 'Cuéntale cómo te va o pregúntale una duda', ir: 'habla' },
-    { titulo: 'Juega a Salta con Prácti', sub: 'Un respiro divertido de un minuto', ir: 'juego' }
-  ]; }
+  function extrasViaje(){
+    const l = [
+      { titulo: 'Comparte una frase con alguien', sub: 'Elige una frase motivadora y regálasela', ir: 'frases' },
+      { titulo: 'Elige una música para tu práctica', sub: 'La misma música, cada vez: será tu señal', ir: 'musica' },
+      { titulo: 'Habla con Prácti', sub: 'Cuéntale cómo te va o pregúntale una duda', ir: 'habla' }
+    ];
+    // Es el mismo juego de Inicio: solo se propone cuando ya está desbloqueado (15 días registrados) y no está quitado en «Mostrar» (25-11-2026)
+    if(premioRetoDesbloqueado('juego') && !oculto('juego')) l.push({ titulo: 'Salta la valla con Prácti', sub: 'Un minuto de juego: cada valla es un obstáculo que superas', ir: 'juego' });
+    return l;
+  }
   // ===== Pausa para reflexionar sobre la meta (cuando alguien deja de practicar o de entrar) =====
   // Sale si lleva 6 días sin marcar su práctica o si vuelve tras 5 días o más sin abrir la app.
   // Una vez respondida, no vuelve a salir en 7 días.
@@ -13892,4 +13896,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Meta" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V15.83 · App Amable Meta · 2026-11-25 23:16==== -->
+<!-- ==== Fin del index V15.84 · App Amable Meta · 2026-11-25 23:18==== -->
