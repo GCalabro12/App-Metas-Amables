@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V15.128 · App Amable Meta · 2026-11-26 18:53==== -->
+<!-- ==== index V15.129 · App Amable Meta · 2026-11-26 18:55==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2877,7 +2877,7 @@ body .acerca .ver-btn{display:block;margin:0 0 10px;padding:0;font-size:12px;fon
   }
 
 
-  const APP_VERSION = 'V15.128';
+  const APP_VERSION = 'V15.129';
   // ===== Pantalla de inicio: versión, sonido corto y salida (5-11-2026) =====
   (function(){
     const sp = document.getElementById('inicioSplash'); if(!sp) return;
@@ -6204,14 +6204,9 @@ body .acerca .ver-btn{display:block;margin:0 0 10px;padding:0;font-size:12px;fon
         tarjeta('habla', 'Habla con Prácti', 'Pregúntale lo que quieras', '<span class="util-burbuja">Hola</span>' + practiHTML('saludo', '🦉', 84))
       + tarjeta('formacion', 'Formación', 'Libro, cuadrantes y módulos', practiHTML('formacion', '🦉', 108))
       + tarjeta('frases', 'Frases motivadoras', 'Elige un fondo y compártela', '<span class="util-mini-frase" style="background:center/cover url(' + FONDOS_FOTOS.practi + ')"></span>')
-      + tarjeta('musica', 'Música motivacional', 'Música para acompañarte mientras usas la app', practiHTML('guitarra', '🎸', 120));
+      + tarjeta('musica', 'Música motivacional', 'Música para acompañarte mientras usas la app', practiHTML('guitarra', '🎸', 120))
++ (oculto('juego') ? '' : tarjeta('juego', 'Salta la valla con Prácti', (premioRetoDesbloqueado('juego') ? 'Un minuto de juego: cada valla es un obstáculo que superas' : 'Se desbloquea al registrar 15 días (llevas ' + diasRegistradosReto() + ')'), practiHTML('salto', '🎮', 120)));
     app.appendChild(caja);
-    // El juego «Salta la valla con Prácti» (antes en Inicio, desde el 26-11-2026 aquí)
-    if(!oculto('juego')){
-      const jg = el('<button type="button" class="util-nov" style="background:#FFF4D6"><span class="util-ico">' + practiHTML('salto', '', 34, 'una-vez') + '</span><span><b>Salta la valla con Prácti</b><small>' + (premioRetoDesbloqueado('juego') ? 'Un minuto de juego: cada valla es un obstáculo que superas' : 'Se desbloquea cuando registres 15 días (llevas ' + diasRegistradosReto() + ')') + '</small></span><span class="opcion-flecha">›</span></button>').firstElementChild;
-      jg.onclick = abrirJuegoVallas;
-      app.appendChild(jg);
-    }
     // Al final de todo, más pequeños: la simplicidad voluntaria, el recorrido guiado y las novedades de cada versión
     const simp = el('<button type="button" class="util-nov" style="background:#EEF5E6"><span class="util-ico"><i data-ico=hoja></i></span><span><b>Amable Meta: la simplicidad voluntaria</b><small>'
       + 'Por qué la app es sencilla, y cómo elegir qué ver' + '</small></span><span class="opcion-flecha">›</span></button>').firstElementChild;
@@ -6230,6 +6225,7 @@ body .acerca .ver-btn{display:block;margin:0 0 10px;padding:0;font-size:12px;fon
       if(u === 'frases'){ state.view = 'frases'; window.scrollTo(0,0); render(); return; }
       if(u === 'habla'){ state.hablaDesdeInicio = false; state.view = 'habla'; window.scrollTo(0,0); render(); return; }
       if(u === 'musica'){ state.view = 'musica'; window.scrollTo(0,0); render(); return; }
+    if(u === 'juego'){ abrirJuegoVallas(); return; }
       alert(u === 'habla' ? 'Muy pronto podrás hablar con Prácti aquí. ' : 'Muy pronto tendrás aquí música para motivarte. ');
     });
   }
@@ -14021,4 +14017,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Meta" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V15.128 · App Amable Meta · 2026-11-26 18:53==== -->
+<!-- ==== Fin del index V15.129 · App Amable Meta · 2026-11-26 18:55==== -->
