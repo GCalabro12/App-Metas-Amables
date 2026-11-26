@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V15.102 · App Amable Meta · 2026-11-26 16:51==== -->
+<!-- ==== index V15.103 · App Amable Meta · 2026-11-26 17:23==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2877,7 +2877,7 @@ body .acerca .ver-btn{display:block;margin:0 0 10px;padding:0;font-size:12px;fon
   }
 
 
-  const APP_VERSION = 'V15.102';
+  const APP_VERSION = 'V15.103';
   // ===== Pantalla de inicio: versión, sonido corto y salida (5-11-2026) =====
   (function(){
     const sp = document.getElementById('inicioSplash'); if(!sp) return;
@@ -3331,11 +3331,12 @@ body .acerca .ver-btn{display:block;margin:0 0 10px;padding:0;font-size:12px;fon
     if(!state.me || !state.datosOk) return null;
     const faltan = faltaPreparar().filter(x => x.k !== 'inst' && !(x.k === 'push' && usaGrowPanel()));   // instalar ya tiene su botón arriba; el aviso diario, en Grow Panel
     if(!faltan.length) return null;
-    try { const luego = Number(localStorage.getItem('prep_luego_' + state.me) || 0); if(Date.now() - luego < 7 * 86400000) return null; } catch(e){}
+    // Tras un «Ahora no» en la bienvenida, el recuadro espera 3 días, salvo justo después de registrar (primer registro): es el mejor momento para pedir el aviso diario (revisión 4.1, 26-11-2026)
+    try { const luego = Number(localStorage.getItem('prep_luego_' + state.me) || 0); if(Date.now() - luego < 7 * 86400000){ const trasRegistro = localStorage.getItem('prep_bienv_' + state.me) === '1' && localStorage.getItem('prep_tras_' + state.me) !== '1' && registradoHoy(); if(!trasRegistro) return null; } } catch(e){}
     const c = el('<div class="card prep-card"><p class="prep-card-tit"><i data-ico=engranaje></i>Te falta activar ' + faltan.map(x => ({ push: 'el aviso diario', wa: 'los mensajes por WhatsApp', em: 'los emails' })[x.k]).join(' y ') + '</p>'
       + '<p class="prep-card-sub">Te ayuda a no abandonar tu meta.</p><div class="prep-hueco"></div><button type="button" class="link-quiet prep-luego">Ahora no</button></div>').firstElementChild;
     c.querySelector('.prep-hueco').replaceWith(listaPreparar(() => { if(!faltaPreparar().filter(x => x.k !== 'inst' && !(x.k === 'push' && usaGrowPanel())).length) c.remove(); }, true));
-    c.querySelector('.prep-luego').onclick = () => { try { localStorage.setItem('prep_luego_' + state.me, String(Date.now())); } catch(e){} c.remove(); };
+    c.querySelector('.prep-luego').onclick = () => { try { localStorage.setItem('prep_luego_' + state.me, String(Date.now())); localStorage.setItem('prep_tras_' + state.me, '1'); } catch(e){} c.remove(); };
     return c;
   }
 
@@ -3398,7 +3399,7 @@ body .acerca .ver-btn{display:block;margin:0 0 10px;padding:0;font-size:12px;fon
     app.appendChild(nodo);
     sig.onclick = () => {
       // 26-11-2026 (revisión 4.1): tras un «Ahora no» a los permisos, el recuadro de Inicio no vuelve a salir hasta pasados 3 días
-      if(paso === 4 && faltaPreparar().length){ try { localStorage.setItem('prep_luego_' + state.me, String(Date.now() - 4 * 86400000)); } catch(e){} }
+      if(paso === 4 && faltaPreparar().length){ try { localStorage.setItem('prep_luego_' + state.me, String(Date.now() - 4 * 86400000)); localStorage.setItem('prep_bienv_' + state.me, '1'); } catch(e){} }
       if(paso < 5){ state.altaPaso = paso + 1; }
       else if(state.altaPrueba){ state.altaPrueba = false; state.altaPaso = null; state.view = 'panelFac'; }
       else { try{ localStorage.removeItem('ma_alta_' + state.me); }catch(e){} state.altaPaso = null; state.view = 'panel'; state.panelSub = null; }
@@ -13946,4 +13947,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Meta" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V15.102 · App Amable Meta · 2026-11-26 16:51==== -->
+<!-- ==== Fin del index V15.103 · App Amable Meta · 2026-11-26 17:23==== -->
