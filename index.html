@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V15.98 · App Amable Meta · 2026-11-26 13:19==== -->
+<!-- ==== index V15.99 · App Amable Meta · 2026-11-26 13:20==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2877,7 +2877,7 @@ body .acerca .ver-btn{display:block;margin:0 0 10px;padding:0;font-size:12px;fon
   }
 
 
-  const APP_VERSION = 'V15.98';
+  const APP_VERSION = 'V15.99';
   // ===== Pantalla de inicio: versión, sonido corto y salida (5-11-2026) =====
   (function(){
     const sp = document.getElementById('inicioSplash'); if(!sp) return;
@@ -13634,7 +13634,7 @@ lo que haces cada día es lo que vas a ser.`;
             : '')
         + `<label class="note-label" for="fmCampo" style="margin-top:6px">${p.nota}</label><textarea id="fmCampo" style="min-height:80px;width:100%;box-sizing:border-box;font-size:16px">${escapeAttr((fm.notas && fm.notas[p.id]) || '')}</textarea>`;
     }
-    else campo = p.opciones.map(op => {
+    else campo = p.opciones.filter(op => !(Array.isArray(op) && /^Voy a continuar/.test(op[1]) && !(((state.gamifica || {}).datosFormulario || {}).metaTexto || fm.seguir || valor === op[1]))).map(op => {
       const [txt, v] = Array.isArray(op) ? op : [op, op];
       const sel = valor === v;
       return `<button type="button" class="fm-op opcion-inicio${sel ? ' sel' : ''}" data-v="${escapeAttr(v)}" style="width:100%;text-align:left;margin:0 0 8px;${sel ? 'border:2px solid #C9942D;background:#F6EBD3' : ''}"><span class="opcion-tx"><b style="font-weight:${sel ? 700 : 500}">${txt}</b></span></button>`;
@@ -13928,4 +13928,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Meta" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V15.98 · App Amable Meta · 2026-11-26 13:19==== -->
+<!-- ==== Fin del index V15.99 · App Amable Meta · 2026-11-26 13:20==== -->
