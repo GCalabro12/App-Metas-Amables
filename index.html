@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V15.109 · App Amable Meta · 2026-11-26 17:59==== -->
+<!-- ==== index V15.110 · App Amable Meta · 2026-11-26 18:01==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2877,7 +2877,7 @@ body .acerca .ver-btn{display:block;margin:0 0 10px;padding:0;font-size:12px;fon
   }
 
 
-  const APP_VERSION = 'V15.109';
+  const APP_VERSION = 'V15.110';
   // ===== Pantalla de inicio: versión, sonido corto y salida (5-11-2026) =====
   (function(){
     const sp = document.getElementById('inicioSplash'); if(!sp) return;
@@ -6077,7 +6077,7 @@ body .acerca .ver-btn{display:block;margin:0 0 10px;padding:0;font-size:12px;fon
     h = plegable('diag', '<i data-ico=llave></i>Datos de la versión', '<div id="pfDiagHueco"></div>') + h;   // el resumen ya no se ve sin desplegar
     // Mapa de la app (flujo de usuario): página privada de Gustavo en claude.ai; copia en «Documentos y sesiones/Mapa de Amable Vision.html»
     h += '<a class="card pf-pantalla" href="' + MAPA_APP_URL + '" target="_blank" rel="noopener" style="text-decoration:none;align-items:center;margin-top:14px">' + mini('#F6F8F3', '#4E7F2A', '<i data-ico=mapa></i>')
-      + '<span class="pf-pantalla-tx"><b>Mapa de la app (flujo de usuario)</b><small>Todos los recorridos de la persona, pantalla a pantalla, en un esquema.</small><em>Abrir el mapa ↗</em></span></a>';
+      + '<span class="pf-pantalla-tx"><b>El árbol del Mapa de Metas Amables</b><small>Todos los recorridos de la persona, pantalla a pantalla, y lo que va apareciendo con los días.</small><em>Abrir el árbol ↗</em></span></a>';
     h += plegable('esporadicas', '<i data-ico=ojo></i>Pantallas de acceso esporádico', '<p class="pf-gris" style="margin:0 0 10px;font-size:13.5px">Salen solo en momentos concretos. Toca una para verla tal como la ve la persona (sin guardar nada).</p>'
       + GRUPOS_ESPORADICAS.map(([g, titulo]) => '<p class="pf-sub" style="margin:14px 0 8px">' + titulo + '</p>' + pantallasEsporadicas().map((x, i) => x.grupo !== g ? '' : '<button type="button" class="card pf-pantalla" data-esporadica="' + i + '">' + x.img + '<span class="pf-pantalla-tx"><b>' + x.tit + '</b><small>' + x.cuando + '</small><em>Ver la pantalla ›</em></span></button>').join('')).join(''), false);
     h += `<button type="button" class="pf-btn pf-actualizar" id="pfActualizar">${p.cargando ? '<i data-ico=espera></i>Actualizando…' : '<i data-ico=ciclo></i>Actualizar'}</button>`;
@@ -13989,4 +13989,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Meta" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V15.109 · App Amable Meta · 2026-11-26 17:59==== -->
+<!-- ==== Fin del index V15.110 · App Amable Meta · 2026-11-26 18:01==== -->
