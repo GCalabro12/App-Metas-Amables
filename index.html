@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V15.107 · App Amable Meta · 2026-11-26 17:50==== -->
+<!-- ==== index V15.108 · App Amable Meta · 2026-11-26 17:57==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2877,7 +2877,7 @@ body .acerca .ver-btn{display:block;margin:0 0 10px;padding:0;font-size:12px;fon
   }
 
 
-  const APP_VERSION = 'V15.107';
+  const APP_VERSION = 'V15.108';
   // ===== Pantalla de inicio: versión, sonido corto y salida (5-11-2026) =====
   (function(){
     const sp = document.getElementById('inicioSplash'); if(!sp) return;
@@ -8540,7 +8540,7 @@ lo que haces cada día es lo que vas a ser.`;
           : (state.view === 'practicaSemanal' || state.view === 'carta' || state.view === 'historial' || state.view === 'calendarioPracticas') ? 'b'
           : (state.view === 'contrato' || state.view === 'viaje' || state.view === 'progreso') ? 'neutro'
           : state.view === 'posit' ? '0'
-          : state.view === 'panel' && state.panelSub === 's1' ? 'c'
+          : (state.view === 'panel' && state.panelSub === 's1') || ['checkin', 'sesionesCal', 'group', 'situacion'].includes(state.view) ? 'c'   // 26-11-2026: el fondo verde también en el compromiso del lunes, el calendario de sesiones, Mi grupo y la situación
           : state.view === 'panel' && state.panelSub === 's2' ? 'd'
           : (['utilidades','habla','frases','musica'].indexOf(state.view) >= 0 || (state.view === 'panel' && state.panelSub === 's5')) ? 'd' : '';
         if(paso === 'neutro'){ fondo = ''; }
@@ -13968,4 +13968,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Meta" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V15.107 · App Amable Meta · 2026-11-26 17:50==== -->
+<!-- ==== Fin del index V15.108 · App Amable Meta · 2026-11-26 17:57==== -->
