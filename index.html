@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V15.121 · App Amable Meta · 2026-11-26 18:31==== -->
+<!-- ==== index V15.122 · App Amable Meta · 2026-11-26 18:35==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2877,7 +2877,7 @@ body .acerca .ver-btn{display:block;margin:0 0 10px;padding:0;font-size:12px;fon
   }
 
 
-  const APP_VERSION = 'V15.121';
+  const APP_VERSION = 'V15.122';
   // ===== Pantalla de inicio: versión, sonido corto y salida (5-11-2026) =====
   (function(){
     const sp = document.getElementById('inicioSplash'); if(!sp) return;
@@ -9014,7 +9014,7 @@ lo que haces cada día es lo que vas a ser.`;
           + (guiaEnTarjeta ? '<div class="hueco-guia-semana"></div>'
              : boton('s3', 'ciclo-a' + (practicaBloqueada ? ' bloqueada' : '') + act('a'), 'a', 'Guía semanal', subGuia,
                 state.guiaTexto ? '<span class="etiqueta-recibida">Recibida</span>' : '', practicaBloqueada && '👑'))
-          + (verC ? flechaAbajo + '<div class="hueco-planta"></div>' : '')
+          + (verC ? flechaAbajo + '<div class="hueco-planta"></div><div class="hueco-progreso" style="margin-top:12px"></div>' : '')
           + (!verD ? '' : flechaAbajo
           // c y d juntos: el registro del lunes y, con el plan de sesiones, la próxima sesión
           + boton('s1', 'ciclo-c' + (sinSesiones ? ' bloqueada' : '') + (act('c') || act('d')), 'cpc', 'Grupo de apoyo' + infoBoton('Con el <b>' + (MODO_IOS ? 'grupo de apoyo' : 'Plan Guías + Grupo') + '</b>, cada <b>lunes</b> haces tu compromiso de la semana (cuántas veces vas a practicar) y, además, nos vemos en grupo cada 15 días por videollamada para ayudarnos.'),
@@ -9032,7 +9032,7 @@ lo que haces cada día es lo que vas a ser.`;
           app.appendChild(av);
         } } catch(e){}
         app.appendChild(opciones);
-        try { const tp = tarjetaPlantaInicio(); if(tp) app.appendChild(tp); } catch(e){ console.error('Planta de Inicio:', e); }
+        try { const hp = opciones.querySelector('.hueco-progreso'); if(hp){ const tp = tarjetaPlantaInicio(); if(tp) hp.replaceWith(tp); else hp.remove(); } } catch(e){ console.error('Planta de Inicio:', e); }
         try { if(localStorage.getItem('tour_' + state.me) === 'pendiente' && state.view === 'panel'){ localStorage.setItem('tour_' + state.me, 'visto'); setTimeout(iniciarTour, 900); } } catch(e){}
         // «Quiero hablar con Prácti» ya no sale en Inicio (10-11-2026, Gustavo): está en Utilidades
         const irDestino = destino => {
@@ -12744,7 +12744,7 @@ lo que haces cada día es lo que vas a ser.`;
     const c = el('<button type="button" class="card planta-inicio">' + escenaPlanta(d.nivel, true) + '<b class="planta-tit">Progreso con tu meta</b><div class="planta-fila">' + plantaSVG(b, 11, false)
       + '<span class="planta-tx"><small>En tu planta llevas <b>' + b.hojas + (b.hojas === 1 ? ' hoja' : ' hojas') + '</b>'
       + (b.flores ? ' y <b>' + b.flores + (b.flores === 1 ? ' flor' : ' flores') + '</b>' : '') + '.</small>'
-      + '<small>Estás en el nivel <b>' + BADGE_SCALE[d.nivel].label + '</b> de tu montaña (año ' + d.anio + '), hasta el ' + finAnio.getDate() + ' de ' + monthNamesEs[finAnio.getMonth()] + ' de ' + finAnio.getFullYear() + '.</small></span></div></button>').firstElementChild;
+      + '</span></div></button>').firstElementChild;   // (26-11-2026, Gustavo: el nivel y el año se ven al tocar Progreso, no aquí)
     c.onclick = () => { state.view = 'progreso'; window.scrollTo(0, 0); render(); };
     return c;
   }
@@ -14012,4 +14012,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Meta" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V15.121 · App Amable Meta · 2026-11-26 18:31==== -->
+<!-- ==== Fin del index V15.122 · App Amable Meta · 2026-11-26 18:35==== -->
