@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V15.105 · App Amable Meta · 2026-11-26 17:34==== -->
+<!-- ==== index V15.106 · App Amable Meta · 2026-11-26 17:40==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1310,7 +1310,7 @@ textarea.ms-nombre-in:focus{outline:none;border-color:#C9942D;box-shadow:0 0 0 3
    por debajo de las animaciones del registro (sol, mariposa, brillos, flecha): el navegador las pinta en una capa aparte, encima de las
    animaciones, y el WebView de Android a veces deja esa capa sin dibujar. En el registro van sin posición: se pintan con el resto de la pantalla.
    OJO: debajo de esas animaciones no poner nada con position, opacity menor que 1, transform ni filter. */
-.riego-capa .ms-dia{position:static}.ms-dia span.ms-nveces{color:#FFE066;opacity:1;font-size:11px}
+.ms-dia::after{content:"";position:absolute;inset:-2px;border-radius:50%}.riego-capa .ms-dia::after{display:none}.riego-capa .ms-dia{position:static}.ms-dia span.ms-nveces{color:#FFE066;opacity:1;font-size:11px}
 /* Varias veces el mismo día: «2✓» pequeño en amarillo encima del número */
 .ms-dia-m[data-veces]::before{content:attr(data-veces) '✓';position:absolute;top:2px;left:0;right:0;font-size:9.5px;font-weight:800;line-height:1;text-align:center;color:#FFE066}.ms-dia b{font-size:14px;line-height:1.1}
 .riego-capa .rp-semana{width:min(420px,100%);margin:16px auto 0;box-sizing:border-box;border:2px solid rgba(169,50,38,.35);border-radius:20px;background:rgba(255,255,255,.92);text-align:left}
@@ -2877,7 +2877,7 @@ body .acerca .ver-btn{display:block;margin:0 0 10px;padding:0;font-size:12px;fon
   }
 
 
-  const APP_VERSION = 'V15.105';
+  const APP_VERSION = 'V15.106';
   // ===== Pantalla de inicio: versión, sonido corto y salida (5-11-2026) =====
   (function(){
     const sp = document.getElementById('inicioSplash'); if(!sp) return;
@@ -4556,7 +4556,7 @@ body .acerca .ver-btn{display:block;margin:0 0 10px;padding:0;font-size:12px;fon
     let s = '<div class="ms-semana">';
     for(let k = 6; k >= 0; k--){
       const d = new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate() - k), iso = isoLocal(d), L = DIAS_SEMANA[(d.getDay() + 6) % 7], v = vecesDiaSencilla(m, iso);
-      s += '<div class="ms-col"><button type="button" class="ms-dia' + claseDiaSencilla(m, iso, L) + '" data-iso="' + iso + '" data-l="' + L + '" aria-label="' + letraVer(L) + ' ' + d.getDate() + (v > 1 ? ', ' + v + ' veces' : '') + '">'
+      s += '<div class="ms-col"><button type="button" class="ms-dia' + claseDiaSencilla(m, iso, L) + '" data-iso="' + iso + '" data-l="' + L + '" aria-label="' + nombreDia(L) + ' ' + d.getDate() + estadoDia(v, false) + '">'
         + (v > 1 ? '<span class="ms-nveces">' + v + '✓</span>' : '<span>' + letraVer(L) + '</span>') + '<b>' + d.getDate() + '</b></button>'
         + (iso === hoyIso ? '<small>HOY</small>' : '') + '</div>';
     }
@@ -9990,6 +9990,24 @@ lo que haces cada día es lo que vas a ser.`;
   const DIAS_SEMANA = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
   // Lo que se ve: en inglés, M T W T F S S (11-11-2026, Gustavo); lo que se guarda no cambia
   function letraVer(L){ return IDIOMA === 'en' ? ({ L: 'M', M: 'T', X: 'W', J: 'T', V: 'F', S: 'S', D: 'S' }[L] || L) : L; }
+  // Nombre que lee el lector de pantalla (revisión 5.2, 26-11-2026): «miércoles 25, hecho» en vez de «X 25»
+  function nombreDia(L){ return (IDIOMA === 'en' ? { L: 'Monday', M: 'Tuesday', X: 'Wednesday', J: 'Thursday', V: 'Friday', S: 'Saturday', D: 'Sunday' } : { L: 'lunes', M: 'martes', X: 'miércoles', J: 'jueves', V: 'viernes', S: 'sábado', D: 'domingo' })[L] || L; }
+  // Revisión 5.3 (26-11-2026): los bloques de Inicio y las tarjetas llevan botones dentro de botones (el «i» de ayuda), y algunos lectores
+  // de pantalla se quedan sin nombre. Se les pone como nombre su propio texto visible (sin la «i» ni las flechas), y se renueva si cambia.
+  function nombrarBotones(raiz){
+    try {
+      raiz.querySelectorAll('.opcion-inicio, .ciclo-btn, .ciclo-formacion, .planta-card, .planta-inicio, .ritual-card[role="button"]').forEach(b => {
+        if(b.getAttribute('aria-label') && !b.dataset.autoNombre) return;
+        if(b.querySelector('input, textarea, select')) return;
+        const c = b.cloneNode(true);
+        c.querySelectorAll('.info-i, .opcion-flecha, [aria-hidden="true"], svg, script, style').forEach(x => x.remove());
+        const t = c.textContent.replace(/\s+/g, ' ').trim();
+        if(t){ b.setAttribute('aria-label', t.slice(0, 220)); b.dataset.autoNombre = '1'; }
+      });
+    } catch(e){}
+  }
+  try { const raizApp = document.getElementById('app'); if(raizApp && window.MutationObserver){ let tmNombres; new MutationObserver(() => { clearTimeout(tmNombres); tmNombres = setTimeout(() => nombrarBotones(raizApp), 200); }).observe(raizApp, { childList: true, subtree: true }); } } catch(e){}
+  function estadoDia(v, fl){ const en = IDIOMA === 'en'; return v > 0 ? (en ? ', done' : ', hecho') + (v > 1 ? ', ' + v + (en ? ' times' : ' veces') : '') : fl ? (en ? ', not done' : ', no hecho') : (en ? ', not logged' : ', sin registrar'); }
   // «Días hechos» guarda cada día y cuántas veces: «L,M:3,X» (sin número = 1 vez, como antes)
   function leerDias(texto){
     const o = {};
@@ -10038,7 +10056,7 @@ lo que haces cada día es lo que vas a ser.`;
         <div class="ms-semana">${dias().map(f => {
           const d = letraDe(f), v = diaHechoFecha(f), iso = isoLocal(f), fl = !v && diaFalloFecha(f);
           const nota = notaDiaGuia(f);
-          return '<div class="ms-col"><button type="button" class="ms-dia toca' + (v ? ' hecho' : fl ? ' fallo' : '') + '" data-iso="' + iso + '" aria-label="' + letraVer(d) + ' ' + f.getDate() + (v > 1 ? ', ' + v + ' veces' : '') + (nota ? ', con comentario' : '') + '">'
+          return '<div class="ms-col"><button type="button" class="ms-dia toca' + (v ? ' hecho' : fl ? ' fallo' : '') + '" data-iso="' + iso + '" aria-label="' + nombreDia(d) + ' ' + f.getDate() + estadoDia(v, fl) + (nota ? (IDIOMA === 'en' ? ', with a note' : ', con comentario') : '') + '">'
             + (v > 1 ? '<span class="ms-nveces">' + v + '✓</span>' : '<span>' + letraVer(d) + '</span>') + '<b>' + f.getDate() + '</b></button>' + (iso === hoyIso ? '<small>HOY</small>' : '') + (nota ? '<small class="dia-nota" title="' + escapeAttr(nota) + '">•••</small>' : '') + '</div>';
         }).join('')}</div>
         <p class="dias-msg" style="font-size:12px;color:var(--ink-soft);margin:8px 0 0">${resumen7() ? 'Últimos 7 días: ' + resumen7() : 'Toca el día en que hiciste tu práctica.'}</p>`;
@@ -13950,4 +13968,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Meta" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V15.105 · App Amable Meta · 2026-11-26 17:34==== -->
+<!-- ==== Fin del index V15.106 · App Amable Meta · 2026-11-26 17:40==== -->
