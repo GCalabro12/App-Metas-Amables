@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V15.110 · App Amable Meta · 2026-11-26 18:01==== -->
+<!-- ==== index V15.111 · App Amable Meta · 2026-11-26 18:06==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2877,7 +2877,7 @@ body .acerca .ver-btn{display:block;margin:0 0 10px;padding:0;font-size:12px;fon
   }
 
 
-  const APP_VERSION = 'V15.110';
+  const APP_VERSION = 'V15.111';
   // ===== Pantalla de inicio: versión, sonido corto y salida (5-11-2026) =====
   (function(){
     const sp = document.getElementById('inicioSplash'); if(!sp) return;
@@ -7404,7 +7404,8 @@ lo que haces cada día es lo que vas a ser.`;
       : v === 'practicaSemanal' ? ['c', 'Registro', '#B0201A']
       : (v === 'panel' && s === 's1') || ['checkin', 'sesionesCal', 'group', 'situacion'].includes(v) ? ['d', 'Grupo apoyo', '#2E6B1F']   // 26-11-2026: también «Mi grupo», calendario de sesiones, compromiso del lunes y situación del grupo
       : v === 'utilidades' ? ['', 'Utilidades', '#5B3FA8']
-      : v === 'progreso' ? ['', 'Progreso', ''] : null;
+      : v === 'progreso' ? ['', 'Progreso', '']
+      : v === 'viaje' ? ['', 'Viaje', ''] : null;   // 26-11-2026: Viaje también con flecha, logo y título
     if(!z) return;
     const viejo = app.querySelector('.topbar #btnVolver') || app.querySelector('.back-btn.volver-alto') || app.querySelector('.back-btn.volver-arriba');
     const accion = (viejo && viejo.onclick) || irAlPanel;
@@ -13989,4 +13990,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Meta" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V15.110 · App Amable Meta · 2026-11-26 18:01==== -->
+<!-- ==== Fin del index V15.111 · App Amable Meta · 2026-11-26 18:06==== -->
