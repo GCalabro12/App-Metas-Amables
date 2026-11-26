@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V15.135 · App Amable Meta · 2026-11-26 19:07==== -->
+<!-- ==== index V15.136 · App Amable Meta · 2026-11-26 19:12==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2880,7 +2880,7 @@ body .acerca .ver-btn{display:block;margin:0 0 10px;padding:0;font-size:12px;fon
   }
 
 
-  const APP_VERSION = 'V15.135';
+  const APP_VERSION = 'V15.136';
   // ===== Pantalla de inicio: versión, sonido corto y salida (5-11-2026) =====
   (function(){
     const sp = document.getElementById('inicioSplash'); if(!sp) return;
@@ -12462,7 +12462,8 @@ lo que haces cada día es lo que vas a ser.`;
       if(!w.lunes) return -1;
       const jue = new Date(w.lunes); jue.setDate(jue.getDate() + 3);
       const m = jue.getMonth();
-      return !qMeses || qMeses.includes(m) ? m : (j < n / 2 ? qMeses[0] : qMeses[2]);
+      // 26-11-2026: cada semana cuenta en el mes de su lunes. Antes, las semanas de septiembre (si el trimestre empezó a final de septiembre) se pintaban como octubre
+      return !qMeses ? m : w.lunes.getMonth();
     };
     const meses = [];
     b.semanas.forEach((w, j) => {
@@ -14020,4 +14021,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Meta" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V15.135 · App Amable Meta · 2026-11-26 19:07==== -->
+<!-- ==== Fin del index V15.136 · App Amable Meta · 2026-11-26 19:12==== -->
