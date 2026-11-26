@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V15.97 · App Amable Meta · 2026-11-26 13:00==== -->
+<!-- ==== index V15.98 · App Amable Meta · 2026-11-26 13:19==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2877,7 +2877,7 @@ body .acerca .ver-btn{display:block;margin:0 0 10px;padding:0;font-size:12px;fon
   }
 
 
-  const APP_VERSION = 'V15.97';
+  const APP_VERSION = 'V15.98';
   // ===== Pantalla de inicio: versión, sonido corto y salida (5-11-2026) =====
   (function(){
     const sp = document.getElementById('inicioSplash'); if(!sp) return;
@@ -10409,7 +10409,7 @@ lo que haces cada día es lo que vas a ser.`;
       opciones: ['Sí, seguro', 'Creo que sí', 'No estoy seguro/a'] },
     { id: '785855484', tipo: 'larga', titulo: 'Ajustemos tu meta para que sea amable', soloSi: r => /No estoy|Seguramente no/.test(r['99842027'] || ''),
       ayuda: 'Las metas amables funcionan mejor con un plazo realista. Escribe una meta más pequeña o un plazo más largo. Ej.: «En 1 mes, empezar a cuadrar la agenda los domingos; en 3 meses, que sea costumbre».' },
-    { id: '788104521', tipo: 'escala', titulo: 'Del 1 al 5, ¿cómo calificas tu capacidad actual para conseguir esta meta?', obligatoria: true },
+    // (La escala 1-5 de capacidad se quitó el 26-11-2026: se parecía a la anterior; al enviar se rellena sola a partir de ella)
     // Varias opciones + nota opcional: al Google Form (pregunta de texto) le llega todo junto
     // Una opción («¿lo has intentado?») y, si ya lo intentó, «¿con qué?» (varias) en la misma pantalla
     { id: '490104775', tipo: 'multi', titulo: '¿Lo has intentado antes?',
@@ -13489,7 +13489,7 @@ lo que haces cada día es lo que vas a ser.`;
   }
   function fmVisibles(){ return FM_PREGUNTAS.filter(p => (!p.soloSi || p.soloSi(state.fm.r)) && !(state.fm.saltar || []).includes(p.id)); }
   // Para enviar: todas las que tienen respuesta (también los datos que no se preguntaron)
-  function fmParaEnviar(){ return FM_PREGUNTAS.filter(p => (!p.soloSi || p.soloSi(state.fm.r)) && state.fm.r[p.id]); }
+  function fmParaEnviar(){ const rr = state.fm.r; if(rr['99842027'] && !rr['788104521']) rr['788104521'] = /Sí/.test(rr['99842027']) ? '5' : /Creo/.test(rr['99842027']) ? '3' : '2'; return FM_PREGUNTAS.filter(p => (!p.soloSi || p.soloSi(state.fm.r)) && state.fm.r[p.id]); }
 
   function renderFormMeta(){
     renderBackTopbar('');
@@ -13928,4 +13928,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Meta" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V15.97 · App Amable Meta · 2026-11-26 13:00==== -->
+<!-- ==== Fin del index V15.98 · App Amable Meta · 2026-11-26 13:19==== -->
