@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V15.134 · App Amable Meta · 2026-11-26 19:03==== -->
+<!-- ==== index V15.135 · App Amable Meta · 2026-11-26 19:07==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2880,7 +2880,7 @@ body .acerca .ver-btn{display:block;margin:0 0 10px;padding:0;font-size:12px;fon
   }
 
 
-  const APP_VERSION = 'V15.134';
+  const APP_VERSION = 'V15.135';
   // ===== Pantalla de inicio: versión, sonido corto y salida (5-11-2026) =====
   (function(){
     const sp = document.getElementById('inicioSplash'); if(!sp) return;
@@ -12830,7 +12830,7 @@ lo que haces cada día es lo que vas a ser.`;
       + (dm ? '<div class="prog-vol"><button type="button" id="volMenos" aria-label="Bajar la música">−</button><input type="range" id="montVol" min="0" max="100" step="5" value="' + Math.round(volumenMontana() * 100) + '" aria-label="Volumen de la música de la montaña (a cero, sin música)"><button type="button" id="volMas" aria-label="Subir la música">+</button></div>' : '') + '</div>'
       + (dm ? ''
         + '<div class="card mont-card planta-fondo">' + escenaPlanta(dm.nivel) + '<h2 style="white-space:nowrap;font-size:clamp(15px,5vw,22px)">Tu planta de este trimestre</h2><p class="mont-sub" style="margin:2px 0 8px"><b>Tu meta del trimestre:</b> ' + (metaTrimestralTexto() ? '«' + escapeAttr(metaTrimestralTexto()) + '»' : 'aún sin definir') + '</p><div style="position:relative;display:flex;justify-content:center;padding-bottom:10px"><span class="planta-ley"><svg width="20" height="14" viewBox="0 0 20 14" aria-hidden="true"><g transform="rotate(-20 1 9)"><path d="M1 9 C5 2.5 14 3 19 9 C14 15 5 15.5 1 9 Z" fill="#639922"/><path d="M1 9 L16 9" stroke="#8FC35A" stroke-width="1"/></g></svg><span style="display:block;width:52px;line-height:1.1">= una semana</span></span>' + plantaSVG(dm.bancal(dm.actual), 30, true) + '<span style="position:absolute;left:calc(50% - 64px);top:16px">' + infoBoton('<ul class="info-lista" style="margin:0;padding-left:22px"><li style="margin:0 0 10px">Obtendrás una hoja por cada semana (ya sea que registres una emoción, el entorno o tu práctica).</li><li style="margin:0 0 10px">Cuantos más días registras, más grande es la hoja.</li><li style="margin:0">Te saldrá una flor si cumples tu compromiso de la semana.</li></ul>') + '</span></div></div>'
-        + '<div class="card mont-card"><h2 style="white-space:nowrap;font-size:clamp(15px,5vw,22px)">Tu montaña de progreso interior</h2><div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin:0 0 4px"><p class="mont-sub" style="margin:0;font-size:13px">Estás en el año ' + dm.anio + ', por ello tienes la insignia del ' + BADGE_SCALE[dm.nivel].label + '.</p>' + infoBoton('<ul class="info-lista" style="margin:0;padding-left:22px"><li style="margin:0 0 10px">Cada año tienes 4 plantas que sembrar, una por trimestre natural.</li><li style="margin:0 0 10px">Cada trimestre se siembra una planta trepadora nueva.</li><li style="margin:0">Estas plantas son las que te ayudarán a escalar tu montaña interior.</li></ul>') + '</div><p class="mont-sub" style="margin:0 0 6px;font-size:13px">' + (dm.nivel < 4 ? 'Pasarás al nivel ' + (dm.nivel + 2) + ', el ' + BADGE_SCALE[dm.nivel + 1].label + ', el 1 de ' + monthNamesEs[((dm.primerQ + dm.anio * 4) % 4) * 3] + ' de ' + Math.floor((dm.primerQ + dm.anio * 4) / 4) + '.' : 'Estás en el último nivel de tu montaña.') + '</p>'
+        + '<div class="card mont-card"><h2 style="white-space:nowrap;font-size:clamp(15px,5vw,22px)">Tu montaña de progreso interior</h2><div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin:0 0 4px"><p class="mont-sub" style="margin:0;font-size:13px">Estás en el año ' + dm.anio + ', por ello tienes la insignia del ' + BADGE_SCALE[dm.nivel].label + '.</p>' + infoBoton('<ul class="info-lista" style="margin:0;padding-left:22px"><li style="margin:0 0 10px">Cada año tienes 4 plantas que sembrar, una por trimestre natural.</li><li style="margin:0">Estas plantas son las que te ayudarán a escalar tu montaña interior.</li></ul>') + '</div><p class="mont-sub" style="margin:0 0 6px;font-size:13px">' + (dm.nivel < 4 ? 'Pasarás al nivel ' + (dm.nivel + 2) + ', el ' + BADGE_SCALE[dm.nivel + 1].label + ', el 1 de ' + monthNamesEs[((dm.primerQ + dm.anio * 4) % 4) * 3] + ' de ' + Math.floor((dm.primerQ + dm.anio * 4) / 4) + '.' : 'Estás en el último nivel de tu montaña.') + '</p>'
         + montanaConHistoria(dm) + leyendaMontana(dm) + '</div>' : '')
       + '<div class="progreso-grid">'
       + '<div class="progreso-dato"><b>' + racha + '</b><span>' + (racha === 1 ? 'día seguido' : 'días seguidos') + ' practicando</span></div>'
@@ -14020,4 +14020,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Meta" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V15.134 · App Amable Meta · 2026-11-26 19:03==== -->
+<!-- ==== Fin del index V15.135 · App Amable Meta · 2026-11-26 19:07==== -->
