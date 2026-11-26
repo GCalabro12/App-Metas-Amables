@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V15.141 · App Amable Meta · 2026-11-26 19:41==== -->
+<!-- ==== index V15.142 · App Amable Meta · 2026-11-26 19:47==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2883,7 +2883,7 @@ body .acerca .ver-btn{display:block;margin:0 0 10px;padding:0;font-size:12px;fon
   }
 
 
-  const APP_VERSION = 'V15.141';
+  const APP_VERSION = 'V15.142';
   // ===== Pantalla de inicio: versión, sonido corto y salida (5-11-2026) =====
   (function(){
     const sp = document.getElementById('inicioSplash'); if(!sp) return;
@@ -4105,7 +4105,7 @@ body .acerca .ver-btn{display:block;margin:0 0 10px;padding:0;font-size:12px;fon
     const capa = el('<div class="mostrar-capa" role="dialog" aria-modal="true" aria-label="Mostrar"><div class="mostrar-panel"><h2>Mostrar<button type="button" class="mostrar-x" aria-label="Cerrar">✕</button></h2><p class="mostrar-nota" style="margin:0;padding:10px 20px 0;font-size:13px;color:var(--ink-soft)">' + (pant === 'inicio' ? 'En la pantalla de inicio se mostrarán las cosas que marques con una tilde.' : 'En esta pantalla se mostrarán las cosas que marques con una tilde.') + '</p><div class="mostrar-lista">'
       + opc.map(o => '<label class="mostrar-op' + (o.fijo ? ' fijo' : '') + '"><input type="checkbox" data-k="' + o.k + '"' + (o.fijo || !fuera.includes(o.k) ? ' checked' : '') + (o.fijo ? ' disabled' : '') + '><span><b>' + escapeAttr(o.t) + '</b>' + (o.fijo ? '<small>Siempre</small>' : (o.d ? '<small>' + escapeAttr(o.d) + '</small>' : '')) + '</span></label>').join('')
       + '</div></div></div>').firstElementChild;
-    const cerrar = () => { capa.remove(); };
+    const cerrar = () => { capa.remove(); try { botonRegistra(); } catch(e){} };
     const guardarYCerrar = () => {
       const aqui = opc.map(o => o.k);   // lo de otras pantallas se queda como estaba
       const lista = ocultos().filter(k => !aqui.includes(k)).concat([...capa.querySelectorAll('input[data-k]')].filter(c => !c.disabled && !c.checked).map(c => c.dataset.k));
@@ -4114,7 +4114,7 @@ body .acerca .ver-btn{display:block;margin:0 0 10px;padding:0;font-size:12px;fon
     };
     capa.querySelector('.mostrar-x').onclick = guardarYCerrar;
     capa.onclick = e => { if(e.target === capa) guardarYCerrar(); };
-    document.body.appendChild(capa);
+    document.body.appendChild(capa); try { botonRegistra(); } catch(e){}
   }
 
   function lanzarAnimacion(tipo){
@@ -11791,7 +11791,7 @@ lo que haces cada día es lo que vas a ser.`;
     }
     const riego = !!document.querySelector('.riego-capa');
     // Solo en Inicio (26-11-2026, Gustavo); mientras está abierta la ventana de registrar, sigue como siempre
-    const fuera = !state.me || state.view !== 'panel' || !!state.panelSub || state.menuOpen;
+    const fuera = !state.me || state.view !== 'panel' || !!state.panelSub || state.menuOpen || !!document.querySelector('.mostrar-capa');
     if(!riego) b.hidden = fuera;
   }
   function abrirMomentoRiego(abrirEnAbonar){
@@ -14034,4 +14034,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Meta" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V15.141 · App Amable Meta · 2026-11-26 19:41==== -->
+<!-- ==== Fin del index V15.142 · App Amable Meta · 2026-11-26 19:47==== -->
