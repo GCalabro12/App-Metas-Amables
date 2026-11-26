@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V15.142 · App Amable Meta · 2026-11-26 19:47==== -->
+<!-- ==== index V15.143 · App Amable Meta · 2026-11-26 19:48==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2883,7 +2883,7 @@ body .acerca .ver-btn{display:block;margin:0 0 10px;padding:0;font-size:12px;fon
   }
 
 
-  const APP_VERSION = 'V15.142';
+  const APP_VERSION = 'V15.143';
   // ===== Pantalla de inicio: versión, sonido corto y salida (5-11-2026) =====
   (function(){
     const sp = document.getElementById('inicioSplash'); if(!sp) return;
@@ -5556,6 +5556,7 @@ body .acerca .ver-btn{display:block;margin:0 0 10px;padding:0;font-size:12px;fon
       <button class="menu-item mp-persona" id="miPerfilBtn"><span class="mp-avatar">${avMenu}</span><span class="mp-persona-tx"><b>${escapeAttr(state.me || '')}</b><small>${planMenu}</small></span></button>
       <div class="menu-divider"></div>
       <button class="menu-item" id="miPlanBtn">${icoMenu('plan')}Tu plan: ${state.plan === 'sesiones' ? 'Guías + Grupo' : (state.plan === 'guias' ? 'Guías' : 'Libre')}</button>
+      <button class="menu-item" id="mpActualizar" style="font-size:13.5px">${icoMenu('repetir')}<u>Buscar actualización</u> · ${APP_VERSION}</button>
       ${(MODO_PLAY || MODO_IOS) ? '' : '<button class="menu-item" id="facturacionBtn">' + icoMenu('tarjeta') + 'Facturación</button>'}
       <button class="menu-item" id="ajustesBtn">${icoMenu('engranaje')}Ajustes</button>
       <button class="menu-item" id="mpAyuda">${icoMenu('ayuda')}Centro de ayuda</button>
@@ -5571,6 +5572,7 @@ body .acerca .ver-btn{display:block;margin:0 0 10px;padding:0;font-size:12px;fon
     try { panel.querySelector('.mp-cuerpo').prepend(filaIdioma('mp-idioma')); } catch(e){}   // el idioma, lo primero del menú
     overlay.appendChild(panel);
     overlay.onclick = (e) => { if(e.target === overlay){ state.menuOpen = false; render(); } };
+    panel.querySelector('#mpActualizar').onclick = () => { buscarActualizacion(); };
     panel.querySelector('#miPlanBtn').onclick = () => {
       state.menuOpen = false;
       state.prevView = (state.view === 'planes') ? 'panel' : state.view;
@@ -14034,4 +14036,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Meta" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V15.142 · App Amable Meta · 2026-11-26 19:47==== -->
+<!-- ==== Fin del index V15.143 · App Amable Meta · 2026-11-26 19:48==== -->
