@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V15.96 · App Amable Meta · 2026-11-26 11:25==== -->
+<!-- ==== index V15.97 · App Amable Meta · 2026-11-26 13:00==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2877,7 +2877,7 @@ body .acerca .ver-btn{display:block;margin:0 0 10px;padding:0;font-size:12px;fon
   }
 
 
-  const APP_VERSION = 'V15.96';
+  const APP_VERSION = 'V15.97';
   // ===== Pantalla de inicio: versión, sonido corto y salida (5-11-2026) =====
   (function(){
     const sp = document.getElementById('inicioSplash'); if(!sp) return;
@@ -10395,9 +10395,6 @@ lo que haces cada día es lo que vas a ser.`;
   // Prácti (Gemini, vía Worker /repregunta) pide un detalle si la respuesta es corta o vaga.
   const FM_PREGUNTAS = [
     { id: '1139323880', tipo: 'corta', titulo: 'Nombre y apellido', obligatoria: true, datos: true },
-    { id: '82527459', tipo: 'corta', titulo: 'Ciudad y país de residencia', datos: true },
-    { id: '1313109576', tipo: 'opciones', titulo: 'Género', opciones: ['Mujer', 'Hombre', 'Prefiero no decirlo'], datos: true },
-    { id: '838787571', tipo: 'opciones', titulo: 'Franja de edad', opciones: ['Menor de 25', '25 a 34', '35 a 44', '45 a 54', '55 a 64', '65 o más'], datos: true },
     { id: '1469069724', tipo: 'opciones', titulo: '¿Cuál es tu disposición para hacer prácticas en este trimestre?', obligatoria: true,
       // [texto en la app, valor que espera el Google Form]
       opciones: ['Quiero comenzar una práctica nueva', 'Prefiero no hacer prácticas personales (me tomaré una pausa)',
@@ -10426,7 +10423,11 @@ lo que haces cada día es lo que vas a ser.`;
     { id: '701895149', tipo: 'chips', titulo: '¿Cómo sabrás cada mes que has avanzado?', obligatoria: true, ayuda: 'Puedes elegir varias.',
       opciones: ['Si lo he logrado', 'Si lo hago más días o más tiempo', 'Si se me hizo costumbre (hábito)', 'Si, cuando fallo, lo retomo sin culpa',
                  'Si me siento mejor', 'Si lo notan los demás'],
-      nota: 'Si es un resultado medible, escríbelo (opcional)', ejemplo: 'Ej.: leer 2 libros, meditar 20 días al mes' }
+      nota: 'Si es un resultado medible, escríbelo (opcional)', ejemplo: 'Ej.: leer 2 libros, meditar 20 días al mes' },
+    // Datos personales opcionales (solo se preguntan a quien aún no los dio): al final, para que la meta sea lo primero
+    { id: '82527459', tipo: 'corta', titulo: 'Ciudad y país de residencia', datos: true },
+    { id: '1313109576', tipo: 'opciones', titulo: 'Género', opciones: ['Mujer', 'Hombre', 'Prefiero no decirlo'], datos: true },
+    { id: '838787571', tipo: 'opciones', titulo: 'Franja de edad', opciones: ['Menor de 25', '25 a 34', '35 a 44', '45 a 54', '55 a 64', '65 o más'], datos: true }
   ];
   // Cualquier botón con la clase «fm-abrir» abre el formulario dentro de la app
   document.addEventListener('click', e => {
@@ -13927,4 +13928,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Meta" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V15.96 · App Amable Meta · 2026-11-26 11:25==== -->
+<!-- ==== Fin del index V15.97 · App Amable Meta · 2026-11-26 13:00==== -->
