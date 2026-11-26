@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V15.89 · App Amable Meta · 2026-11-26 10:43==== -->
+<!-- ==== index V15.90 · App Amable Meta · 2026-11-26 10:48==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1106,6 +1106,8 @@ body.theme-dark .guia-progreso{background:var(--surface)}
 .planta-reg.hecho{background:#E8F3E2;color:#2F5A23;border:2px solid #9CC58E}
 .planta-reg-lista{margin:0;font-size:14px;line-height:1.4;color:#5A4A48}
 .planta-ultimo{margin:6px 0 0;font-size:12px;line-height:1.3;color:var(--ink-soft)}
+/* Si el último registro no es de hoy: en rojo y negrita, como el título «Registro y compromiso» (26-11-2026, Gustavo) */
+.planta-ultimo.atras{color:#B0201A;font-weight:800}body.theme-dark .planta-ultimo.atras{color:#FF8A80}
 .planta-card .planta-tx b{color:#A93226}.planta-fig{position:relative;flex:none;display:block}.planta-fig img,.planta-fig .planta-anim{display:block;position:relative;z-index:1;mix-blend-mode:multiply;background:transparent !important}.planta-tutor{position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none;z-index:0}.planta-tutor.planta-lazo{z-index:2}.planta-card img{width:112px;height:auto;flex:none;border-radius:14px;background:#fff}
 .planta-tx{flex:1;min-width:0}.planta-tx b{display:block;font:700 18px Nunito,serif;color:#2F5A23}.planta-tx p{margin:4px 0 10px;font-size:14.5px;line-height:1.4}
 .tour-capa{position:fixed;inset:0;z-index:9000}
@@ -2865,7 +2867,7 @@ body .acerca .ver-btn{display:block;margin:0 0 10px;padding:0;font-size:12px;fon
   }
 
 
-  const APP_VERSION = 'V15.89';
+  const APP_VERSION = 'V15.90';
   // ===== Pantalla de inicio: versión, sonido corto y salida (5-11-2026) =====
   (function(){
     const sp = document.getElementById('inicioSplash'); if(!sp) return;
@@ -12106,7 +12108,7 @@ lo que haces cada día es lo que vas a ser.`;
     // Sin botón «Registra hoy» (26-11-2026, Gustavo): el botón fijo «Registra» ya lo hace. Solo se dice qué falta y, en pequeño, cuándo fue el último registro
     const dUlt = diasSinPractica(), txtUlt = dUlt === 0 ? 'hoy' : dUlt === 1 ? 'ayer' : dUlt <= 30 ? 'hace ' + dUlt + ' días' : '';
     const estadoReg = (reg ? '' : '<p class="planta-reg-lista">Te falta registrar tu emoción, tu entorno o tu práctica.</p>')
-      + (txtUlt ? '<p class="planta-ultimo">Último registro: ' + txtUlt + '</p>' : '');
+      + (txtUlt ? '<p class="planta-ultimo' + (dUlt >= 1 ? ' atras' : '') + '">Último registro: ' + txtUlt + '</p>' : '');
     const t = el('<div class="card planta-card ciclo-b" role="button" tabindex="0"><b class="planta-tit">' + letraPaso('c') + 'Registro y compromiso' + infoBoton('Aquí <b>registras cada día</b> tus sentimientos, tu entorno y si hiciste tu práctica: así riegas tu meta. Toca la tarjeta para ver tu semana, tu compromiso y tu calendario.') + '</b>'
       + '<div class="planta-fila"><span class="planta-fig" title="El tutor de tu planta es tu guía semanal">' + tutor + '<img src="' + e.img + '" alt="">' + lazo + '</span>'
       + '<div class="planta-tx">' + estadoReg + '</div></div>'
@@ -13917,4 +13919,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Meta" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V15.89 · App Amable Meta · 2026-11-26 10:43==== -->
+<!-- ==== Fin del index V15.90 · App Amable Meta · 2026-11-26 10:48==== -->
