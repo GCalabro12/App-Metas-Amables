@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V15.151 · App Amable Meta · 2026-11-26 20:21==== -->
+<!-- ==== index V15.152 · App Amable Meta · 2026-11-26 20:25==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2888,7 +2888,7 @@ body .acerca .ver-btn{display:block;margin:0 0 10px;padding:0;font-size:12px;fon
   }
 
 
-  const APP_VERSION = 'V15.151';
+  const APP_VERSION = 'V15.152';
   // ===== Pantalla de inicio: versión, sonido corto y salida (5-11-2026) =====
   (function(){
     const sp = document.getElementById('inicioSplash'); if(!sp) return;
@@ -7421,6 +7421,7 @@ lo que haces cada día es lo que vas a ser.`;
       : v === 'practicas' || (v === 'panel' && s === 's3') ? ['b', 'Guía semanal', '#2F5F96']
       : v === 'practicaSemanal' ? ['c', 'Registro', '#B0201A']
       : (v === 'panel' && s === 's1') || ['checkin', 'sesionesCal', 'group', 'situacion'].includes(v) ? ['d', 'Grupo apoyo', '#2E6B1F']   // 26-11-2026: también «Mi grupo», calendario de sesiones, compromiso del lunes y situación del grupo
+      : v === 'panel' && s === 's2' ? ['', 'Sesiones online', '#2E6B1F']
       : v === 'utilidades' ? ['', 'Utilidades', '#5B3FA8']
       : v === 'progreso' ? ['', 'Progreso', '']
       : v === 'viaje' ? ['', 'Viaje', ''] : null;   // 26-11-2026: Viaje también con flecha, logo y título
@@ -12805,7 +12806,9 @@ s += '<polyline points="' + Array.from({ length: 20 }, (x, i) => posBancal(i).jo
     document.querySelectorAll('.hn-capa').forEach(x => x.remove());
     const capa = el('<div class="hn-capa" role="dialog" aria-label="Historia del nivel ' + escapeAttr(BADGE_SCALE[n].label) + '"></div>').firstElementChild;
     let i = 0;
-    const pintar = () => {
+    const vistaAntes = state.view, subAntes = state.panelSub;
+const cerrarHN = ev => { if(ev){ ev.preventDefault(); ev.stopPropagation(); } capa.style.opacity = '0'; capa.querySelectorAll('video').forEach(v => { try { v.pause(); } catch(e){} }); setTimeout(() => { capa.remove(); if(state.view !== vistaAntes || state.panelSub !== subAntes){ state.view = vistaAntes; state.panelSub = subAntes; window.scrollTo(0, 0); render(); } }, 350); };
+const pintar = () => {
       const d = diapos[i], ultima = i === diapos.length - 1;
       // Con vídeo (cinemagraph de Gemini): ocupa toda la pantalla, detrás del texto
       capa.classList.toggle('hn-con-video', !!d.video);
@@ -12816,8 +12819,8 @@ s += '<polyline points="' + Array.from({ length: 20 }, (x, i) => posBancal(i).jo
         + '<div class="hn-pie"><button type="button" class="hn-atras" aria-label="Anterior"' + (i ? '' : ' style="visibility:hidden"') + '>←</button>'
         + '<div class="hn-puntos">' + diapos.map((x, k) => '<i class="' + (k === i ? 'on' : '') + '"></i>').join('') + '</div>'
         + '<button type="button" class="hn-sig" aria-label="' + (ultima ? 'Terminar' : 'Siguiente') + '">' + (ultima ? '✓' : '→') + '</button></div>';
-      capa.querySelector('.hn-x').onclick = () => capa.remove();
-      capa.querySelector('.hn-sig').onclick = () => { if(ultima) capa.remove(); else { i++; pintar(); } };
+      capa.querySelector('.hn-x').onclick = ev => cerrarHN(ev);
+      capa.querySelector('.hn-sig').onclick = ev => { if(ultima) cerrarHN(ev); else { i++; pintar(); } };
       const at = capa.querySelector('.hn-atras'); if(at && i) at.onclick = () => { i--; pintar(); };
       try { activarPracti(capa); } catch(e){}
 const vid = capa.querySelector('.hn-fondo'); if(vid){ vid.muted = true; vid.controls = false; vid.setAttribute('disablepictureinpicture', ''); vid.setAttribute('controlslist', 'nodownload nofullscreen noremoteplayback'); try { const pr = vid.play(); if(pr && pr.catch) pr.catch(() => {}); } catch(e){} }
@@ -14050,4 +14053,4 @@ const sg = diapos[i + 1]; if(sg && sg.video){ try { const pv = document.createEl
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Meta" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V15.151 · App Amable Meta · 2026-11-26 20:21==== -->
+<!-- ==== Fin del index V15.152 · App Amable Meta · 2026-11-26 20:25==== -->
