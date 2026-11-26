@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V15.144 · App Amable Meta · 2026-11-26 19:52==== -->
+<!-- ==== index V15.145 · App Amable Meta · 2026-11-26 19:54==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1772,9 +1772,10 @@ html.ocultar-practi .practi-inicio,html.ocultar-practi .practi-bocadillo,html.oc
 .mont-ley{display:flex;flex-wrap:wrap;gap:6px 12px;margin:8px 0 0;font-size:12.5px;color:var(--ink-soft)}
 .mont-ley span{display:inline-flex;align-items:center;gap:5px}.mont-ley i{display:inline-block;width:12px;height:12px;border-radius:3px}
 .mont-ley span.on{font-weight:800}
-.mont-fila{display:flex;gap:8px;align-items:stretch}.mont-fila > :last-child{flex:1;min-width:0}
-.mont-fila .mont-ley{flex:none;flex-direction:column;flex-wrap:nowrap;justify-content:space-between;width:92px;margin:0;font-size:11.5px;gap:6px}
-.mont-fila .mont-ley span{align-items:flex-start;line-height:1.25}.mont-fila .mont-ley i{margin-top:2px;flex:none}
+.mont-fila{position:relative}
+.mont-fila .mont-ley{position:absolute;inset:0;margin:0;display:block;pointer-events:none}
+.mont-fila .mont-ley span{position:absolute;left:4px;transform:translateY(-50%);display:inline-flex;align-items:center;gap:4px;white-space:nowrap;font:800 11px/1.1 Karla,sans-serif;text-shadow:0 0 3px #fff,0 0 3px #fff,0 0 4px #fff}
+.mont-fila .mont-ley span.on{font-weight:900;font-size:12px}
 .planta-fila{display:flex;gap:14px;align-items:center}
 .planta-fila svg{flex:0 0 auto}
 .planta-tx b{display:block;font-size:16px}.planta-tx small{display:block;font-size:13.5px;color:var(--ink-soft);margin-top:3px;line-height:1.4}
@@ -2883,7 +2884,7 @@ body .acerca .ver-btn{display:block;margin:0 0 10px;padding:0;font-size:12px;fon
   }
 
 
-  const APP_VERSION = 'V15.144';
+  const APP_VERSION = 'V15.145';
   // ===== Pantalla de inicio: versión, sonido corto y salida (5-11-2026) =====
   (function(){
     const sp = document.getElementById('inicioSplash'); if(!sp) return;
@@ -12752,9 +12753,12 @@ lo que haces cada día es lo que vas a ser.`;
     return s + '</svg>';
   }
   function leyendaMontana(d){
-    return '<div class="mont-ley">' + BADGE_SCALE.map((b, k) => '<span' + (k === d.nivel ? ' class="on"' : '') + ' style="color:' + NIVELES_MONTANA[k].f + '"><i style="background:' + NIVELES_MONTANA[k].c + ';border:1.5px solid ' + NIVELES_MONTANA[k].f + '"></i>Año ' + (k + 1) + ' · ' + b.label + '</span>').reverse().join('') + '</div>';
-  }
-  // Tarjeta de Inicio: la planta de este trimestre (toca para ver la montaña)
+  return '<div class="mont-ley">' + BADGE_SCALE.map((b, k) => {
+    const y = [0, 1, 2, 3].reduce((t, j) => t + posBancal(k * 4 + j)[1], 0) / 4;
+    return '<span' + (k === d.nivel ? ' class="on"' : '') + ' style="top:' + (y / 6).toFixed(1) + '%;color:' + NIVELES_MONTANA[k].f + '"><i style="background:' + NIVELES_MONTANA[k].c + ';border:1.5px solid ' + NIVELES_MONTANA[k].f + '"></i>Año ' + (k + 1) + ' · ' + b.label + ' →</span>';
+  }).join('') + '</div>';
+}
+// Tarjeta de Inicio: la planta de este trimestre (toca para ver la montaña)
   function tarjetaPlantaInicio(){
     let d; try { d = datosMontana(); } catch(e){ return null; }
     const b = d.bancal(d.actual);
@@ -14037,4 +14041,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Meta" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V15.144 · App Amable Meta · 2026-11-26 19:52==== -->
+<!-- ==== Fin del index V15.145 · App Amable Meta · 2026-11-26 19:54==== -->
