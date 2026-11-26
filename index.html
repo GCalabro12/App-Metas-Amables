@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V15.114 · App Amable Meta · 2026-11-26 18:17==== -->
+<!-- ==== index V15.115 · App Amable Meta · 2026-11-26 18:18==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2877,7 +2877,7 @@ body .acerca .ver-btn{display:block;margin:0 0 10px;padding:0;font-size:12px;fon
   }
 
 
-  const APP_VERSION = 'V15.114';
+  const APP_VERSION = 'V15.115';
   // ===== Pantalla de inicio: versión, sonido corto y salida (5-11-2026) =====
   (function(){
     const sp = document.getElementById('inicioSplash'); if(!sp) return;
@@ -4054,13 +4054,12 @@ body .acerca .ver-btn{display:block;margin:0 0 10px;padding:0;font-size:12px;fon
     { k: 'practi', p: ['inicio'], t: 'Prácti saludando y sus mensajes' },
     { k: 'mov', p: ['inicio'], t: 'Prácti en movimiento', d: 'Si lo quitas, queda quieto en toda la app; al tocarlo se mueve un momento' },
     { k: 'insignias', p: ['inicio'], t: 'Insignias' },
-    { k: 'util', p: ['inicio'], t: 'Utilidades', d: 'Frases, música, formación y Habla con Prácti' },
     { k: 'juego', p: ['inicio'], t: 'El juego «Salta con Prácti»' },
     { k: 'notames', p: ['inicio'], t: 'La nota del mes', d: 'El aviso en Inicio' },
     { k: 'fondo', p: ['inicio'], t: 'El fondo de imagen', d: 'Sin él, todo queda en blanco' },
     { k: 'f4', p: ['registro'], t: 'Tu registro del día y tu compromiso', fijo: true },
     { k: 'recordatorio', p: ['registro', 'inicio'], t: 'Recordatorio en el calendario', d: 'El botón para que el móvil te lo recuerde' },
-    { k: 'futuro', p: ['registro', 'viaje'], t: 'Notas a tu yo del futuro', d: 'La nota de voz, la del mes y la del trimestre' },
+    { k: 'futuro', p: ['registro'], t: 'Notas a tu yo del futuro', d: 'La nota de voz, la del mes y la del trimestre' },
     { k: 'f5', p: ['viaje'], t: 'Los pasos de tu viaje', fijo: true }
   ];
   function ocultos(){
@@ -4073,7 +4072,8 @@ body .acerca .ver-btn{display:block;margin:0 0 10px;padding:0;font-size:12px;fon
     } catch(e){}
     return o;
   }
-  function oculto(k){ return ocultos().includes(k); }
+  // «Utilidades» ya no se puede ocultar (26-11-2026, Gustavo: está siempre abajo como botón); si alguien la tenía oculta, vuelve a verse
+  function oculto(k){ return k !== 'util' && ocultos().includes(k); }
   function aplicarClasesMostrar(){
     const h = document.documentElement;
     ['practi', 'insignias', 'juego', 'fondo'].forEach(k => h.classList.toggle('ocultar-' + k, oculto(k)));
@@ -14011,4 +14011,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Meta" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V15.114 · App Amable Meta · 2026-11-26 18:17==== -->
+<!-- ==== Fin del index V15.115 · App Amable Meta · 2026-11-26 18:18==== -->
