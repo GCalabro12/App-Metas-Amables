@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V15.137 · App Amable Meta · 2026-11-26 19:29==== -->
+<!-- ==== index V15.138 · App Amable Meta · 2026-11-26 19:31==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2880,7 +2880,7 @@ body .acerca .ver-btn{display:block;margin:0 0 10px;padding:0;font-size:12px;fon
   }
 
 
-  const APP_VERSION = 'V15.137';
+  const APP_VERSION = 'V15.138';
   // ===== Pantalla de inicio: versión, sonido corto y salida (5-11-2026) =====
   (function(){
     const sp = document.getElementById('inicioSplash'); if(!sp) return;
@@ -9309,13 +9309,14 @@ lo que haces cada día es lo que vas a ser.`;
       const facNombre = String(fac.nombre || 'Gustavo Calabró').replace(/[<>&"]/g, '');
       const facTel = String(fac.whatsapp || '34658825799').replace(/\D/g, '') || '34658825799';
       const facFoto = /^https:\/\//.test(fac.foto || '') ? fac.foto.replace(/"/g, '%22') : '';
+      // 26-11-2026 (Gustavo): primero la pregunta, luego el WhatsApp, y abajo el facilitador con su foto a la derecha
       help.innerHTML = `
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 8px">
-          <p style="margin:0;font-size:17px"><b><i data-ico=comentario></i>Tu facilitador</b></p>
-          ${facFoto ? `<img src="${facFoto}" alt="${facNombre}" style="width:48px;height:48px;border-radius:50%;object-fit:cover;flex-shrink:0;border:2px solid var(--line, #e5e2da)" onerror="this.remove()">` : ''}
-        </div>
-        <p style="font-size:13px;color:var(--ink-soft);margin:0 0 10px"><b style="font-size:15px;color:var(--ink)">${facNombre}</b><br>¿Alguna duda sobre tus metas o sobre la aplicación?</p>
+        <p style="font-size:15px;margin:0 0 10px"><b><i data-ico=comentario></i>¿Alguna duda sobre tus metas o sobre la aplicación?</b></p>
         <a class="panel-link-btn" href="https://wa.me/${facTel}?text=${encodeURIComponent('Escribo de la App Amable Meta. Tengo esta duda o sugerencia:')}" target="_blank" style="background:#8A8A82">Envíale un WhatsApp →</a>
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin:14px 0 0">
+          <div style="min-width:0"><p style="margin:0;font-size:13px;color:var(--ink-soft)">Tu facilitador</p><p style="margin:0;font-size:16px"><b style="color:var(--ink)">${facNombre}</b></p></div>
+          ${facFoto ? `<img src="${facFoto}" alt="${facNombre}" style="width:56px;height:56px;border-radius:50%;object-fit:cover;flex-shrink:0;border:2px solid var(--line, #e5e2da)" onerror="this.remove()">` : ''}
+        </div>
       `;
       // «Instala la app» ya sale arriba del todo: aquí abajo no se repite (27-10-2026, Gustavo)
       // Juego extra, al final de la pantalla de inicio
@@ -14029,4 +14030,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Meta" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V15.137 · App Amable Meta · 2026-11-26 19:29==== -->
+<!-- ==== Fin del index V15.138 · App Amable Meta · 2026-11-26 19:31==== -->
