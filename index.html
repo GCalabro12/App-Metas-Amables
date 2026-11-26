@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V15.101 · App Amable Meta · 2026-11-26 16:50==== -->
+<!-- ==== index V15.102 · App Amable Meta · 2026-11-26 16:51==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2877,7 +2877,7 @@ body .acerca .ver-btn{display:block;margin:0 0 10px;padding:0;font-size:12px;fon
   }
 
 
-  const APP_VERSION = 'V15.101';
+  const APP_VERSION = 'V15.102';
   // ===== Pantalla de inicio: versión, sonido corto y salida (5-11-2026) =====
   (function(){
     const sp = document.getElementById('inicioSplash'); if(!sp) return;
@@ -3397,6 +3397,8 @@ body .acerca .ver-btn{display:block;margin:0 0 10px;padding:0;font-size:12px;fon
     const sig = nodo.querySelector('#btnAltaSig'), atras = nodo.querySelector('#btnAltaAtras');
     app.appendChild(nodo);
     sig.onclick = () => {
+      // 26-11-2026 (revisión 4.1): tras un «Ahora no» a los permisos, el recuadro de Inicio no vuelve a salir hasta pasados 3 días
+      if(paso === 4 && faltaPreparar().length){ try { localStorage.setItem('prep_luego_' + state.me, String(Date.now() - 4 * 86400000)); } catch(e){} }
       if(paso < 5){ state.altaPaso = paso + 1; }
       else if(state.altaPrueba){ state.altaPrueba = false; state.altaPaso = null; state.view = 'panelFac'; }
       else { try{ localStorage.removeItem('ma_alta_' + state.me); }catch(e){} state.altaPaso = null; state.view = 'panel'; state.panelSub = null; }
@@ -13944,4 +13946,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Meta" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V15.101 · App Amable Meta · 2026-11-26 16:50==== -->
+<!-- ==== Fin del index V15.102 · App Amable Meta · 2026-11-26 16:51==== -->
