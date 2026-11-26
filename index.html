@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V15.90 · App Amable Meta · 2026-11-26 10:48==== -->
+<!-- ==== index V15.91 · App Amable Meta · 2026-11-26 10:50==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -803,7 +803,10 @@ body:has(.banda-fin-plan) #app{padding-bottom:28vh}
 .ayuda-voz ol{margin:0;padding-left:22px;line-height:1.55}.ayuda-voz li{margin:0 0 6px}
 .acceso-google{max-width:520px;margin:4px auto 14px;text-align:center}.acceso-google p{margin:0 0 8px;font-size:14px;color:var(--ink-soft)}.acceso-google #btnGoogle{display:flex;justify-content:center}
 .acceso-google.primero{margin:6px auto 4px}
-.acceso-google.primero #btnGoogle{align-items:center;min-height:60px;padding:8px 6px;border:2px solid #E8002C;border-radius:14px;background:#fff;box-sizing:border-box}
+.acceso-google.primero #btnGoogle{align-items:center;min-height:60px;padding:8px 6px;border:1.5px solid var(--border);border-radius:14px;background:#fff;box-sizing:border-box}
+/* Entrada: los botones principales en el morado de la app, no en rojo (el rojo parece un aviso de error) (26-11-2026, Gustavo) */
+[data-vista="pick"] .btn-yes{background:#7B5FB8;border-color:#7B5FB8;color:#fff}
+[data-vista="pick"] .btn-yes:hover,[data-vista="pick"] .btn-yes:focus{background:#5E4596;border-color:#5E4596;color:#fff;box-shadow:0 0 0 3px rgba(123,95,184,.25)}
 header.top.con-idioma{flex-wrap:wrap}
 .idioma-fila{flex:0 0 100%;width:100%;display:flex;justify-content:flex-start;margin:0 0 10px}
 .idioma-btn{position:relative;display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border:1.5px solid var(--border,#E2DDD0);border-radius:999px;background:#fff;color:#2B2B2B;font:700 14px Karla,sans-serif;cursor:pointer}
@@ -2867,7 +2870,7 @@ body .acerca .ver-btn{display:block;margin:0 0 10px;padding:0;font-size:12px;fon
   }
 
 
-  const APP_VERSION = 'V15.90';
+  const APP_VERSION = 'V15.91';
   // ===== Pantalla de inicio: versión, sonido corto y salida (5-11-2026) =====
   (function(){
     const sp = document.getElementById('inicioSplash'); if(!sp) return;
@@ -13919,4 +13922,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Meta" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V15.90 · App Amable Meta · 2026-11-26 10:48==== -->
+<!-- ==== Fin del index V15.91 · App Amable Meta · 2026-11-26 10:50==== -->
