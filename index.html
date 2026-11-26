@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V15.132 · App Amable Meta · 2026-11-26 19:00==== -->
+<!-- ==== index V15.133 · App Amable Meta · 2026-11-26 19:03==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1779,6 +1779,9 @@ html.ocultar-practi .practi-inicio,html.ocultar-practi .practi-bocadillo,html.oc
 .planta-inicio{cursor:pointer;width:100%;text-align:left;font:inherit;color:inherit;border:0;position:relative;overflow:hidden;background:#FFF8F0}
 .planta-inicio > :not(.planta-escena){position:relative;z-index:1}
 .planta-inicio .planta-tx{background:rgba(255,252,245,.82);border-radius:10px;padding:5px 9px;align-self:center}.planta-inicio .planta-tx small{font-size:13px;margin:2px 0;line-height:1.35;color:#3D3A33}.planta-inicio .planta-tx small b{display:inline;color:#2F5A23}
+/* 26-11-2026 (Gustavo): «Tu progreso trimestral» en el rojo de Registro y compromiso, y un poco más pequeño */
+[data-vista="panel"][data-sub=""] .planta-inicio .planta-tit{color:#B0201A !important;font-size:min(calc((100vw - 78px) / 16.5), 25px) !important}
+[data-vista="panel"][data-sub=""] .planta-inicio .planta-mas{color:#B0201A !important}
 .planta-inicio .planta-tit{display:block;margin:0 0 8px;font:700 clamp(14px,4.4vw,20px)/1.2 Nunito,serif;letter-spacing:-.1px;color:#2F5A23;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .util-nov{display:flex;align-items:center;gap:10px;width:100%;margin:14px 0 0;padding:12px 16px;border:2px solid #101010;border-radius:16px;background:#FFF6DC;font:inherit;color:#101010;text-align:left;cursor:pointer}.util-nov b{display:block;font-size:16px}.util-nov small{display:block;color:var(--ink-soft);font-size:13px}.util-nov .opcion-flecha{margin-left:auto;font-size:22px}
 .nov-lista{display:block}.nov-ver{margin:0 0 14px;padding:14px 16px}.nov-ver h3{margin:0 0 2px;font:700 18px Nunito,serif;color:#2F5A23}.nov-ver .nov-fecha{display:block;margin:0 0 8px;font-size:13px;color:var(--ink-soft)}.nov-ver ul{margin:0;padding-left:20px}.nov-ver li{margin:0 0 6px;line-height:1.45}
@@ -2877,7 +2880,7 @@ body .acerca .ver-btn{display:block;margin:0 0 10px;padding:0;font-size:12px;fon
   }
 
 
-  const APP_VERSION = 'V15.132';
+  const APP_VERSION = 'V15.133';
   // ===== Pantalla de inicio: versión, sonido corto y salida (5-11-2026) =====
   (function(){
     const sp = document.getElementById('inicioSplash'); if(!sp) return;
@@ -12748,7 +12751,7 @@ lo que haces cada día es lo que vas a ser.`;
     const b = d.bancal(d.actual);
     const semanasReg = (b.semanas || []).filter(w => w.dias > 0).length;
     // 26-11-2026 (Gustavo): fondo liso con montañitas, sin la planta ni el escenario; «Más info» lleva a Progreso
-    const montes = '<span class="planta-montes" aria-hidden="true" style="position:absolute;left:0;right:0;bottom:0;height:56px;z-index:0;pointer-events:none"><svg viewBox="0 0 400 60" preserveAspectRatio="none" width="100%" height="100%"><path d="M0 60 L0 36 L70 12 L130 38 L190 18 L260 42 L320 22 L400 40 L400 60 Z" fill="#DCE9CF"/><path d="M0 60 L0 48 L90 34 L160 50 L240 36 L330 50 L400 44 L400 60 Z" fill="#C6DDB6"/></svg></span>';
+    const montes = '<span class="planta-montes" aria-hidden="true" style="position:absolute;left:0;right:0;bottom:0;height:56px;z-index:0;pointer-events:none"><svg viewBox="0 0 400 60" preserveAspectRatio="none" width="100%" height="100%"><path d="M0 60 L0 36 L70 12 L130 38 L190 18 L260 42 L320 22 L400 40 L400 60 Z" fill="#B0201A" fill-opacity=".35"/><path d="M0 60 L0 48 L90 34 L160 50 L240 36 L330 50 L400 44 L400 60 Z" fill="#B0201A" fill-opacity=".6"/></svg></span>';
     const c = el('<button type="button" class="card planta-inicio" style="position:relative">' + montes + '<b class="planta-tit">Tu progreso trimestral</b><span class="planta-tx"><small>En tu planta trimestral llevas <b>' + semanasReg + (semanasReg === 1 ? ' semana' : ' semanas') + '</b> registrando.</small><small class="planta-mas" style="display:inline-block;margin-top:6px;font-weight:800;color:#2F5A23">Más info ›</small></span></button>').firstElementChild;
     c.onclick = () => { state.view = 'progreso'; window.scrollTo(0, 0); render(); };
     return c;
@@ -14017,4 +14020,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Meta" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V15.132 · App Amable Meta · 2026-11-26 19:00==== -->
+<!-- ==== Fin del index V15.133 · App Amable Meta · 2026-11-26 19:03==== -->
