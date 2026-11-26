@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V15.140 · App Amable Meta · 2026-11-26 19:38==== -->
+<!-- ==== index V15.141 · App Amable Meta · 2026-11-26 19:41==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2883,7 +2883,7 @@ body .acerca .ver-btn{display:block;margin:0 0 10px;padding:0;font-size:12px;fon
   }
 
 
-  const APP_VERSION = 'V15.140';
+  const APP_VERSION = 'V15.141';
   // ===== Pantalla de inicio: versión, sonido corto y salida (5-11-2026) =====
   (function(){
     const sp = document.getElementById('inicioSplash'); if(!sp) return;
@@ -4102,9 +4102,9 @@ body .acerca .ver-btn{display:block;margin:0 0 10px;padding:0;font-size:12px;fon
   function abrirMostrar(pant){
     pant = pant || 'inicio';
     const fuera = ocultos(), opc = MOSTRAR_OPC.filter(o => o.p.includes(pant) && !o.fijo && !(o.k === 'insignias' && insigniasBloqueadas())).sort((a, b) => (b.fijo ? 1 : 0) - (a.fijo ? 1 : 0));   // las fijas, arriba
-    const capa = el('<div class="mostrar-capa" role="dialog" aria-modal="true" aria-label="Mostrar"><div class="mostrar-panel"><h2>Mostrar<button type="button" class="mostrar-x" aria-label="Cerrar">✕</button></h2><div class="mostrar-lista">'
+    const capa = el('<div class="mostrar-capa" role="dialog" aria-modal="true" aria-label="Mostrar"><div class="mostrar-panel"><h2>Mostrar<button type="button" class="mostrar-x" aria-label="Cerrar">✕</button></h2><p class="mostrar-nota" style="margin:0;padding:10px 20px 0;font-size:13px;color:var(--ink-soft)">' + (pant === 'inicio' ? 'En la pantalla de inicio se mostrarán las cosas que marques con una tilde.' : 'En esta pantalla se mostrarán las cosas que marques con una tilde.') + '</p><div class="mostrar-lista">'
       + opc.map(o => '<label class="mostrar-op' + (o.fijo ? ' fijo' : '') + '"><input type="checkbox" data-k="' + o.k + '"' + (o.fijo || !fuera.includes(o.k) ? ' checked' : '') + (o.fijo ? ' disabled' : '') + '><span><b>' + escapeAttr(o.t) + '</b>' + (o.fijo ? '<small>Siempre</small>' : (o.d ? '<small>' + escapeAttr(o.d) + '</small>' : '')) + '</span></label>').join('')
-      + '</div><p class="mostrar-nota" style="margin:12px 0 0;font-size:13px;color:var(--ink-soft);text-align:center">' + (pant === 'inicio' ? 'En la pantalla de inicio se mostrarán las cosas que marques con una tilde.' : 'En esta pantalla se mostrarán las cosas que marques con una tilde.') + '</p></div></div>').firstElementChild;
+      + '</div></div></div>').firstElementChild;
     const cerrar = () => { capa.remove(); };
     const guardarYCerrar = () => {
       const aqui = opc.map(o => o.k);   // lo de otras pantallas se queda como estaba
@@ -14034,4 +14034,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Meta" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V15.140 · App Amable Meta · 2026-11-26 19:38==== -->
+<!-- ==== Fin del index V15.141 · App Amable Meta · 2026-11-26 19:41==== -->
