@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V15.94 · App Amable Meta · 2026-11-26 11:23==== -->
+<!-- ==== index V15.95 · App Amable Meta · 2026-11-26 11:24==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2012,14 +2012,15 @@ textarea.perg-texto{width:100%;box-sizing:border-box;background:transparent;bord
   .ver-btn{padding:6px 8px;border:0;background:none;font:700 13px Karla,sans-serif;letter-spacing:.04em;color:var(--ink);cursor:pointer}
   body.con-fondo-vivo .ver-btn{color:#fff}
   div > .ver-btn:only-child, .login-ver{display:block;margin:16px auto 0}
-  .pie-derechos{margin:36px 0 0;text-align:center;font-size:11px;color:var(--ink-soft);line-height:1.5}
+  /* Pie legal: 13 px y enlaces de 44 px de alto para pulsarlos bien (26-11-2026, punto 2.9 de la revisión) */
+.pie-derechos{margin:14px 0 0;text-align:center;font-size:13px;color:var(--ink-soft);line-height:1.5}
 .acerca{margin-top:14px;border-top:1px solid var(--border);padding-top:14px}
 .acerca>summary{cursor:pointer;list-style:none;font-size:13px;color:var(--ink-soft)}.acerca>summary::-webkit-details-marker{display:none}
 .acerca-cuerpo{margin-top:10px;font-size:12px;color:var(--ink-soft)}
 body .acerca .ver-btn{display:block;margin:0 0 10px;padding:0;font-size:12px;font-weight:600;color:var(--ink-soft)}
 .acerca-insta{display:inline-flex;align-items:center;gap:6px;margin:0 0 10px;font-size:12px;font-weight:600;color:var(--ink-soft);text-decoration:none}.acerca-insta svg{width:16px;height:16px}
 .acerca .pi-seal-fila,.acerca .sellos{margin:0}.acerca-derechos{margin:10px 0 0;font-size:11.5px;color:var(--ink-soft)}
-  .pie-derechos a{color:var(--ink-soft)}
+  .pie-derechos a{display:inline-block;min-height:44px;line-height:44px;padding:0 10px;color:var(--ink-soft)}
   /* Sello común de las apps de Práctica Integral (como en PC & Body-mind), con los colores sobrios de esta app */
   .pi-seal-fila{margin:32px 0 0;text-align:center}
   /* Sellos comunes (Grow Panel/SELLO.md, 15-10-2026): dos botones; si no caben, el segundo baja y quedan centrados.
@@ -2876,7 +2877,7 @@ body .acerca .ver-btn{display:block;margin:0 0 10px;padding:0;font-size:12px;fon
   }
 
 
-  const APP_VERSION = 'V15.94';
+  const APP_VERSION = 'V15.95';
   // ===== Pantalla de inicio: versión, sonido corto y salida (5-11-2026) =====
   (function(){
     const sp = document.getElementById('inicioSplash'); if(!sp) return;
@@ -3212,6 +3213,8 @@ body .acerca .ver-btn{display:block;margin:0 0 10px;padding:0;font-size:12px;fon
     // App de iPhone sin Google todavía: solo Apple (el botón de Google de la web no funciona dentro de una app)
     if(APP_IOS){ caja.innerHTML = ''; if(NATIVO.entrarApple) caja.appendChild(botonApple()); return; }
     if(!(await cargarGoogle())) return;
+    if(!caja.isConnected) return;   // la pantalla ya se repintó: no dibujar un botón en una caja que ya no está (26-11-2026)
+    caja.innerHTML = '';
     google.accounts.id.initialize({ client_id: GOOGLE_CLIENT_ID, callback: resp => entrarConGoogle(resp.credential) });
     google.accounts.id.renderButton(caja, { theme: 'outline', size: 'large', shape: 'pill', text: 'continue_with', locale: IDIOMA, width: Math.min(360, caja.clientWidth || 320) });
   }
@@ -13925,4 +13928,4 @@ lo que haces cada día es lo que vas a ser.`;
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Meta" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V15.94 · App Amable Meta · 2026-11-26 11:23==== -->
+<!-- ==== Fin del index V15.95 · App Amable Meta · 2026-11-26 11:24==== -->
