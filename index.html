@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V16.54 · App Amable Meta · 2026-11-27 10:43==== -->
+<!-- ==== index V16.55 · App Amable Meta · 2026-11-27 10:48==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2888,7 +2888,7 @@ body .acerca .ver-btn{display:block;margin:0 0 10px;padding:0;font-size:12px;fon
   }
 
 
-  const APP_VERSION = 'V16.54';
+  const APP_VERSION = 'V16.55';
   // ===== Pantalla de inicio: versión, sonido corto y salida (5-11-2026) =====
   (function(){
     const sp = document.getElementById('inicioSplash'); if(!sp) return;
@@ -9055,7 +9055,7 @@ lo que haces cada día es lo que vas a ser.`;
           app.appendChild(aj);
         } } catch(e){}
         app.appendChild(opciones);
-        try { const hp = opciones.querySelector('.hueco-progreso'); if(hp){ const tp = tarjetaPlantaInicio(); if(tp) hp.replaceWith(tp); else hp.remove(); } } catch(e){ console.error('Planta de Inicio:', e); }
+        try { const hp = opciones.querySelector('.hueco-progreso'); if(hp) hp.remove(); } catch(e){}   // la tarjeta de progreso ahora va dentro del paso C
         try { if(localStorage.getItem('tour_' + state.me) === 'pendiente' && state.view === 'panel'){ localStorage.setItem('tour_' + state.me, 'visto'); setTimeout(iniciarTour, 900); } } catch(e){}
         // «Quiero hablar con Prácti» ya no sale en Inicio (10-11-2026, Gustavo): está en Utilidades
         const irDestino = destino => {
@@ -9076,7 +9076,7 @@ lo que haces cada día es lo que vas a ser.`;
         };
         const huecoB = opciones.querySelector('.hueco-planta');
         if(huecoB){
-          let tp = null; try { tp = tarjetaPlanta(() => irDestino('sB')); } catch(e){}
+          let tp = null; try { tp = tarjetaPlanta(() => irDestino('sB'), true); } catch(e){}
           if(tp){ if(act('b') && !registradoHoy()) tp.classList.add('actual'); huecoB.replaceWith(tp); }
           else huecoB.outerHTML = botonB;
         }
@@ -9322,14 +9322,17 @@ lo que haces cada día es lo que vas a ser.`;
       const facFoto = /^https:\/\//.test(fac.foto || '') ? fac.foto.replace(/"/g, '%22') : '';
       // 26-11-2026 (Gustavo): primero la pregunta, luego el WhatsApp, y abajo el facilitador con su foto a la derecha
       help.innerHTML = `
-        <p style="font-size:15px;margin:0 0 12px"><b>¿Alguna duda sobre tus metas o sobre la aplicación?</b></p>
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 12px">
-          <div style="min-width:0"><p style="margin:0;font-size:13px;color:var(--ink-soft)">Escribe a tu facilitador</p><p style="margin:0;font-size:17px"><b style="color:var(--ink)">${facNombre}</b></p></div>
-          ${facFoto ? `<img src="${facFoto}" alt="${facNombre}" style="width:56px;height:56px;border-radius:50%;object-fit:cover;flex-shrink:0;border:2px solid var(--line, #e5e2da)" onerror="this.remove()">` : ''}
+        <button type="button" class="fac-toggle" aria-expanded="false" style="display:flex;align-items:center;gap:12px;width:100%;background:none;border:0;padding:0;text-align:left;cursor:pointer;font:inherit;color:inherit">
+          <span style="flex:1;min-width:0"><b style="display:block;font-size:15px;line-height:1.25">¿Alguna duda sobre tus metas o sobre la aplicación?</b><small style="display:block;margin-top:3px;color:var(--ink-soft)"><span>Escribe a tu facilitador</span> · <b style="color:var(--ink)">${facNombre}</b></small></span>
+          ${facFoto ? `<img src="${facFoto}" alt="${facNombre}" style="width:48px;height:48px;border-radius:50%;object-fit:cover;flex-shrink:0;border:2px solid var(--line, #e5e2da)" onerror="this.remove()">` : ''}
+          <span class="fac-flecha" aria-hidden="true" style="font-size:22px;line-height:1;transition:transform .2s">›</span>
+        </button>
+        <div class="fac-abierto" hidden style="margin-top:12px">
+          <a class="panel-link-btn" href="https://wa.me/${facTel}?text=${encodeURIComponent('Escribo de la App Amable Meta. Tengo esta duda o sugerencia:')}" target="_blank" style="background:#8A8A82">Enviar por WhatsApp →</a>
+          <p style="font-size:12.5px;color:var(--ink-soft);margin:6px 0 0;text-align:center">Escribe en tu propio idioma.</p>
         </div>
-        <a class="panel-link-btn" href="https://wa.me/${facTel}?text=${encodeURIComponent('Escribo de la App Amable Meta. Tengo esta duda o sugerencia:')}" target="_blank" style="background:#8A8A82">Enviar por WhatsApp →</a>
-        <p style="font-size:12.5px;color:var(--ink-soft);margin:6px 0 0;text-align:center">Escribe en tu propio idioma.</p>
       `;
+      help.querySelector('.fac-toggle').onclick = () => { const ab = help.querySelector('.fac-abierto'); ab.hidden = !ab.hidden; help.querySelector('.fac-toggle').setAttribute('aria-expanded', String(!ab.hidden)); help.querySelector('.fac-flecha').style.transform = ab.hidden ? '' : 'rotate(90deg)'; };
       // «Instala la app» ya sale arriba del todo: aquí abajo no se repite (27-10-2026, Gustavo)
       // Juego extra, al final de la pantalla de inicio
       const juego = el('<button type="button" class="juego-btn" style="margin-top:18px"><span class="juego-btn-ico">' + practiHTML('salto', '', 34, 'una-vez') + '</span><span><b>Salta la valla con Prácti</b><small>' + (premioRetoDesbloqueado('juego') ? 'Un minuto de juego: cada valla es un obstáculo que superas' : 'Se desbloquea cuando registres 15 días (llevas ' + diasRegistradosReto() + ')') + '</small></span></button>').firstElementChild;   // el() da un fragmento: se coge el botón
@@ -12197,7 +12200,7 @@ lo que haces cada día es lo que vas a ser.`;
     };
     return meta;
   }
-  function tarjetaPlanta(alVer){
+  function tarjetaPlanta(alVer, conProgreso){
     if(!state.me) return null;
     const e = estadoPlanta();
     // El tutor (el palo junto a la planta) es la guía semanal: la sostiene para que crezca recta y no se tuerza
@@ -12211,11 +12214,15 @@ lo que haces cada día es lo que vas a ser.`;
     const dUlt = diasSinPractica(), txtUlt = dUlt === 0 ? 'hoy' : dUlt === 1 ? 'ayer' : dUlt <= 30 ? 'hace ' + dUlt + ' días' : '';
     const estadoReg = (reg ? '' : '<p class="planta-reg-lista">Te falta registrar tu emoción, tu entorno o tu práctica.</p>')
       + (txtUlt ? '<p class="planta-ultimo' + (dUlt >= 1 ? ' atras' : '') + '">Último registro: ' + txtUlt + '</p>' : '');
+    let progresoTxt = '';
+    if(conProgreso){ let sr = 0; try { const dm0 = datosMontana(); sr = (dm0.bancal(dm0.actual).semanas || []).filter(w => w.dias > 0).length; } catch(e){}
+      progresoTxt = '<p class="planta-prog" style="margin:8px 0 0;font-size:13px;color:#B0201A">En tu planta trimestral llevas <b>' + sr + (sr === 1 ? ' semana' : ' semanas') + '</b> registrando. <span class="planta-masinfo" role="link" tabindex="0" style="font-weight:800;text-decoration:underline;cursor:pointer">Más info ›</span></p>'; }
     const t = el('<div class="card planta-card ciclo-b" role="button" tabindex="0"><b class="planta-tit">' + letraPaso('c') + 'Registro y compromiso' + infoBoton('Aquí <b>registras cada día</b> tus sentimientos, tu entorno y si hiciste tu práctica: así riegas tu meta. Toca la tarjeta para ver tu semana, tu compromiso y tu calendario.') + '</b>'
       + '<div class="planta-fila"><span class="planta-fig" title="El tutor de tu planta es tu guía semanal">' + tutor + '<img src="' + e.img + '" alt="">' + lazo + '</span>'
-      + '<div class="planta-tx">' + estadoReg + '</div></div>'
+      + '<div class="planta-tx">' + estadoReg + progresoTxt + '</div></div>'
       + '</div>').firstElementChild;
     if(alVer){ t.onclick = alVer; t.onkeydown = ev => { if(ev.key === 'Enter' || ev.key === ' '){ ev.preventDefault(); alVer(); } }; }
+    const masInfo = t.querySelector('.planta-masinfo'); if(masInfo){ const irProg = ev => { ev.preventDefault(); ev.stopPropagation(); state.view = 'progreso'; window.scrollTo(0, 0); render(); }; masInfo.onclick = irProg; masInfo.onkeydown = ev => { if(ev.key === 'Enter' || ev.key === ' ') irProg(ev); }; }
     // El primer momento del día en que ya está regada: «crece»; si venía de varios días sin agua, «revive»
     try {
       if(diasSinPractica() === 0){
@@ -14053,4 +14060,4 @@ const sg = diapos[i + 1]; if(sg && sg.video){ try { const pv = document.createEl
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Meta" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V16.54 · App Amable Meta · 2026-11-27 10:43==== -->
+<!-- ==== Fin del index V16.55 · App Amable Meta · 2026-11-27 10:48==== -->
