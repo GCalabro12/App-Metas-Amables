@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V16.56 · App Amable Meta · 2026-11-27 10:49==== -->
+<!-- ==== index V16.57 · App Amable Meta · 2026-11-27 10:52==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1792,6 +1792,14 @@ html.ocultar-practi .practi-inicio,html.ocultar-practi .practi-bocadillo,html.oc
 [data-vista="panel"][data-sub=""] .planta-inicio .planta-tit{color:#B0201A !important;font-size:min(calc((100vw - 78px) / 16.5), 25px) !important}
 [data-vista="panel"][data-sub=""] .planta-inicio .planta-mas{color:#B0201A !important}
 [data-vista="panel"][data-sub=""] .card.guia-semana .ritual-tit{font-size:min(calc((100vw - 78px) / 17.2), 26px) !important;white-space:normal !important;overflow-wrap:anywhere}
+/* 28-11-2026 (Gustavo): paso C más compacto: la «i» arriba a la derecha, la planta subida junto al título y el texto de «Último registro» en adelante a todo el ancho */
+[data-vista="panel"][data-sub=""] .planta-card .info-i{left:auto !important;right:12px !important;top:10px !important;margin:0 !important}
+[data-vista="panel"][data-sub=""] .planta-card .planta-tit{margin-bottom:8px !important;padding-right:34px !important;font-size:min(calc((100vw - 78px) / 17.4), 26px) !important;white-space:normal}
+[data-vista="panel"][data-sub=""] .planta-card .planta-fila{display:block}
+[data-vista="panel"][data-sub=""] .planta-card .planta-fila::after{content:"";display:block;clear:both}
+[data-vista="panel"][data-sub=""] .planta-card .planta-fig{float:left;margin:-6px 12px 6px 0}
+[data-vista="panel"][data-sub=""] .planta-card .planta-tx{display:block}
+[data-vista="panel"][data-sub=""] .planta-card .planta-reg-lista + .planta-ultimo{clear:both}
 .planta-inicio .planta-tit{display:block;margin:0 0 8px;font:700 clamp(14px,4.4vw,20px)/1.2 Nunito,serif;letter-spacing:-.1px;color:#2F5A23;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .util-nov{display:flex;align-items:center;gap:10px;width:100%;margin:14px 0 0;padding:12px 16px;border:2px solid #101010;border-radius:16px;background:#FFF6DC;font:inherit;color:#101010;text-align:left;cursor:pointer}.util-nov b{display:block;font-size:16px}.util-nov small{display:block;color:var(--ink-soft);font-size:13px}.util-nov .opcion-flecha{margin-left:auto;font-size:22px}
 .nov-lista{display:block}.nov-ver{margin:0 0 14px;padding:14px 16px}.nov-ver h3{margin:0 0 2px;font:700 18px Nunito,serif;color:#2F5A23}.nov-ver .nov-fecha{display:block;margin:0 0 8px;font-size:13px;color:var(--ink-soft)}.nov-ver ul{margin:0;padding-left:20px}.nov-ver li{margin:0 0 6px;line-height:1.45}
@@ -2890,7 +2898,7 @@ body .acerca .ver-btn{display:block;margin:0 0 10px;padding:0;font-size:12px;fon
   }
 
 
-  const APP_VERSION = 'V16.56';
+  const APP_VERSION = 'V16.57';
   // ===== Pantalla de inicio: versión, sonido corto y salida (5-11-2026) =====
   (function(){
     const sp = document.getElementById('inicioSplash'); if(!sp) return;
@@ -14063,4 +14071,4 @@ const sg = diapos[i + 1]; if(sg && sg.video){ try { const pv = document.createEl
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Meta" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V16.56 · App Amable Meta · 2026-11-27 10:49==== -->
+<!-- ==== Fin del index V16.57 · App Amable Meta · 2026-11-27 10:52==== -->
