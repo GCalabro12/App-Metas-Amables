@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V16.58 · App Amable Meta · 2026-11-27 10:55==== -->
+<!-- ==== index V16.59 · App Amable Meta · 2026-11-27 10:57==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1792,14 +1792,13 @@ html.ocultar-practi .practi-inicio,html.ocultar-practi .practi-bocadillo,html.oc
 [data-vista="panel"][data-sub=""] .planta-inicio .planta-tit{color:#B0201A !important;font-size:min(calc((100vw - 78px) / 16.5), 25px) !important}
 [data-vista="panel"][data-sub=""] .planta-inicio .planta-mas{color:#B0201A !important}
 [data-vista="panel"][data-sub=""] .card.guia-semana .ritual-tit{font-size:min(calc((100vw - 78px) / 17.2), 26px) !important;white-space:normal !important;overflow-wrap:anywhere}
-/* 28-11-2026 (Gustavo): paso C más compacto: la «i» arriba a la derecha, la planta subida junto al título y el texto de «Último registro» en adelante a todo el ancho */
-[data-vista="panel"][data-sub=""] .planta-card .info-i{left:auto !important;right:12px !important;top:10px !important;margin:0 !important}
-[data-vista="panel"][data-sub=""] .planta-card .planta-tit{margin-bottom:8px !important;padding-right:34px !important;font-size:min(calc((100vw - 78px) / 17.4), 26px) !important;white-space:normal}
+/* 28-11-2026 (Gustavo): paso C: el título en un solo renglón con la «i» debajo, la planta subida y «Último registro» en adelante a todo el ancho */
 [data-vista="panel"][data-sub=""] .planta-card .planta-fila{display:block}
 [data-vista="panel"][data-sub=""] .planta-card .planta-fila::after{content:"";display:block;clear:both}
 [data-vista="panel"][data-sub=""] .planta-card .planta-fig{float:left;margin:-6px 12px 6px 0}
 [data-vista="panel"][data-sub=""] .planta-card .planta-tx{display:block}
 [data-vista="panel"][data-sub=""] .planta-card .planta-reg-lista + .planta-ultimo{clear:both}
+[data-vista="panel"][data-sub=""] .planta-card .planta-prog b{display:inline !important}
 html.ocultar-insignias #insigniaActualBox,html.ocultar-insignias .perfil-escala{display:none !important}
 .planta-inicio .planta-tit{display:block;margin:0 0 8px;font:700 clamp(14px,4.4vw,20px)/1.2 Nunito,serif;letter-spacing:-.1px;color:#2F5A23;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .util-nov{display:flex;align-items:center;gap:10px;width:100%;margin:14px 0 0;padding:12px 16px;border:2px solid #101010;border-radius:16px;background:#FFF6DC;font:inherit;color:#101010;text-align:left;cursor:pointer}.util-nov b{display:block;font-size:16px}.util-nov small{display:block;color:var(--ink-soft);font-size:13px}.util-nov .opcion-flecha{margin-left:auto;font-size:22px}
@@ -2899,7 +2898,7 @@ body .acerca .ver-btn{display:block;margin:0 0 10px;padding:0;font-size:12px;fon
   }
 
 
-  const APP_VERSION = 'V16.58';
+  const APP_VERSION = 'V16.59';
   // ===== Pantalla de inicio: versión, sonido corto y salida (5-11-2026) =====
   (function(){
     const sp = document.getElementById('inicioSplash'); if(!sp) return;
@@ -12233,7 +12232,7 @@ lo que haces cada día es lo que vas a ser.`;
       + (txtUlt ? '<p class="planta-ultimo' + (dUlt >= 1 ? ' atras' : '') + '">Último registro: ' + txtUlt + '</p>' : '');
     let progresoTxt = '';
     if(conProgreso){ let sr = 0; try { const dm0 = datosMontana(); sr = (dm0.bancal(dm0.actual).semanas || []).filter(w => w.dias > 0).length; } catch(e){}
-      progresoTxt = '<p class="planta-prog" style="margin:8px 0 0;font-size:13px;color:#B0201A">En tu planta trimestral llevas <b>' + sr + (sr === 1 ? ' semana' : ' semanas') + '</b> registrando. <span class="planta-masinfo" role="link" tabindex="0" style="font-weight:800;text-decoration:underline;cursor:pointer">Más info ›</span></p>'; }
+      progresoTxt = '<p class="planta-prog" style="margin:8px 0 0;font-size:13px;color:#B0201A">En tu planta trimestral llevas<br><b>' + sr + (sr === 1 ? ' semana' : ' semanas') + '</b> registrando. <span class="planta-masinfo" role="link" tabindex="0" style="font-weight:800;text-decoration:underline;cursor:pointer">Más info ›</span></p>'; }
     const t = el('<div class="card planta-card ciclo-b" role="button" tabindex="0"><b class="planta-tit">' + letraPaso('c') + 'Registro y compromiso' + infoBoton('Aquí <b>registras cada día</b> tus sentimientos, tu entorno y si hiciste tu práctica: así riegas tu meta. Toca la tarjeta para ver tu semana, tu compromiso y tu calendario.') + '</b>'
       + '<div class="planta-fila"><span class="planta-fig" title="El tutor de tu planta es tu guía semanal">' + tutor + '<img src="' + e.img + '" alt="">' + lazo + '</span>'
       + '<div class="planta-tx">' + estadoReg + progresoTxt + '</div></div>'
@@ -14078,4 +14077,4 @@ const sg = diapos[i + 1]; if(sg && sg.video){ try { const pv = document.createEl
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Meta" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V16.58 · App Amable Meta · 2026-11-27 10:55==== -->
+<!-- ==== Fin del index V16.59 · App Amable Meta · 2026-11-27 10:57==== -->
