@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V16.59 · App Amable Meta · 2026-11-27 10:57==== -->
+<!-- ==== index V16.60 · App Amable Meta · 2026-11-27 11:00==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1780,6 +1780,7 @@ html.ocultar-practi .practi-inicio,html.ocultar-practi .practi-bocadillo,html.oc
 .mont-fila .mont-ley span{position:absolute;left:4px;transform:translateY(-50%);display:inline-flex;align-items:center;gap:4px;white-space:nowrap;font:800 11px/1.1 Karla,sans-serif;text-shadow:0 0 3px #fff,0 0 3px #fff,0 0 4px #fff}
 .mont-fila .mont-ley span.on{font-size:12px}
 .mont-fila .mont-ley .mont-ins{position:absolute;right:8px;transform:translateY(-50%);width:34px;height:34px;font-size:34px;line-height:1;display:grid;place-items:center;filter:drop-shadow(0 2px 4px rgba(0,0,0,.4))}
+.esc-interr{display:inline-grid;place-items:center;width:1.25em;height:1.25em;border-radius:50%;background:rgba(255,255,255,.6);border:2px dashed #6B55B8;font:900 .8em Karla,sans-serif;color:#5B3FA8;vertical-align:middle}
 .mont-ins.oculta{border-radius:50%;background:rgba(255,255,255,.6);border:2px dashed #6B55B8;filter:none !important}.mont-ins.oculta b{font:900 18px Karla,sans-serif;color:#5B3FA8}.mont-fila .mont-ley span.ml-t{position:static;left:auto;display:flex;flex-direction:column;align-items:flex-start;line-height:1.05;transform:none;gap:0;text-shadow:inherit}.mont-ley .ml-t b{font-weight:900}.mont-ley .ml-t em{font-style:normal;font-weight:800}
 .planta-fila{display:flex;gap:14px;align-items:center}
 .planta-fila svg{flex:0 0 auto}
@@ -2898,7 +2899,7 @@ body .acerca .ver-btn{display:block;margin:0 0 10px;padding:0;font-size:12px;fon
   }
 
 
-  const APP_VERSION = 'V16.59';
+  const APP_VERSION = 'V16.60';
   // ===== Pantalla de inicio: versión, sonido corto y salida (5-11-2026) =====
   (function(){
     const sp = document.getElementById('inicioSplash'); if(!sp) return;
@@ -7493,7 +7494,7 @@ lo que haces cada día es lo que vas a ser.`;
       <p style="font-size:13px;color:var(--ink-soft);margin:0 0 10px">
         Tu nivel es tu altura en <b>tu montaña interior</b>: subes un nivel por cada año de práctica (cuatro trimestres, un bancal por trimestre).
       </p>
-      ${BADGE_SCALE.map(b => `<div class="badge-scale-row" data-min="${b.min}"><span${b.label!=='Guerrero' ? ' class="nivel-nombre-destacado"' : ''}>${b.icon} ${b.label}</span><span style="color:var(--ink-soft)">año ${BADGE_SCALE.indexOf(b) + 1}</span></div>`).join('')}
+      ${(() => { let nvE = 0; try { nvE = datosMontana().nivel; } catch(e){} return BADGE_SCALE.map((b, kE) => `<div class="badge-scale-row" data-min="${b.min}"><span${b.label!=='Guerrero' ? ' class="nivel-nombre-destacado"' : ''}>${kE <= nvE ? b.icon : '<span class="esc-interr" aria-label="Insignia por descubrir">?</span>'} ${b.label}</span><span style="color:var(--ink-soft)">año ${kE + 1}</span></div>`).join(''); })()}
       </div>
       <div style="margin-top:18px;border-top:1px solid var(--border);padding-top:14px">
         <button class="link-quiet" id="togglePassChange" style="padding:0"><i data-ico=candado></i>Cambiar contraseña</button>
@@ -14077,4 +14078,4 @@ const sg = diapos[i + 1]; if(sg && sg.video){ try { const pv = document.createEl
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Meta" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V16.59 · App Amable Meta · 2026-11-27 10:57==== -->
+<!-- ==== Fin del index V16.60 · App Amable Meta · 2026-11-27 11:00==== -->
