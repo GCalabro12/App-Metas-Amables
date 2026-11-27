@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V16.57 · App Amable Meta · 2026-11-27 10:52==== -->
+<!-- ==== index V16.58 · App Amable Meta · 2026-11-27 10:55==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1800,6 +1800,7 @@ html.ocultar-practi .practi-inicio,html.ocultar-practi .practi-bocadillo,html.oc
 [data-vista="panel"][data-sub=""] .planta-card .planta-fig{float:left;margin:-6px 12px 6px 0}
 [data-vista="panel"][data-sub=""] .planta-card .planta-tx{display:block}
 [data-vista="panel"][data-sub=""] .planta-card .planta-reg-lista + .planta-ultimo{clear:both}
+html.ocultar-insignias #insigniaActualBox,html.ocultar-insignias .perfil-escala{display:none !important}
 .planta-inicio .planta-tit{display:block;margin:0 0 8px;font:700 clamp(14px,4.4vw,20px)/1.2 Nunito,serif;letter-spacing:-.1px;color:#2F5A23;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .util-nov{display:flex;align-items:center;gap:10px;width:100%;margin:14px 0 0;padding:12px 16px;border:2px solid #101010;border-radius:16px;background:#FFF6DC;font:inherit;color:#101010;text-align:left;cursor:pointer}.util-nov b{display:block;font-size:16px}.util-nov small{display:block;color:var(--ink-soft);font-size:13px}.util-nov .opcion-flecha{margin-left:auto;font-size:22px}
 .nov-lista{display:block}.nov-ver{margin:0 0 14px;padding:14px 16px}.nov-ver h3{margin:0 0 2px;font:700 18px Nunito,serif;color:#2F5A23}.nov-ver .nov-fecha{display:block;margin:0 0 8px;font-size:13px;color:var(--ink-soft)}.nov-ver ul{margin:0;padding-left:20px}.nov-ver li{margin:0 0 6px;line-height:1.45}
@@ -2898,7 +2899,7 @@ body .acerca .ver-btn{display:block;margin:0 0 10px;padding:0;font-size:12px;fon
   }
 
 
-  const APP_VERSION = 'V16.57';
+  const APP_VERSION = 'V16.58';
   // ===== Pantalla de inicio: versión, sonido corto y salida (5-11-2026) =====
   (function(){
     const sp = document.getElementById('inicioSplash'); if(!sp) return;
@@ -7434,6 +7435,7 @@ lo que haces cada día es lo que vas a ser.`;
       : v === 'panel' && s === 's2' ? ['', 'Sesiones online', '#2E6B1F']
       : v === 'utilidades' ? ['', 'Utilidades', '#5B3FA8']
       : v === 'progreso' ? ['', 'Progreso', '']
+      : v === 'perfil' ? ['', 'Perfil', '']
       : v === 'viaje' ? ['', 'Viaje', ''] : null;   // 26-11-2026: Viaje también con flecha, logo y título
     if(!z) return;
     const viejo = app.querySelector('.topbar #btnVolver') || app.querySelector('.back-btn.volver-alto') || app.querySelector('.back-btn.volver-arriba');
@@ -7477,9 +7479,9 @@ lo que haces cada día es lo que vas a ser.`;
         <button class="link-quiet" id="btnSubirFoto" style="padding:0"><i data-ico=camara></i>${fotoDePerfil() ? 'Cambiar foto' : 'Poner mi foto'}</button>
         <input type="file" id="inputFoto" accept="image/*" style="display:none">
         <input type="file" id="inputFotoCamara" accept="image/*" capture="user" style="display:none">
+        <button class="link-quiet" id="btnElegirAvatar" style="padding:0"><i data-ico=paleta></i>${avatarDe(state.me) ? 'Cambiar mi avatar' : 'Elegir mi avatar'}</button>
       </div>
       <div id="fotoMsg" style="font-size:13px;margin:-4px 0 8px"></div>
-      <button class="link-quiet" id="btnElegirAvatar" style="padding:0;margin:0 0 10px"><i data-ico=paleta></i>${avatarDe(state.me) ? 'Cambiar mi avatar' : 'Elegir mi avatar'}</button>
       <div id="avatarBox" style="display:none;margin-bottom:12px">
         <div class="avatar-grid">${AVATARES.map(a => `<button type="button" class="avatar-opcion${a === avatarDe(state.me) ? ' elegido' : ''}" data-avatar="${a}">${a}</button>`).join('')}</div>
         ${avatarDe(state.me) ? '<button type="button" class="link-quiet" data-avatar="" style="padding:0">Quitar avatar</button>' : ''}
@@ -7488,11 +7490,12 @@ lo que haces cada día es lo que vas a ser.`;
       <p style="margin:0 0 2px;font-size:13px;color:var(--ink-soft)">Grupo: ${(state.groups && state.groups[state.me]) || '—'}</p>
       <p style="margin:0 0 14px;font-size:13px;color:var(--ink-soft)" id="perfilEmailRow">Email: <em>cargando…</em></p>
       <div id="insigniaActualBox" style="margin-bottom:16px"><p style="font-size:13px;color:var(--ink-soft)">Cargando tu nivel…</p></div>
-      ${(() => { try { const dmP = datosMontana(); return dmP ? '<div class="perfil-montana">' + montanaConHistoria(dmP) + '</div>' : ''; } catch(e){ return ''; } })()}<p style="font-weight:700;margin:0 0 4px">Escala de niveles${insigniasBloqueadas() ? ' <span style="font-weight:400;font-size:13px;color:var(--ink-soft)">(👑👑 Plan Guías + Grupo)</span>' : ''}</p>
+      ${(() => { try { const dmP = datosMontana(); return dmP ? '<div class="perfil-montana">' + montanaConHistoria(dmP) + '</div>' : ''; } catch(e){ return ''; } })()}<div class="perfil-escala"><p style="font-weight:700;margin:0 0 4px">Escala de niveles${insigniasBloqueadas() ? ' <span style="font-weight:400;font-size:13px;color:var(--ink-soft)">(👑👑 Plan Guías + Grupo)</span>' : ''}</p>
       <p style="font-size:13px;color:var(--ink-soft);margin:0 0 10px">
         Tu nivel es tu altura en <b>tu montaña interior</b>: subes un nivel por cada año de práctica (cuatro trimestres, un bancal por trimestre).
       </p>
       ${BADGE_SCALE.map(b => `<div class="badge-scale-row" data-min="${b.min}"><span${b.label!=='Guerrero' ? ' class="nivel-nombre-destacado"' : ''}>${b.icon} ${b.label}</span><span style="color:var(--ink-soft)">año ${BADGE_SCALE.indexOf(b) + 1}</span></div>`).join('')}
+      </div>
       <div style="margin-top:18px;border-top:1px solid var(--border);padding-top:14px">
         <button class="link-quiet" id="togglePassChange" style="padding:0"><i data-ico=candado></i>Cambiar contraseña</button>
         <div id="passChangeBox" style="display:none;margin-top:12px"></div>
@@ -7519,6 +7522,10 @@ lo que haces cada día es lo que vas a ser.`;
     app.appendChild(card);
     const acercaVer = card.querySelector('#acercaVer'); if(acercaVer) acercaVer.onclick = () => buscarActualizacion();
 
+    // La insignia de tu nivel, arriba a la derecha de la foto (28-11-2026, Gustavo)
+    try { const av = card.querySelector('#fotoPerfilBtn'); if(av && !oculto('insignias') && !insigniasBloqueadas()){ let nvP = 0; try { nvP = datosMontana().nivel; } catch(e){}
+      const w = document.createElement('span'); w.style.cssText = 'position:relative;display:inline-block;flex:none'; av.parentNode.insertBefore(w, av); w.appendChild(av);
+      const ins = document.createElement('span'); ins.className = 'perfil-insignia'; ins.style.cssText = 'position:absolute;top:-6px;right:-8px;font-size:46px;line-height:1;filter:drop-shadow(0 2px 4px rgba(0,0,0,.4))'; ins.innerHTML = escudoInsignia(nvP); w.appendChild(ins); } } catch(e){}
     // Foto de perfil: se recorta en cuadrado de 200×200 y se guarda en «Datos formulario»
     const inputFoto = card.querySelector('#inputFoto'), fotoMsg = card.querySelector('#fotoMsg');
     const guardarFoto = async (foto) => {
@@ -14071,4 +14078,4 @@ const sg = diapos[i + 1]; if(sg && sg.video){ try { const pv = document.createEl
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Meta" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V16.57 · App Amable Meta · 2026-11-27 10:52==== -->
+<!-- ==== Fin del index V16.58 · App Amable Meta · 2026-11-27 10:55==== -->
