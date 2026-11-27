@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ==== index V16.55 · App Amable Meta · 2026-11-27 10:48==== -->
+<!-- ==== index V16.56 · App Amable Meta · 2026-11-27 10:49==== -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1778,7 +1778,9 @@ html.ocultar-practi .practi-inicio,html.ocultar-practi .practi-bocadillo,html.oc
 .mont-fila{position:relative;margin:0 -16px}.mont-card{overflow:hidden}.mont-fila .mont-ilus{border-radius:0}
 .mont-fila .mont-ley{position:absolute;inset:0;margin:0;display:block;pointer-events:none;z-index:5}
 .mont-fila .mont-ley span{position:absolute;left:4px;transform:translateY(-50%);display:inline-flex;align-items:center;gap:4px;white-space:nowrap;font:800 11px/1.1 Karla,sans-serif;text-shadow:0 0 3px #fff,0 0 3px #fff,0 0 4px #fff}
-.mont-fila .mont-ley span.on{font-size:12px}.mont-fila .mont-ley span.ml-t{position:static;left:auto;display:flex;flex-direction:column;align-items:flex-start;line-height:1.05;transform:none;gap:0;text-shadow:inherit}.mont-ley .ml-t b{font-weight:900}.mont-ley .ml-t em{font-style:normal;font-weight:800}
+.mont-fila .mont-ley span.on{font-size:12px}
+.mont-fila .mont-ley .mont-ins{position:absolute;right:8px;transform:translateY(-50%);width:34px;height:34px;font-size:34px;line-height:1;display:grid;place-items:center;filter:drop-shadow(0 2px 4px rgba(0,0,0,.4))}
+.mont-ins.oculta{border-radius:50%;background:rgba(255,255,255,.6);border:2px dashed #6B55B8;filter:none !important}.mont-ins.oculta b{font:900 18px Karla,sans-serif;color:#5B3FA8}.mont-fila .mont-ley span.ml-t{position:static;left:auto;display:flex;flex-direction:column;align-items:flex-start;line-height:1.05;transform:none;gap:0;text-shadow:inherit}.mont-ley .ml-t b{font-weight:900}.mont-ley .ml-t em{font-style:normal;font-weight:800}
 .planta-fila{display:flex;gap:14px;align-items:center}
 .planta-fila svg{flex:0 0 auto}
 .planta-tx b{display:block;font-size:16px}.planta-tx small{display:block;font-size:13.5px;color:var(--ink-soft);margin-top:3px;line-height:1.4}
@@ -2888,7 +2890,7 @@ body .acerca .ver-btn{display:block;margin:0 0 10px;padding:0;font-size:12px;fon
   }
 
 
-  const APP_VERSION = 'V16.55';
+  const APP_VERSION = 'V16.56';
   // ===== Pantalla de inicio: versión, sonido corto y salida (5-11-2026) =====
   (function(){
     const sp = document.getElementById('inicioSplash'); if(!sp) return;
@@ -12767,10 +12769,11 @@ s += '<polyline points="' + Array.from({ length: 20 }, (x, i) => posBancal(i).jo
     return s + '</svg>';
   }
   function leyendaMontana(d){
-  return '<div class="mont-ley">' + BADGE_SCALE.map((b, k) => {
-    const y = [0, 1, 2, 3].reduce((t, j) => t + posBancal(k * 4 + j)[1], 0) / 4;
-    return '<span' + (k === d.nivel ? ' class="on"' : '') + ' style="top:' + (y / 6 + (k === 4 ? 4.5 : k === 3 ? 2.5 : 0)).toFixed(1) + '%;color:' + NIVELES_MONTANA[k].f + '"><span class="ml-t"><b>Año ' + (k + 1) + '</b><em>' + b.label + '</em></span>→</span>';
-  }).join('') + '</div>';
+  const alto = k => ([0, 1, 2, 3].reduce((t, j) => t + posBancal(k * 4 + j)[1], 0) / 4 / 6 + (k === 4 ? 4.5 : k === 3 ? 2.5 : 0)).toFixed(1);
+  return '<div class="mont-ley">' + BADGE_SCALE.map((b, k) => '<span' + (k === d.nivel ? ' class="on"' : '') + ' style="top:' + alto(k) + '%;color:' + NIVELES_MONTANA[k].f + '"><span class="ml-t"><b>Año ' + (k + 1) + '</b><em>' + b.label + '</em></span>→</span>').join('')
+    // Insignias a la derecha (28-11-2026, Gustavo): la ya ganada se ve; las que faltan son una sorpresa con «?» que se descubre al llegar
+    + BADGE_SCALE.map((b, k) => '<div class="mont-ins ' + (k <= d.nivel ? 'ganada' : 'oculta') + '" role="img" aria-label="' + (k <= d.nivel ? 'Insignia del ' + b.label : 'Insignia por descubrir') + '" style="top:' + alto(k) + '%">' + (k <= d.nivel ? escudoInsignia(k) : '<b>?</b>') + '</div>').join('')
+    + '</div>';
 }
 // Tarjeta de Inicio: la planta de este trimestre (toca para ver la montaña)
   function tarjetaPlantaInicio(){
@@ -14060,4 +14063,4 @@ const sg = diapos[i + 1]; if(sg && sg.video){ try { const pv = document.createEl
 <script src="https://gcalabro12.github.io/Grow-Panel/grow-panel-boton.js" data-app="metas-amables" data-nombre="Amable Meta" defer></script>
 </body>
 </html>
-<!-- ==== Fin del index V16.55 · App Amable Meta · 2026-11-27 10:48==== -->
+<!-- ==== Fin del index V16.56 · App Amable Meta · 2026-11-27 10:49==== -->
